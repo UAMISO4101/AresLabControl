@@ -95,3 +95,4 @@ ENV/
 .idea/misc.xml
 db.sqlite3
 .idea/vcs.xml
+.idea/webResources.xml
