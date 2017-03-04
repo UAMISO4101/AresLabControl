@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 """
 Django settings for AresLabControl project.
 
@@ -15,7 +17,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
@@ -25,8 +26,7 @@ SECRET_KEY = '=c2c#@97z8t(8q_=ahcxqydkj(6%ckc6jzmuq87pha5bd@cnh%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -55,7 +55,7 @@ ROOT_URLCONF = 'AresLabControl.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "templates")],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -69,7 +69,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'AresLabControl.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
@@ -100,7 +99,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
@@ -114,8 +112,19 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATIC_URL = '/static/'
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static/')
+
+STATIC_URL = '/static/images/'
+STATIC_ROOT = 'staticfiles'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static/images"),
+]
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+AUTH_PROFILE_MODULE = 'LabModule.UserProfile'
