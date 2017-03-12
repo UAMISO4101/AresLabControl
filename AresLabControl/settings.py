@@ -80,7 +80,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
@@ -116,16 +115,18 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-
-STATIC_ROOT= os.path.join(PROJECT_ROOT,'static')
-MEDIA_ROOT= os.path.join(PROJECT_ROOT,'media')
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env','static_root')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static", "lab_static"),
+]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env','media_root')
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-
 AUTH_PROFILE_MODULE = 'LabModule.UserProfile'
-
-

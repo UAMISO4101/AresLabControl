@@ -96,3 +96,4 @@ ENV/
 db.sqlite3
 .idea/vcs.xml
 .idea/webResources.xml
+.idea/jsLibraryMappings.xml
