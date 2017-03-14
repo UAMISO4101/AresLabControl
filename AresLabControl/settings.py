@@ -20,15 +20,15 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'django.contrib.sites',
+    'registration',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #Third Party Apps
     'crispy_forms',
-    'registration',
     #Our Apps
     'LabModule',
 ]
