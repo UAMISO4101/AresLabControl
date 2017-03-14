@@ -35,8 +35,13 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #Third Party Apps
+    'crispy_forms',
+    'registration',
+    #Our Apps
     'LabModule',
 ]
 
@@ -129,4 +134,21 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env','media_root
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
+
 AUTH_PROFILE_MODULE = 'LabModule.UserProfile'
+
+#Crispy Forms Tag Settings
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+#Django Registration Redux Settings
+ACCOUNT_ACTIVATION_DAYS = 7
+REGISTRATION_AUTO_LOGIN = False
+SITE_ID = 1
+LOGIN_REDIRECT_URL= '/'
+
+#Email Configuration Settings
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'cuentatestares@gmail.com'
+EMAIL_HOST_PASSWORD = '123456789E'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
