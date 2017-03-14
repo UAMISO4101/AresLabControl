@@ -89,4 +89,3 @@ ENV/
 .ropeproject
 .idea/
 db.sqlite3
-LabModule/migrations/0*
