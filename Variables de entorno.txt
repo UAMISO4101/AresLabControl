@@ -1,0 +1,3 @@
+set DATABASE_URL=postgres://knfvxprchdugjq:94f14e5ba767d85c2935056a90e5af5b67b903336e42e98f7391c0f95b6a26ca@ec2-107-22-236-252.compute-1.amazonaws.com:5432/danlvmtb9o034e
+set  EMAIL_HOST_PASSWORD=123456789E
+set SECRET_KEY=c2c#@97z8t(8q_=ahcxqydkj(6%ckc6jzmuq87pha5bd@cnh%
