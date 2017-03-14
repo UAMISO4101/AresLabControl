@@ -87,13 +87,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
-.idea/workspace.xml
-.idea/AresLabControl.iml
-.idea/encodings.xml
-.idea/inspectionProfiles/profiles_settings.xml
-.idea/modules.xml
-.idea/misc.xml
+.idea/
 db.sqlite3
-.idea/vcs.xml
-.idea/webResources.xml
-.idea/jsLibraryMappings.xml
+LabModule/migrations/
