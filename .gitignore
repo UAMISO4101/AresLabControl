@@ -89,5 +89,5 @@ ENV/
 .ropeproject
 .idea/
 db.sqlite3
-#Variables de entorno
-Variables de entorno.txt
+
+/Variables de entorno.txt
