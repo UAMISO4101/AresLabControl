@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block head_title %}Agregar Lugar | {% endblock %}
+
+{% block content %}
+    <div class="starter-template">
+        <h1>Agregar lugar de almacenamiento</h1>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title text-left">Información básica</h3>
+            </div>
+            <div class="panel-body text-left">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <strong>Nombre:</strong>
+                        </div>
+                        <div class="col-md-3">
+                            <input id="nombre" name="nombre" type="text" placeholder="Nombre"
+                                   class="form-control input-md"
+                                   required>
+                        </div>
+                        <div class="col-md-2">
+                            <strong>Posición X:</strong>
+                        </div>
+                        <div class="col-md-3">
+                            <input id="posx" name="posx" type="text" placeholder="Posición X"
+                                   class="form-control input-md"
+                                   required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <strong>Descripción:</strong>
+                        </div>
+                        <div class="col-md-3">
+                            <textarea class="form-control" rows="5" id="descripcion" name="descripcion"
+                                      placeholder="Descripción" required></textarea>
+                        </div>
+                        <div class="col-md-6">
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <strong>Posición Y:</strong>
+                                </div>
+                                <div class="col-md-6">
+                                    <input id="posy" name="posy" type="text" placeholder="Posición Y"
+                                           class="form-control input-md"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <strong>Imagen:</strong>
+                                </div>
+                                <div class="col-md-6">
+                                    <input id="posy" name="posy" type="text" placeholder="Posición Y"
+                                           class="form-control input-md"
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
