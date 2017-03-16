@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}Solicitar Muestra {% endblock %}
+
+{% block content %}
+<div class='row'>
+
+    <div class="col-md-6">
+        <h1>Solicitar Muestra</h1>
+        <form method="post" action=".">
+            {% csrf_token %}
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td>{{ form.fields.id.label }}</td>
+                        <td>{{ form.fields.id.initial }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.fields.name.label }}</td>
+                        <td>{{ form.fields.name.initial }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.fields.unity.label }}</td>
+                        <td>{{ form.fields.unity.initial }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.fields.avaliable.label }}</td>
+                        <td>{{ form.fields.avaliable.initial }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.fields.controled.label }}</td>
+                        <td>{{ form.fields.controled.initial }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+        <input class='btn btn-block btn-primary' type="submit" value="Solicitar"/>
+    </div>
+    <div class="col-md-6">
+        <img src="{{form.fields.imageField.initial.url}}">
+        <p>{{form.fields.description.initial}}</p>
+    </div>
+
+
+</div>
+{% endblock %}

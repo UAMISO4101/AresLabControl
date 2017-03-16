@@ -2,7 +2,7 @@
 from django import forms
 from registration.forms import RegistrationForm
 
-from .models import IdType as IdentificationTypes
+from .models import IdType as IdentificationTypes, Tray
 from .models import UserRole as UsrRole
 
 
@@ -57,3 +57,37 @@ class UserProfileForm(RegistrationForm):
         queryset=usrroles,
         empty_label="Seleccione una opción"
     )
+
+
+class SampleRequestForm(forms.Form):
+
+
+    def __init__(self, sample, *args, **kwargs):
+        super(SampleRequestForm, self).__init__(*args, **kwargs)
+        self.fields['id'] = forms.CharField(label="ID")
+        self.fields['id'].initial=sample.id
+        self.fields['name'] = forms.CharField(label="NOMBRE")
+        self.fields['name'].initial=sample.name
+        self.fields['description'] = forms.CharField(label="DESCRIPCION")
+        self.fields['description'].initial=sample.description
+        self.fields['unity'] = forms.CharField(label="UNIDAD")
+        self.fields['unity'].initial = sample.unity
+        self.fields['controled'] = forms.CharField(label="CONTROLADA")
+        self.fields['controled'].initial=self.calc_controled(sample.controled)
+        self.fields['avaliable'] = forms.CharField(label="DISPONIBLE")
+        self.fields['avaliable'].initial= self.calc_disp(sample)
+        self.fields['imageField'] = forms.ImageField(label="IMAGEN")
+        self.fields['imageField'].initial=sample.imageField
+
+    def calc_controled(self,controled):
+        if controled==True:
+            return 'Si'
+        else:
+            return 'No'
+
+    def calc_disp(self,new_sample):
+        trays= Tray.objects.filter(sample=new_sample)
+        for tray in trays:
+            if tray.empty==False:
+                return 'Si'
+        return 'No'

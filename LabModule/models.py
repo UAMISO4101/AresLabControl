@@ -49,3 +49,120 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return self.user.username
+
+
+class Protocol(models.Model):
+    class Meta:
+        verbose_name = 'Protocolo'
+        verbose_name_plural = 'Protocolos'
+
+    name = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre protocolo")
+    description = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del protocolo")
+    objetive = models.TextField(max_length=200, blank=False, null=True, verbose_name="Objetivo del paso")
+
+
+class Step(models.Model):
+    class Meta:
+        verbose_name = 'Paso'
+        verbose_name_plural = 'Pasos'
+
+    name = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre paso")
+    description = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del paso")
+    protocol = models.ForeignKey(Protocol, blank=False, null=True,
+                                  verbose_name="Seleccion de Protocolo")
+
+
+
+class Sample(models.Model):
+    class Meta:
+        verbose_name = 'Muestra'
+        verbose_name_plural = 'Muestras'
+
+    name = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre de la muestra")
+    description = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion de la muestra")
+    weight = models.CharField(max_length=10, blank=False, null=True, verbose_name="Peso de la muestra")
+    volume = models.CharField(max_length=10, blank=False, null=True, verbose_name="Volumen de la muestra")
+    initialQuantity = models.IntegerField( blank=False, null=True,
+                                          verbose_name="Cantidad inicial de la muestra")
+    mass = models.CharField(max_length=10, blank=False, null=True, verbose_name="Masa de la muestra")
+    state = models.CharField(max_length=30, blank=False, null=True, verbose_name="Estado de la muestra")
+    controled = models.BooleanField(blank=False, verbose_name="Muestra controlada")
+    actualQuantity = models.IntegerField(blank=False, null=True, verbose_name="Cantidad actual de la muestra")
+    imageField= models.ImageField(null=True)
+    unity=models.CharField(max_length=50, blank=False, null=True, verbose_name="Unidad de medida")
+
+    def __unicode__(self):
+        return 'Muestra: ' + str(self.name)
+
+
+class Tray(models.Model):
+    class Meta:
+        verbose_name = 'Bandeja'
+        verbose_name_plural = 'Bandejas'
+    sample= models.ForeignKey(Sample, blank=False, null=True,
+                             verbose_name="Seleccion de muestra")
+    empty=models.BooleanField(blank=False, verbose_name="Libre")
+
+
+
+class Request(models.Model):
+    class Meta:
+        verbose_name = 'Solicitud'
+        verbose_name_plural = 'Solicitudes'
+
+    description = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion de la solicitud")
+    initialDate = models.DateField(blank=False, null=True, verbose_name="Fecha inicial")
+    finalDate = models.DateField(blank=False, null=True, verbose_name="Fecha final")
+    state = models.CharField(max_length=30, blank=False, null=True, verbose_name="Estado solicitud")
+    applicant = models.CharField(max_length=50, blank=False, null=True, verbose_name="Quien solicito")
+    approver = models.CharField(max_length=50, blank=False, null=True, verbose_name="Quien aprobo")
+    actualDate = models.DateField(blank=False, null=True, verbose_name="Fecha actual")
+    step = models.ForeignKey(Step, blank=False, null=True,
+                             verbose_name="Seleccion de Paso")
+
+
+class SampleRequest(models.Model):
+    class Meta:
+        verbose_name = 'Solicitud de Muestra'
+        verbose_name_plural = 'Solicitudes de Muestra'
+
+    request = models.OneToOneField(Request)
+    sample = models.ForeignKey(Sample, blank=False, null=True,
+                                verbose_name="Seleccion de Muestra")
+    quantity = models.IntegerField(blank=False, null=True, verbose_name="Cantidad de muestra")
+    type = models.CharField(max_length=30, blank=False, null=True, verbose_name="Tipo solicitud")
+
+
+
+class Project(models.Model):
+    class Meta:
+        verbose_name = 'Proyecto'
+        verbose_name_plural = 'Proyectos'
+
+    name = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre proyecto")
+    description = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del proyecto")
+    objetive = models.TextField(max_length=200, blank=False, null=True, verbose_name="Objetivo del proyecto")
+    leader = models.ForeignKey(UserProfile, blank=False, null=True,
+                              verbose_name="Seleccion lider", related_name="lider")
+    assistants = models.ManyToManyField(UserProfile, related_name="asistentes")
+
+
+
+class Experiment(models.Model):
+    class Meta:
+        verbose_name = 'Experimento'
+        verbose_name_plural = 'Experimentos'
+
+    name = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre expermento")
+    description = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del experimento")
+    objetive = models.TextField(max_length=200, blank=False, null=True, verbose_name="Objetivo del experimento")
+    project = models.ForeignKey(Project, blank=False, null=True, on_delete=models.CASCADE,
+                                 verbose_name="Seleccion de Proyecto", related_name="proyecto")
+    protocols = models.ManyToManyField(Protocol, related_name="protocolos")
+
+
+
+
+
+
+
