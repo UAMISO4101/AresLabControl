@@ -55,7 +55,7 @@ class UserProfile(models.Model):
 class LaboratorioProfile(models.Model):
     class Meta:
         verbose_name='Laboratorio'
-        verbose_name_plurarl='Laboratorios'
+        verbose_name_plural='Laboratorios'
         permissions = (
             ('can_addLab', 'laboratorio||agregar'),
             ('can_edditLab', 'laboratorio||editar'),
