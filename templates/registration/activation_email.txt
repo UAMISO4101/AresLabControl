@@ -3,7 +3,7 @@ Activar cuenta en: {{ site.name }}:
 
 Hola!
 
-Se ha registrado un nuevo usuario {{ }}, desea activarlo?
+Se ha registrado un nuevo usuario {{user }}, desea activarlo?
 
 http://{{ site.domain }}{% url 'registration_activate' activation_key %}
 

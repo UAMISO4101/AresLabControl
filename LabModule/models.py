@@ -41,9 +41,10 @@ class UserProfile(models.Model):
     userPhone = models.CharField(max_length=20, default='', verbose_name='Teléfono')
     userNatIdTypName = models.CharField(max_length=20, default='', verbose_name='Tipo Identificación', editable=False)
     userNatIdNum = models.CharField(max_length=15, default='', verbose_name='Número de Identificación')
-    timestamp = models.DateTimeField(auto_now_add=True,auto_now=False)
-    userRole = models.ForeignKey(UserRole, blank=False, null=True, on_delete=models.CASCADE,verbose_name='Cargo')
-    userNatIdTyp = models.ForeignKey(IdType, blank=False, null=False, on_delete=models.CASCADE, verbose_name='Tipo Identificación')
+    timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
+    userRole = models.ForeignKey(UserRole, blank=False, null=True, on_delete=models.CASCADE, verbose_name='Cargo')
+    userNatIdTyp = models.ForeignKey(IdType, blank=False, null=False, on_delete=models.CASCADE,
+                                     verbose_name='Tipo Identificación')
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
 
     def __unicode__(self):
