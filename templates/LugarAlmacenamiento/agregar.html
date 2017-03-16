@@ -28,9 +28,7 @@
                                         <strong>Posición X:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="posx" name="posx" type="text" placeholder="Posición X"
-                                               class="form-control input-md"
-                                               required>
+                                         {{ form.posX }}
                                     </div>
                                 </div>
                             </div>
@@ -41,8 +39,8 @@
                                 <strong>Descripción:</strong>
                             </div>
                             <div class="col-md-3">
-                            <textarea class="form-control" rows="5" id="descripcion" name="descripcion"
-                                      placeholder="Descripción" required></textarea>
+                                {{ form.descripcion }}
+
                             </div>
                             <div class="col-md-6">
 
@@ -51,9 +49,7 @@
                                         <strong>Posición Y:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="posy" name="posy" type="text" placeholder="Posición Y"
-                                               class="form-control input-md"
-                                               required>
+                                         {{ form.posY }}
                                     </div>
                                 </div>
                                 <div class="row">
@@ -61,7 +57,7 @@
                                         <strong>Imagen:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="input-1" type="file" class="file">
+                                         {{ form.imagen }}
                                     </div>
                                 </div>
                             </div>
@@ -83,9 +79,7 @@
                                         <strong>Capacidad:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="capacidad" name="capacidad" type="text" placeholder="Capacidad"
-                                               class="form-control input-md" value="0"
-                                               required>
+                                        {{ form.capacidad }}
                                     </div>
                                 </div>
                                 <div class="row">
@@ -108,9 +102,7 @@
                                         <strong>Peso:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="peso" name="peso" type="text" placeholder="Peso"
-                                               class="form-control input-md"
-                                               required>
+                                        {{ form.peso }}
                                     </div>
                                 </div>
                                 <div class="row">
@@ -118,9 +110,7 @@
                                         <strong>Temperatura:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="temperatura" name="temperatura" type="text" placeholder="Temperatura"
-                                               class="form-control input-md"
-                                               required>
+                                         {{ form.temperatura }}
                                     </div>
                                 </div>
                                 <div class="row">
@@ -128,9 +118,7 @@
                                         <strong>Tamaño:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                        <input id="tamano" name="tamano" type="text" placeholder="Tamaño"
-                                               class="form-control input-md"
-                                               required>
+                                        {{ form.tamano }}
                                     </div>
                                 </div>
                             </div>

@@ -63,5 +63,4 @@ class UserProfileForm(RegistrationForm):
 class LugarAlmacenamientoForm(ModelForm):
     class Meta:
         model = LugarAlmacenamiento
-        fields = ['nombre', 'descripcion', 'bandejasOcupadas', 'capacidad', 'temperatura', 'posX', 'posY', 'estado',
-                  'tamanoBandeja']
+        fields = ['nombre', 'descripcion', 'capacidad', 'temperatura', 'posX', 'posY', 'imagen', 'peso', 'tamano']
