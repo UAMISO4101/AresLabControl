@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block head_title %} Agregar Máquina | {% endblock %}
+{% load lab_module_extras %}
+{% block content %}
+
+<div class="page-header text-left">
+    <h1>{% block title %}{{ section.title }}{% endblock %} </h1>
+</div>
+<div class="formMaquina text-center ">
+
+
+    <div class="col-md-6">
+        <form method="post" enctype="multipart/form-data">{% csrf_token %}
+            <div class="form-group  text-left">
+                {% for field in form %}
+                <div class="col-md-12"> {{field.label_tag}}
+                    {{field|addcss:"form-control"}}
+                </div>
+                {% if field.help_text %}
+                <p class="help">{{ field.help_text|safe }}</p>
+                {% endif %}
+
+                {% endfor %}
+            </div>
+
+            <input type="submit" value="Guardar" class="btn btn-primary"/>
+            <a href="/" id="cancel" name="cancel" class="btn btn-default">Cancelar</a>
+
+
+        </form>
+    </div>
+
+        {% if not section.agregar %}
+        <div class="col-md-6 text-center">
+        <a href="{{ form.instance.imagen.url  }}" target="_blank">
+            <img src="{{ form.instance.imagen.url  }} " class="img-maquina">
+        </a>
+         </div>
+        {% endif %}
+
+
+</div>
+{% endblock %}
