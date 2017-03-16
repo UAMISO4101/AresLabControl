@@ -41,13 +41,15 @@ class UserProfile(models.Model):
     userPhone = models.CharField(max_length=20, default='', verbose_name='Teléfono')
     userNatIdTypName = models.CharField(max_length=20, default='', verbose_name='Tipo Identificación', editable=False)
     userNatIdNum = models.CharField(max_length=15, default='', verbose_name='Número de Identificación')
-    timestamp = models.DateTimeField(auto_now_add=True,auto_now=False)
-    userRole = models.ForeignKey(UserRole, blank=False, null=True, on_delete=models.CASCADE,verbose_name='Cargo')
-    userNatIdTyp = models.ForeignKey(IdType, blank=False, null=False, on_delete=models.CASCADE, verbose_name='Tipo Identificación')
+    timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
+    userRole = models.ForeignKey(UserRole, blank=False, null=True, on_delete=models.CASCADE, verbose_name='Cargo')
+    userNatIdTyp = models.ForeignKey(IdType, blank=False, null=False, on_delete=models.CASCADE,
+                                     verbose_name='Tipo Identificación')
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
 
     def __unicode__(self):
         return self.user.username
+
 
 
 class LaboratorioProfile(models.Model):
@@ -87,3 +89,19 @@ class MaquinaProfile(models.Model):
         return self.nombre
     def get_absolute_url(self):
         return reverse('author-detail', kwargs={'pk': self.pk})
+
+class LugarAlmacenamiento(models.Model):
+    class Meta:
+        verbose_name = 'Lugar Almacenamiento'
+        verbose_name_plural = 'Lugares de Almacenamiento'
+
+    nombre = models.CharField(max_length=100, default='', verbose_name='Nombre')
+    descripcion = models.TextField(max_length=1000, default='', verbose_name="Descripcion")
+    bandejasOcupadas = models.IntegerField(verbose_name="Bandejas Ocupadas")
+    capacidad = models.IntegerField(verbose_name="Capacidad")
+    temperatura = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Temperatura")
+    posX = models.IntegerField(verbose_name="PosicionX")
+    posY = models.IntegerField(verbose_name="PosicionY")
+    estado = models.CharField(max_length=100, default='', verbose_name='Estado')
+    tamanoBandeja = models.CharField(max_length=100, default='', verbose_name='Tamaño Bandeja')
+
