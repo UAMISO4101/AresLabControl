@@ -9,5 +9,4 @@ urlpatterns = [
     url(r'^logout/$', views.home, name='logout'),
     # Lugar de almacenamiento
     url(r'^agregarLugar/$', views.agregar_lugar, name='agregarLugar'),
-
 ]

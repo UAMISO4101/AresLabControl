@@ -3,67 +3,147 @@
 {% block head_title %}Agregar Lugar | {% endblock %}
 
 {% block content %}
-    <div class="starter-template">
-        <h1>Agregar lugar de almacenamiento</h1>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title text-left">Información básica</h3>
-            </div>
-            <div class="panel-body text-left">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <strong>Nombre:</strong>
+
+    <form action="{% url 'agregarLugar' %}" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+
+        <div class="starter-template">
+            <h1>Agregar lugar de almacenamiento</h1>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-left">Información básica</h3>
+                </div>
+                <div class="panel-body text-left">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <strong>Nombre:</strong>
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.nombre }}
+                            </div>
+                            <div class="col-md-6">
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>Posición X:</strong>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input id="posx" name="posx" type="text" placeholder="Posición X"
+                                               class="form-control input-md"
+                                               required>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="col-md-3">
-                            <input id="nombre" name="nombre" type="text" placeholder="Nombre"
-                                   class="form-control input-md"
-                                   required>
-                        </div>
-                        <div class="col-md-2">
-                            <strong>Posición X:</strong>
-                        </div>
-                        <div class="col-md-3">
-                            <input id="posx" name="posx" type="text" placeholder="Posición X"
-                                   class="form-control input-md"
-                                   required>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <strong>Descripción:</strong>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <strong>Descripción:</strong>
+                            </div>
+                            <div class="col-md-3">
                             <textarea class="form-control" rows="5" id="descripcion" name="descripcion"
                                       placeholder="Descripción" required></textarea>
-                        </div>
-                        <div class="col-md-6">
+                            </div>
+                            <div class="col-md-6">
 
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <strong>Posición Y:</strong>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>Posición Y:</strong>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input id="posy" name="posy" type="text" placeholder="Posición Y"
+                                               class="form-control input-md"
+                                               required>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <input id="posy" name="posy" type="text" placeholder="Posición Y"
-                                           class="form-control input-md"
-                                           required>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>Imagen:</strong>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input id="input-1" type="file" class="file">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <strong>Imagen:</strong>
-                                </div>
-                                <div class="col-md-6">
-                                    <input id="posy" name="posy" type="text" placeholder="Posición Y"
-                                           class="form-control input-md"
-                                           required>
-                                </div>
-                            </div>
-                        </div>
 
+                        </div>
                     </div>
                 </div>
             </div>
+            <div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-left">Bandejas</h3>
+                            </div>
+                            <div class="panel-body text-left">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>Capacidad:</strong>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input id="capacidad" name="capacidad" type="text" placeholder="Capacidad"
+                                               class="form-control input-md" value="0"
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-primary">Agregar Bandeja</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title text-left">Medidas</h3>
+                            </div>
+                            <div class="panel-body text-left">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>Peso:</strong>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input id="peso" name="peso" type="text" placeholder="Peso"
+                                               class="form-control input-md"
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>Temperatura:</strong>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input id="temperatura" name="temperatura" type="text" placeholder="Temperatura"
+                                               class="form-control input-md"
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>Tamaño:</strong>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input id="tamano" name="tamano" type="text" placeholder="Tamaño"
+                                               class="form-control input-md"
+                                               required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-left">
+                <input class='btn btn-primary' type="submit" value="Agregar"/>
+            </div>
+
         </div>
-    </div>
+    </form>
+
 {% endblock %}

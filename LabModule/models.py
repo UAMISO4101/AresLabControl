@@ -49,3 +49,19 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return self.user.username
+
+
+class LugarAlmacenamiento(models.Model):
+    class Meta:
+        verbose_name = 'Lugar Almacenamiento'
+        verbose_name_plural = 'Lugares de Almacenamiento'
+
+    nombre = models.CharField(max_length=100, default='', verbose_name='Nombre')
+    descripcion = models.TextField(max_length=1000, default='', verbose_name="Descripcion")
+    bandejasOcupadas = models.IntegerField(verbose_name="Bandejas Ocupadas")
+    capacidad = models.IntegerField(verbose_name="Capacidad")
+    temperatura = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Temperatura")
+    posX = models.IntegerField(verbose_name="PosicionX")
+    posY = models.IntegerField(verbose_name="PosicionY")
+    estado = models.CharField(max_length=100, default='', verbose_name='Estado')
+    tamanoBandeja = models.CharField(max_length=100, default='', verbose_name='Tamaño Bandeja')

@@ -1,8 +1,9 @@
 # coding=utf-8
 from django import forms
+from django.forms import ModelForm
 from registration.forms import RegistrationForm
 
-from .models import IdType as IdentificationTypes
+from .models import IdType as IdentificationTypes, LugarAlmacenamiento
 from .models import UserRole as UsrRole
 
 
@@ -57,3 +58,10 @@ class UserProfileForm(RegistrationForm):
         queryset=usrroles,
         empty_label="Seleccione una opción"
     )
+
+
+class LugarAlmacenamientoForm(ModelForm):
+    class Meta:
+        model = LugarAlmacenamiento
+        fields = ['nombre', 'descripcion', 'bandejasOcupadas', 'capacidad', 'temperatura', 'posX', 'posY', 'estado',
+                  'tamanoBandeja']
