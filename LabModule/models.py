@@ -50,16 +50,34 @@ class UserProfile(models.Model):
         return self.user.username
 
 
+class LaboratorioProfile(models.Model):
+    class Meta:
+        verbose_name='Laboratorio'
+        verbose_name_plurarl='Laboratorios'
+        permissions = (
+            ('can_addLab', 'laboratorio||agregar'),
+            ('can_edditLab', 'laboratorio||editar'),
+        )
+
+    nombre = models.CharField(max_length=100, default='', verbose_name="Nombre", null=False)
+    id= models.CharField(max_length=100, default='', verbose_name="Nombre", null=False,primary_key=True)
 
 class MaquinaProfile(models.Model):
     class Meta:
         verbose_name="Máquina"
         verbose_name_plural = 'Máquinas'
+        permissions = (
+            ('can_addMachine', 'maquina||agregar'),
+            ('can_edditMachine', 'maquina||editar'),
+        )
+
 
     nombre=models.CharField(max_length=100, default='', verbose_name="Nombre",null=False)
     descripcion=models.CharField(max_length=1000, default='', verbose_name="Descripción",null=True)
     imagen= models.ImageField(upload_to='images', verbose_name="Imagen",default='images/image-not-found.jpg')
     idSistema=models.CharField(max_length=20, default='', verbose_name="Identificación",null=False)
+    con_reserva=models.BooleanField(default=True, verbose_name="Reservable")
+    activa = models.BooleanField(default=True, verbose_name="Activa")
     # Esto se reemplazara eventualmente con una llave foranea
     laboratorio=models.CharField(max_length=100, default='', verbose_name="Laboratorio",null=False)
     xPos=models.IntegerField( verbose_name="Posición x",null=False)

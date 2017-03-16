@@ -7,7 +7,7 @@
 <div class="page-header text-left">
     <h1>{% block title %}{{ section.title }}{% endblock %} </h1>
 </div>
-<div class="formMaquina text-right ">
+<div class="formMaquina text-center ">
 
 
     <div class="col-md-6">
@@ -30,13 +30,15 @@
 
         </form>
     </div>
-    <div class="col-md-6 text-center">
+
         {% if not section.agregar %}
+        <div class="col-md-6 text-center">
         <a href="{{ form.instance.imagen.url  }}" target="_blank">
             <img src="{{ form.instance.imagen.url  }} " class="img-maquina">
         </a>
+         </div>
         {% endif %}
-    </div>
+
 
 </div>
 {% endblock %}
