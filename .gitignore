@@ -89,5 +89,6 @@ ENV/
 .ropeproject
 .idea/
 db.sqlite3
+migrations/0001_initial.py
 
 /Variables de entorno.txt
