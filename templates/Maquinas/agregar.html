@@ -1,0 +1,28 @@
+
+{% extends 'base.html' %}
+
+{% block head_title %} Agregar Máquina | {% endblock %}
+
+{% block content %}
+<div class="formMaquina text-center ">
+
+    <div class="page-header">
+    <h1> </h1>
+    </div>
+
+<form method="post" class="form-group" enctype="multipart/form-data" >{% csrf_token %}
+    {% for field in form %}
+    <div class="fieldWrapper ">
+        {{ field.errors }}
+        {{ field.label_tag }} {{ field }}
+        {% if field.help_text %}
+        <p class="help">{{ field.help_text|safe }}</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    <input type="submit" value="Submit" />
+</form>
+
+</div>
+ {% endblock %}

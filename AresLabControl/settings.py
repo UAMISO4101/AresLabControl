@@ -75,11 +75,11 @@ url = urlparse.urlparse(os.environ["DATABASE_URL"])
 DATABASES = {
        'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': url.path[1:],
-        'USER': url.username,
-        'PASSWORD': url.password,
-        'HOST': url.hostname,
-        'PORT': url.port,
+        'NAME': 'areslab',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -125,8 +125,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static", "lab_static"),
 ]
 
+MEDIA_ROOT = os.path.join('media')
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env','media_root')
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
