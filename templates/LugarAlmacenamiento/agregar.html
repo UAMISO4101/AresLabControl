@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load lab_module_extras %}
+
 {% block head_title %}Agregar Lugar | {% endblock %}
 
 {% block content %}
@@ -7,7 +9,7 @@
     <form action="{% url 'agregarLugar' %}" enctype="multipart/form-data" method="post">
         {% csrf_token %}
 
-        <div class="starter-template">
+        <div class="lugar starter-template">
             <h1>Agregar lugar de almacenamiento</h1>
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -20,7 +22,7 @@
                                 <strong>Nombre:</strong>
                             </div>
                             <div class="col-md-3">
-                                {{ form.nombre }}
+                                {{ form.nombre|addcss:"form-control" }}
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
@@ -28,7 +30,7 @@
                                         <strong>Posición X:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                         {{ form.posX }}
+                                        {{ form.posX|addcss:"form-control"}}
                                     </div>
                                 </div>
                             </div>
@@ -39,7 +41,7 @@
                                 <strong>Descripción:</strong>
                             </div>
                             <div class="col-md-3">
-                                {{ form.descripcion }}
+                                {{ form.descripcion|addcss:"form-control" }}
 
                             </div>
                             <div class="col-md-6">
@@ -49,7 +51,7 @@
                                         <strong>Posición Y:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                         {{ form.posY }}
+                                        {{ form.posY|addcss:"form-control" }}
                                     </div>
                                 </div>
                                 <div class="row">
@@ -57,7 +59,7 @@
                                         <strong>Imagen:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                         {{ form.imagen }}
+                                        {{ form.imagen }}
                                     </div>
                                 </div>
                             </div>
@@ -79,7 +81,7 @@
                                         <strong>Capacidad:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                        {{ form.capacidad }}
+                                        {{ form.capacidad|addcss:"form-control" }}
                                     </div>
                                 </div>
                                 <div class="row">
@@ -102,7 +104,7 @@
                                         <strong>Peso:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                        {{ form.peso }}
+                                        {{ form.peso|addcss:"form-control" }}
                                     </div>
                                 </div>
                                 <div class="row">
@@ -110,7 +112,7 @@
                                         <strong>Temperatura:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                         {{ form.temperatura }}
+                                        {{ form.temperatura|addcss:"form-control" }}
                                     </div>
                                 </div>
                                 <div class="row">
@@ -118,7 +120,7 @@
                                         <strong>Tamaño:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                        {{ form.tamano }}
+                                        {{ form.tamano|addcss:"form-control" }}
                                     </div>
                                 </div>
                             </div>
