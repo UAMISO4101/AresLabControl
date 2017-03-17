@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm
 from django import forms
-from models import MaquinaProfile
+from models import MaquinaProfile, Bandeja
 from django.http import HttpResponse
 
 from django.http import HttpResponseRedirect
@@ -22,8 +22,18 @@ def home(request):
 def agregar_lugar(request):
     if request.method == 'POST':
         form = LugarAlmacenamientoForm(request.POST, request.FILES)
+        items = request.POST.get('items').split('\r\n')
+
         if form.is_valid():
-            form.save()
+            lugar = form.save()
+
+            if items is not None and len(items) > 0:
+                for item in items:
+                    if item is not None and item != '':
+                        tamano = item.split(',')[0].split(':')[1]
+                        cantidad = item.split(',')[1].split(':')[1]
+                        bandeja = Bandeja(tamano = tamano, cantidad = cantidad, lugarAlmacenamiento=lugar)
+                        bandeja.save()
 
             return HttpResponseRedirect(reverse('home'))
     else:

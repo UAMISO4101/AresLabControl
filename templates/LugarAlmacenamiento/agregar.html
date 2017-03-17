@@ -30,7 +30,7 @@
                                         <strong>Posición X:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                        {{ form.posX|addcss:"form-control"}}
+                                        {{ form.posX|addcss:"form-control" }}
                                     </div>
                                 </div>
                             </div>
@@ -86,9 +86,16 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <button type="button" class="btn btn-primary">Agregar Bandeja</button>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#myModal">
+                                            Agregar Bandeja
+                                        </button>
                                     </div>
 
+                                </div>
+                                <div class="row col-md-12">
+                                    <textarea id="items" name="items" class="form-control" rows="3" required
+                                              readonly></textarea>
                                 </div>
                             </div>
                         </div>
@@ -106,6 +113,9 @@
                                     <div class="col-md-6">
                                         {{ form.peso|addcss:"form-control" }}
                                     </div>
+                                    <div class="col-md-2">
+                                        Kg
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-3">
@@ -114,6 +124,9 @@
                                     <div class="col-md-6">
                                         {{ form.temperatura|addcss:"form-control" }}
                                     </div>
+                                    <div class="col-md-2">
+                                        Grados
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-3">
@@ -121,6 +134,9 @@
                                     </div>
                                     <div class="col-md-6">
                                         {{ form.tamano|addcss:"form-control" }}
+                                    </div>
+                                    <div class="col-md-2">
+                                        Metros
                                     </div>
                                 </div>
                             </div>
@@ -131,8 +147,66 @@
             <div class="text-left">
                 <input class='btn btn-primary' type="submit" value="Agregar"/>
             </div>
-
         </div>
     </form>
 
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" style="display: inline-block" id="exampleModalLabel">Agregar Bandejas</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Tamaño:</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <input id="tamano" name="tamano" type="text" placeholder="Tamaño"
+                                   class="form-control input-md"
+                                   required><br>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Cantidad:</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <input id="cantidad" name="cantidad" type="text" placeholder="Cantidad"
+                                   class="form-control input-md"
+                                   required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick='adicionar();'>Agregar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById("id_capacidad").readOnly = true;
+
+        var list = document.getElementById('items');
+
+        function adicionar() {
+            var capacidad = document.getElementsByName('capacidad')[0].value != ""
+                ? parseInt(document.getElementsByName('capacidad')[0].value)
+                : 0;
+            var tamano = document.getElementById('tamano').value;
+            var cantidad = document.getElementById('cantidad').value;
+            var cantidadInt = parseInt(cantidad);
+            var texto = 'Tamaño: ' + tamano + ', Cantidad: ' + cantidad + '\n';
+            document.getElementById("items").value += texto;
+            $("#myModal").modal('toggle');
+            document.getElementsByName('capacidad')[0].value = capacidad + cantidadInt;
+        }
+    </script>
 {% endblock %}
+
