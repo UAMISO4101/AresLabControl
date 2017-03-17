@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import UserRole, UserProfile, IdType
+from .models import UserRole, UserProfile, IdType,MaquinaProfile
 
 
 class UserRoleAdmin(admin.ModelAdmin):
@@ -26,3 +26,4 @@ class UserProfileAdmin(admin.ModelAdmin):
 admin.site.register(UserRole, UserRoleAdmin)
 admin.site.register(IdType, IdTypeAdmin)
 admin.site.register(UserProfile, UserProfileAdmin)
+admin.site.register(MaquinaProfile)

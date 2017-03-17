@@ -1,3 +1,10 @@
 .navicon {
   max-height: 22px !important;
 }
+body {
+    padding-top: 65px !important;
+}
+.img-maquina{
+        width:300px;
+        height:300px;
+}
