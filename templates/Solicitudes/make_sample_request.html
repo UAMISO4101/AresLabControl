@@ -8,7 +8,9 @@
 
     <div class="col-md-6">
         <h1>Solicitar Muestra</h1>
-        <form method="post" action="" name="formSolicitud" id="formSolicitud" >
+
+        <form method="post" action="" name="formSolicitud" id="formSolicitud">
+
             {% csrf_token %}
             <table class="table table-bordered">
                 <tbody>
@@ -47,24 +49,28 @@
                     <tr>
                         <td>EXPERIMENTOS</td>
                         <td>
-                            <select class="form-control" name="experiment" id="experiment" >
-                                <option value="-1">--Seleccione--</option>
+                            <select class="form-control" name="experiment" id="experiment" required>
+                                <option value="">--Seleccione--</option>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <td>PROTOCOLOS</td>
                         <td>
-                            <select class="form-control" name="protocol" id="protocol" >
-                                <option value="-1">--Seleccione--</option>
+
+                            <select class="form-control" name="protocol" id="protocol" required>
+                                <option value="">--Seleccione--</option>
+
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <td>PASOS</td>
                         <td>
-                            <select class="form-control" name="step" id="step" >
-                                <option value="-1">--Seleccione--</option>
+
+                            <select class="form-control" name="step" id="step" required>
+                                <option value="">--Seleccione--</option>
+
                             </select>
                         </td>
                     </tr>
@@ -87,7 +93,7 @@
 
     </div>
     <img class="col-md-6">
-        <img src="{{form.fields.imageField.initial.url}}">
+        <img src="{{form.fields.imageField.initial.url}}" width="400px" >
         <p>{{form.fields.description.initial}}</p>
 
      {%if message != "ok"%}
@@ -98,6 +104,10 @@
      {%endif%}
     </div>
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/additional-methods.min.js"></script>
+
     <script>
             $('#project').change(function(){
                 project_id = $(this).val();
@@ -107,19 +117,22 @@
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
-                .val('-1');
+                .val('');
+
                 $('#protocol')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
-                .val('-1');
+                .val('');
+
                 $('#step')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
-                .val('-1');
+                .val('');
+
                 if (this.value == -1 || this.value=="") {
 
                     return false;
@@ -155,13 +168,15 @@
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
-                .val('-1');
+                .val('');
+
                 $('#step')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
-                .val('-1');
+                .val('');
+
                 if (this.value == -1 || this.value=="") {
                     return false;
                 }
@@ -196,7 +211,8 @@
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
-                .val('-1');
+                .val('');
+
                 if (this.value == -1 || this.value=="") {
                     return false;
                 }
@@ -223,28 +239,40 @@
                     }
                 });
             });
-            $('#solicitar').click(function(e){
+
+
+            jQuery.validator.setDefaults({
+              debug: true,
+              success: "valid"
+            });
+            $("#formSolicitud").submit(function(e) {
                 e.preventDefault();
-                if(checkInp()){
-                    $('#formSolicitud').submit();
+            }).validate({
+                rules: {
+                quantity: {
+                  required: true,
+                  digits: true,
+                  min:1
+                },
+                experiment: {
+                  required: true
+                },
+                protocol: {
+                  required: true
+                },
+                step: {
+                  required: true
+                }
+                },
+                submitHandler: function(form) {
+                    $("#formSolicitud").submit();
+                    //submit via ajax
+                    return false;  //This doesn't prevent the form from submitting.
                 }
             });
-            function checkInp()
-            {
-              var quantity= $('#id_quantity').val();
 
-              if (isNaN(quantity))
-              {
-                alert("Must input numbers");
-                return false;
-              }
-              if(quantity<=0){
-                alert("Must be more greater than cero");
-                return false;
-              }else{
-                 return true;
-              }
-            }
+
+
     </script>
 
 </div>
