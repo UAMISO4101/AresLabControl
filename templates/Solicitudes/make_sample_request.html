@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}Solicitar Muestra {% endblock %}
+
+{% block content %}
+<div class='row'>
+
+    <div class="col-md-6">
+        <h1>Solicitar Muestra</h1>
+        <form method="post" action="" name="formSolicitud" id="formSolicitud" >
+            {% csrf_token %}
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td>{{ form.fields.id.label }}</td>
+                        <td>{{ form.fields.id.initial }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.fields.name.label }}</td>
+                        <td>{{ form.fields.name.initial }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.fields.unity.label }}</td>
+                        <td>{{ form.fields.unity.initial }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.fields.avaliable.label }}</td>
+                        <td>{{ form.fields.avaliable.initial }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.fields.controled.label }}</td>
+                        <td>{{ form.fields.controled.initial }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.fields.projects.label }}</td>
+                        <td>
+                            <select class="form-control" name="project" id="project" >
+                                <option value="">--Seleccione--</option>
+                                {% for project in form.fields.projects.choices %}
+
+                                    <option value="{{project.id}}">{{project.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>EXPERIMENTOS</td>
+                        <td>
+                            <select class="form-control" name="experiment" id="experiment" >
+                                <option value="-1">--Seleccione--</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PROTOCOLOS</td>
+                        <td>
+                            <select class="form-control" name="protocol" id="protocol" >
+                                <option value="-1">--Seleccione--</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PASOS</td>
+                        <td>
+                            <select class="form-control" name="step" id="step" >
+                                <option value="-1">--Seleccione--</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{{form.quantity.label}}</td>
+                        <td>
+                            {{form.quantity}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{{form.dateIni.label}}</td>
+                        <td>
+                           {{form.dateIni}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <input class='btn btn-block btn-primary' type="submit" value="Solicitar" id="solicitar"/>
+        </form>
+
+    </div>
+    <img class="col-md-6">
+        <img src="{{form.fields.imageField.initial.url}}">
+        <p>{{form.fields.description.initial}}</p>
+
+     {%if message != "ok"%}
+        <div class="alert alert-danger col-md-6">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{message}}
+        </div>
+     {%endif%}
+    </div>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script>
+            $('#project').change(function(){
+                project_id = $(this).val();
+                request_url = '/solicitarMuestra/experiments/?project_id=' + project_id ;
+                $('#experiment')
+                .find('option')
+                .remove()
+                .end()
+                .append('<option value="">--Seleccione--</option>')
+                .val('-1');
+                $('#protocol')
+                .find('option')
+                .remove()
+                .end()
+                .append('<option value="">--Seleccione--</option>')
+                .val('-1');
+                $('#step')
+                .find('option')
+                .remove()
+                .end()
+                .append('<option value="">--Seleccione--</option>')
+                .val('-1');
+                if (this.value == -1 || this.value=="") {
+
+                    return false;
+                }
+                $.ajax({
+                    type: "POST",
+                    url: request_url,
+                    data: JSON.stringify({
+                        id_country: project_id
+                    }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data != null) {
+                            $.each(data, function (key, value) {
+                                $('#experiment').append($("<option/>").val(key).text(value));
+                            });
+                        } else {
+                            console.log('error')
+                        }
+
+                    },
+                    failure: function (errMsg) {
+                        alert('Hubo un error');
+                    }
+                });
+            });
+            $('#experiment').change(function(){
+                experiment_id = $(this).val();
+                request_url = '/solicitarMuestra/protocols/?experiment_id=' + experiment_id ;
+                $('#protocol')
+                .find('option')
+                .remove()
+                .end()
+                .append('<option value="">--Seleccione--</option>')
+                .val('-1');
+                $('#step')
+                .find('option')
+                .remove()
+                .end()
+                .append('<option value="">--Seleccione--</option>')
+                .val('-1');
+                if (this.value == -1 || this.value=="") {
+                    return false;
+                }
+                $.ajax({
+                    type: "POST",
+                    url: request_url,
+                    data: JSON.stringify({
+                        id_country: experiment_id
+                    }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data != null) {
+                            $.each(data, function (key, value) {
+                                $('#protocol').append($("<option/>").val(key).text(value));
+                            });
+                        } else {
+                            console.log('error')
+                        }
+
+                    },
+                    failure: function (errMsg) {
+                        alert('Hubo un error');
+                    }
+                });
+            });
+            $('#protocol').change(function(){
+                protocol_id = $(this).val();
+                request_url = '/solicitarMuestra/steps/?protocol_id=' + protocol_id ;
+                $('#step')
+                .find('option')
+                .remove()
+                .end()
+                .append('<option value="">--Seleccione--</option>')
+                .val('-1');
+                if (this.value == -1 || this.value=="") {
+                    return false;
+                }
+                $.ajax({
+                    type: "POST",
+                    url: request_url,
+                    data: JSON.stringify({
+                        id_country: protocol_id
+                    }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data != null) {
+                            $.each(data, function (key, value) {
+                                $('#step').append($("<option/>").val(key).text(value));
+                            });
+                        } else {
+                            console.log('error')
+                        }
+
+                    },
+                    failure: function (errMsg) {
+                        alert('Hubo un error');
+                    }
+                });
+            });
+            $('#solicitar').click(function(e){
+                e.preventDefault();
+                if(checkInp()){
+                    $('#formSolicitud').submit();
+                }
+            });
+            function checkInp()
+            {
+              var quantity= $('#id_quantity').val();
+
+              if (isNaN(quantity))
+              {
+                alert("Must input numbers");
+                return false;
+              }
+              if(quantity<=0){
+                alert("Must be more greater than cero");
+                return false;
+              }else{
+                 return true;
+              }
+            }
+    </script>
+
+</div>
+{% endblock %}

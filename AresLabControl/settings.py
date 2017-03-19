@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     #Third Party Apps
     'crispy_forms',
     #Our Apps
-    'LabModule',
+    'LabModule'
 ]
 
 MIDDLEWARE = [
@@ -73,13 +73,22 @@ url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 
 DATABASES = {
-       'default': {
+       #'default': {
+        #'ENGINE': 'django.db.backends.postgresql',
+        #'NAME': url.path[1:],
+        #'USER': url.username,
+        #'PASSWORD': url.password,
+        #'HOST': url.hostname,
+        #'PORT': url.port,
+
+    #}
+'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': url.path[1:],
-        'USER': url.username,
-        'PASSWORD': url.password,
-        'HOST': url.hostname,
-        'PORT': url.port,
+        'NAME': 'lab',
+        'HOST':'127.0.0.1',
+        'PORT':'5432',
+        'USER':'postgres',
+        'PASSWORD':''
     }
 }
 

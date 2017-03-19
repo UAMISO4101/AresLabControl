@@ -91,3 +91,4 @@ ENV/
 db.sqlite3
 
 /Variables de entorno.txt
+/LabModule/migrations/
