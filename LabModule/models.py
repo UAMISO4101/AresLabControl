@@ -58,7 +58,7 @@ class Protocol(models.Model):
 
     name = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre protocolo")
     description = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del protocolo")
-    objetive = models.TextField(max_length=200, blank=False, null=True, verbose_name="Objetivo del paso")
+    objetive = models.TextField(max_length=200, blank=False, null=True, verbose_name="Objetivo del protocolo")
 
 
 class Step(models.Model):
@@ -144,7 +144,9 @@ class Project(models.Model):
     objetive = models.TextField(max_length=200, blank=False, null=True, verbose_name="Objetivo del proyecto")
     leader = models.ForeignKey(UserProfile, blank=False, null=True,
                               verbose_name="Seleccion lider", related_name="lider")
-    assistants = models.ManyToManyField(UserProfile, related_name="asistentes")
+    assistants = models.ManyToManyField(UserProfile, related_name="project")
+    active= models.BooleanField(blank=False,null=False,default=True)
+
 
 
 
@@ -157,8 +159,8 @@ class Experiment(models.Model):
     description = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del experimento")
     objetive = models.TextField(max_length=200, blank=False, null=True, verbose_name="Objetivo del experimento")
     project = models.ForeignKey(Project, blank=False, null=True, on_delete=models.CASCADE,
-                                 verbose_name="Seleccion de Proyecto", related_name="proyecto")
-    protocols = models.ManyToManyField(Protocol, related_name="protocolos")
+                                 verbose_name="Seleccion de Proyecto", related_name="project")
+    protocols = models.ManyToManyField(Protocol, related_name="experiment")
 
 
 

@@ -12,4 +12,7 @@ urlpatterns = [
     # Lugar de almacenamiento
     url(r'^agregarLugar/$', views.agregar_lugar, name='agregarLugar'),
     url(r'^solicitarMuestra/$', views.make_sample_request, name='solicitarMuestra'),
+    url(r'^solicitarMuestra/experiments/$', views.get_experiments, name='experiments'),
+    url(r'^solicitarMuestra/protocols/$', views.get_protocols, name='protocols'),
+    url(r'^solicitarMuestra/steps/$', views.get_steps, name='steps'),
 ]

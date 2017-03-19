@@ -1,8 +1,15 @@
 # coding=utf-8
+import datetime
+from clever_selects.form_fields import ChainedModelChoiceField
 from django import forms
+from django.core.validators import RegexValidator
+from django.urls import reverse_lazy
+from django.utils.encoding import force_text
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from registration.forms import RegistrationForm
 
-from .models import IdType as IdentificationTypes, Tray
+from .models import IdType as IdentificationTypes, Tray, Project, Experiment, Protocol, Step
 from .models import UserRole as UsrRole
 
 
@@ -59,25 +66,34 @@ class UserProfileForm(RegistrationForm):
     )
 
 
+
 class SampleRequestForm(forms.Form):
 
 
-    def __init__(self, sample, *args, **kwargs):
+    def __init__(self, sample=None,id_assistant=None, *args, **kwargs):
         super(SampleRequestForm, self).__init__(*args, **kwargs)
-        self.fields['id'] = forms.CharField(label="ID")
-        self.fields['id'].initial=sample.id
-        self.fields['name'] = forms.CharField(label="NOMBRE")
-        self.fields['name'].initial=sample.name
-        self.fields['description'] = forms.CharField(label="DESCRIPCION")
-        self.fields['description'].initial=sample.description
-        self.fields['unity'] = forms.CharField(label="UNIDAD")
-        self.fields['unity'].initial = sample.unity
-        self.fields['controled'] = forms.CharField(label="CONTROLADA")
-        self.fields['controled'].initial=self.calc_controled(sample.controled)
-        self.fields['avaliable'] = forms.CharField(label="DISPONIBLE")
-        self.fields['avaliable'].initial= self.calc_disp(sample)
-        self.fields['imageField'] = forms.ImageField(label="IMAGEN")
-        self.fields['imageField'].initial=sample.imageField
+        if sample!=None and id_assistant!=None:
+            self.fields['id'] = forms.CharField(label="ID")
+            self.fields['id'].initial=sample.id
+            self.fields['name'] = forms.CharField(label="NOMBRE")
+            self.fields['name'].initial=sample.name
+            self.fields['description'] = forms.CharField(label="DESCRIPCION")
+            self.fields['description'].initial=sample.description
+            self.fields['unity'] = forms.CharField(label="UNIDAD")
+            self.fields['unity'].initial = sample.unity
+            self.fields['controled'] = forms.CharField(label="CONTROLADA")
+            self.fields['controled'].initial=self.calc_controled(sample.controled)
+            self.fields['avaliable'] = forms.CharField(label="DISPONIBLE")
+            self.fields['avaliable'].initial= self.calc_disp(sample)
+            self.fields['imageField'] = forms.ImageField(label="IMAGEN")
+            self.fields['imageField'].initial=sample.imageField
+            self.fields['projects']=forms.MultipleChoiceField(required=True,widget=forms.CheckboxSelectMultiple,
+                                                              label="PROYECTO",choices=Project.objects.filter(assistants=id_assistant,active=True))
+
+
+    quantity = forms.CharField(label="CANTIDAD")
+    dateIni= forms.DateField(widget=forms.SelectDateWidget(),label="FECHA")
+
 
     def calc_controled(self,controled):
         if controled==True:
@@ -91,3 +107,6 @@ class SampleRequestForm(forms.Form):
             if tray.empty==False:
                 return 'Si'
         return 'No'
+
+
+
