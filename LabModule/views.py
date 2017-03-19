@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm
 from django import forms
-from models import MaquinaProfile, Bandeja
+from models import MaquinaProfile, Bandeja, LugarAlmacenamiento
 from django.http import HttpResponse
 
 from django.http import HttpResponseRedirect
@@ -32,7 +32,7 @@ def agregar_lugar(request):
                     if item is not None and item != '':
                         tamano = item.split(',')[0].split(':')[1]
                         cantidad = item.split(',')[1].split(':')[1]
-                        bandeja = Bandeja(tamano = tamano, cantidad = cantidad, lugarAlmacenamiento=lugar)
+                        bandeja = Bandeja(tamano=tamano, cantidad=cantidad, lugarAlmacenamiento=lugar)
                         bandeja.save()
 
             return HttpResponseRedirect(reverse('home'))
@@ -95,3 +95,9 @@ def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
 
 class UserRegistrationView(RegistrationView):
     form_class = UserProfileForm
+
+
+def listar_lugares(request):
+    lista_lugares = LugarAlmacenamiento.objects.all()
+    context = {'lista_lugares': lista_lugares}
+    return render(request, 'LugarAlmacenamiento/listar.html', context)
