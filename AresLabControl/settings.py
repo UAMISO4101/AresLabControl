@@ -80,7 +80,16 @@ DATABASES = {
         'PASSWORD': url.password,
         'HOST': url.hostname,
         'PORT': url.port,
+
     }
+#'default': {
+ #       'ENGINE': 'django.db.backends.postgresql',
+  #      'NAME': 'lab',
+   #     'HOST':'127.0.0.1',
+    #    'PORT':'5432',
+     #   'USER':'postgres',
+      #  'PASSWORD':''
+    #}
 }
 
 # Password validation
