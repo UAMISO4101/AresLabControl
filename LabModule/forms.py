@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django import forms
 
 # coding=utf-8
@@ -5,7 +6,7 @@ from django import forms
 from django.forms import ModelForm
 from registration.forms import RegistrationForm
 
-from .models import IdType as IdentificationTypes, LugarAlmacenamiento
+from .models import IdType as IdentificationTypes, LugarAlmacenamiento, Project, Tray
 from .models import UserRole as UsrRole
 
 
@@ -65,5 +66,49 @@ class UserProfileForm(RegistrationForm):
 class LugarAlmacenamientoForm(ModelForm):
     class Meta:
         model = LugarAlmacenamiento
-        fields = ['nombre', 'descripcion', 'bandejasOcupadas', 'capacidad', 'temperatura', 'posX', 'posY', 'estado',
-                  'tamanoBandeja']
+        fields = ['nombre', 'descripcion', 'capacidad', 'temperatura', 'posX', 'posY', 'imagen', 'peso', 'tamano']
+
+
+class SampleRequestForm(forms.Form):
+
+
+    def __init__(self, sample=None,id_assistant=None, *args, **kwargs):
+        super(SampleRequestForm, self).__init__(*args, **kwargs)
+        if sample!=None and id_assistant!=None:
+            self.fields['id'] = forms.CharField(label="ID")
+            self.fields['id'].initial=sample.id
+            self.fields['name'] = forms.CharField(label="NOMBRE")
+            self.fields['name'].initial=sample.name
+            self.fields['description'] = forms.CharField(label="DESCRIPCION")
+            self.fields['description'].initial=sample.description
+            self.fields['unity'] = forms.CharField(label="UNIDAD")
+            self.fields['unity'].initial = sample.unity
+            self.fields['controled'] = forms.CharField(label="CONTROLADA")
+            self.fields['controled'].initial=self.calc_controled(sample.controled)
+            self.fields['avaliable'] = forms.CharField(label="DISPONIBLE")
+            self.fields['avaliable'].initial= self.calc_disp(sample)
+            self.fields['imageField'] = forms.ImageField(label="IMAGEN")
+            self.fields['imageField'].initial=sample.imageField
+            self.fields['projects']=forms.MultipleChoiceField(required=True, widget=forms.CheckboxSelectMultiple,
+                                                              label="PROYECTO", choices=Project.objects.filter(assistants=id_assistant,active=True))
+
+
+    quantity = forms.CharField(label="CANTIDAD")
+    dateIni= forms.DateField(widget=forms.SelectDateWidget(),label="FECHA")
+
+
+    def calc_controled(self,controled):
+        if controled==True:
+            return 'Si'
+        else:
+            return 'No'
+
+    def calc_disp(self,new_sample):
+        trays= Tray.objects.filter(sample=new_sample)
+        for tray in trays:
+            if tray.empty==False:
+                return 'Si'
+        return 'No'
+
+
+

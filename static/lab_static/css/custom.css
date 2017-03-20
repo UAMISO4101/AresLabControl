@@ -8,3 +8,7 @@ body {
         width:300px;
         height:300px;
 }
+
+.lugar div[class^="row"]{
+    margin-bottom: 5px;
+}
