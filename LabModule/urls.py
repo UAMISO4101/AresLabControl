@@ -13,7 +13,7 @@ urlpatterns = [
     url(r'^listaLugares/$', views.listar_lugares, name='listaLugares'),
 
     url(r'^maquina/add/$', views.maquina_create, name='maquina-add'),
-    url(r'^maquina/(?P<pk>[0-9]+)/$',views.maquina_update, name='maquina-update'),
+    url(r'^maquina/(?P<pk>[\w\-]+)/$',views.maquina_update, name='maquina-update'),
     url(r'^solicitarMuestra/$', views.make_sample_request, name='solicitarMuestra'),
     url(r'^solicitarMuestra/experiments/$', views.get_experiments, name='experimentos'),
     url(r'^solicitarMuestra/protocols/$', views.get_protocols, name='protocols'),

@@ -52,7 +52,21 @@ class UserProfile(models.Model):
         return self.user.username
 
 
+
+
 class LaboratorioProfile(models.Model):
+    """Representación del laboratorio
+        Se encarga de:
+            * Definir un laboratorio y los campos significativos
+            * Permite guardar en la base de datos el laboratorio.
+
+Atributos:
+    :nombre (String): Nombre del laboratorio. Máxima longitud de 100 caracteres. No puede ser nulo
+    :id (String): Id del laboratorio. Identificación del laboratorio, campo unico, máxima longitud de 100 caracteres.
+    :numX (Integer): Cantidad de columnas que tiene el laboratorio para almacenar máquinas. Por defecto 10.
+    :numY (Integer): Cantidad de filas que tiene el laboratorio para alamacenar máquinas. Por defecto 10.
+
+    """
     class Meta:
         verbose_name = 'Laboratorio'
         verbose_name_plural = 'Laboratorios'
@@ -62,10 +76,28 @@ class LaboratorioProfile(models.Model):
         )
 
     nombre = models.CharField(max_length=100, default='', verbose_name="Nombre", null=False)
-    id = models.CharField(max_length=100, default='', verbose_name="Nombre", null=False, primary_key=True)
+    id = models.CharField(max_length=100, default='', verbose_name="Identificación", null=False, primary_key=True)
+    numX=models.PositiveIntegerField(verbose_name="Cantidad de filas", null=False,default=10);
+    numY = models.PositiveIntegerField(verbose_name="Cantidad de columnas", null=False,default=10);
+    def __unicode__(self):
+        return self.id+" "+self.nombre
 
 
 class MaquinaProfile(models.Model):
+    """Representación de una máquina.
+        Se encarga de:
+            * Definir las restricciónes basicas de los campos
+            * Permite guardar en la base de datos la máquina
+
+Atributos:
+    :nombre (String): Nombre de la máquina, máxima longitud 100 caracteres, no puede ser nulo.
+    :descripcion (String): Descripción de la máquina,  máxima longitud 1000 caracteres, no puede ser nulo.
+    :imagen (ImafeField): Imágen de la máquina,  default='images/image-not-found.jpg'.
+    :idSistema (String): Identificación del laboratorio, máxima longitud de 20 caracteres.
+    :con_reserva (boolean): Dice si es necesario aprobar la máquina para ser reservada. Por defecto verdadero
+    :activa (boolean): Dice si la máquina se puede solicitar. Por defecto verdadero
+
+    """
     class Meta:
         verbose_name = "Máquina"
         verbose_name_plural = 'Máquinas'
@@ -77,19 +109,43 @@ class MaquinaProfile(models.Model):
     nombre = models.CharField(max_length=100, default='', verbose_name="Nombre", null=False)
     descripcion = models.CharField(max_length=1000, default='', verbose_name="Descripción", null=True)
     imagen = models.ImageField(upload_to='images', verbose_name="Imagen", default='images/image-not-found.jpg')
-    idSistema = models.CharField(max_length=20, default='', verbose_name="Identificación", null=False)
+    idSistema = models.CharField(max_length=20, default='', verbose_name="Identificación", null=False,primary_key=True)
     con_reserva = models.BooleanField(default=True, verbose_name="Reservable")
     activa = models.BooleanField(default=True, verbose_name="Activa")
-    # Esto se reemplazara eventualmente con una llave foranea
-    laboratorio = models.CharField(max_length=100, default='', verbose_name="Laboratorio", null=False)
-    xPos = models.IntegerField(verbose_name="Posición x", null=False)
-    yPos = models.IntegerField(verbose_name="Posición y", null=False)
 
-    def __unicode__(self):
-        return self.nombre
+
+    def __str__(self):
+        return self.idSistema+" "+self.nombre
 
     def get_absolute_url(self):
         return reverse('author-detail', kwargs={'pk': self.pk})
+
+class MaquinaEnLab(models.Model):
+    """Relación entre :class:`MaquinaProfile` y :class:`LaboratorioProfile`
+        Se encarga de:
+            * Definir la posición del laboratorio en que la máquina esta guardada
+            * Permite guardar en la base de datos esta relación
+
+Atributos:
+    :idLaboratorio (String): Id del laboratorio en el que la máquina esta guardada.
+    :idMaquina (String): Id de la máquina que esta guaradada
+    :xPos (Integer): Posición x en la que la máquina esta guardada. No puede ser nulo, por defecto 0.
+    :yPos (Integer): Posición y en la que la máquina esta guardada. No puede sr nulo, por defecto 0.
+
+
+    """
+    class Meta:
+        verbose_name="Máquina en laboratorio"
+        verbose_name_plural = 'Máquinas en laboratorio'
+    idLaboratorio=models.ForeignKey(LaboratorioProfile, blank=False, null=True, on_delete=models.CASCADE,
+                                verbose_name="Laboratorio")
+    idMaquina=models.OneToOneField(MaquinaProfile, blank=False, null=False, on_delete=models.CASCADE,
+                                verbose_name="Máquina",primary_key=True)
+    xPos = models.PositiveIntegerField(verbose_name="Posición x", null=False,default=0)
+    yPos = models.PositiveIntegerField(verbose_name="Posición y", null=False,default=0)
+
+    def __unicode__(self):
+        return str(self.xPos)+","+str(self.yPos)
 
 
 class LugarAlmacenamiento(models.Model):

@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from LabModule import models
 from .models import UserRole, UserProfile, IdType,MaquinaProfile, Sample, Experiment, Project, Protocol, Step, \
-    SampleRequest
+    SampleRequest, LaboratorioProfile,MaquinaEnLab
 
 
 class UserRoleAdmin(admin.ModelAdmin):
@@ -36,3 +36,5 @@ admin.site.register(Protocol)
 admin.site.register(Step)
 admin.site.register(models.Request)
 admin.site.register(SampleRequest)
+admin.site.register(LaboratorioProfile)
+admin.site.register(MaquinaEnLab)
