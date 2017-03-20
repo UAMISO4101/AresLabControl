@@ -62,7 +62,11 @@ class LaboratorioProfile(models.Model):
         )
 
     nombre = models.CharField(max_length=100, default='', verbose_name="Nombre", null=False)
-    id = models.CharField(max_length=100, default='', verbose_name="Nombre", null=False, primary_key=True)
+    id = models.CharField(max_length=100, default='', verbose_name="Identificación", null=False, primary_key=True)
+    numX=models.PositiveIntegerField(verbose_name="Cantidad de filas", null=False,default=10);
+    numY = models.PositiveIntegerField(verbose_name="Cantidad de columnas", null=False,default=10);
+    def __unicode__(self):
+        return self.id+" "+self.nombre
 
 
 class MaquinaProfile(models.Model):
@@ -81,15 +85,28 @@ class MaquinaProfile(models.Model):
     con_reserva = models.BooleanField(default=True, verbose_name="Reservable")
     activa = models.BooleanField(default=True, verbose_name="Activa")
     # Esto se reemplazara eventualmente con una llave foranea
-    laboratorio = models.CharField(max_length=100, default='', verbose_name="Laboratorio", null=False)
-    xPos = models.IntegerField(verbose_name="Posición x", null=False)
-    yPos = models.IntegerField(verbose_name="Posición y", null=False)
+    laboratorio = models.ForeignKey(LaboratorioProfile, blank=False, null=True, on_delete=models.CASCADE,
+                                verbose_name="Seleccionar Laboratorio")
+    xPos = models.IntegerField(verbose_name="Posición x", null=False,default=0)
+    yPos = models.IntegerField(verbose_name="Posición y", null=False,default=0)
+
 
     def __unicode__(self):
-        return self.nombre
+        return self.idSistema+" "+self.nombre
 
     def get_absolute_url(self):
         return reverse('author-detail', kwargs={'pk': self.pk})
+
+class MaquinaEnLab(models.Model):
+    class Meta:
+        verbose_name="Máquina en laboratorio"
+        verbose_name_plural = 'Máquinas en laboratorio'
+    idLaboratorio=models.ForeignKey(LaboratorioProfile, blank=False, null=True, on_delete=models.CASCADE,
+                                verbose_name="Laboratorio")
+    idMaquina=models.ForeignKey(MaquinaProfile, blank=False, null=True, on_delete=models.CASCADE,
+                                verbose_name="Máquina")
+    xPos = models.IntegerField(verbose_name="Posición x", null=False,default=0)
+    yPos = models.IntegerField(verbose_name="Posición y", null=False,default=0)
 
 
 class LugarAlmacenamiento(models.Model):

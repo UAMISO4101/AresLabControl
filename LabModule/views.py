@@ -10,7 +10,7 @@ from django import forms
 
 from django.views.decorators.csrf import csrf_exempt
 from models import MaquinaProfile, Bandeja, LugarAlmacenamiento, Sample, UserProfile, Step, SampleRequest, Experiment, \
-    Protocol, Request
+    Protocol, Request, MaquinaEnLab
 from django.http import HttpResponse
 
 from django.http import HttpResponseRedirect
@@ -67,8 +67,15 @@ def maquina_create(request, template_name='Maquinas/agregar.html'):
         section['title'] = 'Agregar máquina'
         section['agregar'] = True
         if form.is_valid():
-            new_maquina = form.save()
-            return redirect(reverse('maquina-update', kwargs={'pk': new_maquina.pk}))
+            new_maquina = form.save(commit=False)
+            ocupado=MaquinaEnLab.objects.filter().exists()
+            print ocupado
+            if ocupado:
+                mensaje="El lugar en el que desea guadar ya esta ocupado"
+                return render(request, template_name, {'form': form, 'section': section,'mensaje':mensaje})
+            else:
+                new_maquina = form.save()
+                return redirect(reverse('maquina-update', kwargs={'pk': new_maquina.pk}))
         return render(request, template_name, {'form': form, 'section': section})
     else:
         return HttpResponse('No autorizado', status=401)
@@ -88,16 +95,6 @@ def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
     else:
         return HttpResponse('No autorizado', status=401)
 
-    if request.method == 'POST':
-        form = LugarAlmacenamientoForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-
-            return HttpResponseRedirect(reverse('home'))
-    else:
-        form = LugarAlmacenamientoForm()
-
-    return render(request, 'LugarAlmacenamiento/agregar.html', {'form': form})
 
 
 class UserRegistrationView(RegistrationView):

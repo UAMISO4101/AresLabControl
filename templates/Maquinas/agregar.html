@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block head_title %} Agregar Máquina | {% endblock %}
+{% block head_title %} {{ section.title }}| {% endblock %}
 {% load lab_module_extras %}
 {% block content %}
 
@@ -9,6 +9,12 @@
 </div>
 <div class="formMaquina text-center ">
 
+     {%if message != ""%}
+        <div class="alert alert-danger col-md-6">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{message}}
+        </div>
+     {%endif%}
 
     <div class="col-md-6">
         <form method="post" enctype="multipart/form-data">{% csrf_token %}
