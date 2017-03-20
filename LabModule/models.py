@@ -81,17 +81,12 @@ class MaquinaProfile(models.Model):
     nombre = models.CharField(max_length=100, default='', verbose_name="Nombre", null=False)
     descripcion = models.CharField(max_length=1000, default='', verbose_name="Descripción", null=True)
     imagen = models.ImageField(upload_to='images', verbose_name="Imagen", default='images/image-not-found.jpg')
-    idSistema = models.CharField(max_length=20, default='', verbose_name="Identificación", null=False)
+    idSistema = models.CharField(max_length=20, default='', verbose_name="Identificación", null=False,primary_key=True)
     con_reserva = models.BooleanField(default=True, verbose_name="Reservable")
     activa = models.BooleanField(default=True, verbose_name="Activa")
-    # Esto se reemplazara eventualmente con una llave foranea
-    laboratorio = models.ForeignKey(LaboratorioProfile, blank=False, null=True, on_delete=models.CASCADE,
-                                verbose_name="Seleccionar Laboratorio")
-    xPos = models.IntegerField(verbose_name="Posición x", null=False,default=0)
-    yPos = models.IntegerField(verbose_name="Posición y", null=False,default=0)
 
 
-    def __unicode__(self):
+    def __str__(self):
         return self.idSistema+" "+self.nombre
 
     def get_absolute_url(self):
@@ -103,10 +98,13 @@ class MaquinaEnLab(models.Model):
         verbose_name_plural = 'Máquinas en laboratorio'
     idLaboratorio=models.ForeignKey(LaboratorioProfile, blank=False, null=True, on_delete=models.CASCADE,
                                 verbose_name="Laboratorio")
-    idMaquina=models.ForeignKey(MaquinaProfile, blank=False, null=True, on_delete=models.CASCADE,
-                                verbose_name="Máquina")
-    xPos = models.IntegerField(verbose_name="Posición x", null=False,default=0)
-    yPos = models.IntegerField(verbose_name="Posición y", null=False,default=0)
+    idMaquina=models.OneToOneField(MaquinaProfile, blank=False, null=False, on_delete=models.CASCADE,
+                                verbose_name="Máquina",primary_key=True)
+    xPos = models.PositiveIntegerField(verbose_name="Posición x", null=False,default=0)
+    yPos = models.PositiveIntegerField(verbose_name="Posición y", null=False,default=0)
+
+    def __unicode__(self):
+        return str(self.xPos)+","+str(self.yPos)
 
 
 class LugarAlmacenamiento(models.Model):
