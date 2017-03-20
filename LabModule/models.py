@@ -52,7 +52,21 @@ class UserProfile(models.Model):
         return self.user.username
 
 
+
+
 class LaboratorioProfile(models.Model):
+    """Representación del laboratorio
+        Se encarga de:
+            * Definir un laboratorio y los campos significativos
+            * Permite guardar en la base de datos el laboratorio.
+
+Atributos:
+    :nombre (String): Nombre del laboratorio. Máxima longitud de 100 caracteres. No puede ser nulo
+    :id (String): Id del laboratorio. Identificación del laboratorio, campo unico, máxima longitud de 100 caracteres.
+    :numX (Integer): Cantidad de columnas que tiene el laboratorio para almacenar máquinas. Por defecto 10.
+    :numY (Integer): Cantidad de filas que tiene el laboratorio para alamacenar máquinas. Por defecto 10.
+
+    """
     class Meta:
         verbose_name = 'Laboratorio'
         verbose_name_plural = 'Laboratorios'
@@ -70,6 +84,20 @@ class LaboratorioProfile(models.Model):
 
 
 class MaquinaProfile(models.Model):
+    """Representación de una máquina.
+        Se encarga de:
+            * Definir las restricciónes basicas de los campos
+            * Permite guardar en la base de datos la máquina
+
+Atributos:
+    :nombre (String): Nombre de la máquina, máxima longitud 100 caracteres, no puede ser nulo.
+    :descripcion (String): Descripción de la máquina,  máxima longitud 1000 caracteres, no puede ser nulo.
+    :imagen (ImafeField): Imágen de la máquina,  default='images/image-not-found.jpg'.
+    :idSistema (String): Identificación del laboratorio, máxima longitud de 20 caracteres.
+    :con_reserva (boolean): Dice si es necesario aprobar la máquina para ser reservada. Por defecto verdadero
+    :activa (boolean): Dice si la máquina se puede solicitar. Por defecto verdadero
+
+    """
     class Meta:
         verbose_name = "Máquina"
         verbose_name_plural = 'Máquinas'
@@ -93,6 +121,19 @@ class MaquinaProfile(models.Model):
         return reverse('author-detail', kwargs={'pk': self.pk})
 
 class MaquinaEnLab(models.Model):
+    """Relación entre :class:`MaquinaProfile` y :class:`LaboratorioProfile`
+        Se encarga de:
+            * Definir la posición del laboratorio en que la máquina esta guardada
+            * Permite guardar en la base de datos esta relación
+
+Atributos:
+    :idLaboratorio (String): Id del laboratorio en el que la máquina esta guardada.
+    :idMaquina (String): Id de la máquina que esta guaradada
+    :xPos (Integer): Posición x en la que la máquina esta guardada. No puede ser nulo, por defecto 0.
+    :yPos (Integer): Posición y en la que la máquina esta guardada. No puede sr nulo, por defecto 0.
+
+
+    """
     class Meta:
         verbose_name="Máquina en laboratorio"
         verbose_name_plural = 'Máquinas en laboratorio'
