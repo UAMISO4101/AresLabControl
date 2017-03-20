@@ -73,15 +73,15 @@ url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 
 DATABASES = {
-    #    'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': url.path[1:],
-    #     'USER': url.username,
-    #     'PASSWORD': url.password,
-    #     'HOST': url.hostname,
-    #     'PORT': url.port,
-    #
-    # }
+       'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': url.path[1:],
+        'USER': url.username,
+        'PASSWORD': url.password,
+        'HOST': url.hostname,
+        'PORT': url.port,
+
+    }
 #'default': {
  #       'ENGINE': 'django.db.backends.postgresql',
   #      'NAME': 'lab',
@@ -90,15 +90,15 @@ DATABASES = {
      #   'USER':'postgres',
       #  'PASSWORD':''
     #}
-
-'default': {
-       'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'areslab',
-       'HOST':'localhost',
-       'PORT':'5432',
-       'USER':'postgres',
-       'PASSWORD':'admin'
-    }
+#
+# 'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'areslab',
+#        'HOST':'localhost',
+#        'PORT':'5432',
+#        'USER':'postgres',
+#        'PASSWORD':'admin'
+#     }
 }
 
 # Password validation
