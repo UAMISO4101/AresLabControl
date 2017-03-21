@@ -52,8 +52,6 @@ class UserProfile(models.Model):
         return self.user.username
 
 
-
-
 class LaboratorioProfile(models.Model):
     """Representación del laboratorio
         Se encarga de:
@@ -67,6 +65,7 @@ Atributos:
     :numY (Integer): Cantidad de filas que tiene el laboratorio para alamacenar máquinas. Por defecto 10.
 
     """
+
     class Meta:
         verbose_name = 'Laboratorio'
         verbose_name_plural = 'Laboratorios'
@@ -77,10 +76,11 @@ Atributos:
 
     nombre = models.CharField(max_length=100, default='', verbose_name="Nombre", null=False)
     id = models.CharField(max_length=100, default='', verbose_name="Identificación", null=False, primary_key=True)
-    numX=models.PositiveIntegerField(verbose_name="Cantidad de filas", null=False,default=10);
-    numY = models.PositiveIntegerField(verbose_name="Cantidad de columnas", null=False,default=10);
+    numX = models.PositiveIntegerField(verbose_name="Cantidad de filas", null=False, default=10);
+    numY = models.PositiveIntegerField(verbose_name="Cantidad de columnas", null=False, default=10);
+
     def __unicode__(self):
-        return self.id+" "+self.nombre
+        return self.id + " " + self.nombre
 
 
 class MaquinaProfile(models.Model):
@@ -98,6 +98,7 @@ Atributos:
     :activa (boolean): Dice si la máquina se puede solicitar. Por defecto verdadero
 
     """
+
     class Meta:
         verbose_name = "Máquina"
         verbose_name_plural = 'Máquinas'
@@ -109,16 +110,16 @@ Atributos:
     nombre = models.CharField(max_length=100, default='', verbose_name="Nombre", null=False)
     descripcion = models.CharField(max_length=1000, default='', verbose_name="Descripción", null=True)
     imagen = models.ImageField(upload_to='images', verbose_name="Imagen", default='images/image-not-found.jpg')
-    idSistema = models.CharField(max_length=20, default='', verbose_name="Identificación", null=False,primary_key=True)
+    idSistema = models.CharField(max_length=20, default='', verbose_name="Identificación", null=False, primary_key=True)
     con_reserva = models.BooleanField(default=True, verbose_name="Reservable")
     activa = models.BooleanField(default=True, verbose_name="Activa")
 
-
     def __str__(self):
-        return self.idSistema+" "+self.nombre
+        return self.idSistema + " " + self.nombre
 
     def get_absolute_url(self):
         return reverse('author-detail', kwargs={'pk': self.pk})
+
 
 class MaquinaEnLab(models.Model):
     """Relación entre :class:`MaquinaProfile` y :class:`LaboratorioProfile`
@@ -134,21 +135,41 @@ Atributos:
 
 
     """
+
     class Meta:
-        verbose_name="Máquina en laboratorio"
+        verbose_name = "Máquina en laboratorio"
         verbose_name_plural = 'Máquinas en laboratorio'
-    idLaboratorio=models.ForeignKey(LaboratorioProfile, blank=False, null=True, on_delete=models.CASCADE,
-                                verbose_name="Laboratorio")
-    idMaquina=models.OneToOneField(MaquinaProfile, blank=False, null=False, on_delete=models.CASCADE,
-                                verbose_name="Máquina",primary_key=True)
-    xPos = models.PositiveIntegerField(verbose_name="Posición x", null=False,default=0)
-    yPos = models.PositiveIntegerField(verbose_name="Posición y", null=False,default=0)
+
+    idLaboratorio = models.ForeignKey(LaboratorioProfile, blank=False, null=True, on_delete=models.CASCADE,
+                                      verbose_name="Laboratorio")
+    idMaquina = models.OneToOneField(MaquinaProfile, blank=False, null=False, on_delete=models.CASCADE,
+                                     verbose_name="Máquina", primary_key=True)
+    xPos = models.PositiveIntegerField(verbose_name="Posición x", null=False, default=0)
+    yPos = models.PositiveIntegerField(verbose_name="Posición y", null=False, default=0)
 
     def __unicode__(self):
-        return str(self.xPos)+","+str(self.yPos)
+        return str(self.xPos) + "," + str(self.yPos)
 
 
 class LugarAlmacenamiento(models.Model):
+    """Representación de un lugar de almacenamiento.
+            Se encarga de:
+                * Definir las restricciónes basicas de los campos
+                * Permite guardar en la base de datos el lugar de almacenamiento
+
+Atributos:
+    :nombre (String): Nombre del lugar de almacenamiento.
+    :descripcion (String): Descripción del lugar de almacenamiento.
+    :bandejasOcupadas (Integer): Bandejas ocupadas por el lugar de almacenamiento.
+    :capacidad (Integer): Capacidad del lugar de almacenamiento.
+    :temperatura (Decimal): Temperatura del lugar de almacenamiento.
+    :estado (String): Estado del lugar de almacenamiento.
+    :imagen (ImafeField): Imágen de lugar de almacenamiento,  default='images/image-not-found.jpg'.
+    :peso (Decimal): Peso soportado por el lugar de almacenamiento.
+    :tamano (Decimal): Tamaño del lugar de almacenamiento.
+
+    """
+
     class Meta:
         verbose_name = 'Lugar Almacenamiento'
         verbose_name_plural = 'Lugares de Almacenamiento'
@@ -158,15 +179,40 @@ class LugarAlmacenamiento(models.Model):
     bandejasOcupadas = models.IntegerField(verbose_name="Bandejas Ocupadas", null=True)
     capacidad = models.IntegerField(verbose_name="Capacidad")
     temperatura = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Temperatura")
-    posX = models.IntegerField(verbose_name="PosicionX")
-    posY = models.IntegerField(verbose_name="PosicionY")
     estado = models.CharField(max_length=100, default='', verbose_name='Estado', null=True)
-    #tamanoBandeja = models.CharField(max_length=100, default='', verbose_name='Tamaño Bandeja', null=True)
     imagen = models.ImageField(upload_to='images', null=True)
     peso = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Peso")
     tamano = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Tamaño")
 
 
+class LugarAlmacenamientoEnLab(models.Model):
+    """Relación entre :class:`LugarAlmacenamiento` y :class:`LaboratorioProfile`
+         Se encarga de:
+             * Definir la posición del lugar Almacenamiento en donde esta guardada
+             * Permite guardar en la base de datos esta relación
+
+Atributos:
+    :idLaboratorio (String): Id del laboratorio.
+    :idLugar (String): Id del lugar Almacenamiento
+    :xPos (Integer): Posición x en la que el lugar Almacenamiento esta guardado.
+    :yPos (Integer): Posición y en la que el lugar Almacenamiento esta guardado.
+
+
+     """
+
+    class Meta:
+        verbose_name = "Lugar almacenamiento en laboratorio"
+        verbose_name_plural = 'Lugar almacenamiento en laboratorio'
+
+    idLaboratorio = models.ForeignKey(LaboratorioProfile, blank=False, null=True, on_delete=models.CASCADE,
+                                      verbose_name="Laboratorio")
+    idLugar = models.OneToOneField(LugarAlmacenamiento, blank=False, null=False, on_delete=models.CASCADE,
+                                   verbose_name="Lugar Almacenamiento", primary_key=True)
+    posX = models.PositiveIntegerField(verbose_name="Posición x")
+    posY = models.PositiveIntegerField(verbose_name="Posición y")
+
+    def __unicode__(self):
+        return str(self.posX) + "," + str(self.posY)
 
 
 class Protocolo(models.Model):
@@ -190,7 +236,6 @@ class Paso(models.Model):
                                   verbose_name="Seleccion de Protocolo")
 
 
-
 class Muestra(models.Model):
     class Meta:
         verbose_name = 'Muestra'
@@ -200,19 +245,34 @@ class Muestra(models.Model):
     descripcion = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion de la muestra")
     peso = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Peso")
     volumen = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Volumen")
-    cantidadInicial = models.IntegerField( blank=False, null=True,
+    cantidadInicial = models.IntegerField(blank=False, null=True,
                                           verbose_name="Cantidad inicial de la muestra")
     masa = models.DecimalField(max_digits=5, decimal_places=2, null=True, verbose_name="Masa")
     estado = models.CharField(max_length=30, blank=False, null=True, verbose_name="Estado de la muestra")
     controlado = models.BooleanField(blank=False, verbose_name="Muestra controlada")
     cantidadActual = models.IntegerField(blank=False, null=True, verbose_name="Cantidad actual de la muestra")
-    imagen= models.ImageField(upload_to='images', verbose_name="Imagen", default='images/image-not-found.jpg')
-    unidad=models.CharField(max_length=50, blank=False, null=True, verbose_name="Unidad de medida")
+    imagen = models.ImageField(upload_to='images', verbose_name="Imagen", default='images/image-not-found.jpg')
+    unidad = models.CharField(max_length=50, blank=False, null=True, verbose_name="Unidad de medida")
 
     def __unicode__(self):
         return 'Muestra: ' + str(self.nombre)
 
+
 class Bandeja(models.Model):
+    """Representación de una bandeja del lugar de almacenamiento.
+            Se encarga de:
+                * Definir las restricciónes basicas de los campos
+                * Permite guardar en la base de datos la bandeja del lugar de almacenamiento
+
+Atributos:
+    :tamano (String): Tamaño de la bandeja del lugar de almacenamiento.
+    :cantidad (Integer): Cantidad de la bandeja del lugar de almacenamiento.
+    :libre (Decimal): Indica si esta libre la bandeja del lugar de almacenamiento.
+    :muestra (String): Relación con la entidad muestra.
+    :lugarAlmacenamiento (Decimal): Relación con la entidad lugar de almacenamiento.
+
+
+    """
     class Meta:
         verbose_name = 'Bandeja'
         verbose_name_plural = 'Bandejas'
@@ -221,9 +281,9 @@ class Bandeja(models.Model):
     cantidad = models.IntegerField(verbose_name="Cantidad")
     libre = models.BooleanField(blank=False, default=True, verbose_name="Libre")
     muestra = models.ForeignKey(Muestra, blank=False, null=True,
-                               verbose_name="Seleccion de muestra")
+                                verbose_name="Seleccion de muestra")
     lugarAlmacenamiento = models.ForeignKey(LugarAlmacenamiento, blank=False, null=True, on_delete=models.CASCADE,
-                                verbose_name="Seleccion de Lugar almacenamiento")
+                                            verbose_name="Seleccion de Lugar almacenamiento")
 
 
 class Solicitud(models.Model):
@@ -260,7 +320,6 @@ class MuestraSolicitud(models.Model):
     tipo = models.CharField(max_length=30, blank=False, null=True, verbose_name="Tipo solicitud")
 
 
-
 class Projecto(models.Model):
     class Meta:
         verbose_name = 'Proyecto'
@@ -272,9 +331,7 @@ class Projecto(models.Model):
     lider = models.ForeignKey(UserProfile, blank=False, null=True,
                               verbose_name="Seleccion lider", related_name="lider")
     asistentes = models.ManyToManyField(UserProfile, related_name="asistentes")
-    activo= models.BooleanField(blank=False,null=False,default=True)
-
-
+    activo = models.BooleanField(blank=False, null=False, default=True)
 
 
 class Experimento(models.Model):
@@ -288,4 +345,3 @@ class Experimento(models.Model):
     projecto = models.ForeignKey(Projecto, blank=False, null=True, on_delete=models.CASCADE,
                                  verbose_name="Seleccion de Proyecto", related_name="proyecto")
     protocolos = models.ManyToManyField(Protocolo, related_name="experimento")
-
