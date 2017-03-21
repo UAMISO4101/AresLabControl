@@ -44,7 +44,7 @@ def agregar_lugar(request):
         :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la modificación del lugar de almacenamiento. Sino redirecciona al mismo formulario mostrando los errores.
 
        """
-
+    mensaje = ""
     if request.user.is_authenticated():
         if request.method == 'POST':
             form = LugarAlmacenamientoForm(request.POST, request.FILES)
