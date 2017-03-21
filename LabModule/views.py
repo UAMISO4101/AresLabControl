@@ -14,15 +14,15 @@ from django.forms import ModelForm, models
 from django import forms
 
 from django.views.decorators.csrf import csrf_exempt
-from models import MaquinaProfile, Bandeja, LugarAlmacenamiento, Sample, UserProfile, Step, SampleRequest, Experiment, \
-    Protocol, Request, MaquinaEnLab,LaboratorioProfile
+from models import MaquinaProfile, Bandeja, LugarAlmacenamiento, UserProfile, MaquinaEnLab, LaboratorioProfile, Muestra, \
+    Solicitud, Paso, MuestraSolicitud, Experimento, Protocolo
 from django.http import HttpResponse
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from registration.backends.default.views import RegistrationView
-from .forms import UserProfileForm, LugarAlmacenamientoForm, SampleRequestForm
+from .forms import UserProfileForm, LugarAlmacenamientoForm, MuestraSolicitudForm, PosicionesLugarAlmacenamientoForm
 
 
 # Create your views here.
@@ -32,27 +32,72 @@ def home(request):
 
 
 def agregar_lugar(request):
-    if request.method == 'POST':
-        form = LugarAlmacenamientoForm(request.POST, request.FILES)
-        items = request.POST.get('items').split('\r\n')
+    """Desplegar y comprobar los valores a insertar.
 
-        if form.is_valid():
-            lugar = form.save()
+           Se encarga de:
+               * Mostar el formulario para agregar un lugar de almacenamiento.
+               * Mostar el formulario para editar un lugar de almacenamiento ya existente.
+               * Agregar un lugar de almacenamiento a la base de datos, agregar la relación entre lugar de almacenamiento y el laboratorio en el que está.
 
-            if items is not None and len(items) > 0:
-                for item in items:
-                    if item is not None and item != '':
-                        tamano = item.split(',')[0].split(':')[1]
-                        cantidad = item.split(',')[1].split(':')[1]
-                        bandeja = Bandeja(tamano=tamano, cantidad=cantidad, lugarAlmacenamiento=lugar)
-                        bandeja.save()
+        :param request: El HttpRequest que se va a responder.
+        :type request: HttpRequest.
+        :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la modificación del lugar de almacenamiento. Sino redirecciona al mismo formulario mostrando los errores.
 
-            return HttpResponseRedirect(reverse('home'))
+       """
+    mensaje = ""
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            form = LugarAlmacenamientoForm(request.POST, request.FILES)
+            formPos = PosicionesLugarAlmacenamientoForm(request.POST or None, request.FILES or None)
+            items = request.POST.get('items').split('\r\n')
+
+            if form.is_valid() and formPos.is_valid():
+                lugar = form.save(commit=False)
+                lugarEnLab = formPos.save(commit=False)
+
+                ocupado = MaquinaEnLab.objects.filter(idLaboratorio=lugarEnLab.idLaboratorio, xPos=lugarEnLab.posX,
+                                                      yPos=lugarEnLab.posY).exists()
+                # lamisma = MaquinaEnLab.objects.filter(pk=lugarEnLab.pk).exists()
+
+                if ocupado:
+                    formPos.add_error("posX", "La posición x ya esta ocupada")
+                    formPos.add_error("posY", "La posición y ya esta ocupada")
+
+                    mensaje = "El lugar en el que desea guadar ya esta ocupado"
+                else:
+                    mensaje = "La posición [" + str(lugarEnLab.posX) + "," + str(
+                        lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio"
+                    lab = lugarEnLab.idLaboratorio
+                    masX = lab.numX >= lugarEnLab.posX
+                    masY = lab.numY >= lugarEnLab.posY
+                    posible = masX and masY
+                    if not posible:
+                        if not masX:
+                            formPos.add_error("posX", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
+                        if not masY:
+                            formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
+                    else:
+                        lugar.save()
+                        lugarEnLab.idLugar = lugar
+                        lugarEnLab.save()
+
+                        if items is not None and len(items) > 0:
+                            for item in items:
+                                if item is not None and item != '':
+                                    tamano = item.split(',')[0].split(':')[1]
+                                    cantidad = item.split(',')[1].split(':')[1]
+                                    bandeja = Bandeja(tamano=tamano, cantidad=cantidad, lugarAlmacenamiento=lugar)
+                                    bandeja.save()
+
+                        return HttpResponseRedirect(reverse('home'))
+        else:
+            form = LugarAlmacenamientoForm()
+            formPos = PosicionesLugarAlmacenamientoForm()
+
+        return render(request, 'LugarAlmacenamiento/agregar.html',
+                      {'form': form, 'formPos': formPos, 'mensaje': mensaje})
     else:
-        form = LugarAlmacenamientoForm()
-
-    return render(request, 'LugarAlmacenamiento/agregar.html', {'form': form})
-
+        return HttpResponse('No autorizado', status=401)
 
 
 class MaquinaForm(ModelForm):
@@ -75,6 +120,7 @@ class MaquinaForm(ModelForm):
         fields = ['nombre', 'descripcion', 'con_reserva', 'activa', 'idSistema',
                   'imagen']
 
+
 class PosicionesForm(ModelForm):
     """Formulario  para crear y modificar la ubicación de una máquina.
 
@@ -88,14 +134,14 @@ class PosicionesForm(ModelForm):
      :type ModelForm: ModelForm.
 
     """
+
     class Meta:
-        model=MaquinaEnLab
-        #fields=['xPos','yPos','idLaboratorio','idMaquina']
+        model = MaquinaEnLab
+        # fields=['xPos','yPos','idLaboratorio','idMaquina']
         exclude = ('idMaquina',)
 
 
-
-def comprobarPostMaquina(form,formPos,request,template_name,section):
+def comprobarPostMaquina(form, formPos, request, template_name, section):
     """Desplegar y comprobar los valores a insertar.
 
         Se encarga de:
@@ -125,7 +171,7 @@ def comprobarPostMaquina(form,formPos,request,template_name,section):
         yPos = new_maquinaEnLab.yPos
         ocupadoX = MaquinaEnLab.objects.filter(idLaboratorio=new_maquinaEnLab.idLaboratorio, xPos=xPos).exists()
         ocupadoY = MaquinaEnLab.objects.filter(idLaboratorio=new_maquinaEnLab.idLaboratorio, yPos=yPos).exists()
-        #lamisma=MaquinaEnLab.objects.filter(idLaboratorio=new_maquinaEnLab.idLaboratorio, yPos=yPos,xPos=xPos,idMaquina).exists()
+        # lamisma=MaquinaEnLab.objects.filter(idLaboratorio=new_maquinaEnLab.idLaboratorio, yPos=yPos,xPos=xPos,idMaquina).exists()
         lamisma = MaquinaEnLab.objects.filter(pk=new_maquinaEnLab.pk).exists()
         if (ocupadoX or ocupadoY) and not lamisma:
             if (ocupadoX):
@@ -150,13 +196,11 @@ def comprobarPostMaquina(form,formPos,request,template_name,section):
                 new_maquinaEnLab.save()
                 return redirect(reverse('maquina-update', kwargs={'pk': new_maquina.pk}))
 
-
     return render(request, template_name,
-                      {'form': form, 'formPos': formPos, 'section': section, 'mensaje': mensaje})
+                  {'form': form, 'formPos': formPos, 'section': section, 'mensaje': mensaje})
 
 
 def maquina_create(request, template_name='Maquinas/agregar.html'):
-
     """Comporbar si el usuario puede agregar una máquina y obtener los campos necesarios.
 
         Se encarga de:
@@ -184,14 +228,12 @@ def maquina_create(request, template_name='Maquinas/agregar.html'):
         section['agregar'] = True
         form = MaquinaForm(request.POST or None, request.FILES or None)
         formPos = PosicionesForm(request.POST or None, request.FILES or None)
-        return comprobarPostMaquina(form, formPos,request,template_name,section)
+        return comprobarPostMaquina(form, formPos, request, template_name, section)
     else:
         return HttpResponse('No autorizado', status=401)
 
 
-
 def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
-
     """Comporbar si el usuario puede modificar una máquina, obtener los campos necesarios.
 
         Se encarga de:
@@ -217,9 +259,9 @@ def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
     if request.user.is_authenticated() and request.user.has_perm("account.can_edditMachine"):
         server = get_object_or_404(MaquinaProfile, pk=pk)
         serverRelacionLab = get_object_or_404(MaquinaEnLab, idMaquina=server)
-        mensaje=""
+        mensaje = ""
         form = MaquinaForm(request.POST or None, request.FILES or None, instance=server)
-        formPos = PosicionesForm(request.POST or None, request.FILES or None,instance=serverRelacionLab)
+        formPos = PosicionesForm(request.POST or None, request.FILES or None, instance=serverRelacionLab)
         section = {}
         section['title'] = 'Modificar máquina'
         section['agregar'] = False
@@ -228,80 +270,93 @@ def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
         return HttpResponse('No autorizado', status=401)
 
 
-
 class UserRegistrationView(RegistrationView):
     form_class = UserProfileForm
 
 
 def listar_lugares(request):
+    """Desplegar y comprobar los valores a consultar.
+
+              Se encarga de:
+                  * Mostar el formulario para consultar los lugares de almacenamiento.
+
+           :param request: El HttpRequest que se va a responder.
+           :type request: HttpRequest.
+           :returns: HttpResponse -- La respuesta a la petición, con información de los lugares de almacenamiento existentes.
+
+          """
     lista_lugares = LugarAlmacenamiento.objects.all()
     context = {'lista_lugares': lista_lugares}
     return render(request, 'LugarAlmacenamiento/listar.html', context)
 
 
-def make_sample_request(request):
-    message = 'ok'
-    try:
+def crear_solicitud_muestra(request):
+    if request.user.is_authenticated() and request.user.has_perm("account.can_solMuestra"):
+        mensaje = 'ok'
+        try:
 
-        sample = Sample.objects.get(id=request.GET.get('id', 0))
-        profile = UserProfile.objects.get(user_id=request.user.id)
+            muestra = Muestra.objects.get(id=request.GET.get('id', 0))
+            profile = UserProfile.objects.get(user_id=request.user.id)
 
-        if request.method == 'POST':
+            if request.method == 'POST':
 
-            requestObj = Request()
-            requestObj.description = 'Solicitud de uso de muestra'
-            requestObj.initialDate = request.POST['dateIni_year'] + "-" + request.POST['dateIni_month'] + "-" + \
-                                     request.POST['dateIni_day']
-            requestObj.state = 'open'
-            requestObj.applicant = profile.id
-            requestObj.actualDate = datetime.date.today()
-            requestObj.step = Step.objects.get(id=request.POST['step'])
-            requestObj.save()
-            sampleRequest = SampleRequest()
-            sampleRequest.request = requestObj
-            sampleRequest.sample = sample
-            sampleRequest.quantity = request.POST['quantity']
-            sampleRequest.type = 'uso'
-            sampleRequest.save()
-            return redirect("../")
+                requestObj = Solicitud()
+                requestObj.descripcion = 'Solicitud de uso de muestra'
+                requestObj.fechaInicial = request.POST['fechaInicial_year'] + "-" + request.POST[
+                    'fechaInicial_month'] + "-" + \
+                                          request.POST['fechaInicial_day']
+                requestObj.estado = 'creada'
+                requestObj.solicitante = profile.id
+                requestObj.fechaActual = datetime.date.today()
+                requestObj.paso = Paso.objects.get(id=request.POST['step'])
+                requestObj.save()
+                sampleRequest = MuestraSolicitud()
+                sampleRequest.solicitud = requestObj
+                sampleRequest.muestra = muestra
+                sampleRequest.cantidad = request.POST['cantidad']
+                sampleRequest.tipo = 'uso'
+                sampleRequest.save()
+                return redirect("../")
 
-        else:
-            form = SampleRequestForm(sample, profile.id)
+            else:
+                form = MuestraSolicitudForm(muestra, profile.id)
 
-    except ObjectDoesNotExist as e:
-        form = {}
-        message = 'No hay muestras o pasos con el id solicitado'
-    except MultipleObjectsReturned as e:
-        form = {}
-        message = 'Muchas muestras con ese id'
-    return render(request, "Solicitudes/make_sample_request.html", {'form': form, 'message': message})
+        except ObjectDoesNotExist as e:
+            form = {}
+            mensaje = 'No hay muestras o pasos con el id solicitado'
+        except MultipleObjectsReturned as e:
+            form = {}
+            mensaje = 'Muchas muestras con ese id'
+        return render(request, "Solicitudes/crear_muestra_solicitud.html", {'form': form, 'mensaje': mensaje})
+    else:
+        return HttpResponse('No autorizado', status=401)
 
 
 @csrf_exempt
-def get_experiments(request):
+def cargar_experimentos(request):
     if request.GET['project_id'] != "":
-        experiments = Experiment.objects.filter(project=request.GET['project_id'])
-        experimentsDict = dict([(c.id, c.name) for c in experiments])
+        experiments = Experimento.objects.filter(projecto=request.GET['project_id'])
+        experimentsDict = dict([(c.id, c.nombre) for c in experiments])
         return HttpResponse(json.dumps(experimentsDict))
     else:
         return HttpResponse()
 
 
 @csrf_exempt
-def get_protocols(request):
+def cargar_protocolos(request):
     if request.GET['experiment_id'] != "":
-        protocols = Protocol.objects.filter(experiment=request.GET['experiment_id'])
-        protocolsDict = dict([(c.id, c.name) for c in protocols])
+        protocols = Protocolo.objects.filter(experimento=request.GET['experiment_id'])
+        protocolsDict = dict([(c.id, c.nombre) for c in protocols])
         return HttpResponse(json.dumps(protocolsDict))
     else:
         return HttpResponse()
 
 
 @csrf_exempt
-def get_steps(request):
+def cargar_pasos(request):
     if request.GET['protocol_id'] != "":
-        steps = Step.objects.filter(protocol=request.GET['protocol_id'])
-        stepsDict = dict([(c.id, c.name) for c in steps])
+        steps = Paso.objects.filter(protocolo=request.GET['protocol_id'])
+        stepsDict = dict([(c.id, c.nombre) for c in steps])
         return HttpResponse(json.dumps(stepsDict))
     else:
         return HttpResponse()

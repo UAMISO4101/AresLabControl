@@ -5,6 +5,18 @@
 {% block head_title %}Agregar Lugar | {% endblock %}
 
 {% block content %}
+    {% if mensaje != "" %}
+        <div class="alert alert-danger ">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            {{ mensaje }}
+        </div>
+    {% endif %}
+
+    {% for error in formPos.errors %}
+        <div class="alert alert-danger">
+            Campo: <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
 
     <form action="{% url 'agregarLugar' %}" enctype="multipart/form-data" method="post">
         {% csrf_token %}
@@ -30,7 +42,8 @@
                                         <strong>Posición X:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                        {{ form.posX|addcss:"form-control" }}
+                                        {{ formPos.posX|addcss:"form-control" }}
+
                                     </div>
                                 </div>
                             </div>
@@ -51,7 +64,7 @@
                                         <strong>Posición Y:</strong>
                                     </div>
                                     <div class="col-md-6">
-                                        {{ form.posY|addcss:"form-control" }}
+                                        {{ formPos.posY|addcss:"form-control" }}
                                     </div>
                                 </div>
                                 <div class="row">
@@ -60,6 +73,14 @@
                                     </div>
                                     <div class="col-md-6">
                                         {{ form.imagen }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>Laboratorio:</strong>
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ formPos.idLaboratorio|addcss:"form-control" }}
                                     </div>
                                 </div>
                             </div>

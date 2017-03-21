@@ -1,10 +1,12 @@
 # Create your tests here.
 # -*- coding: utf-8 -*-
+#from __future__ import absolute_import
 from django.test import Client
+
 from django.http import Http404
 from django.contrib.auth.models import AnonymousUser, User
 from django.test import TestCase, RequestFactory
-from .views import maquina_create,maquina_update
+from .views import maquina_create,maquina_update, crear_solicitud_muestra
 from LabModule.models import MaquinaEnLab,MaquinaProfile,LaboratorioProfile
 
 

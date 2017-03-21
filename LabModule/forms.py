@@ -6,7 +6,7 @@ from django import forms
 from django.forms import ModelForm
 from registration.forms import RegistrationForm
 
-from .models import IdType as IdentificationTypes, LugarAlmacenamiento, Project, Tray
+from .models import IdType as IdentificationTypes, LugarAlmacenamiento, Bandeja, Projecto, LugarAlmacenamientoEnLab
 from .models import UserRole as UsrRole
 
 
@@ -64,49 +64,81 @@ class UserProfileForm(RegistrationForm):
 
 
 class LugarAlmacenamientoForm(ModelForm):
+    """Formulario  para crear y modificar el lugar almacenamiento.
+
+           Se encarga de:
+               * Tener una instancia del modelo del lugar almacenamiento en laboraotrio.
+               * Agregar un lugar almacenamiento a la base de datos.
+               * Modificar un lugar almacenamiento ya existente.
+
+        :param ModelForm: Instancia de Django.forms.
+        :type ModelForm: ModelForm.
+
+       """
     class Meta:
         model = LugarAlmacenamiento
-        fields = ['nombre', 'descripcion', 'capacidad', 'temperatura', 'posX', 'posY', 'imagen', 'peso', 'tamano']
+        fields = ['nombre', 'descripcion', 'capacidad', 'temperatura', 'imagen', 'peso', 'tamano']
 
 
-class SampleRequestForm(forms.Form):
+class PosicionesLugarAlmacenamientoForm(ModelForm):
+    """Formulario  para crear y modificar la ubicación de un lugar almacenamiento.
+
+        Se encarga de:
+            * Tener una instancia del modelo del lugar almacenamiento en laboratorio.
+            * Definir las posición x, la posición y y el laboratorio en el cual se va aguardar el lugar almacenamiento.
+            * Agregar un lugar almacenamiento a la base de datos, agregar la relación entre el lugar almacenamiento y el laboratorio en el que está.
+            * Modificar la ubicación de un lugar almacenamiento ya existente.
+
+     :param ModelForm: Instancia de Django.forms.
+     :type ModelForm: ModelForm.
+
+    """
+    class Meta:
+        model=LugarAlmacenamientoEnLab
+        fields = ['posX', 'posY', 'idLaboratorio']
+        exclude = ('idLugar',)
 
 
-    def __init__(self, sample=None,id_assistant=None, *args, **kwargs):
-        super(SampleRequestForm, self).__init__(*args, **kwargs)
-        if sample!=None and id_assistant!=None:
+class MuestraSolicitudForm(forms.Form):
+
+
+    def __init__(self, muestra=None,id_asistente=None, *args, **kwargs):
+        super(MuestraSolicitudForm, self).__init__(*args, **kwargs)
+        if muestra!=None and id_asistente!=None:
             self.fields['id'] = forms.CharField(label="ID")
-            self.fields['id'].initial=sample.id
-            self.fields['name'] = forms.CharField(label="NOMBRE")
-            self.fields['name'].initial=sample.name
-            self.fields['description'] = forms.CharField(label="DESCRIPCION")
-            self.fields['description'].initial=sample.description
-            self.fields['unity'] = forms.CharField(label="UNIDAD")
-            self.fields['unity'].initial = sample.unity
-            self.fields['controled'] = forms.CharField(label="CONTROLADA")
-            self.fields['controled'].initial=self.calc_controled(sample.controled)
-            self.fields['avaliable'] = forms.CharField(label="DISPONIBLE")
-            self.fields['avaliable'].initial= self.calc_disp(sample)
-            self.fields['imageField'] = forms.ImageField(label="IMAGEN")
-            self.fields['imageField'].initial=sample.imageField
-            self.fields['projects']=forms.MultipleChoiceField(required=True, widget=forms.CheckboxSelectMultiple,
-                                                              label="PROYECTO", choices=Project.objects.filter(assistants=id_assistant,active=True))
+            self.fields['id'].initial=muestra.id
+            self.fields['nombre'] = forms.CharField(label="NOMBRE")
+            self.fields['nombre'].initial=muestra.nombre
+            self.fields['descripcion'] = forms.CharField(label="DESCRIPCION")
+            self.fields['descripcion'].initial=muestra.descripcion
+            self.fields['unidad'] = forms.CharField(label="UNIDAD")
+            self.fields['unidad'].initial = muestra.unidad
+            self.fields['controlado'] = forms.CharField(label="CONTROLADA")
+            self.fields['controlado'].initial=self.calc_controled(muestra.controlado)
+            self.fields['disponible'] = forms.CharField(label="DISPONIBLE")
+            self.fields['disponible'].initial= self.calc_disp(muestra)
+            self.fields['imagen'] = forms.ImageField(label="IMAGEN")
+            self.fields['imagen'].initial=muestra.imagen
+            self.fields['cantidadActual']=forms.CharField(label="CANTIDAD ACTUAL")
+            self.fields['cantidadActual'].initial=muestra.cantidadActual
+            self.fields['projectos']=forms.MultipleChoiceField(required=True, widget=forms.CheckboxSelectMultiple,
+                                                              label="PROYECTO", choices=Projecto.objects.filter(asistentes=id_asistente,activo=True))
 
 
-    quantity = forms.CharField(label="CANTIDAD")
-    dateIni= forms.DateField(widget=forms.SelectDateWidget(),label="FECHA")
+    cantidad = forms.CharField(label="CANTIDAD")
+    fechaInicial= forms.DateField(widget=forms.SelectDateWidget(),label="FECHA")
 
 
-    def calc_controled(self,controled):
-        if controled==True:
+    def calc_controled(self,controlado):
+        if controlado==True:
             return 'Si'
         else:
             return 'No'
 
-    def calc_disp(self,new_sample):
-        trays= Tray.objects.filter(sample=new_sample)
-        for tray in trays:
-            if tray.empty==False:
+    def calc_disp(self,nueva_muestra):
+        bandejas= Bandeja.objects.filter(muestra=nueva_muestra)
+        for bandeja in bandejas:
+            if bandeja.libre==False:
                 return 'Si'
         return 'No'
 
