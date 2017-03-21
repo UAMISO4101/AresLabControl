@@ -97,6 +97,9 @@ Atributos:
     :con_reserva (boolean): Dice si es necesario aprobar la máquina para ser reservada. Por defecto verdadero
     :activa (boolean): Dice si la máquina se puede solicitar. Por defecto verdadero
 
+    .. note::
+        Se definen los permisos maquina||agregar y maquina||editar
+
     """
     class Meta:
         verbose_name = "Máquina"

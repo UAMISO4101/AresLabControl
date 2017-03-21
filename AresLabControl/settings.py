@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #Third Party Apps
     'crispy_forms',
+	'django_extensions',
     #Our Apps
     'LabModule',
 ]
@@ -168,3 +169,8 @@ EMAIL_HOST_USER = 'cuentatestares@gmail.com'
 EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}
