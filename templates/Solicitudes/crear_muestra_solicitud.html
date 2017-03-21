@@ -19,29 +19,33 @@
                         <td>{{ form.fields.id.initial }}</td>
                     </tr>
                     <tr>
-                        <td>{{ form.fields.name.label }}</td>
-                        <td>{{ form.fields.name.initial }}</td>
+                        <td>{{ form.fields.nombre.label }}</td>
+                        <td>{{ form.fields.nombre.initial }}</td>
                     </tr>
                     <tr>
-                        <td>{{ form.fields.unity.label }}</td>
-                        <td>{{ form.fields.unity.initial }}</td>
+                        <td>{{ form.fields.unidad.label }}</td>
+                        <td>{{ form.fields.unidad.initial }}</td>
                     </tr>
                     <tr>
-                        <td>{{ form.fields.avaliable.label }}</td>
-                        <td>{{ form.fields.avaliable.initial }}</td>
+                        <td>{{ form.fields.disponible.label }}</td>
+                        <td>{{ form.fields.disponible.initial }}</td>
                     </tr>
                     <tr>
-                        <td>{{ form.fields.controled.label }}</td>
-                        <td>{{ form.fields.controled.initial }}</td>
+                        <td>{{ form.fields.controlado.label }}</td>
+                        <td>{{ form.fields.controlado.initial }}</td>
                     </tr>
                     <tr>
-                        <td>{{ form.fields.projects.label }}</td>
+                        <td>{{ form.fields.cantidadActual.label }}</td>
+                        <td id="cantidadActual">{{ form.fields.cantidadActual.initial }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.fields.projectos.label }}</td>
                         <td>
                             <select class="form-control" name="project" id="project" >
                                 <option value="">--Seleccione--</option>
-                                {% for project in form.fields.projects.choices %}
+                                {% for projecto in form.fields.projectos.choices %}
 
-                                    <option value="{{project.id}}">{{project.name}}</option>
+                                    <option value="{{projecto.id}}">{{projecto.nombre}}</option>
                                 {% endfor %}
                             </select>
                         </td>
@@ -75,15 +79,15 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>{{form.quantity.label}}</td>
+                        <td>{{form.cantidad.label}}</td>
                         <td>
-                            {{form.quantity}}
+                            {{form.cantidad}}
                         </td>
                     </tr>
                     <tr>
-                        <td>{{form.dateIni.label}}</td>
+                        <td>{{form.fechaInicial.label}}</td>
                         <td>
-                           {{form.dateIni}}
+                           {{form.fechaInicial}}
                         </td>
                     </tr>
                 </tbody>
@@ -93,13 +97,13 @@
 
     </div>
     <img class="col-md-6">
-        <img src="{{form.fields.imageField.initial.url}}" width="400px" >
-        <p>{{form.fields.description.initial}}</p>
+        <img src="{{form.fields.imagen.initial.url}}" width="400px" >
+        <p>{{form.fields.descripcion.initial}}</p>
 
-     {%if message != "ok"%}
+     {%if mensaje != "ok"%}
         <div class="alert alert-danger col-md-6">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                {{message}}
+                {{mensaje}}
         </div>
      {%endif%}
     </div>
@@ -111,7 +115,7 @@
     <script>
             $('#project').change(function(){
                 project_id = $(this).val();
-                request_url = '/solicitarMuestra/experiments/?project_id=' + project_id ;
+                request_url = '/solicitarMuestra/experimentos/?project_id=' + project_id ;
                 $('#experiment')
                 .find('option')
                 .remove()
@@ -162,7 +166,7 @@
             });
             $('#experiment').change(function(){
                 experiment_id = $(this).val();
-                request_url = '/solicitarMuestra/protocols/?experiment_id=' + experiment_id ;
+                request_url = '/solicitarMuestra/protocolos/?experiment_id=' + experiment_id ;
                 $('#protocol')
                 .find('option')
                 .remove()
@@ -205,7 +209,7 @@
             });
             $('#protocol').change(function(){
                 protocol_id = $(this).val();
-                request_url = '/solicitarMuestra/steps/?protocol_id=' + protocol_id ;
+                request_url = '/solicitarMuestra/pasos/?protocol_id=' + protocol_id ;
                 $('#step')
                 .find('option')
                 .remove()
@@ -249,10 +253,11 @@
                 e.preventDefault();
             }).validate({
                 rules: {
-                quantity: {
+                cantidad: {
                   required: true,
                   digits: true,
-                  min:1
+                  min:1,
+                  max: $("#cantidadActual").html()
                 },
                 experiment: {
                   required: true

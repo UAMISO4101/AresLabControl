@@ -161,11 +161,56 @@ class LugarAlmacenamiento(models.Model):
     posX = models.IntegerField(verbose_name="PosicionX")
     posY = models.IntegerField(verbose_name="PosicionY")
     estado = models.CharField(max_length=100, default='', verbose_name='Estado', null=True)
-    tamanoBandeja = models.CharField(max_length=100, default='', verbose_name='Tamaño Bandeja', null=True)
+    #tamanoBandeja = models.CharField(max_length=100, default='', verbose_name='Tamaño Bandeja', null=True)
     imagen = models.ImageField(upload_to='images', null=True)
     peso = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Peso")
     tamano = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Tamaño")
 
+
+
+
+class Protocolo(models.Model):
+    class Meta:
+        verbose_name = 'Protocolo'
+        verbose_name_plural = 'Protocolos'
+
+    nombre = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre protocolo")
+    descripcion = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del protocolo")
+    objetivo = models.TextField(max_length=200, blank=False, null=True, verbose_name="Objetivo del protocolo")
+
+
+class Paso(models.Model):
+    class Meta:
+        verbose_name = 'Paso'
+        verbose_name_plural = 'Pasos'
+
+    nombre = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre paso")
+    descripcion = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del paso")
+    protocolo = models.ForeignKey(Protocolo, blank=False, null=True,
+                                  verbose_name="Seleccion de Protocolo")
+
+
+
+class Muestra(models.Model):
+    class Meta:
+        verbose_name = 'Muestra'
+        verbose_name_plural = 'Muestras'
+
+    nombre = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre de la muestra")
+    descripcion = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion de la muestra")
+    peso = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Peso")
+    volumen = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Volumen")
+    cantidadInicial = models.IntegerField( blank=False, null=True,
+                                          verbose_name="Cantidad inicial de la muestra")
+    masa = models.DecimalField(max_digits=5, decimal_places=2, null=True, verbose_name="Masa")
+    estado = models.CharField(max_length=30, blank=False, null=True, verbose_name="Estado de la muestra")
+    controlado = models.BooleanField(blank=False, verbose_name="Muestra controlada")
+    cantidadActual = models.IntegerField(blank=False, null=True, verbose_name="Cantidad actual de la muestra")
+    imagen= models.ImageField(upload_to='images', verbose_name="Imagen", default='images/image-not-found.jpg')
+    unidad=models.CharField(max_length=50, blank=False, null=True, verbose_name="Unidad de medida")
+
+    def __unicode__(self):
+        return 'Muestra: ' + str(self.nombre)
 
 class Bandeja(models.Model):
     class Meta:
@@ -174,118 +219,73 @@ class Bandeja(models.Model):
 
     tamano = models.CharField(max_length=100, default='', verbose_name='Tamaño Bandeja', null=True)
     cantidad = models.IntegerField(verbose_name="Cantidad")
-
+    libre = models.BooleanField(blank=False, default=True, verbose_name="Libre")
+    muestra = models.ForeignKey(Muestra, blank=False, null=True,
+                               verbose_name="Seleccion de muestra")
     lugarAlmacenamiento = models.ForeignKey(LugarAlmacenamiento, blank=False, null=True, on_delete=models.CASCADE,
                                 verbose_name="Seleccion de Lugar almacenamiento")
 
-class Protocol(models.Model):
-    class Meta:
-        verbose_name = 'Protocolo'
-        verbose_name_plural = 'Protocolos'
 
-    name = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre protocolo")
-    description = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del protocolo")
-    objetive = models.TextField(max_length=200, blank=False, null=True, verbose_name="Objetivo del protocolo")
-
-
-class Step(models.Model):
-    class Meta:
-        verbose_name = 'Paso'
-        verbose_name_plural = 'Pasos'
-
-    name = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre paso")
-    description = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del paso")
-    protocol = models.ForeignKey(Protocol, blank=False, null=True,
-                                  verbose_name="Seleccion de Protocolo")
-
-
-
-class Sample(models.Model):
-    class Meta:
-        verbose_name = 'Muestra'
-        verbose_name_plural = 'Muestras'
-
-    name = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre de la muestra")
-    description = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion de la muestra")
-    weight = models.CharField(max_length=10, blank=False, null=True, verbose_name="Peso de la muestra")
-    volume = models.CharField(max_length=10, blank=False, null=True, verbose_name="Volumen de la muestra")
-    initialQuantity = models.IntegerField( blank=False, null=True,
-                                          verbose_name="Cantidad inicial de la muestra")
-    mass = models.CharField(max_length=10, blank=False, null=True, verbose_name="Masa de la muestra")
-    state = models.CharField(max_length=30, blank=False, null=True, verbose_name="Estado de la muestra")
-    controled = models.BooleanField(blank=False, verbose_name="Muestra controlada")
-    actualQuantity = models.IntegerField(blank=False, null=True, verbose_name="Cantidad actual de la muestra")
-    imageField= models.ImageField(upload_to='images', verbose_name="Imagen", default='images/image-not-found.jpg')
-    unity=models.CharField(max_length=50, blank=False, null=True, verbose_name="Unidad de medida")
-
-    def __unicode__(self):
-        return 'Muestra: ' + str(self.name)
-
-
-class Tray(models.Model):
-    class Meta:
-        verbose_name = 'Bandeja2'
-        verbose_name_plural = 'Bandejas2'
-    sample= models.ForeignKey(Sample, blank=False, null=True,
-                             verbose_name="Seleccion de muestra")
-    empty=models.BooleanField(blank=False, verbose_name="Libre")
-
-
-
-class Request(models.Model):
+class Solicitud(models.Model):
     class Meta:
         verbose_name = 'Solicitud'
         verbose_name_plural = 'Solicitudes'
+        permissions = (
+            ('can_solMuestra', 'muestra||solicitar'),
+        )
 
-    description = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion de la solicitud")
-    initialDate = models.DateField(blank=False, null=True, verbose_name="Fecha inicial")
-    finalDate = models.DateField(blank=False, null=True, verbose_name="Fecha final")
-    state = models.CharField(max_length=30, blank=False, null=True, verbose_name="Estado solicitud")
-    applicant = models.CharField(max_length=50, blank=False, null=True, verbose_name="Quien solicito")
-    approver = models.CharField(max_length=50, blank=False, null=True, verbose_name="Quien aprobo")
-    actualDate = models.DateField(blank=False, null=True, verbose_name="Fecha actual")
-    step = models.ForeignKey(Step, blank=False, null=True,
+    descripcion = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion de la solicitud")
+    fechaInicial = models.DateField(blank=False, null=True, verbose_name="Fecha inicial")
+    fechaFinal = models.DateField(blank=False, null=True, verbose_name="Fecha final")
+    estado = models.CharField(max_length=30, blank=False, null=True, verbose_name="Estado solicitud")
+    solicitante = models.CharField(max_length=50, blank=False, null=True, verbose_name="Quien solicito")
+    aprobador = models.CharField(max_length=50, blank=False, null=True, verbose_name="Quien aprobo")
+    fechaActual = models.DateField(blank=False, null=True, verbose_name="Fecha actual")
+    paso = models.ForeignKey(Paso, blank=False, null=True,
                              verbose_name="Seleccion de Paso")
 
 
-class SampleRequest(models.Model):
+class MuestraSolicitud(models.Model):
     class Meta:
         verbose_name = 'Solicitud de Muestra'
         verbose_name_plural = 'Solicitudes de Muestra'
+        permissions = (
+            ('can_solMuestra', 'muestra||solicitar'),
+        )
 
-    request = models.OneToOneField(Request)
-    sample = models.ForeignKey(Sample, blank=False, null=True,
+    solicitud = models.OneToOneField(Solicitud)
+    muestra = models.ForeignKey(Muestra, blank=False, null=True,
                                 verbose_name="Seleccion de Muestra")
-    quantity = models.IntegerField(blank=False, null=True, verbose_name="Cantidad de muestra")
-    type = models.CharField(max_length=30, blank=False, null=True, verbose_name="Tipo solicitud")
+    cantidad = models.IntegerField(blank=False, null=True, verbose_name="Cantidad de muestra")
+    tipo = models.CharField(max_length=30, blank=False, null=True, verbose_name="Tipo solicitud")
 
 
 
-class Project(models.Model):
+class Projecto(models.Model):
     class Meta:
         verbose_name = 'Proyecto'
         verbose_name_plural = 'Proyectos'
 
-    name = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre proyecto")
-    description = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del proyecto")
-    objetive = models.TextField(max_length=200, blank=False, null=True, verbose_name="Objetivo del proyecto")
-    leader = models.ForeignKey(UserProfile, blank=False, null=True,
+    nombre = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre proyecto")
+    descripcion = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del proyecto")
+    objetivo = models.TextField(max_length=200, blank=False, null=True, verbose_name="Objetivo del proyecto")
+    lider = models.ForeignKey(UserProfile, blank=False, null=True,
                               verbose_name="Seleccion lider", related_name="lider")
-    assistants = models.ManyToManyField(UserProfile, related_name="assistants")
-    active= models.BooleanField(blank=False,null=False,default=True)
+    asistentes = models.ManyToManyField(UserProfile, related_name="asistentes")
+    activo= models.BooleanField(blank=False,null=False,default=True)
 
 
 
 
-class Experiment(models.Model):
+class Experimento(models.Model):
     class Meta:
         verbose_name = 'Experimento'
         verbose_name_plural = 'Experimentos'
 
-    name = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre expermento")
-    description = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del experimento")
-    objetive = models.TextField(max_length=200, blank=False, null=True, verbose_name="Objetivo del experimento")
-    project = models.ForeignKey(Project, blank=False, null=True, on_delete=models.CASCADE,
-                                 verbose_name="Seleccion de Proyecto", related_name="proyect")
-    protocols = models.ManyToManyField(Protocol, related_name="experiment")
+    nombre = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre expermento")
+    descripcion = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del experimento")
+    objetivo = models.TextField(max_length=200, blank=False, null=True, verbose_name="Objetivo del experimento")
+    projecto = models.ForeignKey(Projecto, blank=False, null=True, on_delete=models.CASCADE,
+                                 verbose_name="Seleccion de Proyecto", related_name="proyecto")
+    protocolos = models.ManyToManyField(Protocolo, related_name="experimento")
 

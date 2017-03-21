@@ -14,15 +14,15 @@ from django.forms import ModelForm, models
 from django import forms
 
 from django.views.decorators.csrf import csrf_exempt
-from models import MaquinaProfile, Bandeja, LugarAlmacenamiento, Sample, UserProfile, Step, SampleRequest, Experiment, \
-    Protocol, Request, MaquinaEnLab,LaboratorioProfile
+from models import MaquinaProfile, Bandeja, LugarAlmacenamiento,  UserProfile,MaquinaEnLab,LaboratorioProfile, Muestra, \
+    Solicitud, Paso, MuestraSolicitud, Experimento, Protocolo
 from django.http import HttpResponse
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from registration.backends.default.views import RegistrationView
-from .forms import UserProfileForm, LugarAlmacenamientoForm, SampleRequestForm
+from .forms import UserProfileForm, LugarAlmacenamientoForm,  MuestraSolicitudForm
 
 
 # Create your views here.
@@ -239,69 +239,71 @@ def listar_lugares(request):
     return render(request, 'LugarAlmacenamiento/listar.html', context)
 
 
-def make_sample_request(request):
-    message = 'ok'
-    try:
+def crear_solicitud_muestra(request):
+    if request.user.is_authenticated() and request.user.has_perm("account.can_solMuestra"):
+        mensaje = 'ok'
+        try:
 
-        sample = Sample.objects.get(id=request.GET.get('id', 0))
-        profile = UserProfile.objects.get(user_id=request.user.id)
+            muestra = Muestra.objects.get(id=request.GET.get('id', 0))
+            profile = UserProfile.objects.get(user_id=request.user.id)
 
-        if request.method == 'POST':
+            if request.method == 'POST':
 
-            requestObj = Request()
-            requestObj.description = 'Solicitud de uso de muestra'
-            requestObj.initialDate = request.POST['dateIni_year'] + "-" + request.POST['dateIni_month'] + "-" + \
-                                     request.POST['dateIni_day']
-            requestObj.state = 'open'
-            requestObj.applicant = profile.id
-            requestObj.actualDate = datetime.date.today()
-            requestObj.step = Step.objects.get(id=request.POST['step'])
-            requestObj.save()
-            sampleRequest = SampleRequest()
-            sampleRequest.request = requestObj
-            sampleRequest.sample = sample
-            sampleRequest.quantity = request.POST['quantity']
-            sampleRequest.type = 'uso'
-            sampleRequest.save()
-            return redirect("../")
+                requestObj = Solicitud()
+                requestObj.descripcion = 'Solicitud de uso de muestra'
+                requestObj.fechaInicial = request.POST['fechaInicial_year'] + "-" + request.POST['fechaInicial_month'] + "-" + \
+                                         request.POST['fechaInicial_day']
+                requestObj.estado = 'creada'
+                requestObj.solicitante = profile.id
+                requestObj.fechaActual = datetime.date.today()
+                requestObj.paso = Paso.objects.get(id=request.POST['step'])
+                requestObj.save()
+                sampleRequest = MuestraSolicitud()
+                sampleRequest.solicitud = requestObj
+                sampleRequest.muestra = muestra
+                sampleRequest.cantidad = request.POST['cantidad']
+                sampleRequest.tipo = 'uso'
+                sampleRequest.save()
+                return redirect("../")
 
-        else:
-            form = SampleRequestForm(sample, profile.id)
+            else:
+                form = MuestraSolicitudForm(muestra, profile.id)
 
-    except ObjectDoesNotExist as e:
-        form = {}
-        message = 'No hay muestras o pasos con el id solicitado'
-    except MultipleObjectsReturned as e:
-        form = {}
-        message = 'Muchas muestras con ese id'
-    return render(request, "Solicitudes/make_sample_request.html", {'form': form, 'message': message})
-
+        except ObjectDoesNotExist as e:
+            form = {}
+            mensaje = 'No hay muestras o pasos con el id solicitado'
+        except MultipleObjectsReturned as e:
+            form = {}
+            mensaje = 'Muchas muestras con ese id'
+        return render(request, "Solicitudes/crear_muestra_solicitud.html", {'form': form, 'mensaje': mensaje})
+    else:
+        return HttpResponse('No autorizado', status=401)
 
 @csrf_exempt
-def get_experiments(request):
+def cargar_experimentos(request):
     if request.GET['project_id'] != "":
-        experiments = Experiment.objects.filter(project=request.GET['project_id'])
-        experimentsDict = dict([(c.id, c.name) for c in experiments])
+        experiments = Experimento.objects.filter(projecto=request.GET['project_id'])
+        experimentsDict = dict([(c.id, c.nombre) for c in experiments])
         return HttpResponse(json.dumps(experimentsDict))
     else:
         return HttpResponse()
 
 
 @csrf_exempt
-def get_protocols(request):
+def cargar_protocolos(request):
     if request.GET['experiment_id'] != "":
-        protocols = Protocol.objects.filter(experiment=request.GET['experiment_id'])
-        protocolsDict = dict([(c.id, c.name) for c in protocols])
+        protocols = Protocolo.objects.filter(experimento=request.GET['experiment_id'])
+        protocolsDict = dict([(c.id, c.nombre) for c in protocols])
         return HttpResponse(json.dumps(protocolsDict))
     else:
         return HttpResponse()
 
 
 @csrf_exempt
-def get_steps(request):
+def cargar_pasos(request):
     if request.GET['protocol_id'] != "":
-        steps = Step.objects.filter(protocol=request.GET['protocol_id'])
-        stepsDict = dict([(c.id, c.name) for c in steps])
+        steps = Paso.objects.filter(protocolo=request.GET['protocol_id'])
+        stepsDict = dict([(c.id, c.nombre) for c in steps])
         return HttpResponse(json.dumps(stepsDict))
     else:
         return HttpResponse()

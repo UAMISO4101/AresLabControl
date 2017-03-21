@@ -14,10 +14,10 @@ urlpatterns = [
 
     url(r'^maquina/add/$', views.maquina_create, name='maquina-add'),
     url(r'^maquina/(?P<pk>[\w\-]+)/$',views.maquina_update, name='maquina-update'),
-    url(r'^solicitarMuestra/$', views.make_sample_request, name='solicitarMuestra'),
-    url(r'^solicitarMuestra/experiments/$', views.get_experiments, name='experimentos'),
-    url(r'^solicitarMuestra/protocols/$', views.get_protocols, name='protocols'),
-    url(r'^solicitarMuestra/steps/$', views.get_steps, name='steps'),
+    url(r'^solicitarMuestra/$', views.crear_solicitud_muestra, name='solicitarMuestra'),
+    url(r'^solicitarMuestra/experimentos/$', views.cargar_experimentos, name='experimentos'),
+    url(r'^solicitarMuestra/protocolos/$', views.cargar_protocolos, name='protocolos'),
+    url(r'^solicitarMuestra/pasos/$', views.cargar_pasos, name='pasos'),
 
 ]
 
