@@ -95,7 +95,7 @@ class PosicionesLugarAlmacenamientoForm(ModelForm):
     """
     class Meta:
         model=LugarAlmacenamientoEnLab
-        fields = ['posX', 'posY']
+        fields = ['posX', 'posY', 'idLaboratorio']
         exclude = ('idLugar',)
 
 

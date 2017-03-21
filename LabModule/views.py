@@ -45,32 +45,59 @@ def agregar_lugar(request):
 
        """
 
-    if request.method == 'POST':
-        form = LugarAlmacenamientoForm(request.POST, request.FILES)
-        formPos = PosicionesLugarAlmacenamientoForm(request.POST or None, request.FILES or None)
-        items = request.POST.get('items').split('\r\n')
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            form = LugarAlmacenamientoForm(request.POST, request.FILES)
+            formPos = PosicionesLugarAlmacenamientoForm(request.POST or None, request.FILES or None)
+            items = request.POST.get('items').split('\r\n')
 
-        if form.is_valid() and formPos.is_valid():
-            lugar = form.save(commit=False)
-            lugarEnLab = formPos.save(commit=False)
+            if form.is_valid() and formPos.is_valid():
+                lugar = form.save(commit=False)
+                lugarEnLab = formPos.save(commit=False)
 
-            lugar.save()
-            lugarEnLab.idLugar = lugar
-            lugarEnLab.save()
-            if items is not None and len(items) > 0:
-                for item in items:
-                    if item is not None and item != '':
-                        tamano = item.split(',')[0].split(':')[1]
-                        cantidad = item.split(',')[1].split(':')[1]
-                        bandeja = Bandeja(tamano=tamano, cantidad=cantidad, lugarAlmacenamiento=lugar)
-                        bandeja.save()
+                ocupado = MaquinaEnLab.objects.filter(idLaboratorio=lugarEnLab.idLaboratorio, xPos=lugarEnLab.posX,
+                                                      yPos=lugarEnLab.posY).exists()
+                # lamisma = MaquinaEnLab.objects.filter(pk=lugarEnLab.pk).exists()
 
-            return HttpResponseRedirect(reverse('home'))
+                if ocupado:
+                    formPos.add_error("posX", "La posición x ya esta ocupada")
+                    formPos.add_error("posY", "La posición y ya esta ocupada")
+
+                    mensaje = "El lugar en el que desea guadar ya esta ocupado"
+                else:
+                    mensaje = "La posición [" + str(lugarEnLab.posX) + "," + str(
+                        lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio"
+                    lab = lugarEnLab.idLaboratorio
+                    masX = lab.numX >= lugarEnLab.posX
+                    masY = lab.numY >= lugarEnLab.posY
+                    posible = masX and masY
+                    if not posible:
+                        if not masX:
+                            formPos.add_error("posX", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
+                        if not masY:
+                            formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
+                    else:
+                        lugar.save()
+                        lugarEnLab.idLugar = lugar
+                        lugarEnLab.save()
+
+                        if items is not None and len(items) > 0:
+                            for item in items:
+                                if item is not None and item != '':
+                                    tamano = item.split(',')[0].split(':')[1]
+                                    cantidad = item.split(',')[1].split(':')[1]
+                                    bandeja = Bandeja(tamano=tamano, cantidad=cantidad, lugarAlmacenamiento=lugar)
+                                    bandeja.save()
+
+                        return HttpResponseRedirect(reverse('home'))
+        else:
+            form = LugarAlmacenamientoForm()
+            formPos = PosicionesLugarAlmacenamientoForm()
+
+        return render(request, 'LugarAlmacenamiento/agregar.html',
+                      {'form': form, 'formPos': formPos, 'mensaje': mensaje})
     else:
-        form = LugarAlmacenamientoForm()
-        formPos = PosicionesLugarAlmacenamientoForm()
-
-    return render(request, 'LugarAlmacenamiento/agregar.html', {'form': form, 'formPos': formPos})
+        return HttpResponse('No autorizado', status=401)
 
 
 class MaquinaForm(ModelForm):
