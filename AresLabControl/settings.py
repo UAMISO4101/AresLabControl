@@ -1,6 +1,7 @@
 from __future__ import print_function
 
-import os,psycopg2,urlparse
+import os
+import urlparse
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,16 +21,15 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
-    'django.contrib.sites',
-    'registration',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #Third Party Apps
+    # Third Party Apps
     'crispy_forms',
-	'django_extensions',
+    'django_extensions',
     #Our Apps
     'LabModule',
 ]
@@ -45,7 +45,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'AresLabControl.urls'
-
 
 TEMPLATES = [
     {
@@ -65,13 +64,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'AresLabControl.wsgi.application'
 
-# Database
+# Database configuration
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-# DAata base onfiguration
 urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(os.environ["DATABASE_URL"])
-
 
 DATABASES = {
        # 'default': {
@@ -95,7 +92,6 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -129,32 +125,32 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env','static_root')
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env', 'static_root')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static", "lab_static"),
 ]
 
-MEDIA_ROOT = os.path.join('media')
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join('media')
+# MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env', 'media_root')
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
+AUTH_USER_MODEL = 'LabModule.LabUser'
 
-AUTH_PROFILE_MODULE = 'LabModule.UserProfile'
-
-#Crispy Forms Tag Settings
+# Crispy Forms Tag Settings
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-#Django Registration Redux Settings
+# Django Registration Redux Settings
 ACCOUNT_ACTIVATION_DAYS = 7
-REGISTRATION_AUTO_LOGIN = False
+REGISTRATION_AUTO_LOGIN = True
 SITE_ID = 1
-LOGIN_REDIRECT_URL= '/'
+LOGIN_REDIRECT_URL = '/'
 
-#Email Configuration Settings
+# Email Configuration Settings
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'cuentatestares@gmail.com'
 EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]

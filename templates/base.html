@@ -1,38 +1,27 @@
 {% load staticfiles %}
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <link rel="icon" href="{% static 'img/favicon.ico' %}">
-        <link rel="stylesheet" href="https://jqueryvalidation.org/files/demo/site-demos.css">
-
-        <!-- Others head links from another view.html -->
-        {% block head_others %}{% endblock %}
-
-        <title>{% block head_title %}{% endblock %}LabControl</title>
-        {% include 'head_css.html'%}
-    </head>
-
-    <body>
-
-        {% include 'navbar.html'%}
-
-        <div class="container">
-            {% block content %}
-
-            {% endblock %}
-        </div><!-- /.container -->
-
-
-        {% include 'javascripts.html'%}
-
-    <!-- Others JavaScript from another view.html -->
-        {% block scripts_others %}{% endblock %}
-    </body>
+    	<meta name="viewport" content="width=device-width, initial-scale=1">
+    	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    	<meta name="description" content="">
+    	<meta name="author" content="">
+    	<link rel="icon" href="{% static 'img/favicon.ico' %}">
+    	<!-- Others head links from another view.html -->
+    	{% block head_others %}{% endblock %}
+    	<title>{% block head_title %}{% endblock %}LabControl</title>
+    	{% include 'head_css.html'%}
+	</head>
+	<body>
+	{% include 'navbar.html'%}
+	<div class="container">
+    	{% block content %}
+    	{% endblock %}
+	</div><!-- /.container -->
+	{% include 'javascripts.html'%}
+	<!-- Others JavaScript from another view.html -->
+	{% block scripts_others %}{% endblock %}
+	</body>
 </html>
