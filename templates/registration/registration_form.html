@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load i18n %}
 {% load crispy_forms_tags %}
 
 
@@ -10,8 +9,7 @@
         <form method="post" action=".">
             {% csrf_token %}
             {{ form|crispy }}
-
-            <input class='btn btn-block btn-primary' type="submit" value="{% trans 'Join' %}"/>
+            <input class='btn btn-block btn-primary' type="submit" value="Completar Registro"/>
         </form>
     </div>
 </div>
@@ -22,6 +20,4 @@
         <p>Ya tiene una cuenta activa. <a href="{% url 'auth_login' %}">Ingresar</a>?</p>
     </div>
 </div>
-
-
 {% endblock %}

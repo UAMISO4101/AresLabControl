@@ -2,12 +2,26 @@
 
 from __future__ import unicode_literals
 
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.auth.models import (
+    BaseUserManager, AbstractBaseUser
+)
+from django.core.validators import RegexValidator
 from django.db import models
+from django.db.models.signals import post_save
 from django.urls import reverse
 
+from .utils import code_generator
 
-class UserRole(models.Model):
+# Create your models here.
+
+
+USERNAME_REGEX = '^[a-zA-Z0-9.-_]*$'
+USERMAIL_REGEX = '^[a-zA-Z0-9.@-_]*$'
+USERCODE_REGEX = '^[a-zA-Z0-9]*$'
+
+
+class AccountRole(models.Model):
     class Meta:
         verbose_name = 'Rol'
         verbose_name_plural = 'Roles'
@@ -18,7 +32,7 @@ class UserRole(models.Model):
         return self.userRoleName
 
 
-class IdType(models.Model):
+class DocumentIDType(models.Model):
     class Meta:
         verbose_name = 'Tipo Identificación'
         verbose_name_plural = 'Tipos de Indentificación'
@@ -30,26 +44,204 @@ class IdType(models.Model):
         return self.IdTypeName
 
 
-class UserProfile(models.Model):
+class LabUserManager(BaseUserManager):
+    def create_user(self, username, email, user_code, first_name, last_name, user_phone, password=None):
+        """
+        Creates and saves a User with the given email, date of
+        birth and password.
+        """
+        if not email:
+            raise ValueError('Users must have an email address')
+
+        user = self.model(
+            username=username,
+            email=self.normalize_email(email),
+            user_code=user_code,
+            first_name=first_name,
+            last_name=last_name,
+            user_phone=user_phone,
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, email, user_code, first_name, last_name, user_phone, password):
+        """
+        Creates and saves a superuser with the given email, date of
+        birth and password.
+        """
+        user = self.create_user(
+            username,
+            email,
+            user_code,
+            first_name,
+            last_name,
+            user_phone,
+            password,
+        )
+        user.is_admin = True
+        user.is_active = True
+        user.is_staff = True
+        user.save(using=self._db)
+        return user
+
+
+class LabUser(AbstractBaseUser):
+    username = models.CharField(
+        verbose_name='Nombre de Usuario',
+        max_length=255,
+        validators=[
+            RegexValidator(
+                regex=USERNAME_REGEX,
+                message='El nombre de usuario debe ser alfanúmerico o contener los siguientes: ". - _" ',
+                code='invalid_username'
+            )],
+        unique=True,
+    )
+    email = models.EmailField(
+        verbose_name='Correo Electrónico',
+        max_length=255,
+        validators=[
+            RegexValidator(
+                regex=USERMAIL_REGEX,
+                message='El correo eletrónico debe ser alfanúmerico o contener los siguientes: ". @ + - _" ',
+                code='invalid_email'
+            )],
+        unique=True,
+    )
+    user_code = models.CharField(
+        verbose_name="Código de Usuario",
+        max_length=20,
+        validators=[
+            RegexValidator(
+                regex=USERCODE_REGEX,
+                message='El código de usuario debe ser alfanúmerico.',
+                code='invalid_usercode'
+            )],
+        default='',
+        unique=True,
+    )
+    first_name = models.CharField(
+        max_length=50,
+        default='',
+        verbose_name='Nombres'
+    )
+    last_name = models.CharField(
+        max_length=50,
+        default='',
+        verbose_name='Apellidos'
+    )
+    user_phone = models.CharField(
+        max_length=20,
+        default='',
+        verbose_name='Teléfono'
+    )
+    is_active = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    date_joined = models.DateTimeField(auto_now_add=True, auto_now=False)
+    objects = LabUserManager()
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email', 'user_code', 'first_name', 'last_name', 'user_phone', ]
+
+    def get_full_name(self):
+        # The user is identified by their email address
+        return self.email
+
+    def get_short_name(self):
+        # The user is identified by their email address
+        return self.email
+
+    def __str__(self):  # __unicode__ on Python 2
+        return self.email
+
+    def has_perm(self, perm, obj=None):
+        "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
+        return True
+
+    def has_module_perms(self, app_label):
+        "Does the user have permissions to view the app `app_label`?"
+        # Simplest possible answer: Yes, always
+        return True
+
+
+class ActivationProfile(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    key = models.CharField(max_length=120)
+    expired = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        self.key = code_generator()
+        super(ActivationProfile, self).save(*args, **kwargs)
+
+
+def post_save_activation_receiver(sender, instance, created, *args, **kwargs):
+    if created:
+        # send email
+        print('Esto debería ejecutarse cada vez de registro un puto')
+
+
+post_save.connect(post_save_activation_receiver, sender=ActivationProfile)
+
+
+class AccountProfile(models.Model):
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
 
-    userCode = models.CharField(max_length=20, default='', verbose_name="Código")
-    userRoleName = models.CharField(max_length=20, default='', verbose_name='Cargo', editable=False)
-    userGivenName = models.CharField(max_length=50, default='', verbose_name='Nombres')
-    userLastName = models.CharField(max_length=50, default='', verbose_name='Apellidos')
-    userPhone = models.CharField(max_length=20, default='', verbose_name='Teléfono')
-    userNatIdTypName = models.CharField(max_length=20, default='', verbose_name='Tipo Identificación', editable=False)
-    userNatIdNum = models.CharField(max_length=15, default='', verbose_name='Número de Identificación')
-    timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
-    userRole = models.ForeignKey(UserRole, blank=False, null=True, on_delete=models.CASCADE, verbose_name='Cargo')
-    userNatIdTyp = models.ForeignKey(IdType, blank=False, null=False, on_delete=models.CASCADE,
-                                     verbose_name='Tipo Identificación')
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='profile'
+    )
+    userRoleName = models.CharField(
+        max_length=20,
+        default='',
+        verbose_name='Cargo',
+        editable=False
+    )
+    userRole = models.ForeignKey(
+        AccountRole,
+        blank=False,
+        null=True,
+        on_delete=models.CASCADE,
+        verbose_name='Cargo'
+    )
+    userNatIdTypName = models.CharField(
+        max_length=20, default='',
+        verbose_name='Tipo Identificación',
+        editable=False
+    )
+    userNatIdTyp = models.ForeignKey(
+        DocumentIDType,
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+        verbose_name='Tipo Identificación'
+    )
+    userNatIdNum = models.CharField(
+        max_length=15,
+        default='',
+        verbose_name='Número de Identificación'
+    )
 
     def __unicode__(self):
         return self.user.username
+
+
+def post_save_user_model_receiver(sender, instance, created, *args, **kwargs):
+    if created:
+        try:
+            AccountProfile.objects.create(user=instance)
+            ActivationProfile.objects.create(user=instance)
+        except:
+            pass
+
+
+post_save.connect(post_save_user_model_receiver, sender=settings.AUTH_USER_MODEL)
 
 
 class LaboratorioProfile(models.Model):
@@ -76,8 +268,8 @@ Atributos:
 
     nombre = models.CharField(max_length=100, default='', verbose_name="Nombre", null=False)
     id = models.CharField(max_length=100, default='', verbose_name="Identificación", null=False, primary_key=True)
-    numX = models.PositiveIntegerField(verbose_name="Cantidad de filas", null=False, default=10);
-    numY = models.PositiveIntegerField(verbose_name="Cantidad de columnas", null=False, default=10);
+    numX = models.PositiveIntegerField(verbose_name="Cantidad de filas", null=False, default=10)
+    numY = models.PositiveIntegerField(verbose_name="Cantidad de columnas", null=False, default=10)
 
     def __unicode__(self):
         return self.id + " " + self.nombre
@@ -270,9 +462,8 @@ Atributos:
     :libre (Decimal): Indica si esta libre la bandeja del lugar de almacenamiento.
     :muestra (String): Relación con la entidad muestra.
     :lugarAlmacenamiento (Decimal): Relación con la entidad lugar de almacenamiento.
-
-
     """
+
     class Meta:
         verbose_name = 'Bandeja'
         verbose_name_plural = 'Bandejas'
@@ -328,9 +519,9 @@ class Projecto(models.Model):
     nombre = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre proyecto")
     descripcion = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del proyecto")
     objetivo = models.TextField(max_length=200, blank=False, null=True, verbose_name="Objetivo del proyecto")
-    lider = models.ForeignKey(UserProfile, blank=False, null=True,
+    lider = models.ForeignKey(AccountProfile, blank=False, null=True,
                               verbose_name="Seleccion lider", related_name="lider")
-    asistentes = models.ManyToManyField(UserProfile, related_name="asistentes")
+    asistentes = models.ManyToManyField(AccountProfile, related_name="asistentes")
     activo = models.BooleanField(blank=False, null=False, default=True)
 
 

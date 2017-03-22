@@ -5,30 +5,44 @@
 __docformat__ = 'reStructuredText'
 
 import datetime
+import json
 
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-import json
-from django.shortcuts import render, redirect, get_object_or_404
-from django.core.urlresolvers import reverse
-from django.forms import ModelForm, models
-from django import forms
-
-from django.views.decorators.csrf import csrf_exempt
-from models import MaquinaProfile, Bandeja, LugarAlmacenamiento, UserProfile, MaquinaEnLab, LaboratorioProfile, Muestra, \
-    Solicitud, Paso, MuestraSolicitud, Experimento, Protocolo
+from django.forms import ModelForm
 from django.http import HttpResponse
-
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 from registration.backends.default.views import RegistrationView
-from .forms import UserProfileForm, LugarAlmacenamientoForm, MuestraSolicitudForm, PosicionesLugarAlmacenamientoForm
+
+from models import AccountProfile
+from models import Bandeja
+from models import Experimento
+from models import LugarAlmacenamiento
+from models import MaquinaEnLab
+from models import MaquinaProfile
+from models import Muestra
+from models import MuestraSolicitud
+from models import Paso
+from models import Protocolo
+from models import Solicitud
+from .forms import LugarAlmacenamientoForm
+from .forms import MuestraSolicitudForm
+from .forms import PosicionesLugarAlmacenamientoForm
+from .forms import UserCreationForm
 
 
 # Create your views here.
 def home(request):
     context = {}
     return render(request, "home.html", context)
+
+
+class UserRegistrationView(RegistrationView):
+    form_class = UserCreationForm
 
 
 def agregar_lugar(request):
@@ -270,10 +284,6 @@ def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
         return HttpResponse('No autorizado', status=401)
 
 
-class UserRegistrationView(RegistrationView):
-    form_class = UserProfileForm
-
-
 def listar_lugares(request):
     """Desplegar y comprobar los valores a consultar.
 
@@ -296,7 +306,7 @@ def crear_solicitud_muestra(request):
         try:
 
             muestra = Muestra.objects.get(id=request.GET.get('id', 0))
-            profile = UserProfile.objects.get(user_id=request.user.id)
+            profile = AccountProfile.objects.get(user_id=request.user.id)
 
             if request.method == 'POST':
 
