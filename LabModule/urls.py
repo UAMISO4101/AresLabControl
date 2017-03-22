@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^solicitarMuestra/experimentos/$', views.cargar_experimentos, name='experimentos'),
     url(r'^solicitarMuestra/protocolos/$', views.cargar_protocolos, name='protocolos'),
     url(r'^solicitarMuestra/pasos/$', views.cargar_pasos, name='pasos'),
+    url(r'^solicitarMaquina/$', views.crear_solicitud_maquina, name='solicitarMaquina'),
 
 ]
 

@@ -346,7 +346,7 @@ class Muestra(models.Model):
     cantidadInicial = models.IntegerField(blank=False, null=True,
                                           verbose_name="Cantidad inicial de la muestra")
     masa = models.DecimalField(max_digits=5, decimal_places=2, null=True, verbose_name="Masa")
-    estado = models.CharField(max_length=30, blank=False, null=True, verbose_name="Estado de la muestra")
+    activa = models.BooleanField(default=True, verbose_name="Activa")
     controlado = models.BooleanField(blank=False, verbose_name="Muestra controlada")
     cantidadActual = models.IntegerField(blank=False, null=True, verbose_name="Cantidad actual de la muestra")
     imagen = models.ImageField(upload_to='images', verbose_name="Imagen", default='images/image-not-found.jpg')
@@ -387,9 +387,7 @@ class Solicitud(models.Model):
     class Meta:
         verbose_name = 'Solicitud'
         verbose_name_plural = 'Solicitudes'
-        permissions = (
-            ('can_solMuestra', 'muestra||solicitar'),
-        )
+
 
     descripcion = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion de la solicitud")
     fechaInicial = models.DateField(blank=False, null=True, verbose_name="Fecha inicial")
@@ -415,6 +413,19 @@ class MuestraSolicitud(models.Model):
                                 verbose_name="Seleccion de Muestra")
     cantidad = models.IntegerField(blank=False, null=True, verbose_name="Cantidad de muestra")
     tipo = models.CharField(max_length=30, blank=False, null=True, verbose_name="Tipo solicitud")
+
+class MaquinaSolicitud(models.Model):
+    class Meta:
+        verbose_name = 'Solicitud de Maquina'
+        verbose_name_plural = 'Solicitudes de Maquina'
+        permissions = (
+            ('can_solMaquina', 'maquina||solicitar'),
+        )
+
+    solicitud = models.OneToOneField(Solicitud)
+    maquina = models.ForeignKey(MaquinaProfile, blank=False, null=True,
+                                verbose_name="Seleccion de Maquina")
+
 
 
 class Projecto(models.Model):
