@@ -13,6 +13,10 @@ urlpatterns = [
     url(r'^listaLugares/$', views.listar_lugares, name='listaLugares'),
 
     url(r'^maquina/add/$', views.maquina_create, name='maquina-add'),
+    url(r'^maquina/$', views.ListarMaquinas, name='maquinas-listar'),
+    url(r'^maquina/(?P<pag>\d+)$', views.ListarMaquinas, name='maquinas-listar'),
+    url(r'^maquina/(?P<que>\w\-)$', views.ListarMaquinas, name='maquinas-listar'),
+    url(r'^maquina/(?P<que>\w\-)/(?P<pag>\d+)$', views.ListarMaquinas, name='maquinas-listar'),
     url(r'^maquina/(?P<pk>[\w\-]+)/$',views.maquina_update, name='maquina-update'),
     url(r'^solicitarMuestra/$', views.crear_solicitud_muestra, name='solicitarMuestra'),
     url(r'^solicitarMuestra/experimentos/$', views.cargar_experimentos, name='experimentos'),

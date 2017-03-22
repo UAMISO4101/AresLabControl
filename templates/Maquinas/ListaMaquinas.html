@@ -1,7 +1,22 @@
 {% extends 'base.html' %}
 
-{% block head_title %} Agregar Máquina | {% endblock %}
-
+{% block head_title %} {{ section.title }}| {% endblock %}
+{% load lab_module_extras %}
 {% block content %}
+
+
+<ul class="pagination col-md-12">
+        {% if maquinas.has_previous %}
+           <li><a href="?pag={{ maquinas.previous_page_number }}">Anterior</a> </li>
+        {% endif %}
+
+        <span class="current">
+            <li class="">  Página {{ maquinas.number }} de {{ maquinas.paginator.num_pages }}. </li>
+        </span>
+
+        {% if maquinas.has_next %}
+           <li active>  <a href="?pag={{ maquinas.next_page_number }}">Sigueinte</a></li>
+        {% endif %}
+</ul>
 
 {% endblock %}
