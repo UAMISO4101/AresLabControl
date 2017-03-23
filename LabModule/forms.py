@@ -3,12 +3,13 @@ from django import forms
 
 # coding=utf-8
 from django import forms
+from django.contrib.admin.widgets import AdminDateWidget
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from django.forms import ModelForm
+from django.forms import ModelForm, widgets
 from registration.forms import RegistrationForm
 
 from .models import IdType as IdentificationTypes, LugarAlmacenamiento, Bandeja, Projecto, LugarAlmacenamientoEnLab, \
-    MaquinaEnLab, LaboratorioProfile
+    MaquinaEnLab, LaboratorioProfile, Solicitud, MuestraSolicitud, MaquinaSolicitud
 from .models import UserRole as UsrRole
 
 
@@ -101,83 +102,26 @@ class PosicionesLugarAlmacenamientoForm(ModelForm):
         exclude = ('idLugar',)
 
 
-class MuestraSolicitudForm(forms.Form):
+class SolicitudForm(ModelForm):
+
+    class Meta:
+        model=Solicitud
+        fields = ['fechaInicial', 'fechaFinal', 'descripcion', 'estado', 'solicitante', 'fechaActual', 'paso']
+        widgets = {
+            'fechaInicial': forms.DateInput(attrs={'class': 'datepicker'}),
+            'fechaFinal': forms.DateInput(attrs={'class': 'datepicker'}),
+        }
 
 
-    def __init__(self, muestra=None,id_asistente=None, *args, **kwargs):
-        super(MuestraSolicitudForm, self).__init__(*args, **kwargs)
-        if muestra!=None and id_asistente!=None:
-            self.fields['id'] = forms.CharField(label="ID")
-            self.fields['id'].initial=muestra.id
-            self.fields['nombre'] = forms.CharField(label="NOMBRE")
-            self.fields['nombre'].initial=muestra.nombre
-            self.fields['descripcion'] = forms.CharField(label="DESCRIPCION")
-            self.fields['descripcion'].initial=muestra.descripcion
-            self.fields['unidad'] = forms.CharField(label="UNIDAD")
-            self.fields['unidad'].initial = muestra.unidad
-            self.fields['controlado'] = forms.CharField(label="CONTROLADA")
-            self.fields['controlado'].initial=self.calc_controled(muestra.controlado)
-            self.fields['disponible'] = forms.CharField(label="DISPONIBLE")
-            self.fields['disponible'].initial= self.calc_disp(muestra)
-            self.fields['imagen'] = forms.ImageField(label="IMAGEN")
-            self.fields['imagen'].initial=muestra.imagen
-            self.fields['cantidadActual']=forms.CharField(label="CANTIDAD ACTUAL")
-            self.fields['cantidadActual'].initial=muestra.cantidadActual
-            self.fields['projectos']=forms.MultipleChoiceField(required=True, widget=forms.CheckboxSelectMultiple,
-                                                              label="PROYECTO", choices=Projecto.objects.filter(asistentes=id_asistente,activo=True))
+class MuestraSolicitudForm(ModelForm):
+    class Meta:
+        model=MuestraSolicitud
+        fields=['cantidad','solicitud','muestra','tipo']
 
 
-    cantidad = forms.CharField(label="CANTIDAD")
-    fechaInicial= forms.DateField(widget=forms.SelectDateWidget(),label="FECHA")
 
 
-    def calc_controled(self,controlado):
-        if controlado==True:
-            return 'Si'
-        else:
-            return 'No'
 
-    def calc_disp(self,nueva_muestra):
-        bandejas= Bandeja.objects.filter(muestra=nueva_muestra)
-        for bandeja in bandejas:
-            if bandeja.libre==False:
-                return 'Si'
-        return 'No'
-
-class MaquinaSolicitudForm(forms.Form):
-
-
-    def __init__(self, maquina=None,id_asistente=None, *args, **kwargs):
-        super(MaquinaSolicitudForm, self).__init__(*args, **kwargs)
-        if maquina!=None and id_asistente!=None:
-            self.fields['id'] = forms.CharField(label="ID")
-            self.fields['id'].initial=maquina.pk
-            self.fields['nombre'] = forms.CharField(label="NOMBRE")
-            self.fields['nombre'].initial=maquina.nombre
-            self.fields['descripcion'] = forms.CharField(label="DESCRIPCION")
-            self.fields['descripcion'].initial=maquina.descripcion
-            self.fields['imagen'] = forms.ImageField(label="IMAGEN")
-            self.fields['imagen'].initial=maquina.imagen
-            self.fields['laboratorio'] = forms.CharField(label="LABORATORIO")
-            self.fields['posX'] = forms.CharField(label="POS X")
-            self.fields['posY'] = forms.CharField(label="POS Y")
-            try:
-                maquinaEnLab=MaquinaEnLab.objects.get(idMaquina=maquina.pk)
-                #laboratorio=LaboratorioProfile.objects.get(pk=maquinaEnLab.idLaboratorio.split(' ')[0])
-                #self.fields['laboratorio'].initial=laboratorio.nombre
-                self.fields['posX'].initial = maquinaEnLab.xPos
-                self.fields['posY'].initial = maquinaEnLab.yPos
-            except BaseException as e:
-                self.fields['laboratorio'].initial = "No hay valores"
-                self.fields['posX'].initial = "No hay valores"
-                self.fields['posY'].initial = "No hay valores"
-
-
-            self.fields['projectos']=forms.MultipleChoiceField(required=True, widget=forms.CheckboxSelectMultiple,
-                                                              label="PROYECTO", choices=Projecto.objects.filter(asistentes=id_asistente,activo=True))
-
-    fechaFinal = forms.DateField(widget=forms.SelectDateWidget(), label="FECHA FINAL")
-    fechaInicial= forms.DateField(widget=forms.SelectDateWidget(),label="FECHA INICIAL")
 
 
 

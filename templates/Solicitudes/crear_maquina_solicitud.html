@@ -15,39 +15,39 @@
             <table class="table table-bordered">
                 <tbody>
                     <tr>
-                        <td>{{ form.fields.id.label }}</td>
-                        <td>{{ form.fields.id.initial }}</td>
+                        <td>ID</td>
+                        <td>{{ maquina.pk }}</td>
                     </tr>
                     <tr>
-                        <td>{{ form.fields.nombre.label }}</td>
-                        <td>{{ form.fields.nombre.initial }}</td>
+                        <td>Nombre</td>
+                        <td>{{ maquina.nombre }}</td>
                     </tr>
                     <!--tr>
                         <td>{{ form.fields.laboratorio.label }}</td>
                         <td>{{ form.fields.laboratorio.initial }}</td>
                     </tr-->
                     <tr>
-                        <td>{{ form.fields.posX.label }}</td>
-                        <td>{{ form.fields.posX.initial}}</td>
+                        <td>PosX</td>
+                        <td>{{ maquinaEnLab.xPos}}</td>
                     </tr>
                     <tr>
-                        <td>{{ form.fields.posY.label }}</td>
-                        <td>{{ form.fields.posY.initial }}</td>
+                        <td>PosY</td>
+                        <td>{{ maquinaEnLab.yPos}}</td>
                     </tr>
                     <tr>
-                        <td>{{ form.fields.projectos.label }}</td>
+                        <td>Proyectos</td>
                         <td>
                             <select class="form-control" name="project" id="project" >
                                 <option value="">--Seleccione--</option>
-                                {% for projecto in form.fields.projectos.choices %}
+                                {% for proyecto in proyectos %}
 
-                                    <option value="{{projecto.id}}">{{projecto.nombre}}</option>
+                                    <option value="{{proyecto.id}}">{{proyecto.nombre}}</option>
                                 {% endfor %}
                             </select>
                         </td>
                     </tr>
                     <tr>
-                        <td>EXPERIMENTOS</td>
+                        <td>Experimentos</td>
                         <td>
                             <select class="form-control" name="experiment" id="experiment" required>
                                 <option value="">--Seleccione--</option>
@@ -55,7 +55,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>PROTOCOLOS</td>
+                        <td>Protocolos</td>
                         <td>
 
                             <select class="form-control" name="protocol" id="protocol" required>
@@ -65,7 +65,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>PASOS</td>
+                        <td>Pasos</td>
                         <td>
 
                             <select class="form-control" name="step" id="step" required>
@@ -93,8 +93,8 @@
 
     </div>
     <img class="col-md-6">
-        <img src="{{form.fields.imagen.initial.url}}" width="400px" >
-        <p>{{form.fields.descripcion.initial}}</p>
+        <img src="{{maquina.imagen.url}}" width="400px" >
+        <p>{{maquina.descripcion}}</p>
 
      {%if mensaje != "ok"%}
         <div class="alert alert-danger col-md-6">
@@ -107,7 +107,7 @@
 
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.min.js"></script>
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/additional-methods.min.js"></script>
-
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
             $('#project').change(function(){
                 project_id = $(this).val();
@@ -264,6 +264,13 @@
                     //submit via ajax
                     return false;  //This doesn't prevent the form from submitting.
                 }
+            });
+            $( ".datepicker" ).datepicker({
+              changeMonth: true,
+              changeYear: true,
+              yearRange: "1900:2012",
+              // You can put more options here.
+
             });
 
 

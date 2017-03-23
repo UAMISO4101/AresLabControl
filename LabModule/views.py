@@ -15,7 +15,7 @@ from django import forms
 
 from django.views.decorators.csrf import csrf_exempt
 from models import MaquinaProfile, Bandeja, LugarAlmacenamiento, UserProfile, MaquinaEnLab, LaboratorioProfile, Muestra, \
-    Solicitud, Paso, MuestraSolicitud, Experimento, Protocolo
+    Solicitud, Paso, MuestraSolicitud, Experimento, Protocolo, Projecto, MaquinaSolicitud
 from django.http import HttpResponse
 
 from django.http import HttpResponseRedirect
@@ -23,7 +23,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from registration.backends.default.views import RegistrationView
 from .forms import UserProfileForm, LugarAlmacenamientoForm, MuestraSolicitudForm, PosicionesLugarAlmacenamientoForm, \
-    MaquinaSolicitudForm
+     SolicitudForm
 
 
 # Create your views here.
@@ -294,20 +294,22 @@ def listar_lugares(request):
 def crear_solicitud_maquina(request):
     if request.user.is_authenticated() and request.user.has_perm("account.can_solMaquina"):
         mensaje = 'ok'
+        contexto={}
         try:
 
             maquina = MaquinaProfile.objects.get(pk=request.GET.get('id', 0),activa=True)
             profile = UserProfile.objects.get(user_id=request.user.id)
+            maquinaEnLab = MaquinaEnLab.objects.get(idMaquina=maquina.pk)
+            proyectos=Projecto.objects.filter(asistentes=profile.id,activo=True)
+            form = SolicitudForm()
 
-            form = MaquinaSolicitudForm(maquina, profile.id)
-
+            contexto = {'form': form, 'mensaje': mensaje, 'maquina': maquina, 'proyectos': proyectos,
+                         'maquinaEnLab':maquinaEnLab}
         except ObjectDoesNotExist as e:
-            form = {}
-            mensaje = 'No hay maquinas o pasos con el id solicitado'
+            contexto = {'mensaje': 'No hay maquinas o pasos con el id solicitado'}
         except MultipleObjectsReturned as e:
-            form = {}
-            mensaje = 'Muchas maquinas con ese id'
-        return render(request, "Solicitudes/crear_maquina_solicitud.html", {'form': form, 'mensaje': mensaje})
+            contexto = {'mensaje': 'Muchas maquinas con ese id'}
+        return render(request, "Solicitudes/crear_maquina_solicitud.html", contexto)
     else:
         return HttpResponse('No autorizado', status=401)
 
@@ -315,21 +317,19 @@ def crear_solicitud_maquina(request):
 def crear_solicitud_muestra(request):
     if request.user.is_authenticated() and request.user.has_perm("account.can_solMuestra"):
         mensaje = 'ok'
+        contexto={}
         try:
 
             muestra = Muestra.objects.get(id=request.GET.get('id', 0),activa=True)
             profile = UserProfile.objects.get(user_id=request.user.id)
-
+            proyectos=Projecto.objects.filter(asistentes=profile.id,activo=True);
             if request.method == 'POST':
 
                 requestObj = Solicitud()
                 requestObj.descripcion = 'Solicitud de uso de muestra'
-                requestObj.fechaInicial = request.POST['fechaInicial_year'] + "-" + request.POST[
-                    'fechaInicial_month'] + "-" + \
-                                          request.POST['fechaInicial_day']
+                requestObj.fechaInicial = request.POST['fechaInicial']
                 requestObj.estado = 'creada'
                 requestObj.solicitante = profile.id
-                requestObj.fechaActual = datetime.date.today()
                 requestObj.paso = Paso.objects.get(id=request.POST['step'])
                 requestObj.save()
                 sampleRequest = MuestraSolicitud()
@@ -341,17 +341,26 @@ def crear_solicitud_muestra(request):
                 return redirect("../")
 
             else:
-                form = MuestraSolicitudForm(muestra, profile.id)
-
+                form = SolicitudForm()
+                form_muestra=MuestraSolicitudForm()
+            contexto={'form': form, 'mensaje': mensaje,'muestra':muestra,'proyectos':proyectos,'form_muestra':form_muestra}
         except ObjectDoesNotExist as e:
-            form = {}
-            mensaje = 'No hay muestras o pasos con el id solicitado'
+            contexto={'mensaje':'No hay muestras o pasos con el id solicitado'}
+
         except MultipleObjectsReturned as e:
-            form = {}
-            mensaje = 'Muchas muestras con ese id'
-        return render(request, "Solicitudes/crear_muestra_solicitud.html", {'form': form, 'mensaje': mensaje})
+            contexto = {'mensaje': 'Muchas muestras con ese id'}
+
+        return render(request, "Solicitudes/crear_muestra_solicitud.html",contexto)
     else:
         return HttpResponse('No autorizado', status=401)
+
+
+def verificar_solicitudes_maquina(id_maquina,fechaIni,fechaFin):
+    solMaquinas = MaquinaSolicitud.objects.filter(maquina=id_maquina);
+    for solicitudM in solMaquinas:
+        if solicitudM.solicitud.fechaInicial==fechaIni and solicitudM.solicitud.fechaFinal==fechaFin:
+            return False
+    return True
 
 
 @csrf_exempt

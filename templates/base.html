@@ -10,19 +10,29 @@
         <meta name="description" content="">
         <meta name="author" content="">
         <link rel="icon" href="{% static 'img/favicon.ico' %}">
+        <link rel="stylesheet" href="https://jqueryvalidation.org/files/demo/site-demos.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <!-- Others head links from another view.html -->
         {% block head_others %}{% endblock %}
-        <title>{% block head_title %}LabControl|{% endblock %}</title>
+
+        <title>{% block head_title %}{% endblock %}LabControl</title>
         {% include 'head_css.html'%}
     </head>
+
     <body>
-    {% include 'navbar.html'%}
-    <div class="container">
-        {% block content %}
-        {% endblock %}
-    </div><!-- /.container -->
-    {% include 'javascripts.html'%}
+
+        {% include 'navbar.html'%}
+
+        <div class="container">
+            {% block content %}
+
+            {% endblock %}
+        </div><!-- /.container -->
+
+
+        {% include 'javascripts.html'%}
+
     <!-- Others JavaScript from another view.html -->
-    {% block scripts_others %}{% endblock %}
+        {% block scripts_others %}{% endblock %}
     </body>
 </html>
