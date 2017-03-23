@@ -2,9 +2,10 @@
 
 from __future__ import unicode_literals
 
-from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import  User
+
 
 
 class UserRole(models.Model):
@@ -36,16 +37,18 @@ class UserProfile(models.Model):
         verbose_name_plural = 'Usuarios'
 
     userCode = models.CharField(max_length=20, default='', verbose_name="Código")
-    userRoleName = models.CharField(max_length=20, default='', verbose_name='Cargo', editable=False)
+    #userRoleName = models.CharField(max_length=20, default='', verbose_name='Cargo', editable=False)
     userGivenName = models.CharField(max_length=50, default='', verbose_name='Nombres')
     userLastName = models.CharField(max_length=50, default='', verbose_name='Apellidos')
     userPhone = models.CharField(max_length=20, default='', verbose_name='Teléfono')
-    userNatIdTypName = models.CharField(max_length=20, default='', verbose_name='Tipo Identificación', editable=False)
-    userNatIdNum = models.CharField(max_length=15, default='', verbose_name='Número de Identificación')
+    #userNatIdTypName = models.CharField(max_length=20, default='', verbose_name='Tipo Identificación', editable=False)
+    #userNatIdNum = models.CharField(max_length=15, default='', verbose_name='Número de Identificación')
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
-    userRole = models.ForeignKey(UserRole, blank=False, null=True, on_delete=models.CASCADE, verbose_name='Cargo')
-    userNatIdTyp = models.ForeignKey(IdType, blank=False, null=False, on_delete=models.CASCADE,
-                                     verbose_name='Tipo Identificación')
+    password = models.CharField(max_length=50,null=False, verbose_name="Contraseña",default='')
+    email = models.EmailField(max_length=100, null= False, unique= True,default="a@a.com")
+    #userRole = models.ForeignKey(UserRole, blank=False, null=True, on_delete=models.CASCADE, verbose_name='Cargo')
+    #userNatIdTyp = models.ForeignKey(IdType, blank=False, null=False, on_delete=models.CASCADE,
+    #                                 verbose_name='Tipo Identificación')
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
 
     def __unicode__(self):

@@ -18,7 +18,7 @@ class IdTypeAdmin(admin.ModelAdmin):
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ["__unicode__", "userCode", "user", "userRole"]
+    list_display = ["__unicode__", "userCode", "user"]
 
     class Meta:
         model = UserProfile

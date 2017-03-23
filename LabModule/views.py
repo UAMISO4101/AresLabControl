@@ -12,7 +12,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm, models
 from django import forms
-
+from django.contrib.auth.models import User,Group
 from django.views.decorators.csrf import csrf_exempt
 from models import MaquinaProfile, Bandeja, LugarAlmacenamiento, UserProfile, MaquinaEnLab, LaboratorioProfile, Muestra, \
     Solicitud, Paso, MuestraSolicitud, Experimento, Protocolo
@@ -272,6 +272,25 @@ def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
 
 class UserRegistrationView(RegistrationView):
     form_class = UserProfileForm
+
+def registrar_usuario(request):
+    section = {}
+    section['title'] = 'Agregar usuario'
+    section['agregar'] = True
+    form = UserProfileForm(request.POST or None)
+    if form.is_valid():
+        usuario=form.save(commit=False)
+        ud=User.objects.create_user(username=usuario.userCode,
+                                 email=usuario.email,
+                                 password=usuario.password)
+        usuario.user=ud
+        usuario.save()
+        g = Group.objects.get(name='Cientifico')
+        usuario.user.groups.add(g)
+
+    return render(request, 'registration/registration_form.html',
+           {'form': form})
+
 
 
 def listar_lugares(request):
