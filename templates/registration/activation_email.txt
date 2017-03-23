@@ -1,3 +1,4 @@
+{% load i18n %}
 Activar cuenta en: {{ site.name }}:
 
 Hola!
@@ -6,6 +7,7 @@ Se ha registrado un nuevo usuario {{user }}, desea activarlo?
 
 http://{{ site.domain }}{% url 'registration_activate' activation_key %}
 
-El link estará activo por {{ expiration_days }} días.
+
+{% blocktrans %}El link estará activo por {{ expiration_days }} días.{% endblocktrans %}
 
 -LABControl

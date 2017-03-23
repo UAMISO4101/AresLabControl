@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 
-
-    {% block content %}
-<div class="col-sm-6 col-sm-offset-3">
-    <p class='text-align-center lead'>Ha cerrado la sesión.</p>
-    <p class='text-align-center lead'><a href="{% url 'auth_login' %}">Ingresar</a></p></p>
-</div>
-    {% endblock %}
+{% block content %}
+<p class='text-align-center lead'>Ha cerrado la sesión.</p><p class='text-align-center lead'><a href="{% url 'auth_login' %}">Ingresar</a></p></p>
+{% endblock %}
