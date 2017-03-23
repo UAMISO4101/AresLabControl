@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     # Third Party Apps
     'crispy_forms',
     'django_extensions',
+    'registration',
     #Our Apps
     'LabModule',
 ]

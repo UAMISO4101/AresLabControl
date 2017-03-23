@@ -308,11 +308,6 @@ def ListarMaquinas(request,pag=1,que=""):
     return HttpResponse('No autorizado', status=401)
 
 
-class UserRegistrationView(RegistrationView):
-    form_class = UserProfileForm
-
-
-
 def listar_lugares(request):
     """Desplegar y comprobar los valores a consultar.
 
@@ -369,6 +364,19 @@ def crear_solicitud_muestra(request):
         return render(request, "Solicitudes/crear_muestra_solicitud.html", {'form': form, 'mensaje': mensaje})
     else:
         return HttpResponse('No autorizado', status=401)
+
+def poblar_datos(request):
+
+    MaquinaProfile.objects.create(
+    nombre='Laboratorio genomica',
+    descripcion = "Aca se hace genomica"
+    imagen = models.ImageField(upload_to='images', verbose_name="Imagen", default='images/image-not-found.jpg')
+    idSistema = models.CharField(max_length=20, default='', verbose_name="Identificación", null=False, primary_key=True)
+    con_reserva = models.BooleanField(default=True, verbose_name="Reservable")
+    activa = models.BooleanField(default=True, verbose_name="Activa")
+
+    )
+    return HttpResponseRedirect(reverse('home'))
 
 
 @csrf_exempt
