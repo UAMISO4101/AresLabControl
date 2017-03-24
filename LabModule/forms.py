@@ -1,66 +1,41 @@
 # -*- coding: utf-8 -*-
 from django import forms
-
-# coding=utf-8
-from django import forms
 from django.forms import ModelForm
-from registration.forms import RegistrationForm
 
-from .models import IdType as IdentificationTypes, LugarAlmacenamiento, Bandeja, Projecto, LugarAlmacenamientoEnLab
-from .models import UserRole as UsrRole
+from .models import Bandeja
+from .models import LugarAlmacenamiento
+from .models import LugarAlmacenamientoEnLab
+from .models import Projecto
+from .models import Usuario
 
 
-class UserProfileForm(RegistrationForm):
-    idTypName = IdentificationTypes.objects.all()
-    usrroles = UsrRole.objects.all()
+class RegistroUsuarioForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        exclude = ('user',)
 
-    username = forms.CharField(
-        label="Nombre de Usuario",
-        disabled=False
-    )
-    error_messages = {
-        'password_mismatch': "Las contraseñas deben coincidir!",
+    widgets = {
+        'password': forms.PasswordInput(),
     }
-    password1 = forms.CharField(
-        label="Contraseña",
-        strip=False,
-        widget=forms.PasswordInput,
-    )
+
     password2 = forms.CharField(
         label="Confirme su contraseña",
         widget=forms.PasswordInput,
         strip=False,
         help_text="Repita la contraseña para verificar que sean iguales.",
     )
-    userNatIdTypName = forms.ModelChoiceField(
-        label="Tipo de Identificación",
-        queryset=idTypName,
-        empty_label="Seleccione una opción")
 
-    userNatIdNum = forms.CharField(
-        label="Número de Identificación"
-    )
+    error_messages = {
+        'password_mismatch': "Las contraseñas deben coincidir!",
+    }
 
-    userGivenName = forms.CharField(
-        label="Nombres"
-    )
-
-    userLastName = forms.CharField(
-        label="Apellidos"
-    )
-
-    userCode = forms.CharField(
-        label="Código de Usuario",
-        strip=True
-    )
-    userPhone = forms.CharField(
-        label="Número de Teléfono"
-    )
-    userRoleName = forms.ModelChoiceField(
-        label="Cargo",
-        queryset=usrroles,
-        empty_label="Seleccione una opción"
-    )
+    def clean_password2(self):
+        # Check that the two password entries match
+        password = self.cleaned_data.get("password")
+        password2 = self.cleaned_data.get("password2")
+        if password and password2 and password != password2:
+            raise forms.ValidationError("Las contraseñas no coinciden!")
+        return password
 
 
 class LugarAlmacenamientoForm(ModelForm):
@@ -75,6 +50,7 @@ class LugarAlmacenamientoForm(ModelForm):
         :type ModelForm: ModelForm.
 
        """
+
     class Meta:
         model = LugarAlmacenamiento
         fields = ['nombre', 'descripcion', 'capacidad', 'temperatura', 'imagen', 'peso', 'tamano']
@@ -93,54 +69,54 @@ class PosicionesLugarAlmacenamientoForm(ModelForm):
      :type ModelForm: ModelForm.
 
     """
+
     class Meta:
-        model=LugarAlmacenamientoEnLab
+        model = LugarAlmacenamientoEnLab
         fields = ['posX', 'posY', 'idLaboratorio']
         exclude = ('idLugar',)
 
 
 class MuestraSolicitudForm(forms.Form):
-
-
-    def __init__(self, muestra=None,id_asistente=None, *args, **kwargs):
+    def __init__(self, muestra=None, id_asistente=None, *args, **kwargs):
         super(MuestraSolicitudForm, self).__init__(*args, **kwargs)
-        if muestra!=None and id_asistente!=None:
+        if muestra != None and id_asistente != None:
             self.fields['id'] = forms.CharField(label="ID")
-            self.fields['id'].initial=muestra.id
+            self.fields['id'].initial = muestra.id
             self.fields['nombre'] = forms.CharField(label="NOMBRE")
-            self.fields['nombre'].initial=muestra.nombre
+            self.fields['nombre'].initial = muestra.nombre
             self.fields['descripcion'] = forms.CharField(label="DESCRIPCION")
-            self.fields['descripcion'].initial=muestra.descripcion
+            self.fields['descripcion'].initial = muestra.descripcion
             self.fields['unidad'] = forms.CharField(label="UNIDAD")
             self.fields['unidad'].initial = muestra.unidad
             self.fields['controlado'] = forms.CharField(label="CONTROLADA")
-            self.fields['controlado'].initial=self.calc_controled(muestra.controlado)
+            self.fields['controlado'].initial = self.calc_controled(muestra.controlado)
             self.fields['disponible'] = forms.CharField(label="DISPONIBLE")
-            self.fields['disponible'].initial= self.calc_disp(muestra)
+            self.fields['disponible'].initial = self.calc_disp(muestra)
             self.fields['imagen'] = forms.ImageField(label="IMAGEN")
-            self.fields['imagen'].initial=muestra.imagen
-            self.fields['cantidadActual']=forms.CharField(label="CANTIDAD ACTUAL")
-            self.fields['cantidadActual'].initial=muestra.cantidadActual
-            self.fields['projectos']=forms.MultipleChoiceField(required=True, widget=forms.CheckboxSelectMultiple,
-                                                              label="PROYECTO", choices=Projecto.objects.filter(asistentes=id_asistente,activo=True))
-
+            self.fields['imagen'].initial = muestra.imagen
+            self.fields['cantidadActual'] = forms.CharField(label="CANTIDAD ACTUAL")
+            self.fields['cantidadActual'].initial = muestra.cantidadActual
+            self.fields['projectos'] = forms.MultipleChoiceField(
+                required=True,
+                widget=forms.CheckboxSelectMultiple,
+                label="PROYECTO",
+                choices=Projecto.objects.filter(
+                    asistentes=id_asistente,
+                    activo=True)
+            )
 
     cantidad = forms.CharField(label="CANTIDAD")
-    fechaInicial= forms.DateField(widget=forms.SelectDateWidget(),label="FECHA")
+    fechaInicial = forms.DateField(widget=forms.SelectDateWidget(), label="FECHA")
 
-
-    def calc_controled(self,controlado):
-        if controlado==True:
+    def calc_controled(self, controlado):
+        if controlado == True:
             return 'Si'
         else:
             return 'No'
 
-    def calc_disp(self,nueva_muestra):
-        bandejas= Bandeja.objects.filter(muestra=nueva_muestra)
+    def calc_disp(self, nueva_muestra):
+        bandejas = Bandeja.objects.filter(muestra=nueva_muestra)
         for bandeja in bandejas:
-            if bandeja.libre==False:
+            if bandeja.libre == False:
                 return 'Si'
         return 'No'
-
-
-

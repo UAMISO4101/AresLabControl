@@ -1,27 +1,24 @@
 {% extends "base.html" %}
+{% block head_title %}{{block.super}}Login{% endblock%}
 {% load crispy_forms_tags %}
 
-
-    {% block content %}
-    <div class='row'>
-        <div class='col-sm-6 col-sm-offset-3'>
-            <h1>Login</h1>
-            <form method="post" action=".">
-                {% csrf_token %}
-                {{ form|crispy }}
-
-                <input class='btn btn-block btn-primary' type="submit" value="Ingresar"/>
-                <input type="hidden" name="next" value="{{ next }}"/>
-            </form>
-        </div>
-
+{% block content %}
+<div class='row'>
+    <div class='col-sm-6 col-sm-offset-3'>
+        <h1>Login</h1>
+        <form method="post" action=".">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input class='btn btn-block btn-primary' type="submit" value="Ingresar"/>
+            <input type="hidden" name="next" value="{{ next }}"/>
+        </form>
     </div>
-    <hr/>
-    <div class='row'>
-        <div class='col-sm-6 col-sm-offset-3 text-align-center'>
-            <p>Olvidó la contraseña? <a href="{% url 'auth_password_reset' %}">Recuperela</a>!</p>
-            <p>Sin usuario? <a href="{% url 'registration_register' %}">Regístrese</a>!</p>
-        </div>
+</div>
+<hr/>
+<div class='row'>
+    <div class='col-sm-6 col-sm-offset-3 text-align-center'>
+        <p>Olvid&oacute; la contrase&ntilde;a? <a href="{% url 'auth_password_reset' %}">Recup&eacute;rela</a>!</p>
+        <p>Sin usuario? <a href="{% url 'registration_register' %}">Reg&iacute;strese</a>!</p>
     </div>
-
-    {% endblock %}
+</div>
+{% endblock %}

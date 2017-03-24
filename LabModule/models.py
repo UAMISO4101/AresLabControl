@@ -1,51 +1,123 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
-
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
 
+# Create your models here.
 
-class UserRole(models.Model):
+USERNAME_REGEX = '^[a-zA-Z0-9.-_]*$'
+USERMAIL_REGEX = '^[a-zA-Z0-9.@-_]*$'
+USERCODE_REGEX = '^[a-zA-Z0-9]*$'
+
+
+class Cargo(models.Model):
     class Meta:
-        verbose_name = 'Rol'
-        verbose_name_plural = 'Roles'
+        verbose_name = 'Cargo'
+        verbose_name_plural = 'Cargos'
 
-    userRoleName = models.CharField(max_length=50, default='', verbose_name='Cargo')
+    nombre_cargo = models.CharField(
+        max_length=50,
+        default='',
+        verbose_name='Cargo'
+    )
 
     def __unicode__(self):
         return self.userRoleName
 
 
-class IdType(models.Model):
+class TipoDocumento(models.Model):
     class Meta:
         verbose_name = 'Tipo Identificación'
         verbose_name_plural = 'Tipos de Indentificación'
 
-    IdTypeName = models.CharField(max_length=2, default='', verbose_name='Nombre Tipo Identificación')
-    IdTypeDesc = models.CharField(max_length=100, default='', verbose_name='Descripción Tipo Identificación')
+    nombre_corto = models.CharField(
+        max_length=5,
+        default='',
+        verbose_name='Abreviación Tipo Identificación'
+    )
+    descripcion = models.CharField(
+        max_length=100,
+        default='',
+        verbose_name='Descripción Tipo Identificación'
+    )
 
     def __unicode__(self):
-        return self.IdTypeName
+        return self.nombre_corto
 
 
-class UserProfile(models.Model):
-    class Meta:
-        verbose_name = 'Usuario'
-        verbose_name_plural = 'Usuarios'
-
-    userCode = models.CharField(max_length=20, default='', verbose_name="Código")
-    userRoleName = models.CharField(max_length=20, default='', verbose_name='Cargo', editable=False)
-    userGivenName = models.CharField(max_length=50, default='', verbose_name='Nombres')
-    userLastName = models.CharField(max_length=50, default='', verbose_name='Apellidos')
-    userPhone = models.CharField(max_length=20, default='', verbose_name='Teléfono')
-    userNatIdTypName = models.CharField(max_length=20, default='', verbose_name='Tipo Identificación', editable=False)
-    userNatIdNum = models.CharField(max_length=15, default='', verbose_name='Número de Identificación')
-    timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
-    userRole = models.ForeignKey(UserRole, blank=False, null=True, on_delete=models.CASCADE, verbose_name='Cargo')
-    userNatIdTyp = models.ForeignKey(IdType, blank=False, null=False, on_delete=models.CASCADE,
-                                     verbose_name='Tipo Identificación')
+class Usuario(models.Model):
+    nombre_usuario = models.CharField(
+        verbose_name='Nombre de Usuario',
+        max_length=255,
+        validators=[
+            RegexValidator(
+                regex=USERNAME_REGEX,
+                message='El nombre de usuario debe ser alfanúmerico o contener los siguientes: ". - _" ',
+                code='invalid_username'
+            )],
+        unique=True,
+    )
+    correo_electronico = models.EmailField(
+        verbose_name='Correo Electrónico',
+        max_length=255,
+        validators=[
+            RegexValidator(
+                regex=USERMAIL_REGEX,
+                message='El correo eletrónico debe ser alfanúmerico o contener los siguientes: ". @ + - _" ',
+                code='invalid_email'
+            )],
+        unique=True,
+    )
+    codigo_usuario = models.CharField(
+        verbose_name="Código de Usuario",
+        max_length=20,
+        validators=[
+            RegexValidator(
+                regex=USERCODE_REGEX,
+                message='El código de usuario debe ser alfanúmerico.',
+                code='invalid_usercode'
+            )],
+        default='',
+        unique=True,
+    )
+    nombres = models.CharField(
+        max_length=50,
+        default='',
+        verbose_name='Nombres'
+    )
+    apellidos = models.CharField(
+        max_length=50,
+        default='',
+        verbose_name='Apellidos'
+    )
+    telefono = models.CharField(
+        max_length=20,
+        default='',
+        verbose_name='Teléfono'
+    )
+    userNatIdTypName = models.CharField(
+        max_length=20, default='',
+        verbose_name='Tipo Identificación',
+        editable=False
+    )
+    userNatIdTyp = models.ForeignKey(
+        TipoDocumento,
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+        verbose_name='Tipo Identificación'
+    )
+    userNatIdNum = models.CharField(
+        max_length=15,
+        default='',
+        verbose_name='Número de Identificación'
+    )
+    contrasena = models.CharField(
+        max_length=15,
+        verbose_name='Contraseña'
+    )
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
 
     def __unicode__(self):
@@ -76,8 +148,8 @@ Atributos:
 
     nombre = models.CharField(max_length=100, default='', verbose_name="Nombre", null=False)
     id = models.CharField(max_length=100, default='', verbose_name="Identificación", null=False, primary_key=True)
-    numX = models.PositiveIntegerField(verbose_name="Cantidad de filas", null=False, default=10);
-    numY = models.PositiveIntegerField(verbose_name="Cantidad de columnas", null=False, default=10);
+    numX = models.PositiveIntegerField(verbose_name="Cantidad de filas", null=False, default=10)
+    numY = models.PositiveIntegerField(verbose_name="Cantidad de columnas", null=False, default=10)
 
     def __unicode__(self):
         return self.id + " " + self.nombre
@@ -270,9 +342,8 @@ Atributos:
     :libre (Decimal): Indica si esta libre la bandeja del lugar de almacenamiento.
     :muestra (String): Relación con la entidad muestra.
     :lugarAlmacenamiento (Decimal): Relación con la entidad lugar de almacenamiento.
-
-
     """
+
     class Meta:
         verbose_name = 'Bandeja'
         verbose_name_plural = 'Bandejas'
@@ -328,9 +399,9 @@ class Projecto(models.Model):
     nombre = models.CharField(max_length=50, blank=False, null=True, verbose_name="Nombre proyecto")
     descripcion = models.TextField(max_length=200, blank=False, null=True, verbose_name="Descripcion del proyecto")
     objetivo = models.TextField(max_length=200, blank=False, null=True, verbose_name="Objetivo del proyecto")
-    lider = models.ForeignKey(UserProfile, blank=False, null=True,
+    lider = models.ForeignKey(Usuario, blank=False, null=True,
                               verbose_name="Seleccion lider", related_name="lider")
-    asistentes = models.ManyToManyField(UserProfile, related_name="asistentes")
+    asistentes = models.ManyToManyField(Usuario, related_name="asistentes")
     activo = models.BooleanField(blank=False, null=False, default=True)
 
 
