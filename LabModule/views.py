@@ -24,7 +24,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from registration.backends.default.views import RegistrationView
 
-from models import Bandeja
+from models import Bandeja, LugarAlmacenamientoEnLab
 from models import Experimento
 from models import LugarAlmacenamiento
 from models import MaquinaEnLab
@@ -80,59 +80,57 @@ def agregar_lugar(request):
 
        """
     mensaje = ""
-    if request.user.is_authenticated():
-        if request.method == 'POST':
-            form = LugarAlmacenamientoForm(request.POST, request.FILES)
-            formPos = PosicionesLugarAlmacenamientoForm(request.POST or None, request.FILES or None)
-            items = request.POST.get('items').split('\r\n')
 
-            if form.is_valid() and formPos.is_valid():
-                lugar = form.save(commit=False)
-                lugarEnLab = formPos.save(commit=False)
+    if request.method == 'POST':
+        form = LugarAlmacenamientoForm(request.POST, request.FILES)
+        formPos = PosicionesLugarAlmacenamientoForm(request.POST or None, request.FILES or None)
+        items = request.POST.get('items').split('\r\n')
 
-                ocupado = MaquinaEnLab.objects.filter(idLaboratorio=lugarEnLab.idLaboratorio, xPos=lugarEnLab.posX,
-                                                      yPos=lugarEnLab.posY).exists()
-                # lamisma = MaquinaEnLab.objects.filter(pk=lugarEnLab.pk).exists()
+        if form.is_valid() and formPos.is_valid():
+            lugar = form.save(commit=False)
+            lugarEnLab = formPos.save(commit=False)
 
-                if ocupado:
-                    formPos.add_error("posX", "La posición x ya esta ocupada")
-                    formPos.add_error("posY", "La posición y ya esta ocupada")
+            ocupado = MaquinaEnLab.objects.filter(idLaboratorio=lugarEnLab.idLaboratorio, xPos=lugarEnLab.posX,
+                                                  yPos=lugarEnLab.posY).exists()
+            # lamisma = MaquinaEnLab.objects.filter(pk=lugarEnLab.pk).exists()
 
-                    mensaje = "El lugar en el que desea guadar ya esta ocupado"
+            if ocupado:
+                formPos.add_error("posX", "La posición x ya esta ocupada")
+                formPos.add_error("posY", "La posición y ya esta ocupada")
+
+                mensaje = "El lugar en el que desea guadar ya esta ocupado"
+            else:
+                mensaje = "La posición [" + str(lugarEnLab.posX) + "," + str(
+                    lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio"
+                lab = lugarEnLab.idLaboratorio
+                masX = lab.numX >= lugarEnLab.posX
+                masY = lab.numY >= lugarEnLab.posY
+                posible = masX and masY
+                if not posible:
+                    if not masX:
+                        formPos.add_error("posX", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
+                    if not masY:
+                        formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
                 else:
-                    mensaje = "La posición [" + str(lugarEnLab.posX) + "," + str(
-                        lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio"
-                    lab = lugarEnLab.idLaboratorio
-                    masX = lab.numX >= lugarEnLab.posX
-                    masY = lab.numY >= lugarEnLab.posY
-                    posible = masX and masY
-                    if not posible:
-                        if not masX:
-                            formPos.add_error("posX", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
-                        if not masY:
-                            formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
-                    else:
-                        lugar.save()
-                        lugarEnLab.idLugar = lugar
-                        lugarEnLab.save()
+                    lugar.save()
+                    lugarEnLab.idLugar = lugar
+                    lugarEnLab.save()
 
-                        if items is not None and len(items) > 0:
-                            for item in items:
-                                if item is not None and item != '':
-                                    tamano = item.split(',')[0].split(':')[1]
-                                    cantidad = item.split(',')[1].split(':')[1]
-                                    bandeja = Bandeja(tamano=tamano, cantidad=cantidad, lugarAlmacenamiento=lugar)
-                                    bandeja.save()
+                    if items is not None and len(items) > 0:
+                        for item in items:
+                            if item is not None and item != '':
+                                tamano = item.split(',')[0].split(':')[1]
+                                cantidad = item.split(',')[1].split(':')[1]
+                                bandeja = Bandeja(tamano=tamano, cantidad=cantidad, lugarAlmacenamiento=lugar)
+                                bandeja.save()
 
-                        return HttpResponseRedirect(reverse('home'))
-        else:
-            form = LugarAlmacenamientoForm()
-            formPos = PosicionesLugarAlmacenamientoForm()
-
-        return render(request, 'LugarAlmacenamiento/agregar.html',
-                      {'form': form, 'formPos': formPos, 'mensaje': mensaje})
+                    return HttpResponseRedirect(reverse('home'))
     else:
-        return HttpResponse('No autorizado', status=401)
+        form = LugarAlmacenamientoForm()
+        formPos = PosicionesLugarAlmacenamientoForm()
+
+    return render(request, 'LugarAlmacenamiento/agregar.html',
+                  {'form': form, 'formPos': formPos, 'mensaje': mensaje})
 
 
 class MaquinaForm(ModelForm):
@@ -322,15 +320,15 @@ def listarMaquinas(request):
      :type num: String.
      :returns: HttpResponse -- La respuesta a la petición. Retorna páginada la lista de las máquias que cumplen con la búsqueda. Si no esta autorizado se envia un código 401
 
-    """    
+    """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
-        pag=request.GET.get('pag',1)
-        que=request.GET.get("que","")
-        numer=int(request.GET.get("num","10"))
+        pag = request.GET.get('pag', 1)
+        que = request.GET.get("que", "")
+        numer = int(request.GET.get("num", "10"))
         section = {}
         section['title'] = 'Máquinas'
-        lista_maquinas=MaquinaProfile.objects.all().filter(nombre__icontains=que).extra(order_by=['nombre'])
-        paginatorMaquinas=Paginator(lista_maquinas,numer)
+        lista_maquinas = MaquinaProfile.objects.all().filter(nombre__icontains=que).extra(order_by=['nombre'])
+        paginatorMaquinas = Paginator(lista_maquinas, numer)
         try:
             maquinas = paginatorMaquinas.page(pag)
         except PageNotAnInteger:
@@ -340,11 +338,12 @@ def listarMaquinas(request):
             # If page is out of range (e.g. 9999), deliver last page of results.
             maquinas = paginatorMaquinas.page(paginatorMaquinas.num_pages)
 
-        idMquinas=[maquina.idSistema for maquina in maquinas]
-        lista_Posiciones=MaquinaEnLab.objects.all().filter(idMaquina__in=idMquinas)
-        paginas=[x+1 for x in range(maquinas.paginator.num_pages)]
-        maquinasConUbicacion=zip(maquinas.object_list,lista_Posiciones)
-        context = {'paginas': paginas,'pag':int(pag),'last':maquinas.paginator.num_pages,'section':section,'maquinasBien':maquinasConUbicacion,"query":que}
+        idMquinas = [maquina.idSistema for maquina in maquinas]
+        lista_Posiciones = MaquinaEnLab.objects.all().filter(idMaquina__in=idMquinas)
+        paginas = [x + 1 for x in range(maquinas.paginator.num_pages)]
+        maquinasConUbicacion = zip(maquinas.object_list, lista_Posiciones)
+        context = {'paginas': paginas, 'pag': int(pag), 'last': maquinas.paginator.num_pages, 'section': section,
+                   'maquinasBien': maquinasConUbicacion, "query": que}
         return render(request, 'Maquinas/ListaMaquinas.html', context)
     return HttpResponse('No autorizado', status=401)
 
@@ -360,9 +359,30 @@ def listar_lugares(request):
            :returns: HttpResponse -- La respuesta a la petición, con información de los lugares de almacenamiento existentes.
 
           """
-    lista_lugares = LugarAlmacenamiento.objects.all()
+    lista_lugares = LugarAlmacenamientoEnLab.objects.all()
     context = {'lista_lugares': lista_lugares}
     return render(request, 'LugarAlmacenamiento/listar.html', context)
+
+
+def listar_lugar(request, pk):
+    """Desplegar y comprobar los valores a consultar.
+
+                Se encarga de:
+                * Mostar el formulario para consultar los lugares de almacenamiento.
+
+            :param request: El HttpRequest que se va a responder.
+            :type request: HttpRequest.
+            :param pk: La llave primaria de la máquina a modificar
+            :type pk: String.
+            :returns: HttpResponse -- La respuesta a la petición, con información de los lugares de almacenamiento existentes.
+        """
+
+    lista_lugar = LugarAlmacenamientoEnLab.objects.filter(idLugar_id=pk)
+    if lista_lugar is None:
+        return listar_lugares(request)
+    else:
+        context = {'lugar': lista_lugar[0]}
+        return render(request, 'LugarAlmacenamiento/detalle.html', context)
 
 
 def crear_solicitud_muestra(request):
@@ -406,12 +426,12 @@ def crear_solicitud_muestra(request):
     else:
         return HttpResponse('No autorizado', status=401)
 
-def poblar_datos(request):
 
+def poblar_datos(request):
     MaquinaProfile.objects.create(
-    nombre='Laboratorio genomica',
-    descripcion = "Aca se hace genomica",
-    idSistema ="Lab_101")
+        nombre='Laboratorio genomica',
+        descripcion="Aca se hace genomica",
+        idSistema="Lab_101")
     return HttpResponseRedirect(reverse('home'))
 
 

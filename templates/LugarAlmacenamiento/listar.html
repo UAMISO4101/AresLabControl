@@ -20,12 +20,8 @@
             <th>Nombre</th>
             <th>PosX</th>
             <th>PosY</th>
-            <th>PosX</th>
-            <th>PosY</th>
-            <th>PosX</th>
-            <th>PosY</th>
-            <th></th>
-            <th></th>
+            <th>Peso(Kg)</th>
+            <th>Temp(Grados)</th>
             <th></th>
         </tr>
         </thead>
@@ -35,17 +31,13 @@
         {% for lugar in lista_lugares %}
 
             <tr>
-                <td>{{ lugar.id }}</td>
-                <td>{{ lugar.nombre }}</td>
+                <td>{{ lugar.idLugar.id }}</td>
+                <td>{{ lugar.idLugar.nombre }}</td>
                 <td>{{ lugar.posX }}</td>
                 <td>{{ lugar.posY }}</td>
-                <td>{{ lugar.posX }}</td>
-                <td>{{ lugar.posY }}</td>
-                <td>{{ lugar.posX }}</td>
-                <td>{{ lugar.posY }}</td>
-                <td><a class="btn btn-primary" href="/agregarLugar/{{ lugar.id }}">Editar</a></td>
-                <td><a class="btn btn-primary" href="/agregarLugar/{{ lugar.id }}">Editar</a></td>
-                <td><a class="btn btn-primary" href="/agregarLugar/{{ lugar.id }}">Editar</a></td>
+                <td>{{ lugar.idLugar.peso }}</td>
+                <td>{{ lugar.idLugar.temperatura }}</td>
+                <td><a class="btn btn-primary" href="/verLugar/{{ lugar.idLugar.id }}">Ver Detalle</a></td>
             </tr>
 
         {% endfor %}
