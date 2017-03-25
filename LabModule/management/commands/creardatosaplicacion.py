@@ -1,8 +1,12 @@
 from django.core.management.base import BaseCommand
-
+from django.templatetags.static import static
 from LabModule.models import Cargo
 from LabModule.models import TipoDocumento
+from LabModule.models import MaquinaProfile
+from LabModule.models import LaboratorioProfile
+from LabModule.models import MaquinaEnLab
 
+import json
 
 def crearTiposDocumento():
     nuevoTipoDoc, tipoDocExistente = TipoDocumento.objects.get_or_create(nombre_corto='CC')
@@ -18,15 +22,33 @@ def crearCargos():
     if nuevoCargo:
         nuevoCargo.save()
         return 0
-    return 0
+    return 1
 
 
 def crearLaboratorio():
-    return 0
+
+    nuevoLab, laboratioExistente=LaboratorioProfile.objects.get_or_create(nombre="Laboratorio principal",id="LAB001")
+    if nuevoLab:
+        return 0
+    return 1
 
 
 def crearMaquina():
-    return 0
+    nuevoLab, laboratioExistente=LaboratorioProfile.objects.get_or_create(nombre="Laboratorio principal",id="LAB001")
+    rta=0
+    with open(".///"+static('lab_static/json/maquinas.json')) as data_file:
+        data = json.load(data_file) 
+        for maquina in data:
+            nuevaMaquina, maquinaExistente=MaquinaProfile.objects.get_or_create(nombre=maquina['nombre'],
+                descripcion=maquina['descripcion'],
+                idSistema=maquina['idSistema'],
+                con_reserva=maquina['con_reserva']
+                )
+            nuevare,exre=MaquinaEnLab.objects.get_or_create(idLaboratorio=nuevoLab,idMaquina=nuevaMaquina,
+                    xPos=maquina['x'],yPos=maquina['y'])
+            if nuevaMaquina: 
+                rta=1     
+    return rta
 
 
 def crearBandeja():

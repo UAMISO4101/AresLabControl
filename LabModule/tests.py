@@ -3,8 +3,7 @@
 
 from __future__ import absolute_import
 
-from django.contrib.auth.models import AnonymousUser
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group,Permission,User, AnonymousUser
 from django.http import Http404
 from django.test import Client
 from django.test import RequestFactory
@@ -17,23 +16,24 @@ from .views import maquina_update
 
 c = Client(HTTP_USER_AGENT='Mozilla/5.0')
 
-User = get_user_model()
-
-class MaquinasTest(TestCase):
+class AddMaquinasTest(TestCase):
     def setUp(self):
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
-        with transaction.atomic():
-                self.user = User.objects.create_superuser(
+        self.cientifico=User.objects.create_user(username='john',
+                                 email='jlennon@beatles.com',
+                                 password='glass onion')
+        self.user = User.objects.create_superuser(
                     username='jacob',
                     email='j@a.com',
-                    user_code='fsfwef',
-                    first_name='hola',
-                    last_name='hola',
-                    user_phone=43535,
                     password='top_secret')
         c.login(username=self.user.username, password='top_secret')
-
+        
+        new_group, created = Group.objects.get_or_create(name='cientificos')
+        proj_add_perm = Permission.objects.get(name='maquina||agregar')
+        new_group.permissions.add(proj_add_perm)
+        g = Group.objects.get(name='cientificos') 
+        self.cientifico.groups.add(g)
         self.LaboratorioPrueba = LaboratorioProfile.objects.create(nombre="Laboratorio genetica", id="LAB_101")
 
         self.maquinaPrueba = {
@@ -138,8 +138,14 @@ class MaquinasTest(TestCase):
 
         response = maquina_create(request)
         self.assertEqual(response.status_code, 200, "Debe estar autorizado")
+        
+        #request.user = self.cientifico
 
-     def test_ModificarMaquina(self):
+        #response = maquina_create(request)
+        #self.assertEqual(response.status_code, 200, "El cientifico debe tener permiso")
+
+
+    def test_ModificarMaquina(self):
         request = self.factory.get('/maquina/1', follow=True)
         request.user = AnonymousUser()
         response = maquina_update(request, 1)
@@ -216,3 +222,23 @@ class MaquinasTest(TestCase):
         self.assertEqual(eMaquina, False, "La posicion es invalida")
 
 
+class listMaquinasTest(TestCase):
+    def setUp(self):
+        # Every test needs access to the request factory.
+        self.factory = RequestFactory()
+        self.user = User.objects.create_superuser(
+                    username='jacob',
+                    email='j@a.com',
+                    password='top_secret')
+        c.login(username=self.user.username, password='top_secret')
+
+    def test_PermisoVer(self):
+        request = self.factory.get('/maquina', follow=True)
+        request.user = AnonymousUser()
+        response = maquina_create(request)
+        self.assertEqual(response.status_code, 401, "No debe estar autorizado")
+
+        request.user = self.user
+
+        response = maquina_create(request)
+        self.assertEqual(response.status_code, 200, "Debe estar autorizado")

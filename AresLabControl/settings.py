@@ -178,14 +178,14 @@ EMAIL_HOST_USER = 'cuentatestares@gmail.com'
 EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-<<<<<<< HEAD
+
 
 GRAPH_MODELS = {
   'all_applications': True,
   'group_models': True,
 }
-=======
+
 # Atributos por defecto para creacion de superusuario (pasar a variables de entorno)
-SUPERUSUARIO = "admin"
-CONTRASENA = "1a2d3m4i5n6"
->>>>>>> master
+SUPERUSUARIO = os.environ["SUPERUSUARIO"]
+CONTRASENA = os.environ["CONTRASENA"]
+

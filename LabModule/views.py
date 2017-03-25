@@ -208,7 +208,7 @@ def comprobarPostMaquina(form, formPos, request, template_name, section):
         ocupadoY = MaquinaEnLab.objects.filter(idLaboratorio=new_maquinaEnLab.idLaboratorio, yPos=yPos).exists()
         # lamisma=MaquinaEnLab.objects.filter(idLaboratorio=new_maquinaEnLab.idLaboratorio, yPos=yPos,xPos=xPos,idMaquina).exists()
         lamisma = MaquinaEnLab.objects.filter(pk=new_maquinaEnLab.pk).exists()
-        if (ocupadoX or ocupadoY) and not lamisma:
+        if (ocupadoX and ocupadoY) and not lamisma:
             if (ocupadoX):
                 formPos.add_error("xPos", "La posición x ya esta ocupada")
             if (ocupadoY):
@@ -305,24 +305,47 @@ def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
         return HttpResponse('No autorizado', status=401)
 
 
-def ListarMaquinas(request,pag=1,que=""):
-    if request.user.is_authenticated():
-            section = {}
-            section['title'] = 'Máquinas'
-            lista_maquinas=MaquinaProfile.objects.all().filter(nombre__icontains=que).extra(order_by=['name'])
-            paginatorMaquinas=Paginator(lista_maquinas,1)
-            lista_Posiciones=MaquinaEnLab.objects.all().filter()
-            try:
-                maquinas = paginatorMaquinas.page(pag)
-            except PageNotAnInteger:
-                # If page is not an integer, deliver first page.
-                maquinas = paginatorMaquinas.page(1)
-            except EmptyPage:
-                # If page is out of range (e.g. 9999), deliver last page of results.
-                maquinas = paginatorMaquinas.page(paginatorMaquinas.num_pages)
+def ListarMaquinas(request):
+    """Comprobar si el usario puede ver las máquinas y mostraselas filtrando por una búsqueda. 
 
-            context = {'maquinas': maquinas,'lista_Posiciones':lista_Posiciones,'section':section}
-            return render(request, 'Maquinas/ListaMaquinas.html', context)
+        Se encarga de:
+            * Comprobar si hay un usario logueado
+            * Comprobar si el suario tiene permisos para ver las máquinas
+            * Obtener todas las máquinas cuyo nombre contenga el párametro solicitado por el usario
+            * Páginar el resultado de la consulta. 
+
+     :param pag: Opcional: El número de página que se va a mostrar en la páginación.
+     :type pag: Integer.
+     :param que: Opcional: La búsqueda que se va a realizar
+     :type que: String.
+     :param num: Opcional: El número de máquinas a ver en cada página
+     :type num: String.
+     :returns: HttpResponse -- La respuesta a la petición. Retorna páginada la lista de las máquias que cumplen con la búsqueda. Si no esta autorizado se envia un código 401
+
+    """    
+    if request.user.is_authenticated() and request.user.has_perm("can_viewMachine"):
+        pag=request.GET.get('pag',1)
+        que=request.GET.get("que","")
+        numer=int(request.GET.get("num","10"))
+        section = {}
+        section['title'] = 'Máquinas'
+        lista_maquinas=MaquinaProfile.objects.all().filter(nombre__icontains=que).extra(order_by=['nombre'])
+        paginatorMaquinas=Paginator(lista_maquinas,numer)
+        try:
+            maquinas = paginatorMaquinas.page(pag)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            maquinas = paginatorMaquinas.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            maquinas = paginatorMaquinas.page(paginatorMaquinas.num_pages)
+
+        idMquinas=[maquina.idSistema for maquina in maquinas]
+        lista_Posiciones=MaquinaEnLab.objects.all().filter(idMaquina__in=idMquinas)
+        paginas=[x+1 for x in range(maquinas.paginator.num_pages)]
+        maquinasConUbicacion=zip(maquinas.object_list,lista_Posiciones)
+        context = {'paginas': paginas,'pag':int(pag),'last':maquinas.paginator.num_pages,'section':section,'maquinasBien':maquinasConUbicacion,"query":que}
+        return render(request, 'Maquinas/ListaMaquinas.html', context)
     return HttpResponse('No autorizado', status=401)
 
 
@@ -387,13 +410,8 @@ def poblar_datos(request):
 
     MaquinaProfile.objects.create(
     nombre='Laboratorio genomica',
-    descripcion = "Aca se hace genomica"
-    imagen = models.ImageField(upload_to='images', verbose_name="Imagen", default='images/image-not-found.jpg')
-    idSistema = models.CharField(max_length=20, default='', verbose_name="Identificación", null=False, primary_key=True)
-    con_reserva = models.BooleanField(default=True, verbose_name="Reservable")
-    activa = models.BooleanField(default=True, verbose_name="Activa")
-
-    )
+    descripcion = "Aca se hace genomica",
+    idSistema ="Lab_101")
     return HttpResponseRedirect(reverse('home'))
 
 

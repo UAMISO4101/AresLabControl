@@ -2,8 +2,8 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 
-SUPERUSUARIO = getattr(settings, "SUPERUSUARIO", 'admin')
-CONTRASENA = getattr(settings, "CONTRASENA", '1a2d3m4i5n6')
+SUPERUSUARIO = getattr(settings, "SUPERUSUARIO")
+CONTRASENA = getattr(settings, "CONTRASENA")
 EMAIL_HOST_USER = getattr(settings, "EMAIL_HOST_USER", 'admin@admin.com')
 
 

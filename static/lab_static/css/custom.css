@@ -12,3 +12,8 @@ body {
 .lugar div[class^="row"]{
     margin-bottom: 5px;
 }
+
+.center{
+  display: table !important;
+  margin: 0 auto !important;
+}
