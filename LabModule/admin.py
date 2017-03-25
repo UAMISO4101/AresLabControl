@@ -1,33 +1,52 @@
+# -*- coding: utf-8 -*-
+
 from django.contrib import admin
 
-from LabModule import models
-from .models import UserRole, UserProfile, IdType,MaquinaProfile, LaboratorioProfile,MaquinaEnLab, Muestra, Projecto, \
-    Experimento, Protocolo, Paso, Solicitud, MuestraSolicitud
+from .models import Cargo
+from .models import Experimento
+from .models import LaboratorioProfile
+from .models import MaquinaEnLab
+from .models import MaquinaProfile
+from .models import Muestra
+from .models import MuestraSolicitud
+from .models import Paso
+from .models import Projecto
+from .models import Protocolo
+from .models import Solicitud
+from .models import TipoDocumento
+from .models import Usuario
 
 
-class UserRoleAdmin(admin.ModelAdmin):
+class CargoAdmin(admin.ModelAdmin):
     list_display = ["__unicode__"]
 
     class Meta:
-        model = UserRole
+        model = Cargo
 
 
-class IdTypeAdmin(admin.ModelAdmin):
+class TipoDocumentoAdmin(admin.ModelAdmin):
+    list_display = ["__unicode__", "descripcion"]
+
     class Meta:
-        model = IdType
+        model = TipoDocumento
 
 
+<<<<<<< HEAD
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ["__unicode__", "userCode", "user"]
+=======
+class UsuarioAdmin(admin.ModelAdmin):
+    list_display = ["__unicode__", "correo_electronico", "codigo_usuario"]
+>>>>>>> master
 
     class Meta:
-        model = UserProfile
+        model = Usuario
 
 
 # Register your models here.
-admin.site.register(UserRole, UserRoleAdmin)
-admin.site.register(IdType, IdTypeAdmin)
-admin.site.register(UserProfile, UserProfileAdmin)
+admin.site.register(Cargo, CargoAdmin)
+admin.site.register(TipoDocumento, TipoDocumentoAdmin)
+admin.site.register(Usuario, UsuarioAdmin)
 admin.site.register(MaquinaProfile)
 admin.site.register(Muestra)
 admin.site.register(Projecto)

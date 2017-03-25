@@ -1,5 +1,9 @@
 {% extends "base.html" %}
-
+{% block head_title %}{{block.super}}Registrarse Cerrado{% endblock%}
 {% block content %}
-	<p>El registro de nuevos usuarios esta cerrado.</p>
+<div class='row'>
+    <div class='col-sm-6 col-sm-offset-3 text-align-center'>
+        <p class='text-align-center lead'>El registro de nuevos usuarios esta cerrado.</p>
+    </div>
+</div>
 {% endblock %}
