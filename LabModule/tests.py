@@ -272,6 +272,12 @@ class listMaquinasTest(TestCase):
         MaquinaEnLab.objects.get_or_create(idLaboratorio=self.LaboratorioPrueba,idMaquina=self.MaquinaPrueba,
                     xPos=0,yPos=0)
 
+        self.MaquinaPrueba = MaquinaProfile.objects.create(nombre="Autoclave",
+                descripcion="prueba",
+                idSistema="MAQ002")
+        MaquinaEnLab.objects.get_or_create(idLaboratorio=self.LaboratorioPrueba,idMaquina=self.MaquinaPrueba,
+                    xPos=1,yPos=1)
+
 
     def test_PermisoVer(self):
         """Comprueba que solo los usarios autorizados puedan ver la lista de máquinas
@@ -290,6 +296,10 @@ class listMaquinasTest(TestCase):
         request = self.factory.get('/maquina?que=blabla', follow=True)
         request.user = self.cientifico
         response = listarMaquinas(request)
-        print response.content.find("Maquina de prueba")
         self.assertEqual(response.status_code, 200, "El cientifico debe estar autorizado")
-        self.assertEqual(response.content.find("Maquina de prueba"), False, "No debe encontrar la máquinas")
+        self.assertEqual("MAQ001" in response.content, False, "No debe encontrar la máquinas")
+
+        request = self.factory.get('/maquina?que=auto', follow=True)
+        request.user = self.cientifico
+        response = listarMaquinas(request)
+        self.assertEqual("MAQ002" in response.content, True, "Debe encontrar la máquinas")
