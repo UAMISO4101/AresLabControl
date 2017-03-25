@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 """Este módulo se encarga de generar las vistas a partir de los modelos, así como de hacer la lógica del negocio. """
+from decimal import Decimal
+
+from django.db.models import Sum
 
 __docformat__ = 'reStructuredText'
 
@@ -24,7 +27,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from registration.backends.default.views import RegistrationView
 
-from models import Bandeja, LugarAlmacenamientoEnLab
+from models import Bandeja, LugarAlmacenamientoEnLab, LaboratorioProfile
 from models import Experimento
 from models import LugarAlmacenamiento
 from models import MaquinaEnLab
@@ -121,7 +124,8 @@ def agregar_lugar(request):
                             if item is not None and item != '':
                                 tamano = item.split(',')[0].split(':')[1]
                                 cantidad = item.split(',')[1].split(':')[1]
-                                bandeja = Bandeja(tamano=tamano, cantidad=cantidad, lugarAlmacenamiento=lugar)
+                                bandeja = Bandeja(tamano=tamano, cantidad=cantidad, lugarAlmacenamiento=lugar,
+                                                  libre=False)
                                 bandeja.save()
 
                     return HttpResponseRedirect(reverse('home'))
@@ -372,7 +376,7 @@ def listar_lugar(request, pk):
 
             :param request: El HttpRequest que se va a responder.
             :type request: HttpRequest.
-            :param pk: La llave primaria de la máquina a modificar
+            :param pk: La llave primaria del lugar de almacenamiento
             :type pk: String.
             :returns: HttpResponse -- La respuesta a la petición, con información de los lugares de almacenamiento existentes.
         """
@@ -381,7 +385,19 @@ def listar_lugar(request, pk):
     if lista_lugar is None:
         return listar_lugares(request)
     else:
-        context = {'lugar': lista_lugar[0]}
+        lugar = lista_lugar[0]
+        bandejasOcupadas = Bandeja.objects.filter(lugarAlmacenamiento_id=pk, libre=False).count()
+        bandejasLibres = Bandeja.objects.filter(lugarAlmacenamiento_id=pk, libre=True).count()
+        tamano = 0
+        lista = Bandeja.objects.filter(lugarAlmacenamiento_id=pk)
+
+        for x in lista:
+            tamano += Decimal(x.tamano)
+
+        laboratorio = LaboratorioProfile.objects.get(pk=lugar.idLaboratorio_id).nombre
+
+        context = {'lugar': lugar, 'bandejasOcupadas': bandejasOcupadas, 'bandejasLibres': bandejasLibres,
+                   'tamano': tamano, 'laboratorio': laboratorio}
         return render(request, 'LugarAlmacenamiento/detalle.html', context)
 
 
