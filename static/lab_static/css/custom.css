@@ -12,3 +12,13 @@ body {
 .lugar div[class^="row"]{
     margin-bottom: 5px;
 }
+
+.center{
+  display: table !important;
+  margin: 0 auto !important;
+}
+
+img.imageIndex{
+    width:300px;
+    height:200px;
+}
