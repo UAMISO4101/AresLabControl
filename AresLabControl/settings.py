@@ -73,7 +73,6 @@ urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 DATABASES = {
-<<<<<<< HEAD
        # 'default': {
        #  'ENGINE': 'django.db.backends.postgresql',
        #  'NAME': url.path[1:],
@@ -82,32 +81,14 @@ DATABASES = {
        #  'HOST': url.hostname,
        #  'PORT': url.port,
        #  }
-'default': {
-       'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'lab',
-       'HOST':'127.0.0.1',
+    'default': {
+          'ENGINE': 'django.db.backends.postgresql',
+         'NAME': 'areslab',
+        'HOST':'127.0.0.1',
        'PORT':'5432',
-       'USER':'postgres',
-       'PASSWORD':'admin'
+      'USER':'postgres',
+     'PASSWORD':'admin'
     }
-
-=======
-       'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': url.path[1:],
-        'USER': url.username,
-        'PASSWORD': url.password,
-        'HOST': url.hostname,
-        'PORT': url.port,
-        }
-    # 'default': {
-    #       'ENGINE': 'django.db.backends.postgresql',
-    #      'NAME': 'areslab',
-    #     'HOST':'127.0.0.1',
-    #    'PORT':'5432',
-    #   'USER':'postgres',
-    #  'PASSWORD':'admin'
-    # }
     # 'default': {
     #       'ENGINE': 'django.db.backends.postgresql',
     #       'NAME': 'lab',
@@ -129,7 +110,6 @@ DATABASES = {
     #        'ENGINE': 'django.db.backends.sqlite3',
     #        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     #    }
->>>>>>> master
 }
 
 # Password validation

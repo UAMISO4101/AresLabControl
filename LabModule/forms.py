@@ -3,13 +3,13 @@ from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import  User
 
-from .models import IdType as IdentificationTypes, LugarAlmacenamiento, Bandeja, Projecto, LugarAlmacenamientoEnLab,UserProfile
-from .models import UserRole as UsrRole
+from .models import  LugarAlmacenamiento, Bandeja, Projecto, LugarAlmacenamientoEnLab,Usuario
+
 
 
 class UserProfileForm(ModelForm):
     class Meta:
-        model=UserProfile
+        model=Usuario
         exclude=('userRole','user')
         widgets = {
             'password': forms.PasswordInput(),
