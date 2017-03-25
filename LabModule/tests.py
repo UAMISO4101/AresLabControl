@@ -12,7 +12,7 @@ from django.test import TestCase
 from LabModule.models import MaquinaProfile,MaquinaEnLab,LaboratorioProfile
 from .views import maquina_create,maquina_update,listarMaquinas
 c = Client(HTTP_USER_AGENT='Mozilla/5.0')
-
+CONTRASENA = getattr(settings, "CONTRASENA")
 class AddMaquinasTest(TestCase):
     """Prueba los servicios de agregar y editar máquinas
         Se encarga de:
@@ -30,8 +30,8 @@ class AddMaquinasTest(TestCase):
         self.factory = RequestFactory()
         self.user =User.objects.create_user(username='john',
                                  email='jlennon@beatles.com',
-                                 password='glass onion')
-        c.login(username=self.user.username, password='glass onion')
+                                 password=CONTRASENA)
+        c.login(username=self.user.username, password=CONTRASENA)
         
         agregar = Permission.objects.get(name='maquina||agregar')
         editar = Permission.objects.get(name='maquina||editar')
@@ -260,8 +260,8 @@ class listMaquinasTest(TestCase):
         self.factory = RequestFactory()
         self.cientifico=User.objects.create_user(username='john',
                                  email='jlennon@beatles.com',
-                                 password='glass onion')
-        c.login(username=self.cientifico.username, password='glass onion')
+                                 password=CONTRASENA)
+        c.login(username=self.cientifico.username, password=CONTRASENA)
         
         ver = Permission.objects.get(name='maquina||ver')
         self.cientifico.user_permissions.add(ver)
