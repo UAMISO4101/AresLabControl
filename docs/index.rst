@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Bienvenido a la documentación de Ares:Laboratorio farmacéutico!
-====================================================
+===============================================================
 
 Proyecto para la adminstración de un laboratorio farmacéutico especializándose en las máquinas y muestras.
 
