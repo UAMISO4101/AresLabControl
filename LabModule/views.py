@@ -12,12 +12,14 @@ import datetime
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
-
-from django.contrib.auth.models import Group
-from django.contrib.auth.models import User
-from django.core.exceptions import MultipleObjectsReturned
-from django.core.exceptions import ObjectDoesNotExist
-from django.forms import ModelForm
+from django.shortcuts import render, redirect, get_object_or_404
+from django.core.urlresolvers import reverse
+from django.forms import ModelForm, models
+from django import forms
+from django.contrib.auth.models import User,Group
+from django.views.decorators.csrf import csrf_exempt
+from models import MaquinaProfile, Bandeja, LugarAlmacenamiento, MaquinaEnLab, LaboratorioProfile, Muestra, \
+    Solicitud, Paso, MuestraSolicitud, Experimento, Protocolo
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -41,7 +43,7 @@ from models import Usuario
 from .forms import LugarAlmacenamientoForm
 from .forms import MuestraSolicitudForm
 from .forms import PosicionesLugarAlmacenamientoForm
-from .forms import RegistroUsuarioForm
+from .forms import UserProfileForm
 
 
 # Create your views here.
@@ -51,23 +53,31 @@ def home(request):
 
 
 class UserRegistrationView(RegistrationView):
-    form_class = RegistroUsuarioForm
+    form_class = UserProfileForm
+
 
 
 def registrar_usuario(request):
-    form = RegistroUsuarioForm(request.POST or None)
-    if form.is_valid():
-        nuevo_usuario = form.save(commit=False)
-        nuevo_perfil = User.objects.create_user(username=nuevo_usuario.nombre_usuario,
-                                                email=nuevo_usuario.correo_electronico,
-                                                password=nuevo_usuario.contrasena)
-        nuevo_usuario.user = nuevo_perfil
-        nuevo_usuario.save()
-        qsGrupoUsuarios = Group.objects.get(name='Cientifico')
-        nuevo_usuario.user.groups.add(qsGrupoUsuarios)
-    context = {'form': form}
-    return render(request, 'registration/registration_form.html', context)
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addUser"):
+      section = {}
+      section['title'] = 'Agregar usuario'
+      form = UserProfileForm(request.POST or None)
+      if form.is_valid():
+          usuario=form.save(commit=False)
+          try:
+            ud=User.objects.create_user(username=usuario.userCode,
+                                   email=usuario.email,
+                                   password=usuario.password)
+            usuario.user=ud
+            usuario.user.groups.add(usuario.grupo)
+            usuario.save()
+            return HttpResponseRedirect(reverse('home'))
+          except :
+            form.add_error("userCode", "Un usuario con este id ya existe")
 
+      return render(request, 'registration/registration_form.html',
+             {'form': form})
+    return HttpResponse('No autorizado', status=401)
 
 def agregar_lugar(request):
     """Desplegar y comprobar los valores a insertar.
@@ -350,6 +360,7 @@ def listarMaquinas(request):
                    'maquinasBien': maquinasConUbicacion, "query": que}
         return render(request, 'Maquinas/ListaMaquinas.html', context)
     return HttpResponse('No autorizado', status=401)
+
 
 
 def listar_lugares(request):

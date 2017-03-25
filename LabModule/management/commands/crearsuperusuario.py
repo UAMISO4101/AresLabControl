@@ -22,11 +22,15 @@ def createGroups():
     asistentes, created2 = Group.objects.get_or_create(name='asistentes')
     jefes, created3 = Group.objects.get_or_create(name='jefes de laboratorio')
 
+
     maquinasAgregar = Permission.objects.get(name='maquina||agregar')
     maquinasEditar = Permission.objects.get(name='maquina||editar')
     maquinasVer = Permission.objects.get(name='maquina||ver')
+    agregarUsuario = Permission.objects.get(name='usuario||agregar')
 
-    cientificos.permissions.add(maquinasAgregar,maquinasEditar,maquinasVer)
+
+    cientificos.permissions.add(maquinasAgregar,maquinasEditar,maquinasVer,agregarUsuario)
+    jefes.permissions.add(maquinasVer,agregarUsuario)
     asistentes.permissions.add(maquinasVer)
     if created1 or created2 or created3 :
         return 0
