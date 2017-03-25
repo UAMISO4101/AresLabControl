@@ -9,31 +9,33 @@ from django.test import Client
 from django.test import RequestFactory
 from django.test import TestCase
 
-from LabModule.models import LaboratorioProfile
-from LabModule.models import MaquinaProfile
-from .views import maquina_create
-from .views import maquina_update
-
+from LabModule.models import MaquinaProfile,MaquinaEnLab,LaboratorioProfile
+from .views import maquina_create,maquina_update,listarMaquinas
 c = Client(HTTP_USER_AGENT='Mozilla/5.0')
 
 class AddMaquinasTest(TestCase):
+    """Prueba los servicios de agregar y editar máquinas
+        Se encarga de:
+            * Probar la autorización de servicios
+            * Probar los servicios de agregar
+    """
     def setUp(self):
+        """Inicia el estado del tes
+            Se encarga de :
+                *Crear un usario y darle los permisos de agregar y editar
+                *Crear un laboratorio
+                *Definir varias máquinas que serviran para probar la lógica del negocio
+        """
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
-        self.cientifico=User.objects.create_user(username='john',
+        self.user =User.objects.create_user(username='john',
                                  email='jlennon@beatles.com',
                                  password='glass onion')
-        self.user = User.objects.create_superuser(
-                    username='jacob',
-                    email='j@a.com',
-                    password='top_secret')
-        c.login(username=self.user.username, password='top_secret')
+        c.login(username=self.user.username, password='glass onion')
         
-        new_group, created = Group.objects.get_or_create(name='cientificos')
-        proj_add_perm = Permission.objects.get(name='maquina||agregar')
-        new_group.permissions.add(proj_add_perm)
-        g = Group.objects.get(name='cientificos') 
-        self.cientifico.groups.add(g)
+        agregar = Permission.objects.get(name='maquina||agregar')
+        editar = Permission.objects.get(name='maquina||editar')
+        self.user.user_permissions.add(agregar,editar)
         self.LaboratorioPrueba = LaboratorioProfile.objects.create(nombre="Laboratorio genetica", id="LAB_101")
 
         self.maquinaPrueba = {
@@ -129,6 +131,9 @@ class AddMaquinasTest(TestCase):
         maquina_create(request)
 
     def test_PermisoAgregar(self):
+        """Comprueba que un usario no autenticado no pueda agregar máquinas.
+           También comprueba con un usario con el permiso de agregar máquinas pueda hacerlo
+        """
         request = self.factory.get('/maquina/add', follow=True)
         request.user = AnonymousUser()
         response = maquina_create(request)
@@ -138,15 +143,12 @@ class AddMaquinasTest(TestCase):
 
         response = maquina_create(request)
         self.assertEqual(response.status_code, 200, "Debe estar autorizado")
-        
-        #request.user = self.cientifico
-
-        #response = maquina_create(request)
-        #self.assertEqual(response.status_code, 200, "El cientifico debe tener permiso")
-
 
     def test_ModificarMaquina(self):
-        request = self.factory.get('/maquina/1', follow=True)
+        """ Comprueba que un usario no autenticado no pueda editar una máquinas
+            tabmíen comprueba que un usuario autenticado pueda hacerlo
+        """
+        request = self.factory.get('/maquina/', follow=True)
         request.user = AnonymousUser()
         response = maquina_update(request, 1)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
@@ -158,14 +160,25 @@ class AddMaquinasTest(TestCase):
             pass
 
     def test_agregarMaquina(self):
-
+        """ Comprueba que el servicio REST de agregar máquinas sea correcto para un usuario autorizado,
+            también comprueba que un usario autorizado pueda editar una máquina existente
+        """
         request = self.factory.post('/maquina/add', data=self.maquina1)
         request.user = self.user
         response = maquina_create(request)
         eMaquina = MaquinaProfile.objects.filter(pk="AUTO_001").exists()
-        self.assertEqual(eMaquina, True, "Debe añadirlo")
+        self.assertEqual(eMaquina, True, "El cientifico debe poder agregar máquinas")
+
+        request = self.factory.get('/maquina/')
+
+        request.user= self.user
+        response = maquina_update(request,'AUTO_001')
+        self.assertEqual(response.status_code, 200, "El cientifico debe estar autorizado y la máquina existir")
+
 
     def test_agregarOcupado(self):
+        """Agregar una nueva máquina en un lugar ya ocupado
+        """
         request = self.factory.post('/maquina/add', data=self.maquina2)
         request.user = self.user
         response = maquina_create(request)
@@ -173,7 +186,8 @@ class AddMaquinasTest(TestCase):
         self.assertEqual(eMaquina, False, "El campo ya esta ocupado")
 
     def test_AgregarIdRepetido(self):
-
+        """Agregar una máquina con un ID ya existente
+        """
         request = self.factory.post('/maquina/add', data=self.maquina3)
         request.user = self.user
         response = maquina_create(request)
@@ -182,6 +196,8 @@ class AddMaquinasTest(TestCase):
         self.assertEqual(eMaquina, True, "Deberia solo haber una maquia pero hay " + str(con))
 
     def test_AgregarLaboratorioInexistente(self):
+        """Agregar una máquina a un aboratorio inexistente
+        """
 
         request = self.factory.post('/maquina/add', data=self.maquina4)
         request.user = self.user
@@ -190,6 +206,9 @@ class AddMaquinasTest(TestCase):
         self.assertEqual(eMaquina, False, "El laboratorio no es valido")
 
     def test_AgregarPosicionNegativa(self):
+        """
+        Agregar una máquina en una posición invalidad en el laboratorio
+        """
 
         request = self.factory.post('/maquina/add', data=self.maquina5)
         request.user = self.user
@@ -198,6 +217,8 @@ class AddMaquinasTest(TestCase):
         self.assertEqual(eMaquina, False, "La posicion es invalida")
 
     def test_AgregarxSuperior(self):
+        """Agregar una máquina en una posición x mayor a la capacidad del laboratorio
+        """
 
         request = self.factory.post('/maquina/add', data=self.maquina6)
         request.user = self.user
@@ -206,6 +227,8 @@ class AddMaquinasTest(TestCase):
         self.assertEqual(eMaquina, False, "La posicion es invalida")
 
     def test_AgregarySuperior(self):
+        """Agregar una máquina en una posición y mayor a la capacidad del laboratorio
+        """
 
         request = self.factory.post('/maquina/add', data=self.maquina7)
         request.user = self.user
@@ -214,6 +237,8 @@ class AddMaquinasTest(TestCase):
         self.assertEqual(eMaquina, False, "La posicion es invalida")
 
     def test_AgregarCamposInvalidos(self):
+        """Prueba los campos obligatorios del servicio REST
+        """
 
         request = self.factory.post('/maquina/add', data=self.maquina8)
         request.user = self.user
@@ -223,22 +248,48 @@ class AddMaquinasTest(TestCase):
 
 
 class listMaquinasTest(TestCase):
+    """ Se encarga de probar los permissos de listar máquinas
+         Se encarga de:
+            *Crear usurios y agregarles sus permisos
+            *Probar los servicios con cada usuario
+    """
     def setUp(self):
+        """"Crea un cientifico, un asistente y un jefe para probar sus permisos
+        """
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
-        self.user = User.objects.create_superuser(
-                    username='jacob',
-                    email='j@a.com',
-                    password='top_secret')
-        c.login(username=self.user.username, password='top_secret')
+        self.cientifico=User.objects.create_user(username='john',
+                                 email='jlennon@beatles.com',
+                                 password='glass onion')
+        c.login(username=self.cientifico.username, password='glass onion')
+        
+        ver = Permission.objects.get(name='maquina||ver')
+        self.cientifico.user_permissions.add(ver)
+        self.LaboratorioPrueba = LaboratorioProfile.objects.create(nombre="Laboratorio genetica", id="LAB_101")
+        self.MaquinaPrueba = MaquinaProfile.objects.create(nombre="prueba",
+                descripcion="Maquina de prueba",
+                idSistema="MAQ001")
+        MaquinaEnLab.objects.get_or_create(idLaboratorio=self.LaboratorioPrueba,idMaquina=self.MaquinaPrueba,
+                    xPos=0,yPos=0)
+
 
     def test_PermisoVer(self):
+        """Comprueba que solo los usarios autorizados puedan ver la lista de máquinas
+        """
         request = self.factory.get('/maquina', follow=True)
         request.user = AnonymousUser()
-        response = maquina_create(request)
+        response = listarMaquinas(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
+        request.user = self.cientifico
+        response = listarMaquinas(request)
+        self.assertEqual(response.status_code, 200, "El cientifico debe estar autorizado")
 
-        request.user = self.user
-
-        response = maquina_create(request)
-        self.assertEqual(response.status_code, 200, "Debe estar autorizado")
+    def test_Filtro(self):
+        """Comrprueba que el filtro funcione
+        """
+        request = self.factory.get('/maquina?que=blabla', follow=True)
+        request.user = self.cientifico
+        response = listarMaquinas(request)
+        print response.content.find("Maquina de prueba")
+        self.assertEqual(response.status_code, 200, "El cientifico debe estar autorizado")
+        self.assertEqual(response.content.find("Maquina de prueba"), False, "No debe encontrar la máquinas")

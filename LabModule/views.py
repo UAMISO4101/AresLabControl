@@ -257,7 +257,7 @@ def maquina_create(request, template_name='Maquinas/agregar.html'):
 
     """
 
-    if request.user.is_authenticated() and request.user.has_perm("account.can_addMachine"):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addMachine"):
         section = {}
         section['title'] = 'Agregar máquina'
         section['agregar'] = True
@@ -291,7 +291,7 @@ def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
 
     """
 
-    if request.user.is_authenticated() and request.user.has_perm("account.can_edditMachine"):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_edditMachine"):
         server = get_object_or_404(MaquinaProfile, pk=pk)
         serverRelacionLab = get_object_or_404(MaquinaEnLab, idMaquina=server)
         mensaje = ""
@@ -305,7 +305,7 @@ def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
         return HttpResponse('No autorizado', status=401)
 
 
-def ListarMaquinas(request):
+def listarMaquinas(request):
     """Comprobar si el usario puede ver las máquinas y mostraselas filtrando por una búsqueda. 
 
         Se encarga de:
@@ -323,7 +323,7 @@ def ListarMaquinas(request):
      :returns: HttpResponse -- La respuesta a la petición. Retorna páginada la lista de las máquias que cumplen con la búsqueda. Si no esta autorizado se envia un código 401
 
     """    
-    if request.user.is_authenticated() and request.user.has_perm("can_viewMachine"):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
         pag=request.GET.get('pag',1)
         que=request.GET.get("que","")
         numer=int(request.GET.get("num","10"))

@@ -10,7 +10,7 @@ import json
 
 def crearTiposDocumento():
     nuevoTipoDoc, tipoDocExistente = TipoDocumento.objects.get_or_create(nombre_corto='CC')
-    if nuevoTipoDoc:
+    if tipoDocExistente:
         nuevoTipoDoc.descripcion = 'Cedula de Ciudadania'
         nuevoTipoDoc.save()
         return 0
@@ -28,14 +28,14 @@ def crearCargos():
 def crearLaboratorio():
 
     nuevoLab, laboratioExistente=LaboratorioProfile.objects.get_or_create(nombre="Laboratorio principal",id="LAB001")
-    if nuevoLab:
+    if laboratioExistente:
         return 0
     return 1
 
 
 def crearMaquina():
     nuevoLab, laboratioExistente=LaboratorioProfile.objects.get_or_create(nombre="Laboratorio principal",id="LAB001")
-    rta=0
+    rta=1
     with open(".///"+static('lab_static/json/maquinas.json')) as data_file:
         data = json.load(data_file) 
         for maquina in data:
@@ -46,8 +46,8 @@ def crearMaquina():
                 )
             nuevare,exre=MaquinaEnLab.objects.get_or_create(idLaboratorio=nuevoLab,idMaquina=nuevaMaquina,
                     xPos=maquina['x'],yPos=maquina['y'])
-            if nuevaMaquina: 
-                rta=1     
+            if maquinaExistente: 
+                rta=0    
     return rta
 
 
