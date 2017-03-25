@@ -1,30 +1,23 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.forms import ModelForm
 
-from .models import AccountRole as UsrRole
 from .models import Bandeja
-from .models import DocumentIDType as IdentificationTypes
 from .models import LugarAlmacenamiento
 from .models import LugarAlmacenamientoEnLab
 from .models import Projecto
+from .models import Usuario
 
-LabUser = get_user_model()
 
+class RegistroUsuarioForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        exclude = ('user',)
 
-class UserCreationForm(forms.ModelForm):
-    """A form for creating new users. Includes all the required
-    fields, plus a repeated password."""
-    qIdTypes = IdentificationTypes.objects.all()
-    qUserRoles = UsrRole.objects.all()
+    widgets = {
+        'password': forms.PasswordInput(),
+    }
 
-    password1 = forms.CharField(
-        label="Contraseña",
-        strip=False,
-        widget=forms.PasswordInput,
-    )
     password2 = forms.CharField(
         label="Confirme su contraseña",
         widget=forms.PasswordInput,
@@ -35,69 +28,14 @@ class UserCreationForm(forms.ModelForm):
     error_messages = {
         'password_mismatch': "Las contraseñas deben coincidir!",
     }
-    # ADITIONAL FIELDS
-    # they are passed to the backend as kwargs and there they are saved
-    userNatIdTypName = forms.ModelChoiceField(
-        label="Tipo de Identificación",
-        queryset=qIdTypes,
-        empty_label="Seleccione una opción")
-
-    userNatIdNum = forms.CharField(
-        label="Número de Identificación"
-    )
-
-    userRoleName = forms.ModelChoiceField(
-        label="Cargo",
-        queryset=qUserRoles,
-        empty_label="Seleccione una opción"
-    )
-
-    class Meta:
-        model = LabUser
-        fields = ('username', 'email', 'user_code', 'first_name', 'last_name', 'user_phone')
 
     def clean_password2(self):
         # Check that the two password entries match
-        password1 = self.cleaned_data.get("password1")
+        password = self.cleaned_data.get("password")
         password2 = self.cleaned_data.get("password2")
-        if password1 and password2 and password1 != password2:
+        if password and password2 and password != password2:
             raise forms.ValidationError("Las contraseñas no coinciden!")
-        return password2
-
-    def save(self, commit=True):
-        # Save the provided password in hashed format
-        user = super(UserCreationForm, self).save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
-        if commit:
-            user.save()
-        return user
-
-
-class UserChangeForm(forms.ModelForm):
-    """A form for updating users. Includes all the fields on
-    the user, but replaces the password field with admin's
-    password hash display field.
-    """
-    password = ReadOnlyPasswordHashField()
-
-    class Meta:
-        model = LabUser
-        fields = (
-            'username',
-            'email',
-            'user_code',
-            'first_name',
-            'last_name',
-            'user_phone',
-            'password',
-            'is_active',
-            'is_admin')
-
-    def clean_password(self):
-        # Regardless of what the user provides, return the initial value.
-        # This is done here, rather than on the field, because the
-        # field does not have access to the initial value
-        return self.initial["password"]
+        return password
 
 
 class LugarAlmacenamientoForm(ModelForm):
@@ -166,6 +104,7 @@ class MuestraSolicitudForm(forms.Form):
                     asistentes=id_asistente,
                     activo=True)
             )
+
     cantidad = forms.CharField(label="CANTIDAD")
     fechaInicial = forms.DateField(widget=forms.SelectDateWidget(), label="FECHA")
 

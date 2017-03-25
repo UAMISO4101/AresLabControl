@@ -12,6 +12,7 @@ urlpatterns = [
     # Lugar de almacenamiento
     url(r'^agregarLugar/$', views.agregar_lugar, name='agregarLugar'),
     url(r'^listaLugares/$', views.listar_lugares, name='listaLugares'),
+    url(r'accounts/register/$', views.registrar_usuario, name='registration_register'),
     url(r'^maquina/add/$', views.maquina_create, name='maquina-add'),
     url(r'^maquina/$', views.ListarMaquinas, name='maquinas-listar'),
     url(r'^maquina/(?P<pag>\d+)$', views.ListarMaquinas, name='maquinas-listar'),
@@ -22,7 +23,7 @@ urlpatterns = [
     url(r'^solicitarMuestra/experimentos/$', views.cargar_experimentos, name='experimentos'),
     url(r'^solicitarMuestra/protocolos/$', views.cargar_protocolos, name='protocolos'),
     url(r'^solicitarMuestra/pasos/$', views.cargar_pasos, name='pasos'),
-    url(r'^poblar/$', views.poblar_datos, name='pasos'),
+
 ]
 
 if settings.DEBUG:

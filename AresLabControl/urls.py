@@ -18,13 +18,8 @@ from django.conf.urls import include
 from django.conf.urls import url
 from django.contrib import admin
 
-from LabModule.forms import UserCreationForm
-from LabModule.views import UserRegistrationView
-
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('LabModule.urls')),
-    url(r'accounts/register/$', UserRegistrationView.as_view(form_class=UserCreationForm),
-        name='registration_register'),
     url(r'^accounts/', include('registration.backends.default.urls')),
 ]

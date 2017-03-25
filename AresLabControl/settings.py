@@ -10,6 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY = os.environ["SECRET_KEY"]
 SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -88,7 +89,27 @@ DATABASES = {
       'USER':'postgres',
      'PASSWORD':'admin'
     }
-
+    # 'default': {
+    #       'ENGINE': 'django.db.backends.postgresql',
+    #       'NAME': 'lab',
+    #       'HOST':'127.0.0.1',
+    #       'PORT':'5432',
+    #       'USER':'postgres',
+    #       'PASSWORD':''
+    #   }
+    #
+    # 'default': {
+    #       'ENGINE': 'django.db.backends.postgresql',
+    #       'NAME': 'areslab',
+    #       'HOST':'localhost',
+    #       'PORT':'5432',
+    #       'USER':'postgres',
+    #       'PASSWORD':'admin'
+    #   }
+    #    'default': {
+    #        'ENGINE': 'django.db.backends.sqlite3',
+    #        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    #    }
 }
 
 # Password validation
@@ -134,18 +155,18 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join('media')
-# MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env', 'media_root')
+#MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env', 'media_root')
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-AUTH_USER_MODEL = 'LabModule.LabUser'
-
+AUTH_PROFILE_MODULE = 'LabModule.Usuario'
 # Crispy Forms Tag Settings
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 # Django Registration Redux Settings
+REGISTRATION_OPEN = False
 ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_AUTO_LOGIN = True
 SITE_ID = 1
@@ -157,8 +178,14 @@ EMAIL_HOST_USER = 'cuentatestares@gmail.com'
 EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+<<<<<<< HEAD
 
 GRAPH_MODELS = {
   'all_applications': True,
   'group_models': True,
 }
+=======
+# Atributos por defecto para creacion de superusuario (pasar a variables de entorno)
+SUPERUSUARIO = "admin"
+CONTRASENA = "1a2d3m4i5n6"
+>>>>>>> master

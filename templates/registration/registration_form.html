@@ -1,7 +1,6 @@
 {% extends "base.html" %}
+{% block head_title %}{{block.super}}Registrarse{% endblock%}
 {% load crispy_forms_tags %}
-
-
 {% block content %}
 <div class='row'>
     <div class='col-sm-6 col-sm-offset-3'>
@@ -13,7 +12,6 @@
         </form>
     </div>
 </div>
-
 <hr/>
 <div class='row'>
     <div class='col-sm-6 col-sm-offset-3 text-align-center'>

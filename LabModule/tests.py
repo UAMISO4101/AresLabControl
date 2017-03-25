@@ -1,15 +1,19 @@
+# Create your tests here.
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
+
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.auth import get_user_model
-from django.db import transaction
+from django.contrib.auth.models import User
 from django.http import Http404
 from django.test import Client
-from django.test import TestCase, RequestFactory
+from django.test import RequestFactory
+from django.test import TestCase
 
-from LabModule.models import MaquinaProfile, LaboratorioProfile
-from .views import maquina_create, maquina_update
+from LabModule.models import LaboratorioProfile
+from LabModule.models import MaquinaProfile
+from .views import maquina_create
+from .views import maquina_update
 
 c = Client(HTTP_USER_AGENT='Mozilla/5.0')
 
@@ -134,4 +138,81 @@ class MaquinasTest(TestCase):
 
         response = maquina_create(request)
         self.assertEqual(response.status_code, 200, "Debe estar autorizado")
+
+     def test_ModificarMaquina(self):
+        request = self.factory.get('/maquina/1', follow=True)
+        request.user = AnonymousUser()
+        response = maquina_update(request, 1)
+        self.assertEqual(response.status_code, 401, "No debe estar autorizado")
+        request.user = self.user
+        try:
+            response = maquina_update(request, 1)
+            self.fail("No deberia existir la maquina")
+        except Http404:
+            pass
+
+    def test_agregarMaquina(self):
+
+        request = self.factory.post('/maquina/add', data=self.maquina1)
+        request.user = self.user
+        response = maquina_create(request)
+        eMaquina = MaquinaProfile.objects.filter(pk="AUTO_001").exists()
+        self.assertEqual(eMaquina, True, "Debe añadirlo")
+
+    def test_agregarOcupado(self):
+        request = self.factory.post('/maquina/add', data=self.maquina2)
+        request.user = self.user
+        response = maquina_create(request)
+        eMaquina = MaquinaProfile.objects.filter(pk="AUTO_002").exists()
+        self.assertEqual(eMaquina, False, "El campo ya esta ocupado")
+
+    def test_AgregarIdRepetido(self):
+
+        request = self.factory.post('/maquina/add', data=self.maquina3)
+        request.user = self.user
+        response = maquina_create(request)
+        con = MaquinaProfile.objects.filter(con_reserva=False).count()
+        eMaquina = con == 1
+        self.assertEqual(eMaquina, True, "Deberia solo haber una maquia pero hay " + str(con))
+
+    def test_AgregarLaboratorioInexistente(self):
+
+        request = self.factory.post('/maquina/add', data=self.maquina4)
+        request.user = self.user
+        response = maquina_create(request)
+        eMaquina = MaquinaProfile.objects.filter(pk="AUTO_004").exists()
+        self.assertEqual(eMaquina, False, "El laboratorio no es valido")
+
+    def test_AgregarPosicionNegativa(self):
+
+        request = self.factory.post('/maquina/add', data=self.maquina5)
+        request.user = self.user
+        response = maquina_create(request)
+        eMaquina = MaquinaProfile.objects.filter(pk="AUTO_005").exists()
+        self.assertEqual(eMaquina, False, "La posicion es invalida")
+
+    def test_AgregarxSuperior(self):
+
+        request = self.factory.post('/maquina/add', data=self.maquina6)
+        request.user = self.user
+        response = maquina_create(request)
+        eMaquina = MaquinaProfile.objects.filter(pk="AUTO_005").exists()
+        self.assertEqual(eMaquina, False, "La posicion es invalida")
+
+    def test_AgregarySuperior(self):
+
+        request = self.factory.post('/maquina/add', data=self.maquina7)
+        request.user = self.user
+        response = maquina_create(request)
+        eMaquina = MaquinaProfile.objects.filter(pk="AUTO_005").exists()
+        self.assertEqual(eMaquina, False, "La posicion es invalida")
+
+    def test_AgregarCamposInvalidos(self):
+
+        request = self.factory.post('/maquina/add', data=self.maquina8)
+        request.user = self.user
+        response = maquina_create(request)
+        eMaquina = MaquinaProfile.objects.filter(pk="AUTO_008").exists()
+        self.assertEqual(eMaquina, False, "La posicion es invalida")
+
 
