@@ -1,0 +1,882 @@
+[
+  {
+    "idSistema": 1,
+    "nombre": "AGITADOR MECANICO LIGNTHIN LABMASTER",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 1,
+    "y": 1
+  },
+  {
+    "idSistema": 2,
+    "nombre": "ANALIZADOR DE TAMAÑO DE PARTÍCULAS (MASTER SIZER)",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 2,
+    "y": 1
+  },
+  {
+    "idSistema": 3,
+    "nombre": "ANALIZADOR OPTICO DE BARRIDO (TURBISCAN)",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 3,
+    "y": 1
+  },
+  {
+    "idSistema": 4,
+    "nombre": "AUTOCLAVE NEW BRUNSWICKS",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 4,
+    "y": 1
+  },
+  {
+    "idSistema": 5,
+    "nombre": "AUTOCLAVE SANYO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 5,
+    "y": 1
+  },
+  {
+    "idSistema": 6,
+    "nombre": "BALANZA ANALITICA",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 6,
+    "y": 1
+  },
+  {
+    "idSistema": 7,
+    "nombre": "BALANZA ANALÍTICA CON ACCESORIO PARA DETERMINAR DENSIDAD DE LÍQUIDOS Y SÓLIDOS.",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 7,
+    "y": 1
+  },
+  {
+    "idSistema": 8,
+    "nombre": "BALANZA DETERMINADORA DE HUMEDAD",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 8,
+    "y": 1
+  },
+  {
+    "idSistema": 9,
+    "nombre": "BANCO DE REACTORES",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 9,
+    "y": 1
+  },
+  {
+    "idSistema": 10,
+    "nombre": "BAÑO DE TEMPERATURA CONTROLADA FISHER",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 10,
+    "y": 1
+  },
+  {
+    "idSistema": 11,
+    "nombre": "BAÑO DE ULTRASONIDO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 1,
+    "y": 2
+  },
+  {
+    "idSistema": 12,
+    "nombre": "BAÑO SECO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 2,
+    "y": 2
+  },
+  {
+    "idSistema": 13,
+    "nombre": "BIOREACTOR BIOENGINERING",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 3,
+    "y": 2
+  },
+  {
+    "idSistema": 14,
+    "nombre": "BIOREACTOR BIOFLO 110",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 4,
+    "y": 2
+  },
+  {
+    "idSistema": 15,
+    "nombre": "BIOREACTOR NEWBROSWICK",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 5,
+    "y": 2
+  },
+  {
+    "idSistema": 16,
+    "nombre": "BOMBA JERINGA",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 6,
+    "y": 2
+  },
+  {
+    "idSistema": 17,
+    "nombre": "BOMBAS PERISTALTICAS",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 7,
+    "y": 2
+  },
+  {
+    "idSistema": 18,
+    "nombre": "BURETA DIGITAL",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 8,
+    "y": 2
+  },
+  {
+    "idSistema": 19,
+    "nombre": "CABINA DE EXTRACCION GRANDE CON ADAPTACIÓN DE GASES",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 9,
+    "y": 2
+  },
+  {
+    "idSistema": 20,
+    "nombre": "CABINA DE EXTRACCION GRANDE DE PISO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 10,
+    "y": 2
+  },
+  {
+    "idSistema": 21,
+    "nombre": "CABINA DE FLUJO LAMINAR HORIZONTAL",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 1,
+    "y": 3
+  },
+  {
+    "idSistema": 22,
+    "nombre": "CABINAS DE BIOSEGURIDAD",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 2,
+    "y": 3
+  },
+  {
+    "idSistema": 23,
+    "nombre": "CABINAS DE EXTRACION-PEQUEÑA",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 3,
+    "y": 3
+  },
+  {
+    "idSistema": 24,
+    "nombre": "CABINAS DE FLUJO LAMINAR VERTICAL",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 4,
+    "y": 3
+  },
+  {
+    "idSistema": 25,
+    "nombre": "CAJA DE GUANTES",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 5,
+    "y": 3
+  },
+  {
+    "idSistema": 26,
+    "nombre": "CAMARA DE ALTA VELOCIDAD",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 6,
+    "y": 3
+  },
+  {
+    "idSistema": 27,
+    "nombre": "CÁMARA DE ESTABILIDAD",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 7,
+    "y": 3
+  },
+  {
+    "idSistema": 28,
+    "nombre": "CAMARA TERMOGRAFICA",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 8,
+    "y": 3
+  },
+  {
+    "idSistema": 29,
+    "nombre": "CELDAS DE COMBUSTIBLE",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 9,
+    "y": 3
+  },
+  {
+    "idSistema": 30,
+    "nombre": "CENTRIFUGA",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 10,
+    "y": 3
+  },
+  {
+    "idSistema": 31,
+    "nombre": "CENTRIFUGA REFRIGERADA",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 1,
+    "y": 4
+  },
+  {
+    "idSistema": 32,
+    "nombre": "COLORIMETRO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 2,
+    "y": 4
+  },
+  {
+    "idSistema": 33,
+    "nombre": "COLORIMETRO PARA SOLIDOS",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 3,
+    "y": 4
+  },
+  {
+    "idSistema": 34,
+    "nombre": "CONGELADOR MARCA THERMO (ULTRACONGELADOR)",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 4,
+    "y": 4
+  },
+  {
+    "idSistema": 35,
+    "nombre": "CROMATOGRAFO DE GASES (INYECCIÓN AUTOMÁTICA)",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 5,
+    "y": 4
+  },
+  {
+    "idSistema": 36,
+    "nombre": "CROMATOGRAFO DE GASES (INYECCIÓN MANUAL)",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 6,
+    "y": 4
+  },
+  {
+    "idSistema": 37,
+    "nombre": "CROMATOGRAFO LIQUIDO HPLC",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 7,
+    "y": 4
+  },
+  {
+    "idSistema": 38,
+    "nombre": "DENSÍMETRO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 8,
+    "y": 4
+  },
+  {
+    "idSistema": 39,
+    "nombre": "DISPERSADOR-AGITADOR DISPERMAT",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 9,
+    "y": 4
+  },
+  {
+    "idSistema": 40,
+    "nombre": "DOCUMENTADOR DE GELES",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 10,
+    "y": 4
+  },
+  {
+    "idSistema": 41,
+    "nombre": "DSC (CALORIMETRIA DIFERENCIAL DE BARRIDO)-NITROGENO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 1,
+    "y": 5
+  },
+  {
+    "idSistema": 42,
+    "nombre": "DSC (CALORIMETRIA DIFERENCIAL DE BARRIDO)-OXIGENO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 2,
+    "y": 5
+  },
+  {
+    "idSistema": 43,
+    "nombre": "ELECTROPORADOR",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 3,
+    "y": 5
+  },
+  {
+    "idSistema": 44,
+    "nombre": "EQUIPO DE EQUILIBRIO LIQUIDO VAPOR-FISHER SCIENTIFIC",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 4,
+    "y": 5
+  },
+  {
+    "idSistema": 45,
+    "nombre": "EQUIPO DE EXTRACCION DE ACEITES (PEQUEÑO)",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 5,
+    "y": 5
+  },
+  {
+    "idSistema": 46,
+    "nombre": "EQUIPO DE EXTRACCION L-L, S-L Y ARRASTRE DE VAPOR (PLANTA PILOTO)",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 6,
+    "y": 5
+  },
+  {
+    "idSistema": 47,
+    "nombre": "EQUIPO DE PERDIDAS DE PRESION",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 7,
+    "y": 5
+  },
+  {
+    "idSistema": 48,
+    "nombre": "EQUIPO DIFERENCIAL DE PRESION DIGITAL",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 8,
+    "y": 5
+  },
+  {
+    "idSistema": 49,
+    "nombre": "EQUIPOS DE ELECTROFORESIS",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 9,
+    "y": 5
+  },
+  {
+    "idSistema": 50,
+    "nombre": "ESPECTROFOTOMETRO DE INFRARROJO CERCANO NIR",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 10,
+    "y": 5
+  },
+  {
+    "idSistema": 51,
+    "nombre": "ESPECTROFOTOMETRO DE ULTRAVIOLETA VISIBLE",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 1,
+    "y": 6
+  },
+  {
+    "idSistema": 52,
+    "nombre": "ESPECTROFOTOMETRO NANODROP",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 2,
+    "y": 6
+  },
+  {
+    "idSistema": 53,
+    "nombre": "ESPECTRÓMETRO DE MASAS",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 3,
+    "y": 6
+  },
+  {
+    "idSistema": 54,
+    "nombre": "FUSIOMETRO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 4,
+    "y": 6
+  },
+  {
+    "idSistema": 55,
+    "nombre": "GABINETE Y LÁMPARA PARA VISUALIZACIÓN UV",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 5,
+    "y": 6
+  },
+  {
+    "idSistema": 56,
+    "nombre": "HIGROMETRO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 6,
+    "y": 6
+  },
+  {
+    "idSistema": 57,
+    "nombre": "HORNO A VACIO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 7,
+    "y": 6
+  },
+  {
+    "idSistema": 58,
+    "nombre": "HORNO DE TEMPERATURA CONTROLADA",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 8,
+    "y": 6
+  },
+  {
+    "idSistema": 59,
+    "nombre": "IMPRESORA 3D",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 9,
+    "y": 6
+  },
+  {
+    "idSistema": 60,
+    "nombre": "INCUBADORA",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 10,
+    "y": 6
+  },
+  {
+    "idSistema": 61,
+    "nombre": "INTERCAMBIADOR DE CALOR DE CORAZA Y TUBOS",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 1,
+    "y": 7
+  },
+  {
+    "idSistema": 62,
+    "nombre": "INTERCAMBIADOR DE PLACAS",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 2,
+    "y": 7
+  },
+  {
+    "idSistema": 63,
+    "nombre": "KARL FISCHER",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 3,
+    "y": 7
+  },
+  {
+    "idSistema": 64,
+    "nombre": "LIOFILIZADOR",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 4,
+    "y": 7
+  },
+  {
+    "idSistema": 65,
+    "nombre": "MANTA DE CALENTAMIENTO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 5,
+    "y": 7
+  },
+  {
+    "idSistema": 66,
+    "nombre": "MICROCENTRIFUGA",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 6,
+    "y": 7
+  },
+  {
+    "idSistema": 67,
+    "nombre": "MICROCENTRIFUGA REFRIGERADA",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 7,
+    "y": 7
+  },
+  {
+    "idSistema": 68,
+    "nombre": "MICROSCOPIO DE CONTRASTE DE FASE Y MOTIC",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 8,
+    "y": 7
+  },
+  {
+    "idSistema": 69,
+    "nombre": "MICROSCOPIO OLYMPUS",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 9,
+    "y": 7
+  },
+  {
+    "idSistema": 70,
+    "nombre": "MINI SEM-MICROSCOPIO ELECTRONICO DE BARRIDO-MORFOLOGIA",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 10,
+    "y": 7
+  },
+  {
+    "idSistema": 71,
+    "nombre": "MINI SEM-MICROSCOPIO ELECTRONICO DE BARRIDO-MORFOLOGIA +EDS",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 1,
+    "y": 8
+  },
+  {
+    "idSistema": 72,
+    "nombre": "MOLINO DE CUCHILLAS",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 2,
+    "y": 8
+  },
+  {
+    "idSistema": 73,
+    "nombre": "MOLINO PLANETARIO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 3,
+    "y": 8
+  },
+  {
+    "idSistema": 74,
+    "nombre": "MUFLA-1100°C - HORNO TUBULAR",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 4,
+    "y": 8
+  },
+  {
+    "idSistema": 75,
+    "nombre": "PH-METRO-CONDUCTIVIMETRO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 5,
+    "y": 8
+  },
+  {
+    "idSistema": 76,
+    "nombre": "PISTOLA TERMOMETRO DE INFRARROJO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 6,
+    "y": 8
+  },
+  {
+    "idSistema": 77,
+    "nombre": "PLANCHA DE CALENTAMIENTO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 7,
+    "y": 8
+  },
+  {
+    "idSistema": 78,
+    "nombre": "PURIFICADOR DE AGUA GRADO HPLC",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 8,
+    "y": 8
+  },
+  {
+    "idSistema": 79,
+    "nombre": "PURIFICADOR DE AGUA POR OSMOSIS REVERSA",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 9,
+    "y": 8
+  },
+  {
+    "idSistema": 80,
+    "nombre": "REACTOR CVD",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 10,
+    "y": 8
+  },
+  {
+    "idSistema": 81,
+    "nombre": "REACTOR DE ALTA PRESION 1800ML 5000PSI",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 1,
+    "y": 9
+  },
+  {
+    "idSistema": 82,
+    "nombre": "REACTOR DE ALTA PRESION 500ML 5000PSI",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 2,
+    "y": 9
+  },
+  {
+    "idSistema": 83,
+    "nombre": "REACTOR DE ALTA PRESION 75ML 3000PSI",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 3,
+    "y": 9
+  },
+  {
+    "idSistema": 84,
+    "nombre": "REACTOR ENCHAQUETADO EN VIDRIO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 4,
+    "y": 9
+  },
+  {
+    "idSistema": 85,
+    "nombre": "REFRACTOMETRO DIGITAL",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 5,
+    "y": 9
+  },
+  {
+    "idSistema": 86,
+    "nombre": "REOMETRO AR G2 / REOMETRO DHR1",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 6,
+    "y": 9
+  },
+  {
+    "idSistema": 87,
+    "nombre": "ROTAVAPOR",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 7,
+    "y": 9
+  },
+  {
+    "idSistema": 88,
+    "nombre": "ROTOR-ESTATOR",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 8,
+    "y": 9
+  },
+  {
+    "idSistema": 89,
+    "nombre": "SECADOR DE BANDEJAS",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 9,
+    "y": 9
+  },
+  {
+    "idSistema": 90,
+    "nombre": "SENSOR DE GASES",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 10,
+    "y": 9
+  },
+  {
+    "idSistema": 91,
+    "nombre": "SHAKER",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 1,
+    "y": 10
+  },
+  {
+    "idSistema": 92,
+    "nombre": "SISTEMA DE FILTRACIÓN TANGENCIAL",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 2,
+    "y": 10
+  },
+  {
+    "idSistema": 93,
+    "nombre": "SONICADOR",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 3,
+    "y": 10
+  },
+  {
+    "idSistema": 94,
+    "nombre": "SPIN COATER",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 4,
+    "y": 10
+  },
+  {
+    "idSistema": 95,
+    "nombre": "TAMIZADORA CON JUEGO DE TAMICES",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 5,
+    "y": 10
+  },
+  {
+    "idSistema": 96,
+    "nombre": "TENSIOMETRO OPTICO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 6,
+    "y": 10
+  },
+  {
+    "idSistema": 97,
+    "nombre": "TERMOCICLADOR",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 7,
+    "y": 10
+  },
+  {
+    "idSistema": 98,
+    "nombre": "TERMOCUPLAS DIGITALES",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 8,
+    "y": 10
+  },
+  {
+    "idSistema": 99,
+    "nombre": "TGA-ANALISIS TERMOGRAVIMETRICO-NITROGENO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 9,
+    "y": 10
+  },
+  {
+    "idSistema": 100,
+    "nombre": "TGA-ANALISIS TERMOGRAVIMETRICO-OXIGENO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 10,
+    "y": 10
+  },
+  {
+    "idSistema": 101,
+    "nombre": "TGA-DSC SIMULTANEO NITROGENO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 1,
+    "y": 11
+  },
+  {
+    "idSistema": 102,
+    "nombre": "TGA-DSC SIMULTANEO OXIGENO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 2,
+    "y": 11
+  },
+  {
+    "idSistema": 103,
+    "nombre": "TITULADOR AUTOMÁTICO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 3,
+    "y": 11
+  },
+  {
+    "idSistema": 104,
+    "nombre": "TORRE DE DESTILACION BACTH EN VIDRIO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 4,
+    "y": 11
+  },
+  {
+    "idSistema": 105,
+    "nombre": "TORRE DE DESTILACION CONTINUA EN ACERO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 5,
+    "y": 11
+  },
+  {
+    "idSistema": 106,
+    "nombre": "TRANSILUMINADOR",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 6,
+    "y": 11
+  },
+  {
+    "idSistema": 107,
+    "nombre": "TURBIDIMETRO",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": true,
+    "x": 7,
+    "y": 11
+  },
+  {
+    "idSistema": 108,
+    "nombre": "UNIDAD DE MICROADSORCION",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 8,
+    "y": 11
+  },
+  {
+    "idSistema": 109,
+    "nombre": "VISCOSIMETRO BROOKFIELD DIGITAL",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 9,
+    "y": 11
+  },
+  {
+    "idSistema": 110,
+    "nombre": "VORTEX",
+    "descripcion": "Esta es la descripción de una máquina",
+    "con_reserva": false,
+    "x": 10,
+    "y": 11
+  }
+]

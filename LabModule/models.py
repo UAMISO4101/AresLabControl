@@ -169,6 +169,9 @@ Atributos:
     :con_reserva (boolean): Dice si es necesario aprobar la máquina para ser reservada. Por defecto verdadero
     :activa (boolean): Dice si la máquina se puede solicitar. Por defecto verdadero
 
+    .. note::
+        Se definen los permisos maquina||agregar y maquina||editar
+
     """
 
     class Meta:
@@ -177,6 +180,7 @@ Atributos:
         permissions = (
             ('can_addMachine', 'maquina||agregar'),
             ('can_edditMachine', 'maquina||editar'),
+            ('can_viewMachine', 'maquina||ver')
         )
 
     nombre = models.CharField(max_length=100, default='', verbose_name="Nombre", null=False)
@@ -220,7 +224,7 @@ Atributos:
     yPos = models.PositiveIntegerField(verbose_name="Posición y", null=False, default=0)
 
     def __unicode__(self):
-        return str(self.xPos) + "," + str(self.yPos)
+        return self.idLaboratorio.id+":"+str(self.xPos) + "," + str(self.yPos)
 
 
 class LugarAlmacenamiento(models.Model):
