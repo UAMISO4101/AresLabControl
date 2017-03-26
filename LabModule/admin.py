@@ -2,7 +2,6 @@
 
 from django.contrib import admin
 
-from .models import Cargo
 from .models import Experimento
 from .models import LaboratorioProfile
 from .models import MaquinaEnLab
@@ -15,14 +14,6 @@ from .models import Protocolo
 from .models import Solicitud
 from .models import TipoDocumento
 from .models import Usuario
-
-
-class CargoAdmin(admin.ModelAdmin):
-    list_display = ["__unicode__"]
-
-    class Meta:
-        model = Cargo
-
 
 class TipoDocumentoAdmin(admin.ModelAdmin):
     list_display = ["__unicode__", "descripcion"]
@@ -37,9 +28,7 @@ class UsuarioAdmin(admin.ModelAdmin):
     class Meta:
         model = Usuario
 
-
 # Register your models here.
-admin.site.register(Cargo, CargoAdmin)
 admin.site.register(Experimento)
 admin.site.register(LaboratorioProfile)
 admin.site.register(MaquinaEnLab)

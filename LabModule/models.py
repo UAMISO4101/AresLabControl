@@ -12,22 +12,6 @@ USERNAME_REGEX = '^[a-zA-Z0-9.-_]*$'
 USERMAIL_REGEX = '^[a-zA-Z0-9.@-_]*$'
 USERCODE_REGEX = '^[a-zA-Z0-9]*$'
 
-
-class Cargo(models.Model):
-    class Meta:
-        verbose_name = 'Cargo'
-        verbose_name_plural = 'Cargos'
-
-    nombre_cargo = models.CharField(
-        max_length=50,
-        default='',
-        verbose_name='Cargo'
-    )
-
-    def __unicode__(self):
-        return self.userRoleName
-
-
 class TipoDocumento(models.Model):
     class Meta:
         verbose_name = 'Tipo Identificación'
