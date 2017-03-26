@@ -55,6 +55,7 @@ class Usuario(models.Model):
         permissions = (
             ('can_addUser', 'usuario||agregar'),
         )
+
     nombre_usuario = models.CharField(
         verbose_name='Nombre de Usuario',
         max_length=255,
@@ -137,6 +138,7 @@ class Usuario(models.Model):
         max_length=15,
         verbose_name='Contraseña'
     )
+
     def __unicode__(self):
         return self.user.username
 
@@ -239,7 +241,7 @@ Atributos:
     yPos = models.PositiveIntegerField(verbose_name="Posición y", null=False, default=0)
 
     def __unicode__(self):
-        return self.idLaboratorio.id+":"+str(self.xPos) + "," + str(self.yPos)
+        return self.idLaboratorio.id + ":" + str(self.xPos) + "," + str(self.yPos)
 
 
 class LugarAlmacenamiento(models.Model):

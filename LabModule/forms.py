@@ -8,14 +8,16 @@ from .models import LugarAlmacenamientoEnLab
 from .models import Projecto
 from .models import Usuario
 
+
 class RegistroUsuarioForm(forms.ModelForm):
     class Meta:
         model = Usuario
         exclude = ('user',)
+
     contrasena = forms.CharField(
         label="Escriba su contraseña",
         widget=forms.PasswordInput,
-        strip=False,)
+        strip=False, )
     password2 = forms.CharField(
         label="Confirme su contraseña",
         widget=forms.PasswordInput,
@@ -34,6 +36,7 @@ class RegistroUsuarioForm(forms.ModelForm):
         if contrasena and password2 and contrasena != password2:
             raise forms.ValidationError("Las contraseñas no coinciden!")
         return contrasena
+
 
 class LugarAlmacenamientoForm(ModelForm):
     """Formulario  para crear y modificar el lugar almacenamiento.

@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Third Party Apps
     'crispy_forms',
-	'django_extensions',
+    'django_extensions',
     'registration',
     # Our Apps
     'LabModule',
@@ -72,44 +72,44 @@ urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 DATABASES = {
-'default': {
-      'ENGINE': 'django.db.backends.postgresql',
-      'NAME': url.path[1:],
-      'USER': url.username,
-      'PASSWORD': url.password,
-      'HOST': url.hostname,
-      'PORT': url.port,
-  }
-# 'default': {
-#     'ENGINE': 'django.db.backends.postgresql',
-#     'NAME': url.path[1:],
-#     'USER': url.username,
-#     'PASSWORD': url.password,
-#     'HOST': url.hostname,
-#     'PORT': url.port,
-#
-#   }
-# 'default': {
-#       'ENGINE': 'django.db.backends.postgresql',
-#       'NAME': 'lab',
-#       'HOST':'127.0.0.1',
-#       'PORT':'5432',
-#       'USER':'postgres',
-#       'PASSWORD':''
-#   }
-#
-# 'default': {
-#       'ENGINE': 'django.db.backends.postgresql',
-#       'NAME': 'areslab',
-#       'HOST':'localhost',
-#       'PORT':'5432',
-#       'USER':'postgres',
-#       'PASSWORD':'admin'
-#   }
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#    }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': url.path[1:],
+        'USER': url.username,
+        'PASSWORD': url.password,
+        'HOST': url.hostname,
+        'PORT': url.port,
+    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': url.path[1:],
+    #     'USER': url.username,
+    #     'PASSWORD': url.password,
+    #     'HOST': url.hostname,
+    #     'PORT': url.port,
+    #
+    #   }
+    # 'default': {
+    #       'ENGINE': 'django.db.backends.postgresql',
+    #       'NAME': 'lab',
+    #       'HOST':'127.0.0.1',
+    #       'PORT':'5432',
+    #       'USER':'postgres',
+    #       'PASSWORD':''
+    #   }
+    #
+    # 'default': {
+    #       'ENGINE': 'django.db.backends.postgresql',
+    #       'NAME': 'areslab',
+    #       'HOST':'localhost',
+    #       'PORT':'5432',
+    #       'USER':'postgres',
+    #       'PASSWORD':'admin'
+    #   }
+    #    'default': {
+    #        'ENGINE': 'django.db.backends.sqlite3',
+    #        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    #    }
 }
 
 # Password validation
@@ -155,7 +155,7 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join('media')
-#MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env', 'media_root')
+# MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env', 'media_root')
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
@@ -181,8 +181,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 GRAPH_MODELS = {
-  'all_applications': True,
-  'group_models': True,
+    'all_applications': True,
+    'group_models': True,
 }
 
 # Atributos por defecto para creacion de superusuario (pasar a variables de entorno)

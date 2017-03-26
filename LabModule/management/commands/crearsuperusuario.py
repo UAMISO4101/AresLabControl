@@ -85,7 +85,6 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('Grupos creados'))
         else:
             self.stdout.write(self.style.NOTICE('Los grupos ya existian.'))
-
         if (createUsers() == 0):
             self.stdout.write(self.style.SUCCESS('Usuarios creados'))
         else:

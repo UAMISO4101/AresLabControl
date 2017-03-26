@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
+
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.models import Permission
@@ -14,18 +15,21 @@ from django.test import TestCase
 from LabModule.models import LaboratorioProfile
 from LabModule.models import MaquinaEnLab
 from LabModule.models import MaquinaProfile
+from .views import listarMaquinas
 from .views import maquina_create
 from .views import maquina_update
-from .views import listarMaquinas
 
 c = Client(HTTP_USER_AGENT='Mozilla/5.0')
 CONTRASENA = getattr(settings, "CONTRASENA")
+
+
 class AddMaquinasTest(TestCase):
     """Prueba los servicios de agregar y editar máquinas
         Se encarga de:
             * Probar la autorización de servicios
             * Probar los servicios de agregar
     """
+
     def setUp(self):
         """Inicia el estado del tes
             Se encarga de :
@@ -35,14 +39,14 @@ class AddMaquinasTest(TestCase):
         """
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
-        self.user =User.objects.create_user(username='john',
-                                 email='jlennon@beatles.com',
-                                 password=CONTRASENA)
+        self.user = User.objects.create_user(username='john',
+                                             email='jlennon@beatles.com',
+                                             password=CONTRASENA)
         c.login(username=self.user.username, password=CONTRASENA)
-        
+
         agregar = Permission.objects.get(name='maquina||agregar')
         editar = Permission.objects.get(name='maquina||editar')
-        self.user.user_permissions.add(agregar,editar)
+        self.user.user_permissions.add(agregar, editar)
         self.LaboratorioPrueba = LaboratorioProfile.objects.create(nombre="Laboratorio genetica", id="LAB_101")
 
         self.maquinaPrueba = {
@@ -178,10 +182,9 @@ class AddMaquinasTest(TestCase):
 
         request = self.factory.get('/maquina/')
 
-        request.user= self.user
-        response = maquina_update(request,'AUTO_001')
+        request.user = self.user
+        response = maquina_update(request, 'AUTO_001')
         self.assertEqual(response.status_code, 200, "El cientifico debe estar autorizado y la máquina existir")
-
 
     def test_agregarOcupado(self):
         """Agregar una nueva máquina en un lugar ya ocupado
@@ -260,31 +263,31 @@ class listMaquinasTest(TestCase):
             *Crear usurios y agregarles sus permisos
             *Probar los servicios con cada usuario
     """
+
     def setUp(self):
         """"Crea un cientifico, un asistente y un jefe para probar sus permisos
         """
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
-        self.cientifico=User.objects.create_user(username='john',
-                                 email='jlennon@beatles.com',
-                                 password=CONTRASENA)
+        self.cientifico = User.objects.create_user(username='john',
+                                                   email='jlennon@beatles.com',
+                                                   password=CONTRASENA)
         c.login(username=self.cientifico.username, password=CONTRASENA)
-        
+
         ver = Permission.objects.get(name='maquina||ver')
         self.cientifico.user_permissions.add(ver)
         self.LaboratorioPrueba = LaboratorioProfile.objects.create(nombre="Laboratorio genetica", id="LAB_101")
         self.MaquinaPrueba = MaquinaProfile.objects.create(nombre="prueba",
-                descripcion="Maquina de prueba",
-                idSistema="MAQ001")
-        MaquinaEnLab.objects.get_or_create(idLaboratorio=self.LaboratorioPrueba,idMaquina=self.MaquinaPrueba,
-                    xPos=0,yPos=0)
+                                                           descripcion="Maquina de prueba",
+                                                           idSistema="MAQ001")
+        MaquinaEnLab.objects.get_or_create(idLaboratorio=self.LaboratorioPrueba, idMaquina=self.MaquinaPrueba,
+                                           xPos=0, yPos=0)
 
         self.MaquinaPrueba = MaquinaProfile.objects.create(nombre="Autoclave",
-                descripcion="prueba",
-                idSistema="MAQ002")
-        MaquinaEnLab.objects.get_or_create(idLaboratorio=self.LaboratorioPrueba,idMaquina=self.MaquinaPrueba,
-                    xPos=1,yPos=1)
-
+                                                           descripcion="prueba",
+                                                           idSistema="MAQ002")
+        MaquinaEnLab.objects.get_or_create(idLaboratorio=self.LaboratorioPrueba, idMaquina=self.MaquinaPrueba,
+                                           xPos=1, yPos=1)
 
     def test_PermisoVer(self):
         """Comprueba que solo los usarios autorizados puedan ver la lista de máquinas
