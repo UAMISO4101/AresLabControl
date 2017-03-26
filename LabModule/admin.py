@@ -31,8 +31,8 @@ class TipoDocumentoAdmin(admin.ModelAdmin):
         model = TipoDocumento
 
 
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ["__unicode__", "userCode", "user"]
+class UsuarioAdmin(admin.ModelAdmin):
+    list_display = ["__unicode__", "correo_electronico", "codigo_usuario"]
 
     class Meta:
         model = Usuario
@@ -41,7 +41,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 # Register your models here.
 admin.site.register(Cargo, CargoAdmin)
 admin.site.register(TipoDocumento, TipoDocumentoAdmin)
-admin.site.register(Usuario, UserProfileAdmin)
+admin.site.register(Usuario, UsuarioAdmin)
 admin.site.register(MaquinaProfile)
 admin.site.register(Muestra)
 admin.site.register(Projecto)
