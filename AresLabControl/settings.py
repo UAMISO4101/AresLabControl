@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import os
+import urlparse
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -9,8 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = os.environ["SECRET_KEY"]
-SECRET_KEY = '=c2c#@97z8t(8q_=ahcxqydkj(6%ckc6jzmuq87pha5bd@cnh%'
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -68,18 +68,18 @@ WSGI_APPLICATION = 'AresLabControl.wsgi.application'
 # Database configuration
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-# urlparse.uses_netloc.append("postgres")
-#url = urlparse.urlparse(os.environ["DATABASE_URL"])
+urlparse.uses_netloc.append("postgres")
+url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 DATABASES = {
-    #       'default': {
-    #       'ENGINE': 'django.db.backends.postgresql',
-    #       'NAME': url.path[1:],
-    #       'USER': url.username,
-    #       'PASSWORD': url.password,
-    #       'HOST': url.hostname,
-    #       'PORT': url.port,
-    #   }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': url.path[1:],
+        'USER': url.username,
+        'PASSWORD': url.password,
+        'HOST': url.hostname,
+        'PORT': url.port,
+    }
     # 'default': {
     #     'ENGINE': 'django.db.backends.postgresql',
     #     'NAME': url.path[1:],
@@ -106,10 +106,10 @@ DATABASES = {
     #       'USER':'postgres',
     #       'PASSWORD':'admin'
     #   }
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    #    'default': {
+    #        'ENGINE': 'django.db.backends.sqlite3',
+    #        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    #    }
 }
 
 # Password validation
@@ -154,7 +154,8 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env', 'media_root')
+MEDIA_ROOT = os.path.join('media')
+# MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env', 'media_root')
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
@@ -175,8 +176,7 @@ LOGIN_REDIRECT_URL = '/'
 # Email Configuration Settings
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'cuentatestares@gmail.com'
-# EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
-EMAIL_HOST_PASSWORD = '123456789E'
+EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -186,5 +186,5 @@ GRAPH_MODELS = {
 }
 
 # Atributos por defecto para creacion de superusuario (pasar a variables de entorno)
-SUPERUSUARIO = 'admin'
-CONTRASENA = '1a2d3m4i5n6'
+SUPERUSUARIO = os.environ["SUPERUSUARIO"]
+CONTRASENA = os.environ["CONTRASENA"]

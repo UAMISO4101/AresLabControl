@@ -27,7 +27,6 @@ class UsuarioAdmin(admin.ModelAdmin):
     class Meta:
         model = Usuario
 
-
 # Register your models here.
 admin.site.register(Experimento)
 admin.site.register(LaboratorioProfile)
