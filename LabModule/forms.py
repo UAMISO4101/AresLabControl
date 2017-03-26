@@ -10,6 +10,14 @@ from .models import Usuario
 
 
 class RegistroUsuarioForm(forms.ModelForm):
+    """Formulario  para crear usuarios.
+           Se encarga de:
+               * Tener una instancia del modelo del usuario.
+               * Agregar un usuario a la base de datos.
+
+        :param ModelForm: Instancia de Django.forms.
+        :type ModelForm: ModelForm.
+       """
     class Meta:
         model = Usuario
         exclude = ('user',)

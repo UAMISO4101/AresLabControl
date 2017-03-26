@@ -21,7 +21,6 @@ class TipoDocumentoAdmin(admin.ModelAdmin):
     class Meta:
         model = TipoDocumento
 
-
 class UsuarioAdmin(admin.ModelAdmin):
     list_display = ["__unicode__", "correo_electronico", "codigo_usuario"]
 

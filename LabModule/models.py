@@ -12,7 +12,16 @@ USERNAME_REGEX = '^[a-zA-Z0-9.-_]*$'
 USERMAIL_REGEX = '^[a-zA-Z0-9.@-_]*$'
 USERCODE_REGEX = '^[a-zA-Z0-9]*$'
 
+
 class TipoDocumento(models.Model):
+    """Representación del Tipos de Documento
+    Se encarga de:
+        * Definir los tipos de documentos a manejar en el sistema
+
+    Atributos:
+        :nombre_corto (String): Nnemotecnico Tipo Documento. Maxima longitud 5 caraceres.
+        :descripcion (String): Descripcion Tipo Documento. Maxima longitud 100 caraceres.
+    """
     class Meta:
         verbose_name = 'Tipo Identificación'
         verbose_name_plural = 'Tipos de Indentificación'
@@ -33,6 +42,23 @@ class TipoDocumento(models.Model):
 
 
 class Usuario(models.Model):
+    """Representación de Usuarios
+        Se encarga de:
+            * Definir los usuarios y sus atributos
+
+        Atributos:
+            :nombre_usuario (String): Nombre de usuario. Maxima longitud 255 caraceres, unico.
+            :correo_electronico (String): Correo electronico. Maxima longitud 255 caraceres, unico.
+            :codigo_usuario (String): Codigo de usuario. Maxima longitud 20 caraceres, unico.
+            :nombres (String): Nombres. Maxima longitud 50 caraceres.
+            :apellidos (String): Apellidos. Maxima longitud 50 caraceres.
+            :telefono (String): Telefono. Maxima longitud 20 caraceres.
+            :userNatIdTyp: Tipo de documento, Referenciado de TipoDocumento
+            :userNatIdNum (String): Numero de documento.
+            :grupo: Grupo de usuarios. Referenciado de Group
+            :user: Usuario. Referenciado de User
+            :contrasena (String): Contraseña            
+        """
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
@@ -89,11 +115,6 @@ class Usuario(models.Model):
         default='',
         verbose_name='Teléfono'
     )
-    userNatIdTypName = models.CharField(
-        max_length=20, default='',
-        verbose_name='Tipo Identificación',
-        editable=False
-    )
     userNatIdTyp = models.ForeignKey(
         TipoDocumento,
         blank=False,
@@ -129,16 +150,16 @@ class Usuario(models.Model):
 
 class LaboratorioProfile(models.Model):
     """Representación del laboratorio
-        Se encarga de:
-            * Definir un laboratorio y los campos significativos
-            * Permite guardar en la base de datos el laboratorio.
-
-Atributos:
-    :nombre (String): Nombre del laboratorio. Máxima longitud de 100 caracteres. No puede ser nulo
-    :id (String): Id del laboratorio. Identificación del laboratorio, campo unico, máxima longitud de 100 caracteres.
-    :numX (Integer): Cantidad de columnas que tiene el laboratorio para almacenar máquinas. Por defecto 10.
-    :numY (Integer): Cantidad de filas que tiene el laboratorio para alamacenar máquinas. Por defecto 10.
-
+    Se encarga de:
+        * Definir un laboratorio y los campos significativos
+        * Permite guardar en la base de datos el laboratorio.
+    
+    Atributos:
+        :nombre (String): Nombre del laboratorio. Máxima longitud de 100 caracteres. No puede ser nulo
+        :id (String): Id del laboratorio. Identificación del laboratorio, campo unico, máxima longitud de 100 caracteres.
+        :numX (Integer): Cantidad de columnas que tiene el laboratorio para almacenar máquinas. Por defecto 10.
+        :numY (Integer): Cantidad de filas que tiene el laboratorio para alamacenar máquinas. Por defecto 10.
+    
     """
 
     class Meta:

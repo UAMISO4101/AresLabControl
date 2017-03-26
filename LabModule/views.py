@@ -52,6 +52,15 @@ class UserRegistrationView(RegistrationView):
 
 @csrf_exempt
 def registrar_usuario(request):
+    """Registro de Usuarios
+           Se encarga de:
+               * Obtiene el formulario en el request
+               * crea un usuario y un perfil
+
+        :param request: El HttpRequest que se va a responder.
+        :type request: HttpRequest.
+        :returns: HttpResponse -- La respuesta a la peticion si sale bien, al home, sino al mismo formulario, si no tiene permisos responde no autorizado 
+       """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addUser"):
         section = {}
         section['title'] = 'Agregar usuario'
