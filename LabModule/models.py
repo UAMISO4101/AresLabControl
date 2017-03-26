@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
@@ -48,6 +49,12 @@ class TipoDocumento(models.Model):
 
 
 class Usuario(models.Model):
+    class Meta:
+        verbose_name = 'Usuario'
+        verbose_name_plural = 'Usuarios'
+        permissions = (
+            ('can_addUser', 'usuario||agregar'),
+        )
     nombre_usuario = models.CharField(
         verbose_name='Nombre de Usuario',
         max_length=255,
@@ -114,12 +121,22 @@ class Usuario(models.Model):
         default='',
         verbose_name='Número de Identificación'
     )
+    grupo = models.ForeignKey(
+        Group,
+        on_delete=models.CASCADE,
+        related_name='profile',
+        verbose_name='Grupo',
+        null=False
+    )
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='profile'
+    )
     contrasena = models.CharField(
         max_length=15,
         verbose_name='Contraseña'
     )
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-
     def __unicode__(self):
         return self.user.username
 
@@ -168,7 +185,8 @@ Atributos:
     :idSistema (String): Identificación del laboratorio, máxima longitud de 20 caracteres.
     :con_reserva (boolean): Dice si es necesario aprobar la máquina para ser reservada. Por defecto verdadero
     :activa (boolean): Dice si la máquina se puede solicitar. Por defecto verdadero
-
+    .. note::
+        Se definen los permisos maquina||agregar y maquina||editar
     """
 
     class Meta:
@@ -177,6 +195,7 @@ Atributos:
         permissions = (
             ('can_addMachine', 'maquina||agregar'),
             ('can_edditMachine', 'maquina||editar'),
+            ('can_viewMachine', 'maquina||ver')
         )
 
     nombre = models.CharField(max_length=100, default='', verbose_name="Nombre", null=False)
@@ -220,7 +239,7 @@ Atributos:
     yPos = models.PositiveIntegerField(verbose_name="Posición y", null=False, default=0)
 
     def __unicode__(self):
-        return str(self.xPos) + "," + str(self.yPos)
+        return self.idLaboratorio.id+":"+str(self.xPos) + "," + str(self.yPos)
 
 
 class LugarAlmacenamiento(models.Model):

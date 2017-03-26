@@ -8,16 +8,14 @@ from .models import LugarAlmacenamientoEnLab
 from .models import Projecto
 from .models import Usuario
 
-
 class RegistroUsuarioForm(forms.ModelForm):
     class Meta:
         model = Usuario
         exclude = ('user',)
-
-    widgets = {
-        'password': forms.PasswordInput(),
-    }
-
+    contrasena = forms.CharField(
+        label="Escriba su contraseña",
+        widget=forms.PasswordInput,
+        strip=False,)
     password2 = forms.CharField(
         label="Confirme su contraseña",
         widget=forms.PasswordInput,
@@ -31,12 +29,11 @@ class RegistroUsuarioForm(forms.ModelForm):
 
     def clean_password2(self):
         # Check that the two password entries match
-        password = self.cleaned_data.get("password")
+        contrasena = self.cleaned_data.get("contrasena")
         password2 = self.cleaned_data.get("password2")
-        if password and password2 and password != password2:
+        if contrasena and password2 and contrasena != password2:
             raise forms.ValidationError("Las contraseñas no coinciden!")
-        return password
-
+        return contrasena
 
 class LugarAlmacenamientoForm(ModelForm):
     """Formulario  para crear y modificar el lugar almacenamiento.

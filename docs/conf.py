@@ -160,6 +160,3 @@ texinfo_documents = [
      author, 'LaboratorioFarmaceutico', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-

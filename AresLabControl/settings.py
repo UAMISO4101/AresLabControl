@@ -10,7 +10,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = os.environ["SECRET_KEY"]
 SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -30,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Third Party Apps
     'crispy_forms',
+	'django_extensions',
     'registration',
     # Our Apps
     'LabModule',
@@ -72,35 +72,44 @@ urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': url.path[1:],
-        'USER': url.username,
-        'PASSWORD': url.password,
-        'HOST': url.hostname,
-        'PORT': url.port,
-    }
-    # 'default': {
-    #       'ENGINE': 'django.db.backends.postgresql',
-    #       'NAME': 'lab',
-    #       'HOST':'127.0.0.1',
-    #       'PORT':'5432',
-    #       'USER':'postgres',
-    #       'PASSWORD':''
-    #   }
-    #
-    # 'default': {
-    #       'ENGINE': 'django.db.backends.postgresql',
-    #       'NAME': 'areslab',
-    #       'HOST':'localhost',
-    #       'PORT':'5432',
-    #       'USER':'postgres',
-    #       'PASSWORD':'admin'
-    #   }
-    #    'default': {
-    #        'ENGINE': 'django.db.backends.sqlite3',
-    #        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    #    }
+'default': {
+      'ENGINE': 'django.db.backends.postgresql',
+      'NAME': url.path[1:],
+      'USER': url.username,
+      'PASSWORD': url.password,
+      'HOST': url.hostname,
+      'PORT': url.port,
+  }
+# 'default': {
+#     'ENGINE': 'django.db.backends.postgresql',
+#     'NAME': url.path[1:],
+#     'USER': url.username,
+#     'PASSWORD': url.password,
+#     'HOST': url.hostname,
+#     'PORT': url.port,
+#
+#   }
+# 'default': {
+#       'ENGINE': 'django.db.backends.postgresql',
+#       'NAME': 'lab',
+#       'HOST':'127.0.0.1',
+#       'PORT':'5432',
+#       'USER':'postgres',
+#       'PASSWORD':''
+#   }
+#
+# 'default': {
+#       'ENGINE': 'django.db.backends.postgresql',
+#       'NAME': 'areslab',
+#       'HOST':'localhost',
+#       'PORT':'5432',
+#       'USER':'postgres',
+#       'PASSWORD':'admin'
+#   }
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    }
 }
 
 # Password validation
@@ -153,6 +162,7 @@ MEDIA_ROOT = os.path.join('media')
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 AUTH_PROFILE_MODULE = 'LabModule.Usuario'
+
 # Crispy Forms Tag Settings
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
@@ -169,6 +179,12 @@ EMAIL_HOST_USER = 'cuentatestares@gmail.com'
 EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}
+
 # Atributos por defecto para creacion de superusuario (pasar a variables de entorno)
-SUPERUSUARIO = "admin"
-CONTRASENA = "1a2d3m4i5n6"
+SUPERUSUARIO = os.environ["SUPERUSUARIO"]
+CONTRASENA = os.environ["CONTRASENA"]
