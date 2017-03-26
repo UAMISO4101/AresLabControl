@@ -6,7 +6,7 @@
 
 {% block content %}
 
-    <div class="starter-template">
+    <div class="lugar starter-template">
         <h1>Detalle {{ lugar.idLugar.nombre }}</h1>
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -16,7 +16,26 @@
             <div class="panel-body text-left">
                 <div class="container">
                     <div class="row">
+                        <div class="col-md-2">
+                            <strong>Nombre:</strong>
+                        </div>
+                        <div class="col-md-3">
+                            <strong> {{ lugar.idLugar.nombre }} </strong>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <strong>Posición X:</strong>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong> {{ lugar.posX }}</strong>
 
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
                         <div class="col-md-2">
                             <strong>Descripción:</strong>
                         </div>
@@ -25,132 +44,117 @@
                           <textarea id="items" name="items" class="form-control" rows="3"
                                     readonly> {{ lugar.idLugar.descripcion }} </textarea>
                         </div>
-
                         <div class="col-md-6">
-                            <a href="/{{ lugar.idLugar.imagen }}" target="_blank">
-                                <img src="/{{ lugar.idLugar.imagen }}" alt="Imagen Lugar Almacenamiento"
-                                     class="imageIndex">
-                            </a>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <strong>Posición Y:</strong>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong> {{ lugar.posY }} </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <strong>Imagen:</strong>
+                                </div>
+                                <div class="col-md-6">
+                                    {{ lugar.idLugar.imagen }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <strong>Laboratorio:</strong>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong> {{ lugar.idLaboratorio }} </strong>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title text-left">Datos varios</h3>
-            </div>
-            <div class="panel-body text-left">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-1">
-                            <strong>Laboratorio:</strong>
+        <div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title text-left">Bandejas</h3>
                         </div>
-                        <div class="col-md-3">
-                            <strong> {{ laboratorio }} </strong>
+                        <div class="panel-body text-left">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <strong>Capacidad:</strong>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong> {{ lugar.idLugar.capacidad }} </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#myModal">
+                                        Agregar Bandeja
+                                    </button>
+                                </div>
+
+                            </div>
+                            <div class="row col-md-12">
+                                    <textarea id="items" name="items" class="form-control" rows="3" required
+                                              readonly></textarea>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-1">
-                            <strong>Localización:</strong>
+                </div>
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title text-left">Medidas</h3>
                         </div>
-                        <div class="col-md-3">
-                            <strong>{{ lugar.posX }} </strong>
-                            <strong>{{ lugar.posY }} </strong>
+                        <div class="panel-body text-left">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <strong>Peso:</strong>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong> {{ lugar.idLugar.peso }} </strong>
+                                </div>
+                                <div class="col-md-2">
+                                    Kg
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <strong>Temperatura:</strong>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong> {{ lugar.idLugar.temperatura }} </strong>
+                                </div>
+                                <div class="col-md-2">
+                                    Grados
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <strong>Tamaño:</strong>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong> {{ lugar.idLugar.tamano }} </strong>
+                                </div>
+                                <div class="col-md-2">
+                                    Metros
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title text-left">Bandejas</h3>
-                    </div>
-                    <div class="panel-body text-left">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Usadas:</strong>
-                            </div>
-                            <div class="col-md-6">
-                                <strong> {{ bandejasOcupadas }} </strong>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Libres:</strong>
-                            </div>
-                            <div class="col-md-6">
-                                <strong> {{ bandejasLibres }} </strong>
-                            </div>
-
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Capacidad:</strong>
-                            </div>
-                            <div class="col-md-6">
-                                <strong> {{ lugar.idLugar.capacidad }} </strong>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Tamaño:</strong>
-                            </div>
-                            <div class="col-md-6">
-                                <strong> {{ tamano }} gr </strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title text-left">Medidas</h3>
-                    </div>
-                    <div class="panel-body text-left">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Peso:</strong>
-                            </div>
-                            <div class="col-md-6">
-                                <strong> {{ lugar.idLugar.peso }} </strong>
-                            </div>
-                            <div class="col-md-2">
-                                Kg
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Temperatura:</strong>
-                            </div>
-                            <div class="col-md-6">
-                                <strong> {{ lugar.idLugar.temperatura }} </strong>
-                            </div>
-                            <div class="col-md-2">
-                                Grados
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Tamaño:</strong>
-                            </div>
-                            <div class="col-md-6">
-                                <strong> {{ lugar.idLugar.tamano }} </strong>
-                            </div>
-                            <div class="col-md-2">
-                                Metros
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="text-left">
+            <input class='btn btn-primary' type="submit" value="Agregar"/>
         </div>
     </div>
-{% endblock %}
 
+{% endblock %}

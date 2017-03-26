@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from django.contrib.auth.models import Group
+from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
-from django.contrib.auth.models import  User, Group
-
 
 # Create your models here.
 
@@ -13,22 +13,15 @@ USERMAIL_REGEX = '^[a-zA-Z0-9.@-_]*$'
 USERCODE_REGEX = '^[a-zA-Z0-9]*$'
 
 
-class Cargo(models.Model):
-    class Meta:
-        verbose_name = 'Cargo'
-        verbose_name_plural = 'Cargos'
-
-    nombre_cargo = models.CharField(
-        max_length=50,
-        default='',
-        verbose_name='Cargo'
-    )
-
-    def __unicode__(self):
-        return self.userRoleName
-
-
 class TipoDocumento(models.Model):
+    """Representación del Tipos de Documento
+    Se encarga de:
+        * Definir los tipos de documentos a manejar en el sistema
+
+    Atributos:
+        :nombre_corto (String): Nnemotecnico Tipo Documento. Maxima longitud 5 caraceres.
+        :descripcion (String): Descripcion Tipo Documento. Maxima longitud 100 caraceres.
+    """
     class Meta:
         verbose_name = 'Tipo Identificación'
         verbose_name_plural = 'Tipos de Indentificación'
@@ -45,34 +38,111 @@ class TipoDocumento(models.Model):
     )
 
     def __unicode__(self):
-        return self.IdTypeName
+        return self.nombre_corto
 
 
 class Usuario(models.Model):
+    """Representación de Usuarios
+        Se encarga de:
+            * Definir los usuarios y sus atributos
+
+        Atributos:
+            :nombre_usuario (String): Nombre de usuario. Maxima longitud 255 caraceres, unico.
+            :correo_electronico (String): Correo electronico. Maxima longitud 255 caraceres, unico.
+            :codigo_usuario (String): Codigo de usuario. Maxima longitud 20 caraceres, unico.
+            :nombres (String): Nombres. Maxima longitud 50 caraceres.
+            :apellidos (String): Apellidos. Maxima longitud 50 caraceres.
+            :telefono (String): Telefono. Maxima longitud 20 caraceres.
+            :userNatIdTyp: Tipo de documento, Referenciado de TipoDocumento
+            :userNatIdNum (String): Numero de documento.
+            :grupo: Grupo de usuarios. Referenciado de Group
+            :user: Usuario. Referenciado de User
+            :contrasena (String): Contraseña            
+        """
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
         permissions = (
             ('can_addUser', 'usuario||agregar'),
         )
-        
 
-    userCode = models.CharField(max_length=20, default='', verbose_name="Código",null=False)
-    #userRoleName = models.CharField(max_length=20, default='', verbose_name='Cargo', editable=False)
-    userGivenName = models.CharField(max_length=50, default='', verbose_name='Nombres')
-    userLastName = models.CharField(max_length=50, default='', verbose_name='Apellidos')
-    userPhone = models.CharField(max_length=20, default='', verbose_name='Teléfono')
-    #userNatIdTypName = models.CharField(max_length=20, default='', verbose_name='Tipo Identificación', editable=False)
-    #userNatIdNum = models.CharField(max_length=15, default='', verbose_name='Número de Identificación')
-    #timestamp = models.DateTimeField(auto_now_add=True, auto_now=False def)
-    password = models.CharField(max_length=50,null=False, verbose_name="Contraseña",default='')
-    email = models.EmailField(max_length=100, null= False, unique= True,default="a@a.com")
-    #userRole = models.ForeignKey(UserRole, blank=False, null=True, on_delete=models.CASCADE, verbose_name='Cargo')
-    #userNatIdTyp = models.ForeignKey(IdType, blank=False, null=False, on_delete=models.CASCADE,
-    #                                 verbose_name='Tipo Identificación')
-    grupo=models.ForeignKey(Group, on_delete=models.CASCADE, related_name='profile',verbose_name='Grupo', null=False)
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    nombre_usuario = models.CharField(
+        verbose_name='Nombre de Usuario',
+        max_length=255,
+        validators=[
+            RegexValidator(
+                regex=USERNAME_REGEX,
+                message='El nombre de usuario debe ser alfanúmerico o contener los siguientes: ". - _" ',
+                code='invalid_username'
+            )],
+        unique=True,
+    )
+    correo_electronico = models.EmailField(
+        verbose_name='Correo Electrónico',
+        max_length=255,
+        validators=[
+            RegexValidator(
+                regex=USERMAIL_REGEX,
+                message='El correo eletrónico debe ser alfanúmerico o contener los siguientes: ". @ + - _" ',
+                code='invalid_email'
+            )],
+        unique=True,
+    )
+    codigo_usuario = models.CharField(
+        verbose_name="Código de Usuario",
+        max_length=20,
+        validators=[
+            RegexValidator(
+                regex=USERCODE_REGEX,
+                message='El código de usuario debe ser alfanúmerico.',
+                code='invalid_usercode'
+            )],
+        default='',
+        unique=True,
+    )
+    nombres = models.CharField(
+        max_length=50,
+        default='',
+        verbose_name='Nombres'
+    )
+    apellidos = models.CharField(
+        max_length=50,
+        default='',
+        verbose_name='Apellidos'
+    )
+    telefono = models.CharField(
+        max_length=20,
+        default='',
+        verbose_name='Teléfono'
+    )
+    userNatIdTyp = models.ForeignKey(
+        TipoDocumento,
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+        verbose_name='Tipo Identificación'
+    )
+    userNatIdNum = models.CharField(
+        max_length=15,
+        default='',
+        verbose_name='Número de Identificación'
+    )
+    grupo = models.ForeignKey(
+        Group,
+        on_delete=models.CASCADE,
+        related_name='profile',
+        verbose_name='Grupo',
+        null=False
+    )
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='profile'
+    )
+    contrasena = models.CharField(
+        max_length=15,
+        verbose_name='Contraseña'
+    )
 
     def __unicode__(self):
         return self.user.username
@@ -80,16 +150,16 @@ class Usuario(models.Model):
 
 class LaboratorioProfile(models.Model):
     """Representación del laboratorio
-        Se encarga de:
-            * Definir un laboratorio y los campos significativos
-            * Permite guardar en la base de datos el laboratorio.
-
-Atributos:
-    :nombre (String): Nombre del laboratorio. Máxima longitud de 100 caracteres. No puede ser nulo
-    :id (String): Id del laboratorio. Identificación del laboratorio, campo unico, máxima longitud de 100 caracteres.
-    :numX (Integer): Cantidad de columnas que tiene el laboratorio para almacenar máquinas. Por defecto 10.
-    :numY (Integer): Cantidad de filas que tiene el laboratorio para alamacenar máquinas. Por defecto 10.
-
+    Se encarga de:
+        * Definir un laboratorio y los campos significativos
+        * Permite guardar en la base de datos el laboratorio.
+    
+    Atributos:
+        :nombre (String): Nombre del laboratorio. Máxima longitud de 100 caracteres. No puede ser nulo
+        :id (String): Id del laboratorio. Identificación del laboratorio, campo unico, máxima longitud de 100 caracteres.
+        :numX (Integer): Cantidad de columnas que tiene el laboratorio para almacenar máquinas. Por defecto 10.
+        :numY (Integer): Cantidad de filas que tiene el laboratorio para alamacenar máquinas. Por defecto 10.
+    
     """
 
     class Meta:
@@ -122,10 +192,8 @@ Atributos:
     :idSistema (String): Identificación del laboratorio, máxima longitud de 20 caracteres.
     :con_reserva (boolean): Dice si es necesario aprobar la máquina para ser reservada. Por defecto verdadero
     :activa (boolean): Dice si la máquina se puede solicitar. Por defecto verdadero
-
     .. note::
         Se definen los permisos maquina||agregar y maquina||editar
-
     """
 
     class Meta:
@@ -178,7 +246,7 @@ Atributos:
     yPos = models.PositiveIntegerField(verbose_name="Posición y", null=False, default=0)
 
     def __unicode__(self):
-        return self.idLaboratorio.id+":"+str(self.xPos) + "," + str(self.yPos)
+        return self.idLaboratorio.id + ":" + str(self.xPos) + "," + str(self.yPos)
 
 
 class LugarAlmacenamiento(models.Model):

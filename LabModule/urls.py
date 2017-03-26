@@ -9,14 +9,10 @@ from . import views
 urlpatterns = [
     # Peticiones a vistas
     url(r'^$', views.home, name='home'),
-    url(r'^login/$', views.home, name='login'),
-    url(r'^logout/$', views.home, name='logout'),
-    url(r'accounts/register/$',views.registrar_usuario, name='registration_register'),
     # Lugar de almacenamiento
     url(r'^agregarLugar/$', views.agregar_lugar, name='agregarLugar'),
     url(r'^listaLugares/$', views.listar_lugares, name='listaLugares'),
     url(r'^verLugar/(?P<pk>[\w\-]+)/$', views.listar_lugar, name='verLugar'),
-
     # Usuarios
     url(r'accounts/register/$', views.registrar_usuario, name='registration_register'),
     # Maquinas

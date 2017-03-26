@@ -1,25 +1,19 @@
 # -*- coding: utf-8 -*-
 
 """Este módulo se encarga de generar las vistas a partir de los modelos, así como de hacer la lógica del negocio. """
-from decimal import Decimal
-
-from django.db.models import Sum
 
 __docformat__ = 'reStructuredText'
 
 import datetime
-
-from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
-from django.shortcuts import render, redirect, get_object_or_404
-from django.core.urlresolvers import reverse
-from django.forms import ModelForm, models
-from django import forms
-from django.contrib.auth.models import User, Group
-from django.views.decorators.csrf import csrf_exempt
-from models import MaquinaProfile, Bandeja, LugarAlmacenamiento, MaquinaEnLab, LaboratorioProfile, Muestra, \
-    Solicitud, Paso, MuestraSolicitud, Experimento, Protocolo
+
+from django.contrib.auth.models import User
+from django.core.exceptions import MultipleObjectsReturned
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import EmptyPage
+from django.core.paginator import PageNotAnInteger
+from django.core.paginator import Paginator
+from django.forms import ModelForm
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -29,9 +23,9 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from registration.backends.default.views import RegistrationView
 
-from models import Bandeja, LugarAlmacenamientoEnLab, LaboratorioProfile
+from models import Bandeja
 from models import Experimento
-from models import LugarAlmacenamiento
+from models import LugarAlmacenamientoEnLab
 from models import MaquinaEnLab
 from models import MaquinaProfile
 from models import Muestra
@@ -43,7 +37,7 @@ from models import Usuario
 from .forms import LugarAlmacenamientoForm
 from .forms import MuestraSolicitudForm
 from .forms import PosicionesLugarAlmacenamientoForm
-from .forms import UserProfileForm
+from .forms import RegistroUsuarioForm
 
 
 # Create your views here.
@@ -53,29 +47,38 @@ def home(request):
 
 
 class UserRegistrationView(RegistrationView):
-    form_class = UserProfileForm
+    form_class = RegistroUsuarioForm
 
 
+@csrf_exempt
 def registrar_usuario(request):
+    """Registro de Usuarios
+           Se encarga de:
+               * Obtiene el formulario en el request
+               * crea un usuario y un perfil
+
+        :param request: El HttpRequest que se va a responder.
+        :type request: HttpRequest.
+        :returns: HttpResponse -- La respuesta a la peticion si sale bien, al home, sino al mismo formulario, si no tiene permisos responde no autorizado 
+       """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addUser"):
         section = {}
         section['title'] = 'Agregar usuario'
-        form = UserProfileForm(request.POST or None)
+        form = RegistroUsuarioForm(request.POST or None)
         if form.is_valid():
-            usuario = form.save(commit=False)
+            nuevo_usuario = form.save(commit=False)
             try:
-                ud = User.objects.create_user(username=usuario.userCode,
-                                              email=usuario.email,
-                                              password=usuario.password)
-                usuario.user = ud
-                usuario.user.groups.add(usuario.grupo)
-                usuario.save()
+                nuevo_perfil = User.objects.create_user(username=nuevo_usuario.nombre_usuario,
+                                                        email=nuevo_usuario.correo_electronico,
+                                                        password=nuevo_usuario.contrasena)
+                nuevo_usuario.user = nuevo_perfil
+                nuevo_usuario.user.groups.add(nuevo_usuario.grupo)
+                nuevo_usuario.save()
                 return HttpResponseRedirect(reverse('home'))
             except:
                 form.add_error("userCode", "Un usuario con este id ya existe")
-
-        return render(request, 'registration/registration_form.html',
-                      {'form': form})
+        context = {'form': form}
+        return render(request, 'registration/registration_form.html', context)
     return HttpResponse('No autorizado', status=401)
 
 
@@ -93,60 +96,57 @@ def agregar_lugar(request):
 
        """
     mensaje = ""
-    if request.user.is_authenticated():
-        if request.method == 'POST':
-            form = LugarAlmacenamientoForm(request.POST, request.FILES)
-            formPos = PosicionesLugarAlmacenamientoForm(request.POST or None, request.FILES or None)
-            items = request.POST.get('items').split('\r\n')
 
-            if form.is_valid() and formPos.is_valid():
-                lugar = form.save(commit=False)
-                lugarEnLab = formPos.save(commit=False)
+    if request.method == 'POST':
+        form = LugarAlmacenamientoForm(request.POST, request.FILES)
+        formPos = PosicionesLugarAlmacenamientoForm(request.POST or None, request.FILES or None)
+        items = request.POST.get('items').split('\r\n')
 
-                ocupado = MaquinaEnLab.objects.filter(idLaboratorio=lugarEnLab.idLaboratorio, xPos=lugarEnLab.posX,
-                                                      yPos=lugarEnLab.posY).exists()
-                # lamisma = MaquinaEnLab.objects.filter(pk=lugarEnLab.pk).exists()
+        if form.is_valid() and formPos.is_valid():
+            lugar = form.save(commit=False)
+            lugarEnLab = formPos.save(commit=False)
 
-                if ocupado:
-                    formPos.add_error("posX", "La posición x ya esta ocupada")
-                    formPos.add_error("posY", "La posición y ya esta ocupada")
+            ocupado = MaquinaEnLab.objects.filter(idLaboratorio=lugarEnLab.idLaboratorio, xPos=lugarEnLab.posX,
+                                                  yPos=lugarEnLab.posY).exists()
+            # lamisma = MaquinaEnLab.objects.filter(pk=lugarEnLab.pk).exists()
 
-                    mensaje = "El lugar en el que desea guadar ya esta ocupado"
+            if ocupado:
+                formPos.add_error("posX", "La posición x ya esta ocupada")
+                formPos.add_error("posY", "La posición y ya esta ocupada")
+
+                mensaje = "El lugar en el que desea guadar ya esta ocupado"
+            else:
+                mensaje = "La posición [" + str(lugarEnLab.posX) + "," + str(
+                    lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio"
+                lab = lugarEnLab.idLaboratorio
+                masX = lab.numX >= lugarEnLab.posX
+                masY = lab.numY >= lugarEnLab.posY
+                posible = masX and masY
+                if not posible:
+                    if not masX:
+                        formPos.add_error("posX", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
+                    if not masY:
+                        formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
                 else:
-                    mensaje = "La posición [" + str(lugarEnLab.posX) + "," + str(
-                        lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio"
-                    lab = lugarEnLab.idLaboratorio
-                    masX = lab.numX >= lugarEnLab.posX
-                    masY = lab.numY >= lugarEnLab.posY
-                    posible = masX and masY
-                    if not posible:
-                        if not masX:
-                            formPos.add_error("posX", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
-                        if not masY:
-                            formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
-                    else:
-                        lugar.save()
-                        lugarEnLab.idLugar = lugar
-                        lugarEnLab.save()
+                    lugar.save()
+                    lugarEnLab.idLugar = lugar
+                    lugarEnLab.save()
 
-                        if items is not None and len(items) > 0:
-                            for item in items:
-                                if item is not None and item != '':
-                                    tamano = item.split(',')[0].split(':')[1]
-                                    cantidad = item.split(',')[1].split(':')[1]
-                                    bandeja = Bandeja(tamano=tamano, cantidad=cantidad, lugarAlmacenamiento=lugar,
-                                                      libre=False)
-                                    bandeja.save()
+                    if items is not None and len(items) > 0:
+                        for item in items:
+                            if item is not None and item != '':
+                                tamano = item.split(',')[0].split(':')[1]
+                                cantidad = item.split(',')[1].split(':')[1]
+                                bandeja = Bandeja(tamano=tamano, cantidad=cantidad, lugarAlmacenamiento=lugar)
+                                bandeja.save()
 
-                        return HttpResponseRedirect(reverse('home'))
-        else:
-            form = LugarAlmacenamientoForm()
-            formPos = PosicionesLugarAlmacenamientoForm()
-
-        return render(request, 'LugarAlmacenamiento/agregar.html',
-                      {'form': form, 'formPos': formPos, 'mensaje': mensaje})
+                    return HttpResponseRedirect(reverse('home'))
     else:
-        return HttpResponse('No autorizado', status=401)
+        form = LugarAlmacenamientoForm()
+        formPos = PosicionesLugarAlmacenamientoForm()
+
+    return render(request, 'LugarAlmacenamiento/agregar.html',
+                  {'form': form, 'formPos': formPos, 'mensaje': mensaje})
 
 
 class MaquinaForm(ModelForm):
@@ -320,13 +320,13 @@ def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
 
 
 def listarMaquinas(request):
-    """Comprobar si el usario puede ver las máquinas y mostraselas filtrando por una búsqueda. 
+    """Comprobar si el usario puede ver las máquinas y mostraselas filtrando por una búsqueda.
 
         Se encarga de:
             * Comprobar si hay un usario logueado
             * Comprobar si el suario tiene permisos para ver las máquinas
             * Obtener todas las máquinas cuyo nombre contenga el párametro solicitado por el usario
-            * Páginar el resultado de la consulta. 
+            * Páginar el resultado de la consulta.
 
      :param pag: Opcional: El número de página que se va a mostrar en la páginación.
      :type pag: Integer.
@@ -375,46 +375,29 @@ def listar_lugares(request):
            :returns: HttpResponse -- La respuesta a la petición, con información de los lugares de almacenamiento existentes.
 
           """
-    if request.user.is_authenticated():
-        lista_lugares = LugarAlmacenamientoEnLab.objects.all()
-        context = {'lista_lugares': lista_lugares}
-        return render(request, 'LugarAlmacenamiento/listar.html', context)
-    else:
-        return HttpResponse('No autorizado', status=401)
+    lista_lugares = LugarAlmacenamientoEnLab.objects.all()
+    context = {'lista_lugares': lista_lugares}
+    return render(request, 'LugarAlmacenamiento/listar.html', context)
+
 
 def listar_lugar(request, pk):
     """Desplegar y comprobar los valores a consultar.
-
                 Se encarga de:
                 * Mostar el formulario para consultar los lugares de almacenamiento.
-
             :param request: El HttpRequest que se va a responder.
             :type request: HttpRequest.
-            :param pk: La llave primaria del lugar de almacenamiento
+            :param pk: La llave primaria de la máquina a modificar
             :type pk: String.
             :returns: HttpResponse -- La respuesta a la petición, con información de los lugares de almacenamiento existentes.
         """
-    if request.user.is_authenticated():
-        lista_lugar = LugarAlmacenamientoEnLab.objects.filter(idLugar_id=pk)
-        if lista_lugar is None:
-            return listar_lugares(request)
-        else:
-            lugar = lista_lugar[0]
-            bandejasOcupadas = Bandeja.objects.filter(lugarAlmacenamiento_id=pk, libre=False).count()
-            bandejasLibres = Bandeja.objects.filter(lugarAlmacenamiento_id=pk, libre=True).count()
-            tamano = 0
-            lista = Bandeja.objects.filter(lugarAlmacenamiento_id=pk)
 
-            for x in lista:
-                tamano += Decimal(x.tamano)
-
-            laboratorio = LaboratorioProfile.objects.get(pk=lugar.idLaboratorio_id).nombre
-
-            context = {'lugar': lugar, 'bandejasOcupadas': bandejasOcupadas, 'bandejasLibres': bandejasLibres,
-                       'tamano': tamano, 'laboratorio': laboratorio}
-            return render(request, 'LugarAlmacenamiento/detalle.html', context)
+    lista_lugar = LugarAlmacenamientoEnLab.objects.filter(idLugar_id=pk)
+    if lista_lugar is None:
+        return listar_lugares(request)
     else:
-        return HttpResponse('No autorizado', status=401)
+        context = {'lugar': lista_lugar[0]}
+        return render(request, 'LugarAlmacenamiento/detalle.html', context)
+
 
 def crear_solicitud_muestra(request):
     if request.user.is_authenticated() and request.user.has_perm("account.can_solMuestra"):

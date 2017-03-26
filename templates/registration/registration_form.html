@@ -5,7 +5,7 @@
 <div class='row'>
     <div class='col-sm-6 col-sm-offset-3'>
         <h1>Registro de Usuario Nuevo</h1>
-        <form method="post" action="." enctype="multipart/form-data">{% csrf_token %} 
+        <form method="post" action="." enctype="multipart/form-data">
             {% csrf_token %}
             {{ form|crispy }}
             <input class='btn btn-block btn-primary' type="submit" value="Completar Registro"/>

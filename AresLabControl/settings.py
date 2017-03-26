@@ -10,7 +10,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = os.environ["SECRET_KEY"]
 SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -32,7 +31,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_extensions',
     'registration',
-    #Our Apps
+    # Our Apps
     'LabModule',
 ]
 
@@ -73,22 +72,23 @@ urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 DATABASES = {
-       'default': {
+    'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': url.path[1:],
         'USER': url.username,
         'PASSWORD': url.password,
         'HOST': url.hostname,
         'PORT': url.port,
-        }
+    }
     # 'default': {
-    #       'ENGINE': 'django.db.backends.postgresql',
-    #      'NAME': 'areslab',
-    #     'HOST':'127.0.0.1',
-    #    'PORT':'5432',
-    #   'USER':'postgres',
-    #  'PASSWORD':'admin'
-    # }
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': url.path[1:],
+    #     'USER': url.username,
+    #     'PASSWORD': url.password,
+    #     'HOST': url.hostname,
+    #     'PORT': url.port,
+    #
+    #   }
     # 'default': {
     #       'ENGINE': 'django.db.backends.postgresql',
     #       'NAME': 'lab',
@@ -155,13 +155,14 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join('media')
-#MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env', 'media_root')
+# MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env', 'media_root')
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 AUTH_PROFILE_MODULE = 'LabModule.Usuario'
+
 # Crispy Forms Tag Settings
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
@@ -179,13 +180,11 @@ EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-
 GRAPH_MODELS = {
-  'all_applications': True,
-  'group_models': True,
+    'all_applications': True,
+    'group_models': True,
 }
 
 # Atributos por defecto para creacion de superusuario (pasar a variables de entorno)
 SUPERUSUARIO = os.environ["SUPERUSUARIO"]
 CONTRASENA = os.environ["CONTRASENA"]
-
