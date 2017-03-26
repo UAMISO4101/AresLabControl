@@ -1,5 +1,5 @@
 # AresLabControl
-##Proyecto Final MISO 4101
+## Proyecto Final MISO 4101
 ## Esta disponible en la siguiente página WEB
 https://areslabcontrol.herokuapp.com/
 
