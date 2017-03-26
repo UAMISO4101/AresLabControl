@@ -245,6 +245,8 @@
               debug: true,
               success: "valid"
             });
+
+
             $("#formSolicitud").submit(function(e) {
                 e.preventDefault();
             }).validate({
@@ -260,18 +262,21 @@
                 }
                 },
                 submitHandler: function(form) {
-                    //$("#formSolicitud").submit();
+
+                   if(new Date($("#id_fechaInicial").val())<new Date($("#id_fechaFinal").val()))
+                        $("#formSolicitud").submit();
+                    else
+                        alert('La fecha inicial debe ser menor que la final');
+
                     //submit via ajax
                     return false;  //This doesn't prevent the form from submitting.
                 }
             });
-            $( ".datepicker" ).datepicker({
-              changeMonth: true,
-              changeYear: true,
-              yearRange: "1900:2012",
-              // You can put more options here.
 
-            });
+            $("#id_fechaInicial").datepicker({ dateFormat: 'yy-mm-dd',minDate: 0});
+            $("#id_fechaFinal").datepicker({ dateFormat: 'yy-mm-dd',minDate: 0 });
+
+
 
 
     </script>

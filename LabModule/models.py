@@ -124,6 +124,8 @@ Atributos:
         return reverse('author-detail', kwargs={'pk': self.pk})
 
 
+
+
 class MaquinaEnLab(models.Model):
     """Relación entre :class:`MaquinaProfile` y :class:`LaboratorioProfile`
         Se encarga de:
@@ -344,7 +346,6 @@ class MaquinaSolicitud(models.Model):
     solicitud = models.OneToOneField(Solicitud)
     maquina = models.ForeignKey(MaquinaProfile, blank=False, null=True,
                                 verbose_name="Seleccion de Maquina")
-
 
 
 class Projecto(models.Model):

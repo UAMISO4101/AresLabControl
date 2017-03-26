@@ -5,6 +5,7 @@ from django import forms
 from django import forms
 from django.contrib.admin.widgets import AdminDateWidget
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from django.db.models import Q
 from django.forms import ModelForm, widgets
 from registration.forms import RegistrationForm
 
@@ -112,6 +113,16 @@ class SolicitudForm(ModelForm):
             'fechaFinal': forms.DateInput(attrs={'class': 'datepicker'}),
         }
 
+    def verificar_fecha(self,maquina_id, fechaIni, fechaFin):
+
+        solicitudes = Solicitud.objects.filter(
+            Q(fechaInicial=fechaIni, fechaFinal=fechaFin) | Q(fechaInicial__lte=fechaIni,fechaFinal__gte=fechaIni) | Q(
+                fechaInicial__lte=fechaFin, fechaFinal__gte=fechaFin)).exclude(estado='rechazada')
+        for sol in solicitudes:
+            otras_maquinas = MaquinaSolicitud.objects.filter(solicitud=sol.pk, maquina=maquina_id).count()
+            if otras_maquinas > 0:
+                return False
+        return True
 
 class MuestraSolicitudForm(ModelForm):
     class Meta:

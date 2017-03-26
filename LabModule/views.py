@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """Este módulo se encarga de generar las vistas a partir de los modelos, así como de hacer la lógica del negocio. """
+from django.db.models import Q
 
 __docformat__ = 'reStructuredText'
 
@@ -302,6 +303,28 @@ def crear_solicitud_maquina(request):
             maquinaEnLab = MaquinaEnLab.objects.get(idMaquina=maquina.pk)
             proyectos=Projecto.objects.filter(asistentes=profile.id,activo=True)
             form = SolicitudForm()
+            if request.method == 'POST' :
+                if form.verificar_fecha(maquina.pk,request.POST['fechaInicial'],request.POST['fechaFinal']) == True:
+                    requestObj = Solicitud()
+                    requestObj.descripcion = 'Solicitud de maquina'
+                    requestObj.fechaInicial = request.POST['fechaInicial']
+                    requestObj.fechaFinal = request.POST['fechaFinal']
+                    if maquina.con_reserva==True:
+                        requestObj.estado = 'creada'
+                    else:
+                        requestObj.estado = 'aprobada'
+                    requestObj.solicitante = profile.id
+                    requestObj.paso = Paso.objects.get(id=request.POST['step'])
+                    requestObj.save()
+                    maquinaRequest=MaquinaSolicitud()
+                    maquinaRequest.maquina = maquina
+                    maquinaRequest.solicitud = requestObj
+                    maquinaRequest.save()
+                    return redirect("../")
+                else:
+                    mensaje="ya existe una solicitud para estas fechas"
+
+
 
             contexto = {'form': form, 'mensaje': mensaje, 'maquina': maquina, 'proyectos': proyectos,
                          'maquinaEnLab':maquinaEnLab}
@@ -312,6 +335,7 @@ def crear_solicitud_maquina(request):
         return render(request, "Solicitudes/crear_maquina_solicitud.html", contexto)
     else:
         return HttpResponse('No autorizado', status=401)
+
 
 
 def crear_solicitud_muestra(request):
@@ -355,12 +379,7 @@ def crear_solicitud_muestra(request):
         return HttpResponse('No autorizado', status=401)
 
 
-def verificar_solicitudes_maquina(id_maquina,fechaIni,fechaFin):
-    solMaquinas = MaquinaSolicitud.objects.filter(maquina=id_maquina);
-    for solicitudM in solMaquinas:
-        if solicitudM.solicitud.fechaInicial==fechaIni and solicitudM.solicitud.fechaFinal==fechaFin:
-            return False
-    return True
+
 
 
 @csrf_exempt
