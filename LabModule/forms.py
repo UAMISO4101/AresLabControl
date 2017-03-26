@@ -1,70 +1,50 @@
 # -*- coding: utf-8 -*-
 from django import forms
-
-# coding=utf-8
-from django import forms
-from django.contrib.admin.widgets import AdminDateWidget
-from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db.models import Q
-from django.forms import ModelForm, widgets
-from registration.forms import RegistrationForm
+from django.forms import ModelForm
 
-from .models import IdType as IdentificationTypes, LugarAlmacenamiento, Bandeja, Projecto, LugarAlmacenamientoEnLab, \
-    MaquinaEnLab, LaboratorioProfile, Solicitud, MuestraSolicitud, MaquinaSolicitud
-from .models import UserRole as UsrRole
+from .models import Bandeja, Solicitud, MuestraSolicitud, MaquinaSolicitud
+from .models import LugarAlmacenamiento
+from .models import LugarAlmacenamientoEnLab
+from .models import Projecto
+from .models import Usuario
 
 
-class UserProfileForm(RegistrationForm):
-    idTypName = IdentificationTypes.objects.all()
-    usrroles = UsrRole.objects.all()
+class RegistroUsuarioForm(forms.ModelForm):
+    """Formulario  para crear usuarios.
+           Se encarga de:
+               * Tener una instancia del modelo del usuario.
+               * Agregar un usuario a la base de datos.
 
-    username = forms.CharField(
-        label="Nombre de Usuario",
-        disabled=False
-    )
-    error_messages = {
-        'password_mismatch': "Las contraseñas deben coincidir!",
-    }
-    password1 = forms.CharField(
-        label="Contraseña",
-        strip=False,
+        :param ModelForm: Instancia de Django.forms.
+        :type ModelForm: ModelForm.
+       """
+    class Meta:
+        model = Usuario
+        exclude = ('user',)
+
+    contrasena = forms.CharField(
+        label="Escriba su contraseña",
         widget=forms.PasswordInput,
-    )
+        strip=False, )
     password2 = forms.CharField(
         label="Confirme su contraseña",
         widget=forms.PasswordInput,
         strip=False,
         help_text="Repita la contraseña para verificar que sean iguales.",
     )
-    userNatIdTypName = forms.ModelChoiceField(
-        label="Tipo de Identificación",
-        queryset=idTypName,
-        empty_label="Seleccione una opción")
 
-    userNatIdNum = forms.CharField(
-        label="Número de Identificación"
-    )
+    error_messages = {
+        'password_mismatch': "Las contraseñas deben coincidir!",
+    }
 
-    userGivenName = forms.CharField(
-        label="Nombres"
-    )
-
-    userLastName = forms.CharField(
-        label="Apellidos"
-    )
-
-    userCode = forms.CharField(
-        label="Código de Usuario",
-        strip=True
-    )
-    userPhone = forms.CharField(
-        label="Número de Teléfono"
-    )
-    userRoleName = forms.ModelChoiceField(
-        label="Cargo",
-        queryset=usrroles,
-        empty_label="Seleccione una opción"
-    )
+    def clean_password2(self):
+        # Check that the two password entries match
+        contrasena = self.cleaned_data.get("contrasena")
+        password2 = self.cleaned_data.get("password2")
+        if contrasena and password2 and contrasena != password2:
+            raise forms.ValidationError("Las contraseñas no coinciden!")
+        return contrasena
 
 
 class LugarAlmacenamientoForm(ModelForm):
@@ -79,6 +59,7 @@ class LugarAlmacenamientoForm(ModelForm):
         :type ModelForm: ModelForm.
 
        """
+
     class Meta:
         model = LugarAlmacenamiento
         fields = ['nombre', 'descripcion', 'capacidad', 'temperatura', 'imagen', 'peso', 'tamano']
@@ -97,11 +78,11 @@ class PosicionesLugarAlmacenamientoForm(ModelForm):
      :type ModelForm: ModelForm.
 
     """
+
     class Meta:
-        model=LugarAlmacenamientoEnLab
+        model = LugarAlmacenamientoEnLab
         fields = ['posX', 'posY', 'idLaboratorio']
         exclude = ('idLugar',)
-
 
 class SolicitudForm(ModelForm):
 
@@ -128,11 +109,6 @@ class MuestraSolicitudForm(ModelForm):
     class Meta:
         model=MuestraSolicitud
         fields=['cantidad','solicitud','muestra','tipo']
-
-
-
-
-
 
 
 
