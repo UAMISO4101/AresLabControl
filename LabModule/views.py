@@ -42,20 +42,38 @@ from .forms import RegistroUsuarioForm
 
 # Create your views here.
 def home(request):
+    """Metodo inicial de la aplicación
+               Se encarga de:
+                   * Mostrar el inicio de la aplicación
+
+            :param request: El HttpRequest que se va a responder.
+            :type request: HttpRequest.
+            :returns: HttpResponse -- La respuesta redirigiendo a la página home inicial de la aplicación
+        """
     context = {}
     return render(request, "home.html", context)
 
 
 class UserRegistrationView(RegistrationView):
+    """Clase para el funcionamiento del regitro de usuario
+            Historia de usuario: ALF-15:Yo como Usuario quiero ingresar al sistema con mis credenciales para acceder a todas las funcionalidades que el mismo tiene para mi.
+            Se encarga de:
+                * Ayuda al modelo de vista para renderizar la información del usuario
+
+            :param RegistrationView: Clase que ayuda al modulo de registro de usuarios
+            :type RegistrationView: RegistrationView.
+
+        """
     form_class = RegistroUsuarioForm
 
 
 @csrf_exempt
 def registrar_usuario(request):
     """Registro de Usuarios
-           Se encarga de:
-               * Obtiene el formulario en el request
-               * crea un usuario y un perfil
+            Historia de usuario: ALF-15:Yo como Usuario quiero ingresar al sistema con mis credenciales para acceder a todas las funcionalidades que el mismo tiene para mi.
+            Se encarga de:
+                * Obtiene el formulario en el request
+                * crea un usuario y un perfil
 
         :param request: El HttpRequest que se va a responder.
         :type request: HttpRequest.
@@ -84,7 +102,7 @@ def registrar_usuario(request):
 
 def agregar_lugar(request):
     """Desplegar y comprobar los valores a insertar.
-
+           Historia de usuario: ALF-37 - Yo como Jefe de Laboratorio quiero poder agregar nuevos lugares de almacenamiento para poder utilizarlos en el sistema.
            Se encarga de:
                * Mostar el formulario para agregar un lugar de almacenamiento.
                * Mostar el formulario para editar un lugar de almacenamiento ya existente.
@@ -151,7 +169,9 @@ def agregar_lugar(request):
 
 class MaquinaForm(ModelForm):
     """Formulario  para crear y modificar una máquina.
-
+        Historia de usuario: ALF-18:Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
+        Historia de usuario: ALF-20:Yo como Jefe de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
+        Historia de usuario: ALF-25:Yo como Asistente de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
         Se encarga de:
             * Tener una instancia del modelo de la máquina
             * Seleccionar cuales campos del modelo seran desplegados en el formulario. Nombre, descripción, si esta reservado,activa
@@ -172,7 +192,7 @@ class MaquinaForm(ModelForm):
 
 class PosicionesForm(ModelForm):
     """Formulario  para crear y modificar la ubicación de una máquina.
-
+        Historia de usuario: ALF-18:Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
         Se encarga de:
             * Tener una instancia del modelo de la máquina en laboraotrio.
             * Definir las posición x, la posición y y el laboratorio en el cual se va aguardar la máquina.
@@ -192,7 +212,7 @@ class PosicionesForm(ModelForm):
 
 def comprobarPostMaquina(form, formPos, request, template_name, section):
     """Desplegar y comprobar los valores a insertar.
-
+        Historia de usuario: ALF-18:Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
         Se encarga de:
             * Mostar el formulario para agregar una máquina.
             * Mostar el formulario para editar una máquina ya existente.
@@ -251,7 +271,7 @@ def comprobarPostMaquina(form, formPos, request, template_name, section):
 
 def maquina_create(request, template_name='Maquinas/agregar.html'):
     """Comporbar si el usuario puede agregar una máquina y obtener los campos necesarios.
-
+        Historia de usuario: ALF-18:Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
         Se encarga de:
             * Comprobar si hay un usario logeuado
             * Comprobar si el suario tiene permisos para agregar máquinas
@@ -321,7 +341,8 @@ def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
 
 def listarMaquinas(request):
     """Comprobar si el usario puede ver las máquinas y mostraselas filtrando por una búsqueda.
-
+        Historia de usuario: ALF-20:Yo como Jefe de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
+        Historia de usuario: ALF-25:Yo como Asistente de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
         Se encarga de:
             * Comprobar si hay un usario logueado
             * Comprobar si el suario tiene permisos para ver las máquinas
@@ -366,7 +387,7 @@ def listarMaquinas(request):
 
 def listar_lugares(request):
     """Desplegar y comprobar los valores a consultar.
-
+              Historia de usuario: ALF-39 - Yo como Jefe de Laboratorio quiero poder filtrar los lugares de almacenamiento existentes por nombre para visualizar sólo los que me interesan.
               Se encarga de:
                   * Mostar el formulario para consultar los lugares de almacenamiento.
 
@@ -382,6 +403,19 @@ def listar_lugares(request):
 
 
 def crear_solicitud_maquina(request):
+    """Realiza la solicitud de máquinas por el usuario que la necesita
+        Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una maquina normal en una franja de tiempo especifica para hacer uso de ella
+        Se encarga de:
+            * Comprobar si hay un usuario logueado
+            * Comprobar si el usuario tiene permisos para realizar la solicitud de máquinas
+            * Realizar la solicitud de máquinas
+
+     :param request: El HttpRequest que se va a responder.
+     :type request: HttpRequest.
+
+     :returns: HttpResponse -- La respuesta a la petición. Si no esta autorizado se envia un código 401
+
+    """
     if request.user.is_authenticated() and request.user.has_perm("account.can_solMaquina"):
         mensaje = 'ok'
         contexto={}
@@ -428,6 +462,7 @@ def crear_solicitud_maquina(request):
 
 def listar_lugar(request, pk):
     """Desplegar y comprobar los valores a consultar.
+                Historia de usuario: ALF-42-Yo como Jefe de Laboratorio quiero poder ver el detalle de un lugar de almacenamiento para conocer sus características
                 Se encarga de:
                 * Mostar el formulario para consultar los lugares de almacenamiento.
             :param request: El HttpRequest que se va a responder.
@@ -446,6 +481,20 @@ def listar_lugar(request, pk):
 
 
 def crear_solicitud_muestra(request):
+    """Realiza la solicitud de muestras por el usuario que la necesita
+            Historia de usuario: ALF-81:Yo como Asistente de Laboratorio quiero poder solicitar una muestra para continuar con mis experimentos
+            Se encarga de:
+                * Comprobar si hay un usuario logueado
+                * Comprobar si el usuario tiene permisos para realizar la solicitud de muestras
+                * Realizar la solicitud de muestras
+
+         :param request: El HttpRequest que se va a responder.
+         :type request: HttpRequest.
+
+         :returns: HttpResponse -- La respuesta a la petición. Si no esta autorizado se envia un código 401
+
+    """
+
     if request.user.is_authenticated() and request.user.has_perm("account.can_solMuestra"):
         mensaje = 'ok'
         contexto={}
@@ -493,6 +542,17 @@ def crear_solicitud_muestra(request):
 
 
 def poblar_datos(request):
+    """Realiza la población de datos para máquinas
+            Historia de usuario: ALF-18:Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
+            Se encarga de:
+                * Poblar la información para las máquinas
+
+            :param request: El HttpRequest que se va a responder.
+            :type request: HttpRequest.
+
+            :returns: HttpResponse -- Redirección a la pagina inicial de la aplicación
+
+        """
     MaquinaProfile.objects.create(
         nombre='Laboratorio genomica',
         descripcion="Aca se hace genomica",
@@ -502,6 +562,16 @@ def poblar_datos(request):
 
 @csrf_exempt
 def cargar_experimentos(request):
+    """Realiza el cargue de datos de experimentos existentes por identificador del proyecto
+                Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una maquina normal en una franja de tiempo especifica para hacer uso de ella
+                Se encarga de:
+                    * Cargue de datos de experimentos
+                :param request: El HttpRequest que se va a responder.
+                :type request: HttpRequest.
+
+                :returns: HttpResponse -- La información de experimentos existentes por identificador del proyecto
+
+            """
     if request.GET['project_id'] != "":
         experiments = Experimento.objects.filter(projecto=request.GET['project_id'])
         experimentsDict = dict([(c.id, c.nombre) for c in experiments])
@@ -512,6 +582,16 @@ def cargar_experimentos(request):
 
 @csrf_exempt
 def cargar_protocolos(request):
+    """Realiza el cargue de datos de protocolos existentes por identificador del experimento
+                  Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una maquina normal en una franja de tiempo especifica para hacer uso de ella
+                  Se encarga de:
+                      * Cargue de datos de protocolos
+                  :param request: El HttpRequest que se va a responder.
+                  :type request: HttpRequest.
+
+                  :returns: HttpResponse -- La información de protocolos existentes por identificador del experimento
+
+              """
     if request.GET['experiment_id'] != "":
         protocols = Protocolo.objects.filter(experimento=request.GET['experiment_id'])
         protocolsDict = dict([(c.id, c.nombre) for c in protocols])
@@ -522,6 +602,16 @@ def cargar_protocolos(request):
 
 @csrf_exempt
 def cargar_pasos(request):
+    """Realiza el cargue de datos de pasos existentes por identificador del protocolo
+                    Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una maquina normal en una franja de tiempo especifica para hacer uso de ella
+                    Se encarga de:
+                        * Cargue de datos de pasos
+                    :param request: El HttpRequest que se va a responder.
+                    :type request: HttpRequest.
+
+                    :returns: HttpResponse -- La información de pasos existentes por identificador del protocolo
+
+                """
     if request.GET['protocol_id'] != "":
         steps = Paso.objects.filter(protocolo=request.GET['protocol_id'])
         stepsDict = dict([(c.id, c.nombre) for c in steps])
