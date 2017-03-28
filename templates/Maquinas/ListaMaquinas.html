@@ -34,7 +34,9 @@
 
 
 <br>
+
 <div class="row ">
+    {% if maquinasBien %}
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
             <tr>
@@ -55,6 +57,11 @@
             {% endfor %}
         </table>
     </div>
+    {% else %}
+    <div class="col-xs-12 text-center">            
+            <div id="noresults"><h1><strong>No hay máquinas que coincidan con la búsqueda</strong></h1></div>
+    </div>
+    {% endif %}
 </div>
 
 

@@ -367,12 +367,17 @@ def listarMaquinas(request):
 
     """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
+        edita=request.user.has_perm("LabModule.can_edditMachine")
         pag = request.GET.get('pag', 1)
         que = request.GET.get("que", "")
         numer = int(request.GET.get("num", "10"))
         section = {}
         section['title'] = 'Máquinas'
-        lista_maquinas = MaquinaProfile.objects.all().filter(nombre__icontains=que).extra(order_by=['nombre'])
+        if not edita:
+          lista_maquinas = MaquinaProfile.objects.all().filter(nombre__icontains=que,activa=True).extra(order_by=['nombre'])
+        else:
+          lista_maquinas = MaquinaProfile.objects.all().filter(nombre__icontains=que).extra(order_by=['nombre'])
+
         paginatorMaquinas = Paginator(lista_maquinas, numer)
         try:
             maquinas = paginatorMaquinas.page(pag)
