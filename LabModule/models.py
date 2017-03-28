@@ -150,16 +150,16 @@ class Usuario(models.Model):
 
 class LaboratorioProfile(models.Model):
     """Representación del laboratorio
-    Se encarga de:
-        * Definir un laboratorio y los campos significativos
-        * Permite guardar en la base de datos el laboratorio.
-    
-    Atributos:
-        :nombre (String): Nombre del laboratorio. Máxima longitud de 100 caracteres. No puede ser nulo
-        :id (String): Id del laboratorio. Identificación del laboratorio, campo unico, máxima longitud de 100 caracteres.
-        :numX (Integer): Cantidad de columnas que tiene el laboratorio para almacenar máquinas. Por defecto 10.
-        :numY (Integer): Cantidad de filas que tiene el laboratorio para alamacenar máquinas. Por defecto 10.
-    
+        Se encarga de:
+            * Definir un laboratorio y los campos significativos
+            * Permite guardar en la base de datos el laboratorio.
+        
+        Atributos:
+            :nombre (String): Nombre del laboratorio. Máxima longitud de 100 caracteres. No puede ser nulo
+            :id (String): Id del laboratorio. Identificación del laboratorio, campo unico, máxima longitud de 100 caracteres.
+            :numX (Integer): Cantidad de columnas que tiene el laboratorio para almacenar máquinas. Por defecto 10.
+            :numY (Integer): Cantidad de filas que tiene el laboratorio para alamacenar máquinas. Por defecto 10.
+        
     """
 
     class Meta:
@@ -185,16 +185,17 @@ class MaquinaProfile(models.Model):
             * Definir las restricciónes basicas de los campos
             * Permite guardar en la base de datos la máquina
 
-Atributos:
-    :nombre (String): Nombre de la máquina, máxima longitud 100 caracteres, no puede ser nulo.
-    :descripcion (String): Descripción de la máquina,  máxima longitud 1000 caracteres, no puede ser nulo.
-    :imagen (ImafeField): Imágen de la máquina,  default='images/image-not-found.jpg'.
-    :idSistema (String): Identificación del laboratorio, máxima longitud de 20 caracteres.
-    :con_reserva (boolean): Dice si es necesario aprobar la máquina para ser reservada. Por defecto verdadero
-    :activa (boolean): Dice si la máquina se puede solicitar. Por defecto verdadero
-    .. note::
-        Se definen los permisos maquina||agregar y maquina||editar
-    """
+        Atributos:
+            :nombre (String): Nombre de la máquina, máxima longitud 100 caracteres, no puede ser nulo.
+            :descripcion (String): Descripción de la máquina,  máxima longitud 1000 caracteres, no puede ser nulo.
+            :imagen (ImafeField): Imágen de la máquina,  default='images/image-not-found.jpg'.
+            :idSistema (String): Identificación del laboratorio, máxima longitud de 20 caracteres.
+            :con_reserva (boolean): Dice si es necesario aprobar la máquina para ser reservada. Por defecto verdadero
+            :activa (boolean): Dice si la máquina se puede solicitar. Por defecto verdadero
+
+        .. note::
+                Se definen los permisos "maquina||agregar", "maquina||editar", "maquina||ver"
+            """
 
     class Meta:
         verbose_name = "Máquina"
