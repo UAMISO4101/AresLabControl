@@ -30,11 +30,11 @@ class AddMaquinasTest(TestCase):
     """
 
     def setUp(self):
-        """Inicia el estado del tes
+        """Inicia el estado del test
             Se encarga de :
-                *Crear un usario y darle los permisos de agregar y editar
-                *Crear un laboratorio
-                *Definir varias máquinas que serviran para probar la lógica del negocio
+                * Crear un usario y darle los permisos de agregar y editar
+                * Crear un laboratorio
+                * Definir varias máquinas que serviran para probar la lógica del negocio
         """
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
@@ -259,8 +259,8 @@ class AddMaquinasTest(TestCase):
 class listMaquinasTest(TestCase):
     """ Se encarga de probar los permissos de listar máquinas
          Se encarga de:
-            *Crear usurios y agregarles sus permisos
-            *Probar los servicios con cada usuario
+            * Crear usurios y agregarles sus permisos
+            * Probar los servicios con cada usuario
     """
 
     def setUp(self):
