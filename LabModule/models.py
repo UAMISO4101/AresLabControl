@@ -278,7 +278,7 @@ Atributos:
     capacidad = models.IntegerField(verbose_name="Capacidad")
     temperatura = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Temperatura")
     estado = models.CharField(max_length=100, default='', verbose_name='Estado', null=True)
-    imagen = models.ImageField(upload_to='media/images', null=True)
+    imagen =  models.ImageField(upload_to='images', verbose_name="Imagen", default='images/image-not-found.jpg')
     peso = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Peso")
     tamano = models.DecimalField(max_digits=5, decimal_places=2, verbose_name="Tamaño")
 
