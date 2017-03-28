@@ -52,7 +52,7 @@ class Usuario(models.Model):
             :codigo_usuario (String): Codigo de usuario. Maxima longitud 20 caraceres, unico.
             :nombres (String): Nombres. Maxima longitud 50 caraceres.
             :apellidos (String): Apellidos. Maxima longitud 50 caraceres.
-            :telefono (String): Telefono. Maxima longitud 20 caraceres.
+            :telefono (String): Teléfono. Maxima longitud 20 caraceres.
             :userNatIdTyp: Tipo de documento, Referenciado de TipoDocumento
             :userNatIdNum (String): Numero de documento.
             :grupo: Grupo de usuarios. Referenciado de Group

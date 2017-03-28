@@ -8,14 +8,12 @@ Bienvenido a la documentación de Ares:Laboratorio farmacéutico!
 
 Proyecto para la adminstración de un laboratorio farmacéutico especializándose en las máquinas y muestras.
 
-
-Páginas
-==================
+Documentación de código
+=======================
 .. toctree::
-   :maxdepth: 2
-
-   maquinas
-   code
+	vistas
+	modelos
+	tests
 
 Indices and tables
 ==================

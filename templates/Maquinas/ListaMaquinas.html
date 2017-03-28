@@ -11,6 +11,11 @@
 <br>
 
     <div class="row">
+        {% if perms.LabModule.can_addMachine %}
+            <form action="{% url 'maquina-add' %}">
+        <input type="submit" value="Agregar máquina" class="btn btn-primary" />
+    </form>
+        {% endif %}
         <div class="col-md-12">
             <h2>Buscar máquinas por nombre</h2>
             <form type="get" action="." style="margin: 0">

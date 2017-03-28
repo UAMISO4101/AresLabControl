@@ -173,18 +173,22 @@ def agregar_lugar(request):
 
 class MaquinaForm(ModelForm):
     """Formulario  para crear y modificar una máquina.
-        Historia de usuario: ALF-18:Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
-        Historia de usuario: ALF-20:Yo como Jefe de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
-        Historia de usuario: ALF-25:Yo como Asistente de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
-        Se encarga de:
-            * Tener una instancia del modelo de la máquina
-            * Seleccionar cuales campos del modelo seran desplegados en el formulario. Nombre, descripción, si esta reservado,activa
-              y la id dada por el sistema.
-            * Agregar una máquina a la base de datos, agregar la relación entre la máquina y el laboratorio en el que está.
-            * Modificar los datos  de una máquina ya existente.
 
-     :param ModelForm: Instancia de Django.forms.
-     :type ModelForm: ModelForm.
+          Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
+                    
+          Historia de usuario: `ALF-20 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-20 />`_ :Yo como Jefe de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
+
+          Historia de usuario: `ALF-25 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-25 />`_ :Yo como Asistente de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
+
+              Se encarga de:
+                * Tener una instancia del modelo de la máquina
+                * Seleccionar cuales campos del modelo seran desplegados en el formulario. Nombre, descripción, si esta reservado,activa
+                  y la id dada por el sistema.
+                * Agregar una máquina a la base de datos, agregar la relación entre la máquina y el laboratorio en el que está.
+                * Modificar los datos  de una máquina ya existente.
+
+           :param ModelForm: Instancia de Django.forms.
+           :type ModelForm: ModelForm.
 
     """
 
@@ -196,7 +200,7 @@ class MaquinaForm(ModelForm):
 
 class PosicionesForm(ModelForm):
     """Formulario  para crear y modificar la ubicación de una máquina.
-        Historia de usuario: ALF-18:Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
+        Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
         Se encarga de:
             * Tener una instancia del modelo de la máquina en laboraotrio.
             * Definir las posición x, la posición y y el laboratorio en el cual se va aguardar la máquina.
@@ -216,7 +220,7 @@ class PosicionesForm(ModelForm):
 
 def comprobarPostMaquina(form, formPos, request, template_name, section):
     """Desplegar y comprobar los valores a insertar.
-        Historia de usuario: ALF-18:Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
+        Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
         Se encarga de:
             * Mostar el formulario para agregar una máquina.
             * Mostar el formulario para editar una máquina ya existente.
@@ -275,7 +279,7 @@ def comprobarPostMaquina(form, formPos, request, template_name, section):
 
 def maquina_create(request, template_name='Maquinas/agregar.html'):
     """Comporbar si el usuario puede agregar una máquina y obtener los campos necesarios.
-        Historia de usuario: ALF-18:Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
+        Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
         Se encarga de:
             * Comprobar si hay un usario logeuado
             * Comprobar si el suario tiene permisos para agregar máquinas
@@ -561,7 +565,7 @@ def crear_solicitud_muestra(request):
 
 def poblar_datos(request):
     """Realiza la población de datos para máquinas
-            Historia de usuario: ALF-18:Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
+            Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
             Se encarga de:
                 * Poblar la información para las máquinas
 
