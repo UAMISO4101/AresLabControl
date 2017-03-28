@@ -23,7 +23,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from registration.backends.default.views import RegistrationView
 
-from models import Bandeja, Projecto, MaquinaSolicitud
+from models import Bandeja, Projecto, MaquinaSolicitud, LaboratorioProfile
 from models import Experimento
 from models import LugarAlmacenamientoEnLab
 from models import MaquinaEnLab
@@ -38,6 +38,7 @@ from .forms import LugarAlmacenamientoForm, SolicitudForm
 from .forms import MuestraSolicitudForm
 from .forms import PosicionesLugarAlmacenamientoForm
 from .forms import RegistroUsuarioForm
+from decimal import Decimal
 
 
 # Create your views here.
@@ -114,57 +115,60 @@ def agregar_lugar(request):
 
        """
     mensaje = ""
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            form = LugarAlmacenamientoForm(request.POST, request.FILES)
+            formPos = PosicionesLugarAlmacenamientoForm(request.POST or None, request.FILES or None)
+            items = request.POST.get('items').split('\r\n')
 
-    if request.method == 'POST':
-        form = LugarAlmacenamientoForm(request.POST, request.FILES)
-        formPos = PosicionesLugarAlmacenamientoForm(request.POST or None, request.FILES or None)
-        items = request.POST.get('items').split('\r\n')
+            if form.is_valid() and formPos.is_valid():
+                lugar = form.save(commit=False)
+                lugarEnLab = formPos.save(commit=False)
 
-        if form.is_valid() and formPos.is_valid():
-            lugar = form.save(commit=False)
-            lugarEnLab = formPos.save(commit=False)
+                ocupado = MaquinaEnLab.objects.filter(idLaboratorio=lugarEnLab.idLaboratorio, xPos=lugarEnLab.posX,
+                                                      yPos=lugarEnLab.posY).exists()
+                # lamisma = MaquinaEnLab.objects.filter(pk=lugarEnLab.pk).exists()
 
-            ocupado = MaquinaEnLab.objects.filter(idLaboratorio=lugarEnLab.idLaboratorio, xPos=lugarEnLab.posX,
-                                                  yPos=lugarEnLab.posY).exists()
-            # lamisma = MaquinaEnLab.objects.filter(pk=lugarEnLab.pk).exists()
+                if ocupado:
+                    formPos.add_error("posX", "La posición x ya esta ocupada")
+                    formPos.add_error("posY", "La posición y ya esta ocupada")
 
-            if ocupado:
-                formPos.add_error("posX", "La posición x ya esta ocupada")
-                formPos.add_error("posY", "La posición y ya esta ocupada")
-
-                mensaje = "El lugar en el que desea guadar ya esta ocupado"
-            else:
-                mensaje = "La posición [" + str(lugarEnLab.posX) + "," + str(
-                    lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio"
-                lab = lugarEnLab.idLaboratorio
-                masX = lab.numX >= lugarEnLab.posX
-                masY = lab.numY >= lugarEnLab.posY
-                posible = masX and masY
-                if not posible:
-                    if not masX:
-                        formPos.add_error("posX", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
-                    if not masY:
-                        formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
+                    mensaje = "El lugar en el que desea guadar ya esta ocupado"
                 else:
-                    lugar.save()
-                    lugarEnLab.idLugar = lugar
-                    lugarEnLab.save()
+                    mensaje = "La posición [" + str(lugarEnLab.posX) + "," + str(
+                        lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio"
+                    lab = lugarEnLab.idLaboratorio
+                    masX = lab.numX >= lugarEnLab.posX
+                    masY = lab.numY >= lugarEnLab.posY
+                    posible = masX and masY
+                    if not posible:
+                        if not masX:
+                            formPos.add_error("posX", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
+                        if not masY:
+                            formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
+                    else:
+                        lugar.save()
+                        lugarEnLab.idLugar = lugar
+                        lugarEnLab.save()
 
-                    if items is not None and len(items) > 0:
-                        for item in items:
-                            if item is not None and item != '':
-                                tamano = item.split(',')[0].split(':')[1]
-                                cantidad = item.split(',')[1].split(':')[1]
-                                bandeja = Bandeja(tamano=tamano, cantidad=cantidad, lugarAlmacenamiento=lugar)
-                                bandeja.save()
+                        if items is not None and len(items) > 0:
+                            for item in items:
+                                if item is not None and item != '':
+                                    tamano = item.split(',')[0].split(':')[1]
+                                    cantidad = item.split(',')[1].split(':')[1]
+                                    bandeja = Bandeja(tamano=tamano, cantidad=cantidad, lugarAlmacenamiento=lugar,
+                                                      libre=False)
+                                    bandeja.save()
 
-                    return HttpResponseRedirect(reverse('home'))
+                        return HttpResponseRedirect(reverse('home'))
+        else:
+            form = LugarAlmacenamientoForm()
+            formPos = PosicionesLugarAlmacenamientoForm()
+
+        return render(request, 'LugarAlmacenamiento/agregar.html',
+                      {'form': form, 'formPos': formPos, 'mensaje': mensaje})
     else:
-        form = LugarAlmacenamientoForm()
-        formPos = PosicionesLugarAlmacenamientoForm()
-
-    return render(request, 'LugarAlmacenamiento/agregar.html',
-                  {'form': form, 'formPos': formPos, 'mensaje': mensaje})
+        return HttpResponse('No autorizado', status=401)
 
 
 class MaquinaForm(ModelForm):
@@ -396,10 +400,12 @@ def listar_lugares(request):
            :returns: HttpResponse -- La respuesta a la petición, con información de los lugares de almacenamiento existentes.
 
           """
-    lista_lugares = LugarAlmacenamientoEnLab.objects.all()
-    context = {'lista_lugares': lista_lugares}
-    return render(request, 'LugarAlmacenamiento/listar.html', context)
-
+    if request.user.is_authenticated():
+        lista_lugares = LugarAlmacenamientoEnLab.objects.all()
+        context = {'lista_lugares': lista_lugares}
+        return render(request, 'LugarAlmacenamiento/listar.html', context)
+    else:
+        return HttpResponse('No autorizado', status=401)
 
 
 def crear_solicitud_maquina(request):
@@ -418,39 +424,37 @@ def crear_solicitud_maquina(request):
     """
     if request.user.is_authenticated() and request.user.has_perm("account.can_solMaquina"):
         mensaje = 'ok'
-        contexto={}
+        contexto = {}
         try:
 
-            maquina = MaquinaProfile.objects.get(pk=request.GET.get('id', 0),activa=True)
+            maquina = MaquinaProfile.objects.get(pk=request.GET.get('id', 0), activa=True)
             profile = Usuario.objects.get(user_id=request.user.id)
             maquinaEnLab = MaquinaEnLab.objects.get(idMaquina=maquina.pk)
-            proyectos=Projecto.objects.filter(asistentes=profile.id,activo=True)
+            proyectos = Projecto.objects.filter(asistentes=profile.id, activo=True)
             form = SolicitudForm()
-            if request.method == 'POST' :
-                if form.verificar_fecha(maquina.pk,request.POST['fechaInicial'],request.POST['fechaFinal']) == True:
+            if request.method == 'POST':
+                if form.verificar_fecha(maquina.pk, request.POST['fechaInicial'], request.POST['fechaFinal']) == True:
                     requestObj = Solicitud()
                     requestObj.descripcion = 'Solicitud de maquina'
                     requestObj.fechaInicial = request.POST['fechaInicial']
                     requestObj.fechaFinal = request.POST['fechaFinal']
-                    if maquina.con_reserva==True:
+                    if maquina.con_reserva == True:
                         requestObj.estado = 'creada'
                     else:
                         requestObj.estado = 'aprobada'
                     requestObj.solicitante = profile.id
                     requestObj.paso = Paso.objects.get(id=request.POST['step'])
                     requestObj.save()
-                    maquinaRequest=MaquinaSolicitud()
+                    maquinaRequest = MaquinaSolicitud()
                     maquinaRequest.maquina = maquina
                     maquinaRequest.solicitud = requestObj
                     maquinaRequest.save()
                     return redirect("../")
                 else:
-                    mensaje="ya existe una solicitud para estas fechas"
-
-
+                    mensaje = "ya existe una solicitud para estas fechas"
 
             contexto = {'form': form, 'mensaje': mensaje, 'maquina': maquina, 'proyectos': proyectos,
-                         'maquinaEnLab':maquinaEnLab}
+                        'maquinaEnLab': maquinaEnLab}
         except ObjectDoesNotExist as e:
             contexto = {'mensaje': 'No hay maquinas o pasos con el id solicitado'}
         except MultipleObjectsReturned as e:
@@ -465,19 +469,34 @@ def listar_lugar(request, pk):
                 Historia de usuario: ALF-42-Yo como Jefe de Laboratorio quiero poder ver el detalle de un lugar de almacenamiento para conocer sus características
                 Se encarga de:
                 * Mostar el formulario para consultar los lugares de almacenamiento.
+
             :param request: El HttpRequest que se va a responder.
             :type request: HttpRequest.
-            :param pk: La llave primaria de la máquina a modificar
+            :param pk: La llave primaria del lugar de almacenamiento
             :type pk: String.
             :returns: HttpResponse -- La respuesta a la petición, con información de los lugares de almacenamiento existentes.
         """
+    if request.user.is_authenticated():
+        lista_lugar = LugarAlmacenamientoEnLab.objects.filter(idLugar_id=pk)
+        if lista_lugar is None:
+            return listar_lugares(request)
+        else:
+            lugar = lista_lugar[0]
+            bandejasOcupadas = Bandeja.objects.filter(lugarAlmacenamiento_id=pk, libre=False).count()
+            bandejasLibres = Bandeja.objects.filter(lugarAlmacenamiento_id=pk, libre=True).count()
+            tamano = 0
+            lista = Bandeja.objects.filter(lugarAlmacenamiento_id=pk)
 
-    lista_lugar = LugarAlmacenamientoEnLab.objects.filter(idLugar_id=pk)
-    if lista_lugar is None:
-        return listar_lugares(request)
+            for x in lista:
+                tamano += Decimal(x.tamano)
+
+            laboratorio = LaboratorioProfile.objects.get(pk=lugar.idLaboratorio_id).nombre
+
+            context = {'lugar': lugar, 'bandejasOcupadas': bandejasOcupadas, 'bandejasLibres': bandejasLibres,
+                       'tamano': tamano, 'laboratorio': laboratorio}
+            return render(request, 'LugarAlmacenamiento/detalle.html', context)
     else:
-        context = {'lugar': lista_lugar[0]}
-        return render(request, 'LugarAlmacenamiento/detalle.html', context)
+        return HttpResponse('No autorizado', status=401)
 
 
 def crear_solicitud_muestra(request):
@@ -497,17 +516,15 @@ def crear_solicitud_muestra(request):
 
     if request.user.is_authenticated() and request.user.has_perm("account.can_solMuestra"):
         mensaje = 'ok'
-        contexto={}
+        contexto = {}
         try:
 
-
-            muestra = Muestra.objects.get(id=request.GET.get('id', 0),activa=True)
+            muestra = Muestra.objects.get(id=request.GET.get('id', 0), activa=True)
             profile = Usuario.objects.get(user_id=request.user.id)
-            proyectos=Projecto.objects.filter(asistentes=profile.id,activo=True);
+            proyectos = Projecto.objects.filter(asistentes=profile.id, activo=True);
 
             muestra = Muestra.objects.get(id=request.GET.get('id', 0))
             profile = Usuario.objects.get(user_id=request.user.id)
-
 
             if request.method == 'POST':
 
@@ -528,15 +545,16 @@ def crear_solicitud_muestra(request):
 
             else:
                 form = SolicitudForm()
-                form_muestra=MuestraSolicitudForm()
-            contexto={'form': form, 'mensaje': mensaje,'muestra':muestra,'proyectos':proyectos,'form_muestra':form_muestra}
+                form_muestra = MuestraSolicitudForm()
+            contexto = {'form': form, 'mensaje': mensaje, 'muestra': muestra, 'proyectos': proyectos,
+                        'form_muestra': form_muestra}
         except ObjectDoesNotExist as e:
-            contexto={'mensaje':'No hay muestras o pasos con el id solicitado'}
+            contexto = {'mensaje': 'No hay muestras o pasos con el id solicitado'}
 
         except MultipleObjectsReturned as e:
             contexto = {'mensaje': 'Muchas muestras con ese id'}
 
-        return render(request, "Solicitudes/crear_muestra_solicitud.html",contexto)
+        return render(request, "Solicitudes/crear_muestra_solicitud.html", contexto)
     else:
         return HttpResponse('No autorizado', status=401)
 

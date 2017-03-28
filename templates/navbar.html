@@ -18,6 +18,8 @@
 
                 <ul class="nav navbar-nav navbar-right">
                     {% if request.user.is_authenticated%}
+                    <li><a href="{% url 'agregarLugar' %}">Agregar Lugar</a></li>
+                    <li><a href="{% url 'listaLugares' %}">Lista Lugares</a></li>
                     <li><a href="{% url 'auth_logout' %}">Salir</a></li>
                     {% else %}
                     <li><a href="{% url 'registration_register' %}">Registro</a>
