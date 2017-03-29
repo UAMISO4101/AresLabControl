@@ -89,7 +89,10 @@ def registrar_usuario(request):
             try:
                 nuevo_perfil = User.objects.create_user(username=nuevo_usuario.nombre_usuario,
                                                         email=nuevo_usuario.correo_electronico,
-                                                        password=nuevo_usuario.contrasena)
+                                                        password=nuevo_usuario.contrasena,
+                                                        first_name=nuevo_usuario.nombres,
+                                                        last_name=nuevo_usuario.apellidos
+                                                        )
                 nuevo_usuario.user = nuevo_perfil
                 nuevo_usuario.user.groups.add(nuevo_usuario.grupo)
                 nuevo_usuario.save()

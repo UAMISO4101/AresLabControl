@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block head_title %} {{ section.title }}| {% endblock %}
+{% block head_title %}{{block.super}}{{ section.title }} {% endblock%}
 {% load lab_module_extras %}
 {% block content %}
 

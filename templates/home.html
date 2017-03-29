@@ -5,8 +5,13 @@
 {% block content %}
 <div class="starter-template">
     <h1>Bienvenido a LabControl</h1>
-    <p class="lead">En este sitio podr&aacute; realizar y controlar las actividades de su laboratorio.</p>
-    <p class="lead">Para iniciar actividades del laboratorio haga click <a HREF="{% url 'auth_login' %}">Aqu&iacute;</a>!
+    {% if request.user.is_authenticated%}
+        <h2 class="lead">Hola {{ user.get_username  }} !</h2>
+            <p class="lead">Selecciona las opciones disponibles.</p>
+    {% else %}
+        <p class="lead">En este sitio podr&aacute; realizar y controlar las actividades de su laboratorio.</p>
+        <p class="lead">Para iniciar actividades del laboratorio haga click <a HREF="{% url 'auth_login' %}">Aqu&iacute;</a>!
     </p>
+    {% endif %}
 </div>
 {% endblock%}

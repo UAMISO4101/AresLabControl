@@ -234,10 +234,10 @@ class Command(BaseCommand):
         else:
             self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Pasos '))
         if (createGroups() == 0):
-            self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Grupos'))
+            self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Grupos '))
         else:
-            self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Grupos'))
+            self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Grupos '))
         if (createUsers() == 0):
-            self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Usuarios'))
+            self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Usuarios '))
         else:
-            self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Usuarios'))
+            self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Usuarios '))

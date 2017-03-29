@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 
 {% load lab_module_extras %}
-
-{% block head_title %}Agregar Lugar | {% endblock %}
+{% block head_title %}{{block.super}}Agregar Lugar {% endblock%}
 
 {% block content %}
     {% if mensaje != "" %}

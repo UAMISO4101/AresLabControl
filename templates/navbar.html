@@ -18,17 +18,36 @@
 
                 <ul class="nav navbar-nav navbar-right">
                     {% if request.user.is_authenticated%}
-                    <li><a href="{% url 'agregarLugar' %}">Agregar Lugar</a></li>
-                    <li><a href="{% url 'listaLugares' %}">Lista Lugares</a></li>
-                    
-                    {{perms}
-                    {% if perms.LabModule.can_viewMachine %}
-                    <li><a href="{% url 'maquinas-listar' %}">Máquinas</a></li>
+                        {% if perms.LabModule.can_viewStorage %}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lugares <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{% url 'listaLugares' %}">Lista Lugares</a></li>
+                                    {% if perms.LabModule.can_addStorage %}
+                                        <li><a href="{% url 'agregarLugar' %}">Agregar Lugar</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        {% endif %}
+
+                        {% if perms.LabModule.can_viewMachine %}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Maquinas <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{% url 'maquinas-listar' %}">Máquinas</a></li>
+                                    {% if perms.LabModule.can_addMachine %}
+                                        <li><a href="{% url 'maquina-add' %}">Agregar Maquina</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        {% endif %}
+
+                        {% if perms.LabModule.can_addUser %}
+                            <li><a href="{% url 'registration_register' %}">Registro</a>
+                        {% endif %}
+                        <li><a href="{% url 'auth_logout' %}">Salir</a></li>
                     {% endif %}
-                    <li><a href="{% url 'auth_logout' %}">Salir</a></li>
-                    {% else %}
-                    <li><a href="{% url 'registration_register' %}">Registro</a>
-                    {% endif %}
+
                 </ul>
                 {% if not request.user.is_authenticated and not "accounts/login" in request.get_full_path %}
                 <form class = "navbar-form navbar-right" method="POST" action="{% url 'auth_login' %}"> {% csrf_token %}
