@@ -434,7 +434,7 @@ def crear_solicitud_maquina(request):
      :returns: HttpResponse -- La respuesta a la petición. Si no esta autorizado se envia un código 401
 
     """
-    if request.user.is_authenticated() and request.user.has_perm("account.can_solMaquina"):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_solMaquina"):
         mensaje = 'ok'
         contexto = {}
         try:
@@ -526,7 +526,7 @@ def crear_solicitud_muestra(request):
 
     """
 
-    if request.user.is_authenticated() and request.user.has_perm("account.can_solMuestra"):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_solMuestra"):
         mensaje = 'ok'
         contexto = {}
         try:
