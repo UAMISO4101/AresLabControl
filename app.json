@@ -1,0 +1,30 @@
+{
+  "name": "AresLabControl",
+  "description": "Base Production",
+  "scripts": {
+  },
+  "env": {
+    "CONTRASENA": {
+      "required": true
+    },
+    "EMAIL_HOST_PASSWORD": {
+      "required": true
+    },
+    "SECRET_KEY": {
+      "required": true
+    },
+    "SUPERUSUARIO": {
+      "required": true
+    }
+  },
+  "formation": {
+  },
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
