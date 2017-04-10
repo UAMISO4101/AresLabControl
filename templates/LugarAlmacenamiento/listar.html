@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
-
+{% load staticfiles %}
 {% block head_others %}
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.1/css/select.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.jqueryui.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css">
+    <link href="{% static 'css/datatablesCustom.css' %}" rel="stylesheet">
 {% endblock %}
 
-{% block head_title %}{{block.super}}Lista Lugares Almacenamiento {% endblock%}
+{% block head_title %}{{ block.super }}Lista Lugares Almacenamiento {% endblock %}
 
 {% block content %}
 
-     <div class="starter-template">
+    <div class="starter-template">
         <h1>Lugares de almacenamiento</h1>
-     </div>
+    </div>
 
-    <table id="lugares_table" class="table table-striped table-bordered hover display" cellspacing="0" width="100%">
+    <table id="lugares_table" class="datatable display compact responsive nowrap" cellspacing="0"
+           width="100%">
         <thead>
         <tr>
             <th>Id</th>
@@ -41,7 +41,7 @@
                 <td>{{ lugar.posY }}</td>
                 <td>{{ lugar.idLugar.peso }}</td>
                 <td>{{ lugar.idLugar.temperatura }}</td>
-                <td><a class="btn btn-primary" href="/verLugar/{{ lugar.idLugar.id }}">Ver Detalle</a></td>
+                <td align="center"><a class="btn btn-primary" href="/verLugar/{{ lugar.idLugar.id }}">Ver Detalle</a></td>
             </tr>
 
         {% endfor %}
@@ -50,13 +50,10 @@
     </table>
     {% block scripts_others %}
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-                crossorigin="anonymous"></script>
-        <script src="//cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
-
+        <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
 
         <script>
             $(function () {
@@ -65,7 +62,7 @@
                     $('#lugares_table').DataTable();
                 }
                 else {
-                    $('#lugares_table').dataTable({
+                    $('#lugares_table').DataTable({
                         responsive: true,
                         sPaginationType: "full_numbers",
                         bJQueryUI: true,
