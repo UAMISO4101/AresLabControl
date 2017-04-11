@@ -328,14 +328,11 @@ class LugarAlmacenamiento(models.Model):
 
         Atributos:
             :nombre (String): Nombre del lugar de almacenamiento.
-            :descripcion (String): Descripción del lugar de almacenamiento.
-            :bandejasOcupadas (Integer): Bandejas ocupadas por el lugar de almacenamiento.
+            :descripcion (String): Descripción del lugar de almacenamiento
             :capacidad (Integer): Capacidad del lugar de almacenamiento.
             :temperatura (Decimal): Temperatura del lugar de almacenamiento.
             :estado (String): Estado del lugar de almacenamiento.
             :imagen (ImafeField): Imágen de lugar de almacenamiento,  default='images/image-not-found.jpg'.
-            :peso (Decimal): Peso soportado por el lugar de almacenamiento.
-            :tamano (Decimal): Tamaño del lugar de almacenamiento.
         Permisos:
             :can_addStorage: Permite agregar Almacenamientos
             :can_editStorage: Permite modificar Almacenamientos
@@ -361,10 +358,7 @@ class LugarAlmacenamiento(models.Model):
         default='',
         verbose_name="Descripcion"
     )
-    bandejasOcupadas = models.IntegerField(
-        verbose_name="Bandejas Ocupadas",
-        null=True
-    )
+
     capacidad = models.IntegerField(
         verbose_name="Capacidad"
     )
@@ -383,16 +377,6 @@ class LugarAlmacenamiento(models.Model):
         upload_to='images',
         verbose_name="Imagen",
         default='images/image-not-found.jpg'
-    )
-    peso = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        verbose_name="Peso"
-    )
-    tamano = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        verbose_name="Tamaño"
     )
 
 

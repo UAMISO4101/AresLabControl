@@ -496,16 +496,16 @@ def listar_lugar(request, pk):
             lugar = lista_lugar[0]
             bandejasOcupadas = Bandeja.objects.filter(lugarAlmacenamiento_id=pk, libre=False).count()
             bandejasLibres = Bandeja.objects.filter(lugarAlmacenamiento_id=pk, libre=True).count()
-            tamano = 0
-            lista = Bandeja.objects.filter(lugarAlmacenamiento_id=pk)
+            #tamano = 0
+            #lista = Bandeja.objects.filter(lugarAlmacenamiento_id=pk)
 
-            for x in lista:
-                tamano += Decimal(x.tamano)
+            #for x in lista:
+                #tamano += Decimal(x.tamano)
 
             laboratorio = LaboratorioProfile.objects.get(pk=lugar.idLaboratorio_id).nombre
 
             context = {'lugar': lugar, 'bandejasOcupadas': bandejasOcupadas, 'bandejasLibres': bandejasLibres,
-                       'tamano': tamano, 'laboratorio': laboratorio}
+                        'laboratorio': laboratorio}
             return render(request, 'LugarAlmacenamiento/detalle.html', context)
     else:
         return HttpResponse('No autorizado', status=401)
