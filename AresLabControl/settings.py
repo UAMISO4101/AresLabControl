@@ -3,6 +3,7 @@ from __future__ import print_function
 import os
 import urlparse
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -33,6 +34,7 @@ INSTALLED_APPS = [
     'registration',
     # Our Apps
     'LabModule',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -82,14 +84,14 @@ DATABASES = {
          'PORT': url.port,
 
        }
-    # 'default': {
-    #      'ENGINE': 'django.db.backends.postgresql',
-    #       'NAME': 'lab',
-    #       'HOST':'127.0.0.1',
-    #       'PORT':'5432',
-    #       'USER':'postgres',
-    #      'PASSWORD':''
-    #   }
+     #'default': {
+     #     'ENGINE': 'django.db.backends.postgresql',
+     #      'NAME': 'lab',
+     #      'HOST':'127.0.0.1',
+     #      'PORT':'5432',
+     #      'USER':'postgres',
+     #     'PASSWORD':''
+     #  }
     #
     # 'default': {
     #       'ENGINE': 'django.db.backends.postgresql',
@@ -140,19 +142,19 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env', 'static_root')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static", "lab_static"),
 ]
 
-MEDIA_URL = '/media/'
+#MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join('media')
 # MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_in_env', 'media_root')
 
-# Simplified static file serving.
-# https://warehouse.python.org/project/whitenoise/
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
 
 AUTH_PROFILE_MODULE = 'LabModule.Usuario'
 
@@ -181,3 +183,23 @@ GRAPH_MODELS = {
 # Atributos por defecto para creacion de superusuario (pasar a variables de entorno)
 SUPERUSUARIO = os.environ["SUPERUSUARIO"]
 CONTRASENA = os.environ["CONTRASENA"]
+
+
+#Atributos para conectarse al S3 de amazon
+
+
+
+AWS_STORAGE_BUCKET_NAME='maquinasymuestras'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
+
+STATICFILES_LOCATION = 'static'
+#STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, STATICFILES_LOCATION)
+#STATICFILES_STORAGE = 'custom_storages.StaticStorage'
+
+MEDIAFILES_LOCATION = 'media'
+MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
+DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
+
+AWS_ACCESS_KEY_ID=os.environ["AWS_BUCKET_ACCESS_KEY_ID"]
+AWS_SECRET_ACCESS_KEY=os.environ["AWS_BUCKET_SECRET_ACCESS_KEY"]
