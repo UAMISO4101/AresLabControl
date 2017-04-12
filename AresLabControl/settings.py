@@ -83,7 +83,7 @@ DATABASES = {
          'HOST': url.hostname,
          'PORT': url.port,
 
-       }
+      }
      #'default': {
      #     'ENGINE': 'django.db.backends.postgresql',
      #      'NAME': 'lab',

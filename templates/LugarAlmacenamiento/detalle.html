@@ -1,14 +1,20 @@
 {% extends 'base.html' %}
 
 {% load lab_module_extras %}
+{% load staticfiles %}
+{% block head_others %}
+    <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block head_title %}{{block.super}}Detalle Lugar{% endblock%}
+
 
 
 {% block content %}
 
     <div class="starter-template">
         <h2>Detalle {{ lugar.idLugar.nombre }}</h2>
+        <br><br>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title text-left">Información básica ID {{ lugar.idLugar.id }}</h3>
@@ -49,7 +55,7 @@
                     <div class="panel-heading">
                         <h3 class="panel-title text-left">Bandejas</h3>
                     </div>
-                    <div class="panel-body text-left">
+                    <div class="panel-body text-left" style="height:140px">
                         <div class="row">
                             <div class="col-md-6">
                                 <strong>Usadas:</strong>
@@ -84,7 +90,7 @@
                     <div class="panel-heading">
                         <h3 class="panel-title text-left">Medidas</h3>
                     </div>
-                    <div class="panel-body text-left">
+                    <div class="panel-body text-left" style="height:140px">
 
                         <div class="row">
                             <div class="col-md-4">
@@ -106,7 +112,7 @@
                     <div class="panel-heading">
                         <h3 class="panel-title text-left">Ubicación</h3>
                     </div>
-                    <div class="panel-body text-left">
+                    <div class="panel-body text-left" style="height:140px">
 
                             <div class="row">
                                 <div class="col-md-6">

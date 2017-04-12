@@ -1,3 +1,4 @@
+
 .fg-toolbar {
     background: #8187B7; /* For browsers that do not support gradients */
     background: -webkit-linear-gradient(#8187B7, #C7CAE1); /* For Safari 5.1 to 6.0 */
@@ -93,3 +94,5 @@
 .datatable tbody tr:nth-child(odd) td.sorting_10{
     background-color:  #C7CAE1  !important;
 }
+
+
