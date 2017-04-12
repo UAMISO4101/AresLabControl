@@ -1,4 +1,7 @@
 {% load staticfiles %}
+{% block head_others %}
+    <link href="{% static 'css/navbarCustom.css' %}" rel="stylesheet">
+{% endblock %}
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -13,39 +16,39 @@
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a  href="{% url 'home' %}">Lab Control</a></li>
+                    <li><a  href="{% url 'home' %}" class="navtext">Lab Control</a></li>
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
                     {% if request.user.is_authenticated%}
                         {% if perms.LabModule.can_viewStorage %}
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lugares <span class="caret"></span></a>
+                            <li class="dropdown navsubmenu">
+                                <a href="#" class="dropdown-toggle navtext" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" onclick="cambiarColorClick(this)" onblur="cambiarColorBlur(this)">Lugares <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="{% url 'listaLugares' %}">Lista Lugares</a></li>
+                                    <li><a href="{% url 'listaLugares' %}" class="navsubtext">Lista Lugares</a></li>
                                     {% if perms.LabModule.can_addStorage %}
-                                        <li><a href="{% url 'agregarLugar' %}">Agregar Lugar</a></li>
+                                        <li><a href="{% url 'agregarLugar' %}" class="navsubtext">Agregar Lugar</a></li>
                                     {% endif %}
                                 </ul>
                             </li>
                         {% endif %}
 
                         {% if perms.LabModule.can_viewMachine %}
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Maquinas <span class="caret"></span></a>
+                            <li class="dropdown navsubmenu">
+                                <a href="#" class="dropdown-toggle navtext" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" onclick="cambiarColorClick(this)" onblur="cambiarColorBlur(this)" >Maquinas <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="{% url 'maquinas-listar' %}">Máquinas</a></li>
+                                    <li><a href="{% url 'maquinas-listar' %}" class="navsubtext">Máquinas</a></li>
                                     {% if perms.LabModule.can_addMachine %}
-                                        <li><a href="{% url 'maquina-add' %}">Agregar Maquina</a></li>
+                                        <li><a href="{% url 'maquina-add' %}" class="navsubtext">Agregar Maquina</a></li>
                                     {% endif %}
                                 </ul>
                             </li>
                         {% endif %}
 
                         {% if perms.LabModule.can_addUser %}
-                            <li><a href="{% url 'registration_register' %}">Registro</a>
+                            <li><a href="{% url 'registration_register' %}" class="navtext">Registro</a>
                         {% endif %}
-                        <li><a href="{% url 'auth_logout' %}">Salir</a></li>
+                        <li><a href="{% url 'auth_logout' %}" class="navtext">Salir</a></li>
                     {% endif %}
 
                 </ul>
@@ -62,4 +65,12 @@
                 {% endif %}
             </div><!--/.nav-collapse -->
         </div>
+        <script>
+            function cambiarColorClick(element){
+                element.style.background = "#6269A2";
+            }
+            function cambiarColorBlur(element){
+                element.style.background = "#464E8E";
+            }
+        </script>
     </nav>

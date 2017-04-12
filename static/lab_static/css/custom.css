@@ -22,3 +22,12 @@ img.imageIndex{
     width:300px;
     height:200px;
 }
+
+h2{
+    color: #6269A2 !important;
+}
+
+.btn-primary{
+    background: #464E8E !important;
+    color: #C7CAE1 !important;
+}

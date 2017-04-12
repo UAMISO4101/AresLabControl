@@ -12,20 +12,10 @@
 {% block content %}
 
     <div class="page-header text-center">
-        <h1>{% block title %}{{ section.title }}{% endblock %} </h1>
+        <h2 style="color: #6269A2 ">{% block title %}{{ section.title }}{% endblock %} </h2>
     </div>
 
-    <br>
 
-    <div class="row">
-        {% if perms.LabModule.can_addMachine %}
-            <form action="{% url 'maquina-add' %}">
-                <input type="submit" value="Agregar máquina" class="btn btn-primary"/>
-            </form>
-        {% endif %}
-    </div>
-
-    <br>
     <div class="row">
         <table id="maquinas_table" class="datatable display compact responsive nowrap" cellspacing="0"
                width="100%">
