@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
+
 """Este módulo se encarga de generar las vistas a partir de los modelos, así como de hacer la lógica del negocio. """
 
 __docformat__ = 'reStructuredText'
@@ -352,53 +354,39 @@ def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
 
 def listarMaquinas(request):
     """Comprobar si el usario puede ver las máquinas y mostraselas filtrando por una búsqueda.
-        Historia de usuario: ALF-20:Yo como Jefe de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
-        Historia de usuario: ALF-25:Yo como Asistente de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
-        Se encarga de:
-            * Comprobar si hay un usario logueado
-            * Comprobar si el suario tiene permisos para ver las máquinas
-            * Obtener todas las máquinas cuyo nombre contenga el párametro solicitado por el usario
-            * Páginar el resultado de la consulta.
+           Historia de usuario: ALF-20:Yo como Jefe de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
+           Historia de usuario: ALF-25:Yo como Asistente de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
+           Se encarga de:
+               * Comprobar si hay un usario logueado
+               * Comprobar si el suario tiene permisos para ver las máquinas
+               * Obtener todas las máquinas cuyo nombre contenga el párametro solicitado por el usario
+               * Páginar el resultado de la consulta.
 
-     :param pag: Opcional: El número de página que se va a mostrar en la páginación.
-     :type pag: Integer.
-     :param que: Opcional: La búsqueda que se va a realizar
-     :type que: String.
-     :param num: Opcional: El número de máquinas a ver en cada página
-     :type num: String.
-     :returns: HttpResponse -- La respuesta a la petición. Retorna páginada la lista de las máquias que cumplen con la búsqueda. Si no esta autorizado se envia un código 401
+        :param pag: Opcional: El número de página que se va a mostrar en la páginación.
+        :type pag: Integer.
+        :param que: Opcional: La búsqueda que se va a realizar
+        :type que: String.
+        :param num: Opcional: El número de máquinas a ver en cada página
+        :type num: String.
+        :returns: HttpResponse -- La respuesta a la petición. Retorna páginada la lista de las máquias que cumplen con la búsqueda. Si no esta autorizado se envia un código 401
 
     """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
-        edita=request.user.has_perm("LabModule.can_edditMachine")
-        pag = request.GET.get('pag', 1)
-        que = request.GET.get("que", "")
-        numer = int(request.GET.get("num", "10"))
         section = {}
         section['title'] = 'Máquinas'
+        edita = request.user.has_perm("LabModule.can_edditMachine")
         if not edita:
-          lista_maquinas = MaquinaProfile.objects.all().filter(nombre__icontains=que,activa=True).extra(order_by=['nombre'])
+            lista_maquinas = MaquinaProfile.objects.all().filter(activa=True).extra(order_by=['nombre'])
         else:
-          lista_maquinas = MaquinaProfile.objects.all().filter(nombre__icontains=que).extra(order_by=['nombre'])
+            lista_maquinas = MaquinaProfile.objects.all().extra(order_by=['nombre'])
 
-        paginatorMaquinas = Paginator(lista_maquinas, numer)
-        try:
-            maquinas = paginatorMaquinas.page(pag)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            maquinas = paginatorMaquinas.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            maquinas = paginatorMaquinas.page(paginatorMaquinas.num_pages)
-
-        idMquinas = [maquina.idSistema for maquina in maquinas]
+        idMquinas = [maquina.idSistema for maquina in lista_maquinas]
         lista_Posiciones = MaquinaEnLab.objects.all().filter(idMaquina__in=idMquinas)
-        paginas = [x + 1 for x in range(maquinas.paginator.num_pages)]
-        maquinasConUbicacion = zip(maquinas.object_list, lista_Posiciones)
-        context = {'paginas': paginas, 'pag': int(pag), 'last': maquinas.paginator.num_pages, 'section': section,
-                   'maquinasBien': maquinasConUbicacion, "query": que}
+        maquinasConUbicacion = zip(lista_maquinas, lista_Posiciones)
+        context = {'section': section, 'maquinasBien': maquinasConUbicacion}
         return render(request, 'Maquinas/ListaMaquinas.html', context)
-    return HttpResponse('No autorizado', status=401)
+    else:
+        return HttpResponse('No autorizado', status=401)
 
 
 def listar_lugares(request):
@@ -496,16 +484,16 @@ def listar_lugar(request, pk):
             lugar = lista_lugar[0]
             bandejasOcupadas = Bandeja.objects.filter(lugarAlmacenamiento_id=pk, libre=False).count()
             bandejasLibres = Bandeja.objects.filter(lugarAlmacenamiento_id=pk, libre=True).count()
-            #tamano = 0
-            #lista = Bandeja.objects.filter(lugarAlmacenamiento_id=pk)
+            # tamano = 0
+            # lista = Bandeja.objects.filter(lugarAlmacenamiento_id=pk)
 
-            #for x in lista:
-                #tamano += Decimal(x.tamano)
+            # for x in lista:
+            # tamano += Decimal(x.tamano)
 
             laboratorio = LaboratorioProfile.objects.get(pk=lugar.idLaboratorio_id).nombre
 
             context = {'lugar': lugar, 'bandejasOcupadas': bandejasOcupadas, 'bandejasLibres': bandejasLibres,
-                        'laboratorio': laboratorio}
+                       'laboratorio': laboratorio}
             return render(request, 'LugarAlmacenamiento/detalle.html', context)
     else:
         return HttpResponse('No autorizado', status=401)

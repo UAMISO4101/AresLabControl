@@ -1,83 +1,88 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
+{% block head_others %}
 
-{% block head_title %}{{block.super}}{{ section.title }} {% endblock%}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.jqueryui.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css">
+    <link href="{% static 'css/datatablesCustom.css' %}" rel="stylesheet">
+{% endblock %}
+{% block head_title %}{{ block.super }}{{ section.title }} {% endblock %}
 {% load lab_module_extras %}
 {% block content %}
 
-<div class="page-header text-center">
-    <h1>{% block title %}{{ section.title }}{% endblock %} </h1>
-</div>
+    <div class="page-header text-center">
+        <h1>{% block title %}{{ section.title }}{% endblock %} </h1>
+    </div>
 
-<br>
+    <br>
 
     <div class="row">
         {% if perms.LabModule.can_addMachine %}
             <form action="{% url 'maquina-add' %}">
-        <input type="submit" value="Agregar máquina" class="btn btn-primary" />
-    </form>
-        {% endif %}
-        <div class="col-md-12">
-            <h2>Buscar máquinas por nombre</h2>
-            <form type="get" action="." style="margin: 0">
-                <div class="input-group col-md-12">
-                    <input id="que" type="text" class="form-control input-lg" placeholder="Autoclave" name="que" value="{{query}}" />
-                    <span class="input-group-btn">
-                        <button class="btn btn-info btn-lg" type="submit">
-                            <i class="glyphicon glyphicon-search"></i>
-                        </button>
-                    </span>
-                </div>
+                <input type="submit" value="Agregar máquina" class="btn btn-primary"/>
             </form>
-        </div>
+        {% endif %}
     </div>
 
-
-
-<br>
-
-<div class="row ">
-    {% if maquinasBien %}
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover">
+    <br>
+    <div class="row">
+        <table id="maquinas_table" class="datatable display compact responsive nowrap" cellspacing="0"
+               width="100%">
+            <thead>
             <tr>
-                <th>ID</th>
+                <th>Id</th>
                 <th>Nombre</th>
                 <th>Ubicación</th>
                 <th>Se debe reservar</th>
             </tr>
+            </thead>
+
+            <tbody>
 
             {% for maquina, ubicacion in maquinasBien %}
-                <tr class="clickable-row {{ maquina.con_reserva|yesno:"danger,"}}" data-href="/maquina/{{ maquina.idSistema}}">
 
-                <th>{{ maquina.idSistema }}</th>
-                <th>{{ maquina.nombre }}</th>
-                <th>{{ubicacion}}</th>
-                <th>{{ maquina.con_reserva|yesno:"Si,No"}}</th>
-            </tr>
+                <tr class="clickable-row {{ maquina.con_reserva|yesno:"danger," }}"
+                    data-href="/maquina/{{ maquina.idSistema }}">
+                    <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ maquina.idSistema }}</td>
+                    <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ maquina.nombre }}</td>
+                    <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ ubicacion }}</td>
+                    <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ maquina.con_reserva|yesno:"Si,No" }}</td>
+                </tr>
+
             {% endfor %}
+
+            </tbody>
         </table>
     </div>
-    {% else %}
-    <div class="col-xs-12 text-center">            
-            <div id="noresults"><h1><strong>No hay máquinas que coincidan con la búsqueda</strong></h1></div>
-    </div>
-    {% endif %}
-</div>
 
 
-<div class="row">
-    <ul class="pagination center">
-        <li><a href="?pag=1&que={{query}}"><<</a> </li>
-        {% for pagina in paginas %}
-        {% ifequal pagina pag%}
-        <li class="active"><a href="?pag={{pagina}}&que={{query}}">{{pagina}}</a> </li>
-        {% else %}
-        <li ><a href="?pag={{pagina}}&que={{query}}">{{pagina}}</a> </li>
-        {%endifequal%}     
-        {% endfor %}
-        <li><a href="?pag={{last}}&que={{query}}">>></a> </li>
-    </ul>
-</div>
+    {% block scripts_others %}
+
+        <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
+
+        <script>
+            $(function () {
+
+                if ($.fn.dataTable.isDataTable('#maquinas_table')) {
+                    $('#maquinas_table').DataTable();
+                }
+                else {
+                    $('#maquinas_table').DataTable({
+                        responsive: true,
+                        sPaginationType: "full_numbers",
+                        bJQueryUI: true,
+                        language: {
+                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                        }
+                    });
+                }
 
 
+            });
+        </script>
+    {% endblock %}
 {% endblock %}

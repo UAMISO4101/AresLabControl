@@ -14,82 +14,22 @@
     background-color: #E4E5F3 !important;
 }
 
-.datatable tbody tr td.sorting_1 {
+.datatable tbody tr td[class*="sorting"] {
     background-color: #E4E5F3 !important;
 }
 
-.datatable tbody tr:nth-child(odd) td.sorting_1{
-    background-color:  #C7CAE1  !important;
+.datatable tbody tr:nth-child(odd) td[class*="sorting"] {
+    background-color: #C7CAE1 !important;
 }
 
-.datatable tbody tr td.sorting_2 {
-    background-color: #E4E5F3 !important;
+.datatable tbody tr[class*="danger"] {
+    background-color: #F2DEDE !important;
 }
 
-.datatable tbody tr:nth-child(odd) td.sorting_2{
-    background-color:  #C7CAE1  !important;
+.datatable tbody tr td[class*="danger"] {
+    background-color: #F2DEDE !important;
 }
 
-.datatable tbody tr td.sorting_3 {
-    background-color: #E4E5F3 !important;
-}
-
-.datatable tbody tr:nth-child(odd) td.sorting_3{
-    background-color:  #C7CAE1  !important;
-}
-
-.datatable tbody tr td.sorting_4 {
-    background-color: #E4E5F3 !important;
-}
-
-.datatable tbody tr:nth-child(odd) td.sorting_4{
-    background-color:  #C7CAE1  !important;
-}
-
-.datatable tbody tr td.sorting_5 {
-    background-color: #E4E5F3 !important;
-}
-
-.datatable tbody tr:nth-child(odd) td.sorting_5{
-    background-color:  #C7CAE1  !important;
-}
-
-.datatable tbody tr td.sorting_6 {
-    background-color: #E4E5F3 !important;
-}
-
-.datatable tbody tr:nth-child(odd) td.sorting_6{
-    background-color:  #C7CAE1  !important;
-}
-
-.datatable tbody tr td.sorting_7 {
-    background-color: #E4E5F3 !important;
-}
-
-.datatable tbody tr:nth-child(odd) td.sorting_7{
-    background-color:  #C7CAE1  !important;
-}
-
-.datatable tbody tr td.sorting_8 {
-    background-color: #E4E5F3 !important;
-}
-
-.datatable tbody tr:nth-child(odd) td.sorting_8{
-    background-color:  #C7CAE1  !important;
-}
-
-.datatable tbody tr td.sorting_9 {
-    background-color: #E4E5F3 !important;
-}
-
-.datatable tbody tr:nth-child(odd) td.sorting_9{
-    background-color:  #C7CAE1  !important;
-}
-
-.datatable tbody tr td.sorting_10 {
-    background-color: #E4E5F3 !important;
-}
-
-.datatable tbody tr:nth-child(odd) td.sorting_10{
-    background-color:  #C7CAE1  !important;
+.datatable tbody tr:nth-child(odd) td[class*="danger"] {
+    background-color: #F2DEDE !important;
 }
