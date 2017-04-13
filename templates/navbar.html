@@ -17,6 +17,11 @@
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li><a  href="{% url 'home' %}" class="navtext">Lab Control</a></li>
+                    {% if request.user.is_authenticated%}
+                    <li>
+                        <a href="{% url 'home' %}" class="navtext">Bienvenido a LabControl {{ user.get_username  }}</a>
+                    </li>
+                    {% endif %}
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">

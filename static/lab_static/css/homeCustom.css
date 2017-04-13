@@ -1,0 +1,24 @@
+.banner{
+    width:100%;
+}
+
+.banner-container{
+    max-height:400px;
+    overflow: hidden;
+    margin-top:-55px;
+}
+
+.home-icono{
+    width:40%;
+}
+
+.home-icono-container{
+    text-align:center;
+}
+
+h4{
+    color: #464E8E !important;
+}
+p{
+    text-align: justify;
+}
