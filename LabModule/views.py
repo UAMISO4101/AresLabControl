@@ -4,8 +4,8 @@
 
 __docformat__ = 'reStructuredText'
 
-import datetime
 import json
+from decimal import Decimal
 
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
@@ -38,7 +38,6 @@ from .forms import LugarAlmacenamientoForm, SolicitudForm
 from .forms import MuestraSolicitudForm
 from .forms import PosicionesLugarAlmacenamientoForm
 from .forms import RegistroUsuarioForm
-from decimal import Decimal
 
 
 # Create your views here.
@@ -370,16 +369,17 @@ def listarMaquinas(request):
 
     """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
-        edita=request.user.has_perm("LabModule.can_edditMachine")
+        edita = request.user.has_perm("LabModule.can_edditMachine")
         pag = request.GET.get('pag', 1)
         que = request.GET.get("que", "")
         numer = int(request.GET.get("num", "10"))
         section = {}
         section['title'] = 'Máquinas'
         if not edita:
-          lista_maquinas = MaquinaProfile.objects.all().filter(nombre__icontains=que,activa=True).extra(order_by=['nombre'])
+            lista_maquinas = MaquinaProfile.objects.all().filter(nombre__icontains=que, activa=True).extra(
+                order_by=['nombre'])
         else:
-          lista_maquinas = MaquinaProfile.objects.all().filter(nombre__icontains=que).extra(order_by=['nombre'])
+            lista_maquinas = MaquinaProfile.objects.all().filter(nombre__icontains=que).extra(order_by=['nombre'])
 
         paginatorMaquinas = Paginator(lista_maquinas, numer)
         try:
@@ -567,6 +567,32 @@ def crear_solicitud_muestra(request):
             contexto = {'mensaje': 'Muchas muestras con ese id'}
 
         return render(request, "Solicitudes/crear_muestra_solicitud.html", contexto)
+    else:
+        return HttpResponse('No autorizado', status=401)
+
+
+def reservar_maquina(request, pk):
+    """Desplegar y comprobar los valores a consultar.
+                Historia de usuario:     ALF-3 - Yo como Asistente de Laboratorio quiero poder ver la agenda de una máquina para visualizar cuándo podré usarla.
+                Se encarga de:
+                * Reservar una máquina en una fecha determinada.
+            :param request: El HttpRequest que se va a responder.
+            :type request: HttpRequest.
+            :param pk: La llave primaria de la máquina
+            :type pk: String.
+            :returns: HttpResponse -- La respuesta a la petición, con información del calendario para reservar la máquina.
+        """
+    if request.user.is_authenticated():
+        lista_maquina = MaquinaEnLab.objects.filter(idMaquina_id=pk)
+        if lista_maquina is None:
+            # cambiar por listado de maquinas
+            return listar_lugares(request)
+        else:
+            maquinaEnLab = lista_maquina[0]
+            maquinaProfile = maquinaEnLab.idMaquina
+            context = {'maquinaEnLab': maquinaEnLab, 'maquinaProfile': maquinaProfile}
+
+            return render(request, 'Maquinas/agenda.html', context)
     else:
         return HttpResponse('No autorizado', status=401)
 
