@@ -567,7 +567,7 @@ def listar_muestra(request, pk):
             :returns: HttpResponse -- La respuesta a la petición, con información de la muestra existente.
         """
     if request.user.is_authenticated():
-        lista_muestra = Muestra.objects.filter(idLugar_id=pk)
+        lista_muestra = Muestra.objects.filter(id=pk)
         if lista_muestra is None:
             # cambiar por listado de muestras
             return listar_lugares(request)
@@ -605,6 +605,33 @@ def reservar_muestra(request):
             form = MuestraForm()
 
         return render(request, 'Muestra/detalle.html', {'form': form, 'mensaje': mensaje})
+    else:
+        return HttpResponse('No autorizado', status=401)
+
+
+def reservar_maquina(request, pk):
+    """Desplegar y comprobar los valores a consultar.
+                Historia de usuario:     ALF-3 - Yo como Asistente de Laboratorio quiero poder ver la agenda de una máquina para visualizar cuándo podré usarla.
+                Se encarga de:
+                * Reservar una máquina en una fecha determinada.
+
+            :param request: El HttpRequest que se va a responder.
+            :type request: HttpRequest.
+            :param pk: La llave primaria de la máquina
+            :type pk: String.
+            :returns: HttpResponse -- La respuesta a la petición, con información del calendario para reservar la máquina.
+        """
+    if request.user.is_authenticated():
+        lista_maquina = MaquinaEnLab.objects.filter(idMaquina_id=pk)
+        if lista_maquina is None:
+            # cambiar por listado de maquinas
+            return listar_lugares(request)
+        else:
+            maquinaEnLab = lista_maquina[0]
+            maquinaProfile = maquinaEnLab.idMaquina
+            context = {'maquinaEnLab': maquinaEnLab, 'maquinaProfile': maquinaProfile}
+
+            return render(request, 'Maquinas/agenda.html', context)
     else:
         return HttpResponse('No autorizado', status=401)
 

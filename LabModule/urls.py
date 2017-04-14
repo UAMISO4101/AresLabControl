@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^maquina/add/$', views.maquina_create, name='maquina-add'),
     url(r'^maquina/$', views.listarMaquinas, name='maquinas-listar'),
     url(r'^maquina/(?P<pk>[\w\-]+)/$', views.maquina_update, name='maquina-update'),
+    url(r'^reservarMaquina/(?P<pk>[\w\-]+)/$', views.reservar_maquina, name='reservarMaquina'),
     # Muestras
     url(r'^solicitarMuestra/$', views.crear_solicitud_muestra, name='solicitarMuestra'),
     url(r'^solicitarMuestra/experimentos/$', views.cargar_experimentos, name='experimentos'),
@@ -28,6 +29,8 @@ urlpatterns = [
     # Detalle Muestra
     url(r'^verMuestra/(?P<pk>[\w\-]+)/$', views.listar_muestra, name='verMuestra'),
     url(r'^reservarMuestra/$', views.reservar_muestra, name='reservarMuestra'),
+
+
 ]
 
 if settings.DEBUG:
