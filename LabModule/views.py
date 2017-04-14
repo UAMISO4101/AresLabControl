@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
-
-from __future__ import print_function
-
 """Este módulo se encarga de generar las vistas a partir de los modelos, así como de hacer la lógica del negocio. """
+from __future__ import print_function
 
 __docformat__ = 'reStructuredText'
 
 import json
-
+from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
@@ -21,7 +19,10 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from registration.backends.default.views import RegistrationView
 
-from models import Bandeja, Projecto, MaquinaSolicitud, LaboratorioProfile
+from models import Bandeja
+from models import Projecto
+from models import MaquinaSolicitud
+from models import LaboratorioProfile
 from models import Experimento
 from models import LugarAlmacenamientoEnLab
 from models import MaquinaEnLab
@@ -32,10 +33,12 @@ from models import Paso
 from models import Protocolo
 from models import Solicitud
 from models import Usuario
-from .forms import LugarAlmacenamientoForm, SolicitudForm, MuestraForm
-from .forms import MuestraSolicitudForm
-from .forms import PosicionesLugarAlmacenamientoForm
-from .forms import RegistroUsuarioForm
+from forms import LugarAlmacenamientoForm
+from forms import SolicitudForm
+from forms import MuestraForm
+from forms import MuestraSolicitudForm
+from forms import PosicionesLugarAlmacenamientoForm
+from forms import RegistroUsuarioForm
 
 
 # Create your views here.
@@ -79,7 +82,7 @@ def registrar_usuario(request):
        """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addUser"):
         section = {}
-        section['title'] = 'Agregar usuario'
+        section['title'] = _('Agregar usuario')
         form = RegistroUsuarioForm(request.POST or None)
         if form.is_valid():
             nuevo_usuario = form.save(commit=False)
@@ -95,7 +98,7 @@ def registrar_usuario(request):
                 nuevo_usuario.save()
                 return HttpResponseRedirect(reverse('home'))
             except:
-                form.add_error("userCode", "Un usuario con este id ya existe")
+                form.add_error("userCode", _("Un usuario con este id ya existe"))
         context = {'form': form}
         return render(request, 'registration/registration_form.html', context)
     return HttpResponse('No autorizado', status=401)
@@ -130,22 +133,22 @@ def agregar_lugar(request):
                 # lamisma = MaquinaEnLab.objects.filter(pk=lugarEnLab.pk).exists()
 
                 if ocupado:
-                    formPos.add_error("posX", "La posición x ya esta ocupada")
-                    formPos.add_error("posY", "La posición y ya esta ocupada")
+                    formPos.add_error("posX", _("La posición x ya esta ocupada"))
+                    formPos.add_error("posY", _("La posición y ya esta ocupada"))
 
-                    mensaje = "El lugar en el que desea guadar ya esta ocupado"
+                    mensaje = _("El lugar en el que desea guadar ya esta ocupado")
                 else:
-                    mensaje = "La posición [" + str(lugarEnLab.posX) + "," + str(
-                        lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio"
+                    mensaje = _("La posición [" + str(lugarEnLab.posX) + "," + str(
+                        lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio")
                     lab = lugarEnLab.idLaboratorio
                     masX = lab.numX >= lugarEnLab.posX
                     masY = lab.numY >= lugarEnLab.posY
                     posible = masX and masY
                     if not posible:
                         if not masX:
-                            formPos.add_error("posX", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
+                            formPos.add_error("posX", _("La posición x sobrepasa el valor máximo de ") + str(lab.numX))
                         if not masY:
-                            formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
+                            formPos.add_error("posY", _("La posición y sobrepasa el valor máximo de ") + str(lab.numY))
                     else:
                         lugar.save()
                         lugarEnLab.idLugar = lugar

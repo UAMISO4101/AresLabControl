@@ -609,12 +609,12 @@ class Muestra(models.Model):
     def calc_disp(self):
         bandejas = Bandeja.objects.filter(muestra=self)
         for bandeja in bandejas:
-            if bandeja.libre == False:
+            if not bandeja.libre:
                 return 'Si'
         return 'No'
 
     def calc_controled(self):
-        if self.controlado == True:
+        if self.controlado:
             return 'Si'
         else:
             return 'No'
