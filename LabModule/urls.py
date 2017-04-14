@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^solicitarMaquina/$', views.crear_solicitud_maquina, name='solicitarMaquina'),
     # Detalle Muestra
     url(r'^verMuestra/(?P<pk>[\w\-]+)/$', views.listar_muestra, name='verMuestra'),
+    url(r'^reservarMuestra/$', views.reservar_muestra, name='reservarMuestra'),
 ]
 
 if settings.DEBUG:

@@ -6,15 +6,11 @@ from __future__ import print_function
 
 __docformat__ = 'reStructuredText'
 
-import datetime
 import json
 
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.paginator import EmptyPage
-from django.core.paginator import PageNotAnInteger
-from django.core.paginator import Paginator
 from django.forms import ModelForm
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -36,11 +32,10 @@ from models import Paso
 from models import Protocolo
 from models import Solicitud
 from models import Usuario
-from .forms import LugarAlmacenamientoForm, SolicitudForm
+from .forms import LugarAlmacenamientoForm, SolicitudForm, MuestraForm
 from .forms import MuestraSolicitudForm
 from .forms import PosicionesLugarAlmacenamientoForm
 from .forms import RegistroUsuarioForm
-from decimal import Decimal
 
 
 # Create your views here.
@@ -581,6 +576,35 @@ def listar_muestra(request, pk):
             context = {'muestra': muestra}
 
             return render(request, 'Muestra/detalle.html', context)
+    else:
+        return HttpResponse('No autorizado', status=401)
+
+
+def reservar_muestra(request):
+    """Desplegar y comprobar los valores a insertar.
+           Historia de usuario: ALF-50 - Yo como Asistente de Laboratorio quiero poder ver el detalle de una muestra para conocer sus características.
+           Se encarga de:
+               * Reservar la muestra
+
+        :param request: El HttpRequest que se va a responder.
+        :type request: HttpRequest.
+        :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la listado de muestras. Sino redirecciona al mismo formulario mostrando los errores.
+
+       """
+    mensaje = ""
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            form = MuestraForm(request.POST or None, request.FILES or None)
+
+            if form.is_valid():
+                form.save()
+                return redirect(reverse('home'))
+            else:
+                mensaje = 'Los datos ingresados para reservar la muestra no son correctos.'
+        else:
+            form = MuestraForm()
+
+        return render(request, 'Muestra/detalle.html', {'form': form, 'mensaje': mensaje})
     else:
         return HttpResponse('No autorizado', status=401)
 

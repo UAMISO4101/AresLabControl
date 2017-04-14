@@ -3,10 +3,9 @@ from django import forms
 from django.db.models import Q
 from django.forms import ModelForm
 
-from .models import Bandeja, Solicitud, MuestraSolicitud, MaquinaSolicitud
 from .models import LugarAlmacenamiento
 from .models import LugarAlmacenamientoEnLab
-from .models import Projecto
+from .models import Solicitud, MuestraSolicitud, MaquinaSolicitud, Muestra
 from .models import Usuario
 
 
@@ -19,6 +18,7 @@ class RegistroUsuarioForm(forms.ModelForm):
         :param ModelForm: Instancia de Django.forms.
         :type ModelForm: ModelForm.
        """
+
     class Meta:
         model = Usuario
         exclude = ('user',)
@@ -84,20 +84,20 @@ class PosicionesLugarAlmacenamientoForm(ModelForm):
         fields = ['posX', 'posY', 'idLaboratorio']
         exclude = ('idLugar',)
 
-class SolicitudForm(ModelForm):
 
+class SolicitudForm(ModelForm):
     class Meta:
-        model=Solicitud
+        model = Solicitud
         fields = ['fechaInicial', 'fechaFinal', 'descripcion', 'estado', 'solicitante', 'fechaActual', 'paso']
         widgets = {
             'fechaInicial': forms.DateInput(attrs={'class': 'datepicker'}),
             'fechaFinal': forms.DateInput(attrs={'class': 'datepicker'}),
         }
 
-    def verificar_fecha(self,maquina_id, fechaIni, fechaFin):
+    def verificar_fecha(self, maquina_id, fechaIni, fechaFin):
 
         solicitudes = Solicitud.objects.filter(
-            Q(fechaInicial=fechaIni, fechaFinal=fechaFin) | Q(fechaInicial__lte=fechaIni,fechaFinal__gte=fechaIni) | Q(
+            Q(fechaInicial=fechaIni, fechaFinal=fechaFin) | Q(fechaInicial__lte=fechaIni, fechaFinal__gte=fechaIni) | Q(
                 fechaInicial__lte=fechaFin, fechaFinal__gte=fechaFin)).exclude(estado='rechazada')
         for sol in solicitudes:
             otras_maquinas = MaquinaSolicitud.objects.filter(solicitud=sol.pk, maquina=maquina_id).count()
@@ -105,10 +105,26 @@ class SolicitudForm(ModelForm):
                 return False
         return True
 
+
 class MuestraSolicitudForm(ModelForm):
     class Meta:
-        model=MuestraSolicitud
-        fields=['cantidad','solicitud','muestra','tipo']
+        model = MuestraSolicitud
+        fields = ['cantidad', 'solicitud', 'muestra', 'tipo']
 
 
+class MuestraForm(ModelForm):
+    """Formulario  para crear y modificar muestras.
 
+           Se encarga de:
+               * Tener una instancia del modelo muestra.
+               * Agregar una muestra a la base de datos.
+               * Modificar una muestra ya existente.
+
+        :param ModelForm: Instancia de Django.forms.
+        :type ModelForm: ModelForm.
+
+       """
+
+    class Meta:
+        model = Muestra
+        fields = ['nombre', 'descripcion', 'imagen']
