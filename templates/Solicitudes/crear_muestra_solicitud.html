@@ -1,116 +1,192 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
 
-{% block head_title %}{{ block.super }}Solicitar Muestra py{% endblock %}
+{% load lab_module_extras %}
+{% load staticfiles %}
+{% block head_others %}
+    <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block head_title %}{{block.super}}Solicitar Muestra py{% endblock%}
+
+
 
 {% block content %}
-<div class='row'>
-
-    <div class="col-md-6">
-        <h1>Solicitar Muestra</h1>
-
-        <form method="post" action="" name="formSolicitud" id="formSolicitud">
-
-            {% csrf_token %}
-            <table class="table table-bordered">
-                <tbody>
-                    <tr>
-                        <td>ID</td>
-                        <td>{{ muestra.id}}</td>
-                    </tr>
-                    <tr>
-                        <td>Nombre</td>
-                        <td>{{ muestra.nombre}}</td>
-                    </tr>
-                    <tr>
-                        <td>Unidad</td>
-                        <td>{{ muestra.unidad }}</td>
-                    </tr>
-                    <tr>
-                        <td>Disponible</td>
-                        <td>{{ muestra.calc_disp }}</td>
-                    </tr>
-                    <tr>
-                        <td>Controlado</td>
-                        <td>{{ muestra.calc_controled }}</td>
-                    </tr>
-                    <tr>
-                        <td>Cantidad Actual</td>
-                        <td id="cantidadActual">{{ muestra.cantidadActual }}</td>
-                    </tr>
-                    <tr>
-                        <td>Proyectos</td>
-                        <td>
-                            <select class="form-control" name="project" id="project" >
-                                <option value="">--Seleccione--</option>
-                                {% for proyecto in proyectos %}
-
-                                    <option value="{{proyecto.id}}">{{proyecto.nombre}}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Experimentos</td>
-                        <td>
-                            <select class="form-control" name="experiment" id="experiment" required>
-                                <option value="">--Seleccione--</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Protocolos</td>
-                        <td>
-
-                            <select class="form-control" name="protocol" id="protocol" required>
-                                <option value="">--Seleccione--</option>
-
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Pasos</td>
-                        <td>
-
-                            <select class="form-control" name="step" id="step" required>
-                                <option value="">--Seleccione--</option>
-
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>{{form_muestra.cantidad.label}}</td>
-                        <td>
-                            {{form_muestra.cantidad}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>{{form.fechaInicial.label}}</td>
-                        <td>
-                           {{form.fechaInicial}}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <input class='btn btn-block btn-primary' type="submit" value="Solicitar" id="solicitar"/>
-        </form>
-
+    {%if mensaje != "ok"%}
+                <div class="alert alert-danger col-md-6">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{mensaje}}
+                </div>
+    {%endif%}
+    <div id="mensajes-error"></div>
+    <div class="page-header text-center">
+        <h2>Solicitar Muestra {{ muestra.nombre}}</h2>
     </div>
-    <img class="col-md-6">
-        <img src="{{muestra.imagen.url}}" width="400px" >
-        <p>{{muestra.descripcion}}</p>
 
-     {%if mensaje != "ok"%}
-        <div class="alert alert-danger col-md-6">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                {{mensaje}}
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <h3 class="panel-title text-left">Información básica ID {{ muestra.id}}</h3>
+            </div>
+
+            <div class="panel-body text-left">
+                <div class="container">
+                    <div class="row">
+
+                        <div class="col-md-2">
+                            <strong>Descripción:</strong>
+                        </div>
+                        <div class="col-md-3 col-sm-4">
+
+                          <p id="items" name="items"  rows="5" > {{muestra.descripcion}}</p>
+                        </div>
+                        <div class="col-md-5 col-sm-6">
+                            <div class="panel panel-default">
+                                 <div class="panel-body text-left" style="text-align:center">
+
+                                    <a href="{{muestra.imagen.url}}" target="_blank">
+                                        <img src="{{muestra.imagen.url}}" alt="Imagen Muestra"
+                                             class="imageIndex" style="width:60%; ">
+                                    </a>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-     {%endif%}
-    </div>
-    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/additional-methods.min.js"></script>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-left">Caracteristicas muestra</h3>
+                    </div>
+                    <div class="panel-body text-left" >
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Unidad Base:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong> {{ muestra.unidadBase }} </strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Disponible:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong> {{ muestra.calc_disp }} </strong>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Cantidad disponible:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong id="cantidadActual"> {{ muestra.calc_cuantos_disp }} </strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Controlada:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong> {{ muestra.calc_controled }} </strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Valor unidad:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong> {{ muestra.valor }} </strong>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title text-left"></h3>
+                        </div>
+                        <div class="panel-body text-left" >
+                            <form method="post" action="" name="formSolicitud" id="formSolicitud">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <strong>Proyectos:</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-control requerido" name="project" id="project"  >
+                                            <option value="">--Seleccione--</option>
+                                            {% for proyecto in proyectos %}
+
+                                                <option value="{{proyecto.id}}">{{proyecto.nombre}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <strong>Experimentos:</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-control requerido" name="experiment" id="experiment" >
+                                            <option value="">--Seleccione--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <strong>Protocolos:</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-control requerido" name="protocol" id="protocol" >
+                                            <option value="">--Seleccione--</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <strong>Pasos:</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-control requerido" name="step" id="step" >
+                                            <option value="">--Seleccione--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <strong>{{form_muestra.cantidad.label}}</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{form_muestra.cantidad|addcss:"form-control"}}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <strong>{{form.fechaInicial.label}}</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{form.fechaInicial|addcss:"form-control datepicker"}}
+                                    </div>
+                                </div>
+                                {%if muestra.calc_disp != "No"%}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input class='btn btn-block btn-primary' style="margin-bottom:0px" type="submit" value="Solicitar" id="solicitar"/>
+                                    </div>
+                                </div>
+                                {%endif%}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
             $('#project').change(function(){
@@ -245,36 +321,16 @@
             });
 
 
-            jQuery.validator.setDefaults({
-              debug: true,
-              success: "valid"
-            });
+
             $("#formSolicitud").submit(function(e) {
+
                 e.preventDefault();
-            }).validate({
-                rules: {
-                cantidad: {
-                  required: true,
-                  digits: true,
-                  min:1,
-                  max: $("#cantidadActual").html()
-                },
-                experiment: {
-                  required: true
-                },
-                protocol: {
-                  required: true
-                },
-                step: {
-                  required: true
-                }
-                },
-                submitHandler: function(form) {
+                if( validarFormulario()){
                     $("#formSolicitud").submit();
-                    //submit via ajax
-                    return false;  //This doesn't prevent the form from submitting.
                 }
+
             });
+
             $( ".datepicker" ).datepicker({
               changeMonth: true,
               changeYear: true,
@@ -282,7 +338,30 @@
               // You can put more options here.
 
             });
+            function validarFormulario(){
+                $(".requerido").each(function(){
 
+                    if($(this).val()==""){
+                        $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
+                                'Los campos requeridos deben ser diligenciados</div>');
+                        return false;
+                    }
+                });
+
+                if($("#id_cantidad").val()>parseInt($("#cantidadActual").text())){
+
+                    $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
+                                'La cantidad solicitada no puede ser mayor que la disponible</div>');
+                        return false;
+                }
+                if($("#id_cantidad").val()<=0){
+
+                    $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
+                                'La cantidad solicitada debe ser mayor que cero</div>');
+                        return false;
+                }
+
+                return true;
+            }
     </script>
-</div>
 {% endblock %}

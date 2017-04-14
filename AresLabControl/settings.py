@@ -76,7 +76,7 @@ url = urlparse.urlparse(os.environ["DATABASE_URL"])
 DATABASES = {
 
      'default': {
-         'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql',
          'NAME': url.path[1:],
          'USER': url.username,
          'PASSWORD': url.password,
@@ -201,5 +201,5 @@ MEDIAFILES_LOCATION = 'media'
 MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
 DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
 
-AWS_ACCESS_KEY_ID=os.environ["AWS_BUCKET_ACCESS_KEY_ID"]
-AWS_SECRET_ACCESS_KEY=os.environ["AWS_BUCKET_SECRET_ACCESS_KEY"]
+AWS_ACCESS_KEY_ID='AKIAJWOKWCK44OHCI6XA'
+AWS_SECRET_ACCESS_KEY='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'

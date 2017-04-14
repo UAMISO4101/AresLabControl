@@ -104,7 +104,7 @@
                                         {{ form.capacidad|addcss:"form-control" }}
                                     </div>
                                 </div>
-                                <div class="row">
+                                <!--div class="row">
                                     <div class="col-md-6">
                                         <button type="button" class="btn btn-primary" data-toggle="modal"
                                                 data-target="#myModal">
@@ -116,7 +116,7 @@
                                 <div class="row col-md-12">
                                     <textarea id="items" name="items" class="form-control" rows="3" required
                                               readonly></textarea>
-                                </div>
+                                </div-->
                             </div>
                         </div>
                     </div>
@@ -151,7 +151,7 @@
     </form>
 
     <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <!--div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -189,9 +189,9 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div-->
     <script>
-        document.getElementById("id_capacidad").readOnly = true;
+        document.getElementById("id_capacidad").readOnly = false;
 
         var list = document.getElementById('items');
 
