@@ -4,8 +4,8 @@
 
 __docformat__ = 'reStructuredText'
 
-import datetime
 import json
+from decimal import Decimal
 
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
@@ -34,11 +34,10 @@ from models import Paso
 from models import Protocolo
 from models import Solicitud
 from models import Usuario
-from .forms import LugarAlmacenamientoForm, SolicitudForm
+from .forms import LugarAlmacenamientoForm, SolicitudForm, MuestraForm
 from .forms import MuestraSolicitudForm
 from .forms import PosicionesLugarAlmacenamientoForm
 from .forms import RegistroUsuarioForm
-from decimal import Decimal
 
 
 # Create your views here.
@@ -370,16 +369,17 @@ def listarMaquinas(request):
 
     """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
-        edita=request.user.has_perm("LabModule.can_edditMachine")
+        edita = request.user.has_perm("LabModule.can_edditMachine")
         pag = request.GET.get('pag', 1)
         que = request.GET.get("que", "")
         numer = int(request.GET.get("num", "10"))
         section = {}
         section['title'] = 'Máquinas'
         if not edita:
-          lista_maquinas = MaquinaProfile.objects.all().filter(nombre__icontains=que,activa=True).extra(order_by=['nombre'])
+            lista_maquinas = MaquinaProfile.objects.all().filter(nombre__icontains=que, activa=True).extra(
+                order_by=['nombre'])
         else:
-          lista_maquinas = MaquinaProfile.objects.all().filter(nombre__icontains=que).extra(order_by=['nombre'])
+            lista_maquinas = MaquinaProfile.objects.all().filter(nombre__icontains=que).extra(order_by=['nombre'])
 
         paginatorMaquinas = Paginator(lista_maquinas, numer)
         try:
@@ -567,6 +567,58 @@ def crear_solicitud_muestra(request):
             contexto = {'mensaje': 'Muchas muestras con ese id'}
 
         return render(request, "Solicitudes/crear_muestra_solicitud.html", contexto)
+    else:
+        return HttpResponse('No autorizado', status=401)
+
+
+def listar_muestra(request, pk):
+    """Desplegar y comprobar los valores a consultar.
+                Historia de usuario: ALF-50 - Yo como Asistente de Laboratorio quiero poder ver el detalle de una muestra para conocer sus características.
+                Se encarga de:
+                * Mostar el formulario para consultar las muestras.
+            :param request: El HttpRequest que se va a responder.
+            :type request: HttpRequest.
+            :param pk: La llave primaria de la muestra
+            :type pk: String.
+            :returns: HttpResponse -- La respuesta a la petición, con información de la muestra existente.
+        """
+    if request.user.is_authenticated():
+        lista_muestra = Muestra.objects.filter(id=pk)
+        if lista_muestra is None:
+            # cambiar por listado de muestras
+            return listar_lugares(request)
+        else:
+            muestra = lista_muestra[0]
+            context = {'muestra': muestra}
+
+            return render(request, 'Muestra/detalle.html', context)
+    else:
+        return HttpResponse('No autorizado', status=401)
+
+
+def reservar_muestra(request):
+    """Desplegar y comprobar los valores a insertar.
+           Historia de usuario: ALF-50 - Yo como Asistente de Laboratorio quiero poder ver el detalle de una muestra para conocer sus características.
+           Se encarga de:
+               * Reservar la muestra
+        :param request: El HttpRequest que se va a responder.
+        :type request: HttpRequest.
+        :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la listado de muestras. Sino redirecciona al mismo formulario mostrando los errores.
+       """
+    mensaje = ""
+    if request.user.is_authenticated():
+        if request.method == 'POST':
+            form = MuestraForm(request.POST or None, request.FILES or None)
+
+            if form.is_valid():
+                form.save()
+                return redirect(reverse('home'))
+            else:
+                mensaje = 'Los datos ingresados para reservar la muestra no son correctos.'
+        else:
+            form = MuestraForm()
+
+        return render(request, 'Muestra/detalle.html', {'form': form, 'mensaje': mensaje})
     else:
         return HttpResponse('No autorizado', status=401)
 
