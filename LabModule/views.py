@@ -559,6 +559,32 @@ def crear_solicitud_muestra(request):
         return HttpResponse('No autorizado', status=401)
 
 
+def listar_muestra(request, pk):
+    """Desplegar y comprobar los valores a consultar.
+                Historia de usuario: ALF-50 - Yo como Asistente de Laboratorio quiero poder ver el detalle de una muestra para conocer sus características.
+                Se encarga de:
+                * Mostar el formulario para consultar las muestras.
+
+            :param request: El HttpRequest que se va a responder.
+            :type request: HttpRequest.
+            :param pk: La llave primaria de la muestra
+            :type pk: String.
+            :returns: HttpResponse -- La respuesta a la petición, con información de la muestra existente.
+        """
+    if request.user.is_authenticated():
+        lista_muestra = Muestra.objects.filter(idLugar_id=pk)
+        if lista_muestra is None:
+            # cambiar por listado de muestras
+            return listar_lugares(request)
+        else:
+            muestra = lista_muestra[0]
+            context = {'muestra': muestra}
+
+            return render(request, 'Muestra/detalle.html', context)
+    else:
+        return HttpResponse('No autorizado', status=401)
+
+
 def poblar_datos(request):
     """Realiza la población de datos para máquinas
             Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
