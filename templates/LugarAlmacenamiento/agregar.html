@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% load lab_module_extras %}
-{% block head_title %}{{block.super}}Agregar Lugar {% endblock%}
+{% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
 
 {% block content %}
     {% if mensaje != "" %}
@@ -21,7 +21,7 @@
         {% csrf_token %}
 
         <div class="lugar page-header text-center">
-            <h1>Agregar lugar de almacenamiento</h1>
+            <h2>Agregar lugar de almacenamiento</h2>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title text-left">Información básica</h3>
@@ -105,16 +105,13 @@
                                 </div>
                                 <!--div class="row">
                                     <div class="col-md-6">
-                                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                data-target="#myModal">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
                                             Agregar Bandeja
                                         </button>
                                     </div>
-
                                 </div>
                                 <div class="row col-md-12">
-                                    <textarea id="items" name="items" class="form-control" rows="3" required
-                                              readonly></textarea>
+                                    <textarea id="items" name="items" class="form-control" rows="3" required readonly></textarea>
                                 </div-->
                             </div>
                         </div>
@@ -192,20 +189,18 @@
     <script>
         document.getElementById("id_capacidad").readOnly = false;
 
-        var list = document.getElementById('items');
+        //var list = document.getElementById('items');
 
         function adicionar() {
-            var capacidad = document.getElementsByName('capacidad')[0].value != ""
+            var capacidad = document.getElementsByName('capacidad')[0].value !== ""
                 ? parseInt(document.getElementsByName('capacidad')[0].value)
                 : 0;
             var tamano = document.getElementById('tamano').value;
             var cantidad = document.getElementById('cantidad').value;
             var cantidadInt = parseInt(cantidad);
-            var texto = 'Tamaño: ' + tamano + ', Cantidad: ' + cantidad + '\n';
-            document.getElementById("items").value += texto;
+            document.getElementById("items").value += 'Tamaño: ' + tamano + ', Cantidad: ' + cantidad + '\n';
             $("#myModal").modal('toggle');
             document.getElementsByName('capacidad')[0].value = capacidad + cantidadInt;
         }
     </script>
 {% endblock %}
-

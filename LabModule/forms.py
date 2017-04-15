@@ -3,9 +3,14 @@ from django import forms
 from django.db.models import Q
 from django.forms import ModelForm
 
-from .models import LugarAlmacenamiento, MaquinaEnLab, MaquinaProfile
+from .models import LugarAlmacenamiento
 from .models import LugarAlmacenamientoEnLab
-from .models import Solicitud, MuestraSolicitud, MaquinaSolicitud, Muestra
+from .models import MaquinaEnLab
+from .models import MaquinaProfile
+from .models import MaquinaSolicitud
+from .models import Muestra
+from .models import MuestraSolicitud
+from .models import Solicitud
 from .models import Usuario
 
 
