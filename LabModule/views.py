@@ -101,7 +101,7 @@ def registrar_usuario(request):
                 return HttpResponseRedirect(reverse('home'))
             except:
                 form.add_error("userCode", "Un usuario con este id ya existe")
-        context = {'form': form}
+        context = {'form': form, 'section': section}
         return render(request, 'registration/registration_form.html', context)
     return HttpResponse('No autorizado', status=401)
 
@@ -172,9 +172,9 @@ def agregar_lugar(request):
         else:
             form = LugarAlmacenamientoForm()
             formPos = PosicionesLugarAlmacenamientoForm()
+        context = {'form': form, 'formPos': formPos, 'mensaje': mensaje, 'section': section}
 
-        return render(request, 'LugarAlmacenamiento/agregar.html',
-                      {'form': form, 'formPos': formPos, 'mensaje': mensaje})
+        return render(request, 'LugarAlmacenamiento/agregar.html', context)
     else:
         return HttpResponse('No autorizado', status=401)
 
