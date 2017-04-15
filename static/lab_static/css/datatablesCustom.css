@@ -34,13 +34,12 @@
 .datatable tbody tr:nth-child(odd) td[class*="danger"] {
     background-color: #F2DEDE !important;
 }
+ .btn-primary{
+background: #C7CAE1 !important;
+    color: #464E8E!important;
+ }
 
-.btn-primary {
-    background: #C7CAE1 !important;
-    color: #464E8E !important;
-}
-
-.btn-primary:hover {
-    background: #464E8E !important;
+.btn-primary:hover{
+background: #464E8E !important;
     color: #C7CAE1 !important;
-}
+ }

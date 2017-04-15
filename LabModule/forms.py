@@ -3,14 +3,9 @@ from django import forms
 from django.db.models import Q
 from django.forms import ModelForm
 
-from .models import LugarAlmacenamiento
+from .models import LugarAlmacenamiento, MaquinaEnLab, MaquinaProfile
 from .models import LugarAlmacenamientoEnLab
-from .models import MaquinaEnLab
-from .models import MaquinaProfile
-from .models import MaquinaSolicitud
-from .models import Muestra
-from .models import MuestraSolicitud
-from .models import Solicitud
+from .models import Solicitud, MuestraSolicitud, MaquinaSolicitud, Muestra
 from .models import Usuario
 
 
@@ -95,8 +90,8 @@ class SolicitudForm(ModelForm):
         model = Solicitud
         fields = ['fechaInicial', 'fechaFinal', 'descripcion', 'estado', 'solicitante', 'fechaActual', 'paso']
         widgets = {
-            'fechaInicial': forms.DateInput(attrs={'class': 'datepicker'}),
-            'fechaFinal': forms.DateInput(attrs={'class': 'datepicker'}),
+            'fechaInicial': forms.DateInput(attrs={'class': 'form-control datepicker'}),
+            'fechaFinal': forms.DateInput(attrs={'class': 'form-control datepicker'}),
         }
 
     def verificar_fecha(self, maquina_id, fechaIni, fechaFin):

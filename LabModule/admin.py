@@ -2,20 +2,18 @@
 
 from django.contrib import admin
 
-from models import Bandeja
-from models import Experimento
-from models import LaboratorioProfile
-from models import LugarAlmacenamiento
-from models import MaquinaEnLab
-from models import MaquinaProfile
-from models import Muestra
-from models import MuestraSolicitud
-from models import Paso
-from models import Projecto
-from models import Protocolo
-from models import Solicitud
-from models import TipoDocumento
-from models import Usuario
+from .models import Experimento, Bandeja, LugarAlmacenamiento
+from .models import LaboratorioProfile
+from .models import MaquinaEnLab
+from .models import MaquinaProfile
+from .models import Muestra
+from .models import MuestraSolicitud
+from .models import Paso
+from .models import Projecto
+from .models import Protocolo
+from .models import Solicitud
+from .models import TipoDocumento
+from .models import Usuario
 
 class TipoDocumentoAdmin(admin.ModelAdmin):
     list_display = ["__unicode__", "descripcion"]

@@ -11,6 +11,7 @@ import json
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
+from django.forms import ModelForm
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -20,10 +21,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from registration.backends.default.views import RegistrationView
 
-from models import Bandeja
-from models import Projecto
-from models import MaquinaSolicitud
-from models import LaboratorioProfile
+from models import Bandeja, Projecto, MaquinaSolicitud, LaboratorioProfile
 from models import Experimento
 from models import LugarAlmacenamientoEnLab
 from models import MaquinaEnLab
@@ -34,14 +32,12 @@ from models import Paso
 from models import Protocolo
 from models import Solicitud
 from models import Usuario
-from forms import LugarAlmacenamientoForm
-from forms import SolicitudForm
-from forms import MuestraForm
-from forms import MaquinaForm
-from forms import PosicionesForm
-from forms import MuestraSolicitudForm
-from forms import PosicionesLugarAlmacenamientoForm
-from forms import RegistroUsuarioForm
+from .forms import LugarAlmacenamientoForm, SolicitudForm, MuestraForm, MaquinaForm, PosicionesForm
+from .forms import MuestraSolicitudForm
+from .forms import PosicionesLugarAlmacenamientoForm
+from .forms import RegistroUsuarioForm
+
+
 
 # Create your views here.
 def home(request):
@@ -101,7 +97,7 @@ def registrar_usuario(request):
                 return HttpResponseRedirect(reverse('home'))
             except:
                 form.add_error("userCode", "Un usuario con este id ya existe")
-        context = {'form': form, 'section': section}
+        context = {'form': form}
         return render(request, 'registration/registration_form.html', context)
     return HttpResponse('No autorizado', status=401)
 
@@ -119,14 +115,12 @@ def agregar_lugar(request):
         :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la modificación del lugar de almacenamiento. Sino redirecciona al mismo formulario mostrando los errores.
 
        """
-    section = {}
-    section['title'] = 'Agregar Lugar Almacenamiento'
     mensaje = ""
     if request.user.is_authenticated():
         if request.method == 'POST':
             form = LugarAlmacenamientoForm(request.POST, request.FILES)
             formPos = PosicionesLugarAlmacenamientoForm(request.POST or None, request.FILES or None)
-            # items = request.POST.get('items').split('\r\n')
+            #items = request.POST.get('items').split('\r\n')
 
             if form.is_valid() and formPos.is_valid():
                 lugar = form.save(commit=False)
@@ -158,23 +152,23 @@ def agregar_lugar(request):
                         lugarEnLab.idLugar = lugar
                         lugarEnLab.save()
 
-                        # if items is not None and len(items) > 0:
-                        #     for item in items:
-                        #         if item is not None and item != '':
-                        #            tamano = item.split(',')[0].split(':')[1]
-                        #            cantidad = item.split(',')[1].split(':')[1]
+                       # if items is not None and len(items) > 0:
+                       #     for item in items:
+                       #         if item is not None and item != '':
+                       #            tamano = item.split(',')[0].split(':')[1]
+                       #            cantidad = item.split(',')[1].split(':')[1]
                         for cantidad in range(lugar.capacidad):
-                            bandeja = Bandeja(lugarAlmacenamiento=lugar,
-                                              libre=True)
+                            bandeja = Bandeja( lugarAlmacenamiento=lugar,
+                                                      libre=True)
                             bandeja.save()
 
                         return HttpResponseRedirect(reverse('home'))
         else:
             form = LugarAlmacenamientoForm()
             formPos = PosicionesLugarAlmacenamientoForm()
-        context = {'form': form, 'formPos': formPos, 'mensaje': mensaje, 'section': section}
 
-        return render(request, 'LugarAlmacenamiento/agregar.html', context)
+        return render(request, 'LugarAlmacenamiento/agregar.html',
+                      {'form': form, 'formPos': formPos, 'mensaje': mensaje})
     else:
         return HttpResponse('No autorizado', status=401)
 
@@ -199,7 +193,6 @@ def comprobarPostMaquina(form, formPos, request, template_name, section):
      :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la modificación de la nueva máquina. Sino redirecciona al mismo formulario mostrand los errores.
 
     """
-
     mensaje = ""
 
     if form.is_valid() and formPos.is_valid():
@@ -259,9 +252,10 @@ def maquina_create(request, template_name='Maquinas/agregar.html'):
                                máquina. Sino redirecciona al mismo formulario mostrando los errores. Si no esta autorizado se envia un código 401
 
     """
+
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addMachine"):
         section = {}
-        section['title'] = 'Agregar Máquina'
+        section['title'] = 'Agregar máquina'
         section['agregar'] = True
         form = MaquinaForm(request.POST or None, request.FILES or None)
         formPos = PosicionesForm(request.POST or None, request.FILES or None)
@@ -300,7 +294,7 @@ def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
         form = MaquinaForm(request.POST or None, request.FILES or None, instance=server)
         formPos = PosicionesForm(request.POST or None, request.FILES or None, instance=serverRelacionLab)
         section = {}
-        section['title'] = 'Modificar Máquina'
+        section['title'] = 'Modificar máquina'
         section['agregar'] = False
         return comprobarPostMaquina(form, formPos, request, template_name, section)
     else:
@@ -328,7 +322,7 @@ def listarMaquinas(request):
     """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
         section = {}
-        section['title'] = 'Listar Máquinas'
+        section['title'] = 'Máquinas'
         edita = request.user.has_perm("LabModule.can_edditMachine")
         if not edita:
             lista_maquinas = MaquinaProfile.objects.all().filter(activa=True).extra(order_by=['nombre'])
@@ -355,11 +349,9 @@ def listar_lugares(request):
            :returns: HttpResponse -- La respuesta a la petición, con información de los lugares de almacenamiento existentes.
 
           """
-    section = {}
-    section['title'] = 'Listar Lugares Almacenamiento'
     if request.user.is_authenticated():
         lista_lugares = LugarAlmacenamientoEnLab.objects.all()
-        context = {'section': section, 'lista_lugares': lista_lugares}
+        context = {'lista_lugares': lista_lugares}
         return render(request, 'LugarAlmacenamiento/listar.html', context)
     else:
         return HttpResponse('No autorizado', status=401)
@@ -408,7 +400,7 @@ def crear_solicitud_maquina(request):
                     maquinaRequest.save()
                     return redirect("../")
                 else:
-                    mensaje = "Ya existe una solicitud para estas fechas"
+                    mensaje = "ya existe una solicitud para estas fechas"
 
             contexto = {'form': form, 'mensaje': mensaje, 'maquina': maquina, 'proyectos': proyectos,
                         'maquinaEnLab': maquinaEnLab}

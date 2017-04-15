@@ -11,16 +11,16 @@
 
 }
 
-.panel-title {
+.panel-title{
     font-weight: bold !important;
 }
 
-.panel-body {
-    background: rgba(199, 202, 225, 0.3) !important;
+.panel-body{
+    background: rgba(199,202,225,0.3) !important;
 
 }
 
-.panel {
+.panel{
     border-color: #C7CAE1 !important;
     border: 1px solid;
     border-radius: 5px !important;

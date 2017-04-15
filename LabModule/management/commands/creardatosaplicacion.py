@@ -25,16 +25,14 @@ def crearTiposDocumento():
     return 1
 
 def crearLaboratorio():
-    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre="Laboratorio principal",
-                                                                            id="LAB001")
+    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre="Laboratorio principal", id="LAB001")
     if laboratioExistente:
         return 0
     return 1
 
 
 def crearMaquina():
-    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre="Laboratorio principal",
-                                                                            id="LAB001")
+    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre="Laboratorio principal", id="LAB001")
     rta = 1
     with open(".///" + static('lab_static/json/maquinas.json')) as data_file:
         data = json.load(data_file)
@@ -44,10 +42,8 @@ def crearMaquina():
                                                                                   idSistema=maquina['idSistema'],
                                                                                   con_reserva=maquina['con_reserva']
                                                                                   )
-            nuevare, exre = MaquinaEnLab.objects.get_or_create(idLaboratorio=nuevoLab,
-                                                               idMaquina=nuevaMaquina,
-                                                               xPos=maquina['x'],
-                                                               yPos=maquina['y'])
+            nuevare, exre = MaquinaEnLab.objects.get_or_create(idLaboratorio=nuevoLab, idMaquina=nuevaMaquina,
+                                                               xPos=maquina['x'], yPos=maquina['y'])
             if maquinaExistente:
                 rta = 0
     return rta
@@ -106,7 +102,8 @@ def createUsers():
 
     tipDocumento = TipoDocumento.objects.get(nombre_corto='CC')
 
-    exist_cientifico, new_cientifico = User.objects.get_or_create(username='acastro')
+    exist_cientifico, new_cientifico = User.objects.get_or_create(
+        username='acastro')
 
     if new_cientifico:
         exist_cientifico.email = 'acastro@uniandes.edu.co'
@@ -133,7 +130,8 @@ def createUsers():
         contrasena=CONTRASENA,
     )
 
-    exist_jefe, new_jefe = User.objects.get_or_create(username='bcamelas')
+    exist_jefe, new_jefe = User.objects.get_or_create(
+        username='bcamelas')
     if new_jefe:
         exist_jefe.email = 'bcamelas@uniandes.edu.co'
         exist_jefe.set_password(CONTRASENA)

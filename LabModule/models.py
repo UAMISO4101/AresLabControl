@@ -556,6 +556,7 @@ class Muestra(models.Model):
         verbose_name="Descripcion de la muestra"
     )
 
+
     valor = models.DecimalField(
         max_digits=5,
         decimal_places=2,
@@ -590,20 +591,19 @@ class Muestra(models.Model):
     def calc_disp(self):
         bandejas = Bandeja.objects.filter(muestra=self)
         for bandeja in bandejas:
-            if not bandeja.libre:
+            if bandeja.libre == False:
                 return 'Si'
         return 'No'
-
     def calc_cuantos_disp(self):
-        contador = 0
+        contador=0
         bandejas = Bandeja.objects.filter(muestra=self)
         for bandeja in bandejas:
             if bandeja.libre == False:
-                contador += 1
+                contador+=1
         return contador
 
     def calc_controled(self):
-        if self.controlado:
+        if self.controlado == True:
             return 'Si'
         else:
             return 'No'
@@ -689,19 +689,19 @@ class Solicitud(models.Model):
         null=True,
         verbose_name="Estado solicitud"
     )
-    solicitante = models.ForeignKey(
+    solicitante =  models.ForeignKey(
         Usuario,
         blank=False,
         null=True,
         verbose_name="Solicitante",
-        related_name="solicitudesHechas"
+        related_name = "solicitudesHechas"
     )
-    aprobador = models.ForeignKey(
+    aprobador =  models.ForeignKey(
         Usuario,
         blank=False,
         null=True,
         verbose_name="Aprobador",
-        related_name="solicitudesAprobadas"
+        related_name = "solicitudesAprobadas"
     )
     fechaActual = models.DateField(
         blank=False,
