@@ -1,111 +1,168 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
-{% block head_title %}{{ block.super }}Solicitar Maquina {% endblock %}
+
+{% load lab_module_extras %}
+{% load staticfiles %}
+{% block head_others %}
+    <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block head_title %}{{block.super}}Solicitar Máquina py{% endblock%}
+
+
 
 {% block content %}
-<div class='row'>
-
-    <div class="col-md-6">
-        <h1>Solicitar Maquina</h1>
-
-        <form method="post" action="" name="formSolicitud" id="formSolicitud">
-
-            {% csrf_token %}
-            <table class="table table-bordered">
-                <tbody>
-                    <tr>
-                        <td>ID</td>
-                        <td>{{ maquina.pk }}</td>
-                    </tr>
-                    <tr>
-                        <td>Nombre</td>
-                        <td>{{ maquina.nombre }}</td>
-                    </tr>
-                    <!--tr>
-                        <td>{{ form.fields.laboratorio.label }}</td>
-                        <td>{{ form.fields.laboratorio.initial }}</td>
-                    </tr-->
-                    <tr>
-                        <td>PosX</td>
-                        <td>{{ maquinaEnLab.xPos}}</td>
-                    </tr>
-                    <tr>
-                        <td>PosY</td>
-                        <td>{{ maquinaEnLab.yPos}}</td>
-                    </tr>
-                    <tr>
-                        <td>Proyectos</td>
-                        <td>
-                            <select class="form-control" name="project" id="project" >
-                                <option value="">--Seleccione--</option>
-                                {% for proyecto in proyectos %}
-
-                                    <option value="{{proyecto.id}}">{{proyecto.nombre}}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Experimentos</td>
-                        <td>
-                            <select class="form-control" name="experiment" id="experiment" required>
-                                <option value="">--Seleccione--</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Protocolos</td>
-                        <td>
-
-                            <select class="form-control" name="protocol" id="protocol" required>
-                                <option value="">--Seleccione--</option>
-
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Pasos</td>
-                        <td>
-
-                            <select class="form-control" name="step" id="step" required>
-                                <option value="">--Seleccione--</option>
-
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>{{form.fechaInicial.label}}</td>
-                        <td>
-                           {{form.fechaInicial}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>{{form.fechaFinal.label}}</td>
-                        <td>
-                           {{form.fechaFinal}}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <input class='btn btn-block btn-primary' type="submit" value="Solicitar" id="solicitar"/>
-        </form>
-
+    {%if mensaje != "ok"%}
+                <div class="alert alert-danger col-md-6">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{mensaje}}
+                </div>
+    {%endif%}
+    <div id="mensajes-error"></div>
+    <div class="page-header text-center">
+        <h2>Solicitar Muestra {{ maquina.nombre}}</h2>
     </div>
-    <img class="col-md-6">
-        <img src="{{maquina.imagen.url}}" width="400px" >
-        <p>{{maquina.descripcion}}</p>
 
-     {%if mensaje != "ok"%}
-        <div class="alert alert-danger col-md-6">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                {{mensaje}}
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <h3 class="panel-title text-left">Información básica ID {{ maquina.pk }}</h3>
+            </div>
+
+            <div class="panel-body text-left">
+                <div class="container">
+                    <div class="row">
+
+                        <div class="col-md-2">
+                            <strong>Descripción:</strong>
+                        </div>
+                        <div class="col-md-3 col-sm-4">
+
+                          <p id="items" name="items"  rows="5" > {{maquina.descripcion}}</p>
+                        </div>
+                        <div class="col-md-5 col-sm-6">
+                            <div class="panel panel-default">
+                                 <div class="panel-body text-left" style="text-align:center">
+
+                                    <a href="{{maquina.imagen.url}}" target="_blank">
+                                        <img src="{{maquina.imagen.url}}" alt="Imagen Maquina"
+                                             class="imageIndex" style="width:60%; ">
+                                    </a>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-     {%endif%}
-    </div>
-    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/additional-methods.min.js"></script>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-left">Caracteristicas muestra</h3>
+                    </div>
+                    <div class="panel-body text-left" >
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>PosX:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong> {{ maquinaEnLab.xPos}} </strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>PosY:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong> {{ maquinaEnLab.yPos}} </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title text-left"></h3>
+                        </div>
+                        <div class="panel-body text-left" >
+                            <form method="post" action="" name="formSolicitud" id="formSolicitud">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <strong>Proyectos:</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-control requerido" name="project" id="project"  >
+                                            <option value="">--Seleccione--</option>
+                                            {% for proyecto in proyectos %}
+
+                                                <option value="{{proyecto.id}}">{{proyecto.nombre}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <strong>Experimentos:</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-control requerido" name="experiment" id="experiment" >
+                                            <option value="">--Seleccione--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <strong>Protocolos:</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-control requerido" name="protocol" id="protocol" >
+                                            <option value="">--Seleccione--</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <strong>Pasos:</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-control requerido" name="step" id="step" >
+                                            <option value="">--Seleccione--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <strong>{{form.fechaInicial.label}}</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{form.fechaInicial}}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <strong>{{form.fechaFinal.label}}</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        {{form.fechaFinal}}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input class='btn btn-block btn-primary' style="margin-bottom:0px" type="submit" value="Solicitar" id="solicitar"/>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
             $('#project').change(function(){
@@ -240,44 +297,42 @@
             });
 
 
-            jQuery.validator.setDefaults({
-              debug: true,
-              success: "valid"
-            });
-
 
             $("#formSolicitud").submit(function(e) {
+
                 e.preventDefault();
-            }).validate({
-                rules: {
-                experiment: {
-                  required: true
-                },
-                protocol: {
-                  required: true
-                },
-                step: {
-                  required: true
+                if( validarFormulario()){
+                    $("#formSolicitud").submit();
                 }
-                },
-                submitHandler: function(form) {
 
-                   if(new Date($("#id_fechaInicial").val())<new Date($("#id_fechaFinal").val()))
-                        $("#formSolicitud").submit();
-                    else
-                        alert('La fecha inicial debe ser menor que la final');
-
-                    //submit via ajax
-                    return false;  //This doesn't prevent the form from submitting.
-                }
             });
 
-            $("#id_fechaInicial").datepicker({ dateFormat: 'yy-mm-dd',minDate: 0});
-            $("#id_fechaFinal").datepicker({ dateFormat: 'yy-mm-dd',minDate: 0 });
+            $( ".datepicker" ).datepicker({
+              changeMonth: true,
+              changeYear: true,
+              yearRange: "1900:2012",
+              // You can put more options here.
+
+            });
+            function validarFormulario(){
+                $(".requerido").each(function(){
+
+                    if($(this).val()==""){
+                        $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
+                                'Los campos requeridos deben ser diligenciados</div>');
+                        return false;
+                    }
+                });
 
 
+                if(new Date($("#id_fechaInicial").val())>=new Date($("#id_fechaFinal").val())){
 
+                    $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
+                                'La fecha inicial debe ser menor que la fecha final</div>');
+                        return false;
+                }
 
+                return true;
+            }
     </script>
-</div>
 {% endblock %}
