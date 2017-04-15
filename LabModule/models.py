@@ -380,6 +380,7 @@ class LugarAlmacenamiento(models.Model):
     )
 
 
+
 class LugarAlmacenamientoEnLab(models.Model):
     """Relación entre :class:`LugarAlmacenamiento` y :class:`LaboratorioProfile`
         Se encarga de:
@@ -522,15 +523,11 @@ class Muestra(models.Model):
          Atributos:
              :nombre (String): Nombre de la muestra
              :descripcion (String): Descripcion de la muestra
-             :peso (Numeric): Peso de la muestra
-             :volumen (Numeric): Volumen de la muestra
-             :cantidadInicial (Numeric): Cantidad inicial de la muestra
-             :masa (Numeric): Masa de la muestra
+             :valor (Numeric): Valor por unidad
              :activa (Boolean): Estado de disponibilidad de la muestra
              :controlado (Boolean): Estado de restriccion de la muestra
-             :cantidadActual (Numeric): Cantidad actual de la muestra
              :imagen (Image): Imagen de la muestra
-             :unidad (String): Unidad de medida de la muestra
+             :unidadBase (String): Unidad de medida de la muestra
         Permisos:
             :can_addSample: Permite agregar muestra
             :can_editSample: Permite modificar muestra
@@ -558,25 +555,13 @@ class Muestra(models.Model):
         null=True,
         verbose_name="Descripcion de la muestra"
     )
-    peso = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        verbose_name="Peso"
-    )
-    volumen = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        verbose_name="Volumen"
-    )
-    cantidadInicial = models.IntegerField(
-        blank=False, null=True,
-        verbose_name="Cantidad inicial de la muestra"
-    )
-    masa = models.DecimalField(
+
+
+    valor = models.DecimalField(
         max_digits=5,
         decimal_places=2,
         null=True,
-        verbose_name="Masa"
+        verbose_name="Valor"
     )
     activa = models.BooleanField(
         default=True,
@@ -584,19 +569,16 @@ class Muestra(models.Model):
     )
     controlado = models.BooleanField(
         blank=False,
+        default=False,
         verbose_name="Muestra controlada"
     )
-    cantidadActual = models.IntegerField(
-        blank=False,
-        null=True,
-        verbose_name="Cantidad actual de la muestra"
-    )
+
     imagen = models.ImageField(
         upload_to='images',
         verbose_name="Imagen",
         default='images/image-not-found.jpg'
     )
-    unidad = models.CharField(
+    unidadBase = models.CharField(
         max_length=50,
         blank=False,
         null=True,
@@ -612,6 +594,13 @@ class Muestra(models.Model):
             if not bandeja.libre:
                 return 'Si'
         return 'No'
+    def calc_cuantos_disp(self):
+        contador=0
+        bandejas = Bandeja.objects.filter(muestra=self)
+        for bandeja in bandejas:
+            if bandeja.libre == False:
+                contador+=1
+        return contador
 
     def calc_controled(self):
         if self.controlado:
@@ -627,8 +616,7 @@ class Bandeja(models.Model):
             * Permite guardar en la base de datos la bandeja del lugar de almacenamiento
 
         Atributos:
-            :tamano (String): Tamaño de la bandeja del lugar de almacenamiento.
-            :cantidad (Integer): Cantidad de la bandeja del lugar de almacenamiento.
+
             :libre (Decimal): Indica si esta libre la bandeja del lugar de almacenamiento.
             :muestra (String): Relación con la entidad muestra.
             :lugarAlmacenamiento (Decimal): Relación con la entidad lugar de almacenamiento.
@@ -638,15 +626,7 @@ class Bandeja(models.Model):
         verbose_name = 'Bandeja'
         verbose_name_plural = 'Bandejas'
 
-    tamano = models.CharField(
-        max_length=100,
-        default='',
-        verbose_name='Tamaño Bandeja',
-        null=True
-    )
-    cantidad = models.IntegerField(
-        verbose_name="Cantidad"
-    )
+
     libre = models.BooleanField(
         blank=False,
         default=True,
@@ -709,17 +689,19 @@ class Solicitud(models.Model):
         null=True,
         verbose_name="Estado solicitud"
     )
-    solicitante = models.CharField(
-        max_length=50,
+    solicitante =  models.ForeignKey(
+        Usuario,
         blank=False,
         null=True,
-        verbose_name="Quien solicito"
+        verbose_name="Solicitante",
+        related_name = "solicitudesHechas"
     )
-    aprobador = models.CharField(
-        max_length=50,
+    aprobador =  models.ForeignKey(
+        Usuario,
         blank=False,
         null=True,
-        verbose_name="Quien aprobo"
+        verbose_name="Aprobador",
+        related_name = "solicitudesAprobadas"
     )
     fechaActual = models.DateField(
         blank=False,
@@ -767,6 +749,7 @@ class MuestraSolicitud(models.Model):
     cantidad = models.IntegerField(
         blank=False,
         null=True,
+        default=1,
         verbose_name="Cantidad de muestra"
     )
     tipo = models.CharField(

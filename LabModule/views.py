@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Este módulo se encarga de generar las vistas a partir de los modelos, así como de hacer la lógica del negocio. """
+
 from __future__ import print_function
+
+"""Este módulo se encarga de generar las vistas a partir de los modelos, así como de hacer la lógica del negocio. """
 
 __docformat__ = 'reStructuredText'
 
 import json
-from django.utils.translation import ugettext as _
+
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
@@ -19,10 +21,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from registration.backends.default.views import RegistrationView
 
-from models import Bandeja
-from models import Projecto
-from models import MaquinaSolicitud
-from models import LaboratorioProfile
+from models import Bandeja, Projecto, MaquinaSolicitud, LaboratorioProfile
 from models import Experimento
 from models import LugarAlmacenamientoEnLab
 from models import MaquinaEnLab
@@ -33,12 +32,11 @@ from models import Paso
 from models import Protocolo
 from models import Solicitud
 from models import Usuario
-from forms import LugarAlmacenamientoForm
-from forms import SolicitudForm
-from forms import MuestraForm
-from forms import MuestraSolicitudForm
-from forms import PosicionesLugarAlmacenamientoForm
-from forms import RegistroUsuarioForm
+from .forms import LugarAlmacenamientoForm, SolicitudForm, MuestraForm, MaquinaForm, PosicionesForm
+from .forms import MuestraSolicitudForm
+from .forms import PosicionesLugarAlmacenamientoForm
+from .forms import RegistroUsuarioForm
+
 
 
 # Create your views here.
@@ -82,7 +80,7 @@ def registrar_usuario(request):
        """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addUser"):
         section = {}
-        section['title'] = _('Agregar usuario')
+        section['title'] = 'Agregar usuario'
         form = RegistroUsuarioForm(request.POST or None)
         if form.is_valid():
             nuevo_usuario = form.save(commit=False)
@@ -98,7 +96,7 @@ def registrar_usuario(request):
                 nuevo_usuario.save()
                 return HttpResponseRedirect(reverse('home'))
             except:
-                form.add_error("userCode", _("Un usuario con este id ya existe"))
+                form.add_error("userCode", "Un usuario con este id ya existe")
         context = {'form': form}
         return render(request, 'registration/registration_form.html', context)
     return HttpResponse('No autorizado', status=401)
@@ -122,7 +120,7 @@ def agregar_lugar(request):
         if request.method == 'POST':
             form = LugarAlmacenamientoForm(request.POST, request.FILES)
             formPos = PosicionesLugarAlmacenamientoForm(request.POST or None, request.FILES or None)
-            items = request.POST.get('items').split('\r\n')
+            #items = request.POST.get('items').split('\r\n')
 
             if form.is_valid() and formPos.is_valid():
                 lugar = form.save(commit=False)
@@ -133,35 +131,36 @@ def agregar_lugar(request):
                 # lamisma = MaquinaEnLab.objects.filter(pk=lugarEnLab.pk).exists()
 
                 if ocupado:
-                    formPos.add_error("posX", _("La posición x ya esta ocupada"))
-                    formPos.add_error("posY", _("La posición y ya esta ocupada"))
+                    formPos.add_error("posX", "La posición x ya esta ocupada")
+                    formPos.add_error("posY", "La posición y ya esta ocupada")
 
-                    mensaje = _("El lugar en el que desea guadar ya esta ocupado")
+                    mensaje = "El lugar en el que desea guadar ya esta ocupado"
                 else:
-                    mensaje = _("La posición [" + str(lugarEnLab.posX) + "," + str(
-                        lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio")
+                    mensaje = "La posición [" + str(lugarEnLab.posX) + "," + str(
+                        lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio"
                     lab = lugarEnLab.idLaboratorio
                     masX = lab.numX >= lugarEnLab.posX
                     masY = lab.numY >= lugarEnLab.posY
                     posible = masX and masY
                     if not posible:
                         if not masX:
-                            formPos.add_error("posX", _("La posición x sobrepasa el valor máximo de ") + str(lab.numX))
+                            formPos.add_error("posX", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
                         if not masY:
-                            formPos.add_error("posY", _("La posición y sobrepasa el valor máximo de ") + str(lab.numY))
+                            formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
                     else:
                         lugar.save()
                         lugarEnLab.idLugar = lugar
                         lugarEnLab.save()
 
-                        if items is not None and len(items) > 0:
-                            for item in items:
-                                if item is not None and item != '':
-                                    tamano = item.split(',')[0].split(':')[1]
-                                    cantidad = item.split(',')[1].split(':')[1]
-                                    bandeja = Bandeja(tamano=tamano, cantidad=cantidad, lugarAlmacenamiento=lugar,
-                                                      libre=False)
-                                    bandeja.save()
+                       # if items is not None and len(items) > 0:
+                       #     for item in items:
+                       #         if item is not None and item != '':
+                       #            tamano = item.split(',')[0].split(':')[1]
+                       #            cantidad = item.split(',')[1].split(':')[1]
+                        for cantidad in range(lugar.capacidad):
+                            bandeja = Bandeja( lugarAlmacenamiento=lugar,
+                                                      libre=True)
+                            bandeja.save()
 
                         return HttpResponseRedirect(reverse('home'))
         else:
@@ -172,54 +171,6 @@ def agregar_lugar(request):
                       {'form': form, 'formPos': formPos, 'mensaje': mensaje})
     else:
         return HttpResponse('No autorizado', status=401)
-
-
-class MaquinaForm(ModelForm):
-    """Formulario  para crear y modificar una máquina.
-
-          Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
-                    
-          Historia de usuario: `ALF-20 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-20 />`_ :Yo como Jefe de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
-
-          Historia de usuario: `ALF-25 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-25 />`_ :Yo como Asistente de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
-
-              Se encarga de:
-                * Tener una instancia del modelo de la máquina
-                * Seleccionar cuales campos del modelo seran desplegados en el formulario. Nombre, descripción, si esta reservado,activa
-                  y la id dada por el sistema.
-                * Agregar una máquina a la base de datos, agregar la relación entre la máquina y el laboratorio en el que está.
-                * Modificar los datos  de una máquina ya existente.
-
-           :param ModelForm: Instancia de Django.forms.
-           :type ModelForm: ModelForm.
-
-    """
-
-    class Meta:
-        model = MaquinaProfile
-        fields = ['nombre', 'descripcion', 'con_reserva', 'activa', 'idSistema',
-                  'imagen']
-
-
-class PosicionesForm(ModelForm):
-    """Formulario  para crear y modificar la ubicación de una máquina.
-        Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
-        Se encarga de:
-            * Tener una instancia del modelo de la máquina en laboraotrio.
-            * Definir las posición x, la posición y y el laboratorio en el cual se va aguardar la máquina.
-            * Agregar una máquina a la base de datos, agregar la relación entre la máquina y el laboratorio en el que está.
-            * Modificar la ubicación de una máquina ya existente.
-
-     :param ModelForm: Instancia de Django.forms.
-     :type ModelForm: ModelForm.
-
-    """
-
-    class Meta:
-        model = MaquinaEnLab
-        # fields=['xPos','yPos','idLaboratorio','idMaquina']
-        exclude = ('idMaquina',)
-
 
 def comprobarPostMaquina(form, formPos, request, template_name, section):
     """Desplegar y comprobar los valores a insertar.
@@ -440,7 +391,7 @@ def crear_solicitud_maquina(request):
                         requestObj.estado = 'creada'
                     else:
                         requestObj.estado = 'aprobada'
-                    requestObj.solicitante = profile.id
+                    requestObj.solicitante = profile
                     requestObj.paso = Paso.objects.get(id=request.POST['step'])
                     requestObj.save()
                     maquinaRequest = MaquinaSolicitud()
@@ -530,7 +481,7 @@ def crear_solicitud_muestra(request):
                 requestObj.descripcion = 'Solicitud de uso de muestra'
                 requestObj.fechaInicial = request.POST['fechaInicial']
                 requestObj.estado = 'creada'
-                requestObj.solicitante = profile.id
+                requestObj.solicitante = profile
                 requestObj.paso = Paso.objects.get(id=request.POST['step'])
                 requestObj.save()
                 sampleRequest = MuestraSolicitud()
