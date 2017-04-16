@@ -3,281 +3,276 @@
 {% block head_title %}{{ block.super }}Solicitar Máquina {% endblock %}
 
 {% block content %}
-<div class='row'>
 
-    <div class="col-md-6">
-        <h2>Solicitar Maquina</h2>
 
-        <form method="post" action="" name="formSolicitud" id="formSolicitud">
 
-            {% csrf_token %}
-            <table class="table table-bordered">
-                <tbody>
-                    <tr>
-                        <td>ID</td>
-                        <td>{{ maquina.pk }}</td>
-                    </tr>
-                    <tr>
-                        <td>Nombre</td>
-                        <td>{{ maquina.nombre }}</td>
-                    </tr>
-                    <!--tr>
+    <h2>Solicitar Maquina</h2>
+
+    <form method="post" action="" name="formSolicitud" id="formSolicitud">
+
+        {% csrf_token %}
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <td>ID</td>
+                <td>{{ maquina.pk }}</td>
+            </tr>
+            <tr>
+                <td>Nombre</td>
+                <td>{{ maquina.nombre }}</td>
+            </tr>
+            <!--tr>
                         <td>{{ form.fields.laboratorio.label }}</td>
                         <td>{{ form.fields.laboratorio.initial }}</td>
                     </tr-->
-                    <tr>
-                        <td>PosX</td>
-                        <td>{{ maquinaEnLab.xPos}}</td>
-                    </tr>
-                    <tr>
-                        <td>PosY</td>
-                        <td>{{ maquinaEnLab.yPos}}</td>
-                    </tr>
-                    <tr>
-                        <td>Proyectos</td>
-                        <td>
-                            <select class="form-control" name="project" id="project" >
-                                <option value="">--Seleccione--</option>
-                                {% for proyecto in proyectos %}
+            <tr>
+                <td>PosX</td>
+                <td>{{ maquinaEnLab.xPos }}</td>
+            </tr>
+            <tr>
+                <td>PosY</td>
+                <td>{{ maquinaEnLab.yPos }}</td>
+            </tr>
+            <tr>
+                <td>Proyectos</td>
+                <td>
+                    <select class="form-control" name="project" id="project">
+                        <option value="">--Seleccione--</option>
+                        {% for proyecto in proyectos %}
 
-                                    <option value="{{proyecto.id}}">{{proyecto.nombre}}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Experimentos</td>
-                        <td>
-                            <select class="form-control" name="experiment" id="experiment" required>
-                                <option value="">--Seleccione--</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Protocolos</td>
-                        <td>
+                            <option value="{{ proyecto.id }}">{{ proyecto.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Experimentos</td>
+                <td>
+                    <select class="form-control" name="experiment" id="experiment" required>
+                        <option value="">--Seleccione--</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Protocolos</td>
+                <td>
 
-                            <select class="form-control" name="protocol" id="protocol" required>
-                                <option value="">--Seleccione--</option>
+                    <select class="form-control" name="protocol" id="protocol" required>
+                        <option value="">--Seleccione--</option>
 
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Pasos</td>
-                        <td>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Pasos</td>
+                <td>
 
-                            <select class="form-control" name="step" id="step" required>
-                                <option value="">--Seleccione--</option>
+                    <select class="form-control" name="step" id="step" required>
+                        <option value="">--Seleccione--</option>
 
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>{{form.fechaInicial.label}}</td>
-                        <td>
-                           {{form.fechaInicial}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>{{form.fechaFinal.label}}</td>
-                        <td>
-                           {{form.fechaFinal}}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <input class='btn btn-block btn-primary' type="submit" value="Solicitar" id="solicitar"/>
-        </form>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>{{ form.fechaInicial.label }}</td>
+                <td>
+                    {{ form.fechaInicial }}
+                </td>
+            </tr>
+            <tr>
+                <td>{{ form.fechaFinal.label }}</td>
+                <td>
+                    {{ form.fechaFinal }}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <input class='btn btn-block btn-primary' type="submit" value="Solicitar" id="solicitar"/>
+    </form>
 
-    </div>
     <img class="col-md-6">
-        <img src="{{maquina.imagen.url}}" width="400px" >
-        <p>{{maquina.descripcion}}</p>
+    <img src="{{ maquina.imagen.url }}" width="400px">
+    <p>{{ maquina.descripcion }}</p>
 
-     {%if mensaje != "ok"%}
+    {% if mensaje != "ok" %}
         <div class="alert alert-danger col-md-6">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                {{mensaje}}
+            {{ mensaje }}
         </div>
-     {%endif%}
-    </div>
-    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    {% endif %}
 
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.min.js"></script>
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/additional-methods.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-            $('#project').change(function(){
-                project_id = $(this).val();
-                request_url = '/solicitarMuestra/experimentos/?project_id=' + project_id ;
-                $('#experiment')
+        $('#project').change(function () {
+            project_id = $(this).val();
+            request_url = '/solicitarMuestra/experimentos/?project_id=' + project_id;
+            $('#experiment')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
                 .val('');
 
-                $('#protocol')
+            $('#protocol')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
                 .val('');
 
-                $('#step')
+            $('#step')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
                 .val('');
 
-                if (this.value == -1 || this.value=="") {
+            if (this.value == -1 || this.value == "") {
 
-                    return false;
-                }
-                $.ajax({
-                    type: "POST",
-                    url: request_url,
-                    data: JSON.stringify({
-                        id_country: project_id
-                    }),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data != null) {
-                            $.each(data, function (key, value) {
-                                $('#experiment').append($("<option/>").val(key).text(value));
-                            });
-                        } else {
-                            console.log('error')
-                        }
-
-                    },
-                    failure: function (errMsg) {
-                        alert('Hubo un error');
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: request_url,
+                data: JSON.stringify({
+                    id_country: project_id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    if (data != null) {
+                        $.each(data, function (key, value) {
+                            $('#experiment').append($("<option/>").val(key).text(value));
+                        });
+                    } else {
+                        console.log('error')
                     }
-                });
-            });
-            $('#experiment').change(function(){
-                experiment_id = $(this).val();
-                request_url = '/solicitarMuestra/protocolos/?experiment_id=' + experiment_id ;
-                $('#protocol')
-                .find('option')
-                .remove()
-                .end()
-                .append('<option value="">--Seleccione--</option>')
-                .val('');
 
-                $('#step')
-                .find('option')
-                .remove()
-                .end()
-                .append('<option value="">--Seleccione--</option>')
-                .val('');
-
-                if (this.value == -1 || this.value=="") {
-                    return false;
+                },
+                failure: function (errMsg) {
+                    alert('Hubo un error');
                 }
-                $.ajax({
-                    type: "POST",
-                    url: request_url,
-                    data: JSON.stringify({
-                        id_country: experiment_id
-                    }),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data != null) {
-                            $.each(data, function (key, value) {
-                                $('#protocol').append($("<option/>").val(key).text(value));
-                            });
-                        } else {
-                            console.log('error')
-                        }
-
-                    },
-                    failure: function (errMsg) {
-                        alert('Hubo un error');
-                    }
-                });
             });
-            $('#protocol').change(function(){
-                protocol_id = $(this).val();
-                request_url = '/solicitarMuestra/pasos/?protocol_id=' + protocol_id ;
-                $('#step')
+        });
+        $('#experiment').change(function () {
+            experiment_id = $(this).val();
+            request_url = '/solicitarMuestra/protocolos/?experiment_id=' + experiment_id;
+            $('#protocol')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
                 .val('');
 
-                if (this.value == -1 || this.value=="") {
-                    return false;
-                }
-                $.ajax({
-                    type: "POST",
-                    url: request_url,
-                    data: JSON.stringify({
-                        id_country: protocol_id
-                    }),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data != null) {
-                            $.each(data, function (key, value) {
-                                $('#step').append($("<option/>").val(key).text(value));
-                            });
-                        } else {
-                            console.log('error')
-                        }
+            $('#step')
+                .find('option')
+                .remove()
+                .end()
+                .append('<option value="">--Seleccione--</option>')
+                .val('');
 
-                    },
-                    failure: function (errMsg) {
-                        alert('Hubo un error');
+            if (this.value == -1 || this.value == "") {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: request_url,
+                data: JSON.stringify({
+                    id_country: experiment_id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    if (data != null) {
+                        $.each(data, function (key, value) {
+                            $('#protocol').append($("<option/>").val(key).text(value));
+                        });
+                    } else {
+                        console.log('error')
                     }
-                });
+
+                },
+                failure: function (errMsg) {
+                    alert('Hubo un error');
+                }
             });
+        });
+        $('#protocol').change(function () {
+            protocol_id = $(this).val();
+            request_url = '/solicitarMuestra/pasos/?protocol_id=' + protocol_id;
+            $('#step')
+                .find('option')
+                .remove()
+                .end()
+                .append('<option value="">--Seleccione--</option>')
+                .val('');
 
+            if (this.value == -1 || this.value == "") {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: request_url,
+                data: JSON.stringify({
+                    id_country: protocol_id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    if (data != null) {
+                        $.each(data, function (key, value) {
+                            $('#step').append($("<option/>").val(key).text(value));
+                        });
+                    } else {
+                        console.log('error')
+                    }
 
-            jQuery.validator.setDefaults({
-              debug: true,
-              success: "valid"
+                },
+                failure: function (errMsg) {
+                    alert('Hubo un error');
+                }
             });
+        });
 
 
-            $("#formSolicitud").submit(function(e) {
-                e.preventDefault();
-            }).validate({
-                rules: {
+        jQuery.validator.setDefaults({
+            debug: true,
+            success: "valid"
+        });
+
+
+        $("#formSolicitud").submit(function (e) {
+            e.preventDefault();
+        }).validate({
+            rules: {
                 experiment: {
-                  required: true
+                    required: true
                 },
                 protocol: {
-                  required: true
+                    required: true
                 },
                 step: {
-                  required: true
+                    required: true
                 }
-                },
-                submitHandler: function(form) {
+            },
+            submitHandler: function (form) {
 
-                   if(new Date($("#id_fechaInicial").val())<new Date($("#id_fechaFinal").val()))
-                        $("#formSolicitud").submit();
-                    else
-                        alert('La fecha inicial debe ser menor que la final');
+                if (new Date($("#id_fechaInicial").val()) < new Date($("#id_fechaFinal").val()))
+                    $("#formSolicitud").submit();
+                else
+                    alert('La fecha inicial debe ser menor que la final');
 
-                    //submit via ajax
-                    return false;  //This doesn't prevent the form from submitting.
-                }
-            });
+                //submit via ajax
+                return false;  //This doesn't prevent the form from submitting.
+            }
+        });
 
-            $("#id_fechaInicial").datepicker({ dateFormat: 'yy-mm-dd',minDate: 0});
-            $("#id_fechaFinal").datepicker({ dateFormat: 'yy-mm-dd',minDate: 0 });
-
-
+        $("#id_fechaInicial").datepicker({dateFormat: 'yy-mm-dd', minDate: 0});
+        $("#id_fechaFinal").datepicker({dateFormat: 'yy-mm-dd', minDate: 0});
 
 
     </script>
-</div>
 {% endblock %}

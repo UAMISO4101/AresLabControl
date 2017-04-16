@@ -8,8 +8,6 @@
 
 {% block head_title %}{{ block.super }}Solicitar Muestra{% endblock %}
 
-
-
 {% block content %}
     {% if mensaje != "ok" %}
         <div class="alert alert-danger col-md-6">
@@ -54,8 +52,6 @@
             </div>
         </div>
     </div>
-
-
 
     <div class="row">
         <div class="col-md-12">
@@ -110,6 +106,7 @@
             </div>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
@@ -184,185 +181,183 @@
                 </div>
             </div>
         </div>
-
     </div>
-    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-            $('#project').change(function(){
-                project_id = $(this).val();
-                request_url = '/solicitarMuestra/experimentos/?project_id=' + project_id ;
-                $('#experiment')
+        $('#project').change(function () {
+            project_id = $(this).val();
+            request_url = '/solicitarMuestra/experimentos/?project_id=' + project_id;
+            $('#experiment')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
                 .val('');
 
-                $('#protocol')
+            $('#protocol')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
                 .val('');
 
-                $('#step')
+            $('#step')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
                 .val('');
 
-                if (this.value == -1 || this.value=="") {
+            if (this.value == -1 || this.value == "") {
 
-                    return false;
-                }
-                $.ajax({
-                    type: "POST",
-                    url: request_url,
-                    data: JSON.stringify({
-                        id_country: project_id
-                    }),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data != null) {
-                            $.each(data, function (key, value) {
-                                $('#experiment').append($("<option/>").val(key).text(value));
-                            });
-                        } else {
-                            console.log('error')
-                        }
-
-                    },
-                    failure: function (errMsg) {
-                        alert('Hubo un error');
-                    }
-                });
-            });
-            $('#experiment').change(function(){
-                experiment_id = $(this).val();
-                request_url = '/solicitarMuestra/protocolos/?experiment_id=' + experiment_id ;
-                $('#protocol')
-                .find('option')
-                .remove()
-                .end()
-                .append('<option value="">--Seleccione--</option>')
-                .val('');
-
-                $('#step')
-                .find('option')
-                .remove()
-                .end()
-                .append('<option value="">--Seleccione--</option>')
-                .val('');
-
-                if (this.value == -1 || this.value=="") {
-                    return false;
-                }
-                $.ajax({
-                    type: "POST",
-                    url: request_url,
-                    data: JSON.stringify({
-                        id_country: experiment_id
-                    }),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data != null) {
-                            $.each(data, function (key, value) {
-                                $('#protocol').append($("<option/>").val(key).text(value));
-                            });
-                        } else {
-                            console.log('error')
-                        }
-
-                    },
-                    failure: function (errMsg) {
-                        alert('Hubo un error');
-                    }
-                });
-            });
-            $('#protocol').change(function(){
-                protocol_id = $(this).val();
-                request_url = '/solicitarMuestra/pasos/?protocol_id=' + protocol_id ;
-                $('#step')
-                .find('option')
-                .remove()
-                .end()
-                .append('<option value="">--Seleccione--</option>')
-                .val('');
-
-                if (this.value == -1 || this.value=="") {
-                    return false;
-                }
-                $.ajax({
-                    type: "POST",
-                    url: request_url,
-                    data: JSON.stringify({
-                        id_country: protocol_id
-                    }),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data != null) {
-                            $.each(data, function (key, value) {
-                                $('#step').append($("<option/>").val(key).text(value));
-                            });
-                        } else {
-                            console.log('error')
-                        }
-
-                    },
-                    failure: function (errMsg) {
-                        alert('Hubo un error');
-                    }
-                });
-            });
-
-
-
-            $("#formSolicitud").submit(function(e) {
-
-                e.preventDefault();
-                if (validarFormulario()) {
-                    $("#formSolicitud").submit();
-                }
-
-            });
-
-            $( ".datepicker" ).datepicker({
-              changeMonth: true,
-              changeYear: true,
-              yearRange: "1900:2012",
-              // You can put more options here.
-
-            });
-            function validarFormulario() {
-                $(".requerido").each(function () {
-
-                    if ($(this).val() == "") {
-                        $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
-                            'Los campos requeridos deben ser diligenciados</div>');
-                        return false;
-                    }
-                });
-
-                if ($("#id_cantidad").val() > parseInt($("#cantidadActual").text())) {
-
-                    $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
-                        'La cantidad solicitada no puede ser mayor que la disponible</div>');
-                    return false;
-                }
-                if ($("#id_cantidad").val() <= 0) {
-
-                    $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
-                        'La cantidad solicitada debe ser mayor que cero</div>');
-                    return false;
-                }
-
-                return true;
+                return false;
             }
+            $.ajax({
+                type: "POST",
+                url: request_url,
+                data: JSON.stringify({
+                    id_country: project_id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    if (data != null) {
+                        $.each(data, function (key, value) {
+                            $('#experiment').append($("<option/>").val(key).text(value));
+                        });
+                    } else {
+                        console.log('error')
+                    }
+
+                },
+                failure: function (errMsg) {
+                    alert('Hubo un error');
+                }
+            });
+        });
+        $('#experiment').change(function () {
+            experiment_id = $(this).val();
+            request_url = '/solicitarMuestra/protocolos/?experiment_id=' + experiment_id;
+            $('#protocol')
+                .find('option')
+                .remove()
+                .end()
+                .append('<option value="">--Seleccione--</option>')
+                .val('');
+
+            $('#step')
+                .find('option')
+                .remove()
+                .end()
+                .append('<option value="">--Seleccione--</option>')
+                .val('');
+
+            if (this.value == -1 || this.value == "") {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: request_url,
+                data: JSON.stringify({
+                    id_country: experiment_id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    if (data != null) {
+                        $.each(data, function (key, value) {
+                            $('#protocol').append($("<option/>").val(key).text(value));
+                        });
+                    } else {
+                        console.log('error')
+                    }
+
+                },
+                failure: function (errMsg) {
+                    alert('Hubo un error');
+                }
+            });
+        });
+        $('#protocol').change(function () {
+            protocol_id = $(this).val();
+            request_url = '/solicitarMuestra/pasos/?protocol_id=' + protocol_id;
+            $('#step')
+                .find('option')
+                .remove()
+                .end()
+                .append('<option value="">--Seleccione--</option>')
+                .val('');
+
+            if (this.value == -1 || this.value == "") {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: request_url,
+                data: JSON.stringify({
+                    id_country: protocol_id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    if (data != null) {
+                        $.each(data, function (key, value) {
+                            $('#step').append($("<option/>").val(key).text(value));
+                        });
+                    } else {
+                        console.log('error')
+                    }
+
+                },
+                failure: function (errMsg) {
+                    alert('Hubo un error');
+                }
+            });
+        });
+
+
+        $("#formSolicitud").submit(function (e) {
+
+            e.preventDefault();
+            if (validarFormulario()) {
+                $("#formSolicitud").submit();
+            }
+
+        });
+
+        $(".datepicker").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "1900:2012",
+            // You can put more options here.
+
+        });
+        function validarFormulario() {
+            $(".requerido").each(function () {
+
+                if ($(this).val() == "") {
+                    $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
+                        'Los campos requeridos deben ser diligenciados</div>');
+                    return false;
+                }
+            });
+
+            if ($("#id_cantidad").val() > parseInt($("#cantidadActual").text())) {
+
+                $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
+                    'La cantidad solicitada no puede ser mayor que la disponible</div>');
+                return false;
+            }
+            if ($("#id_cantidad").val() <= 0) {
+
+                $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
+                    'La cantidad solicitada debe ser mayor que cero</div>');
+                return false;
+            }
+
+            return true;
+        }
     </script>
 {% endblock %}

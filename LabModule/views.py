@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import print_function
-
-"""Este módulo se encarga de generar las vistas a partir de los modelos, así como de hacer la lógica del negocio. """
-
-__docformat__ = 'reStructuredText'
 
 import json
 
@@ -20,28 +15,33 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from registration.backends.default.views import RegistrationView
 
+from forms import LugarAlmacenamientoForm
+from forms import MaquinaForm
+from forms import MuestraForm
+from forms import MuestraSolicitudForm
+from forms import PosicionesAlmacenamientoForm
+from forms import PosicionesMaquinaForm
+from forms import RegistroUsuarioForm
+from forms import SolicitudForm
 from models import Bandeja
-from models import Projecto
-from models import MaquinaSolicitud
-from models import LaboratorioProfile
 from models import Experimento
+from models import LaboratorioProfile
 from models import LugarAlmacenamientoEnLab
 from models import MaquinaEnLab
 from models import MaquinaProfile
+from models import MaquinaSolicitud
 from models import Muestra
 from models import MuestraSolicitud
 from models import Paso
+from models import Projecto
 from models import Protocolo
 from models import Solicitud
 from models import Usuario
-from forms import LugarAlmacenamientoForm
-from forms import SolicitudForm
-from forms import MuestraForm
-from forms import MaquinaForm
-from forms import PosicionesForm
-from forms import MuestraSolicitudForm
-from forms import PosicionesLugarAlmacenamientoForm
-from forms import RegistroUsuarioForm
+
+"""Este módulo se encarga de generar las vistas a partir de los modelos, así como de hacer la lógica del negocio. """
+
+__docformat__ = 'reStructuredText'
+
 
 # Create your views here.
 def home(request):
@@ -59,7 +59,8 @@ def home(request):
 
 class UserRegistrationView(RegistrationView):
     """Clase para el funcionamiento del regitro de usuario
-            Historia de usuario: ALF-15:Yo como Usuario quiero ingresar al sistema con mis credenciales para acceder a todas las funcionalidades que el mismo tiene para mi.
+            Historia de usuario: ALF-15:Yo como Usuario quiero ingresar al sistema con mis credenciales para acceder a 
+            todas las funcionalidades que el mismo tiene para mi.
             Se encarga de:
                 * Ayuda al modelo de vista para renderizar la información del usuario
 
@@ -73,27 +74,28 @@ class UserRegistrationView(RegistrationView):
 @csrf_exempt
 def registrar_usuario(request):
     """Registro de Usuarios
-            Historia de usuario: ALF-15:Yo como Usuario quiero ingresar al sistema con mis credenciales para acceder a todas las funcionalidades que el mismo tiene para mi.
+            Historia de usuario: ALF-15:Yo como Usuario quiero ingresar al sistema con mis credenciales para acceder 
+            a todas las funcionalidades que el mismo tiene para mi.
             Se encarga de:
                 * Obtiene el formulario en el request
                 * crea un usuario y un perfil
 
         :param request: El HttpRequest que se va a responder.
         :type request: HttpRequest.
-        :returns: HttpResponse -- La respuesta a la peticion si sale bien, al home, sino al mismo formulario, si no tiene permisos responde no autorizado 
+        :returns: HttpResponse -- La respuesta a la peticion si sale bien, al home, sino al mismo formulario, 
+        si no tiene permisos responde no autorizado 
        """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addUser"):
-        section = {}
-        section['title'] = 'Agregar usuario'
+        section = {'title': 'Agregar usuario'}
         form = RegistroUsuarioForm(request.POST or None)
         if form.is_valid():
-            nuevo_usuario = form.save(commit=False)
+            nuevo_usuario = form.save(commit = False)
             try:
-                nuevo_perfil = User.objects.create_user(username=nuevo_usuario.nombre_usuario,
-                                                        email=nuevo_usuario.correo_electronico,
-                                                        password=nuevo_usuario.contrasena,
-                                                        first_name=nuevo_usuario.nombres,
-                                                        last_name=nuevo_usuario.apellidos
+                nuevo_perfil = User.objects.create_user(username = nuevo_usuario.nombre_usuario,
+                                                        email = nuevo_usuario.correo_electronico,
+                                                        password = nuevo_usuario.contrasena,
+                                                        first_name = nuevo_usuario.nombres,
+                                                        last_name = nuevo_usuario.apellidos
                                                         )
                 nuevo_usuario.user = nuevo_perfil
                 nuevo_usuario.user.groups.add(nuevo_usuario.grupo)
@@ -103,38 +105,38 @@ def registrar_usuario(request):
                 form.add_error("userCode", "Un usuario con este id ya existe")
         context = {'form': form, 'section': section}
         return render(request, 'registration/registration_form.html', context)
-    return HttpResponse('No autorizado', status=401)
+    return HttpResponse('No autorizado', status = 401)
 
 
 def agregar_lugar(request):
     """Desplegar y comprobar los valores a insertar.
-           Historia de usuario: ALF-37 - Yo como Jefe de Laboratorio quiero poder agregar nuevos lugares de almacenamiento para poder utilizarlos en el sistema.
+           Historia de usuario: ALF-37 - Yo como Jefe de Laboratorio quiero poder agregar nuevos lugares de 
+           almacenamiento para poder utilizarlos en el sistema.
            Se encarga de:
                * Mostar el formulario para agregar un lugar de almacenamiento.
                * Mostar el formulario para editar un lugar de almacenamiento ya existente.
-               * Agregar un lugar de almacenamiento a la base de datos, agregar la relación entre lugar de almacenamiento y el laboratorio en el que está.
+               * Agregar un lugar de almacenamiento a la base de datos, agregar la relación entre lugar de 
+               almacenamiento y el laboratorio en el que está.
 
         :param request: El HttpRequest que se va a responder.
         :type request: HttpRequest.
-        :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la modificación del lugar de almacenamiento. Sino redirecciona al mismo formulario mostrando los errores.
+        :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la 
+        modificación del lugar de almacenamiento. Sino redirecciona al mismo formulario mostrando los errores.
 
        """
-    section = {}
-    section['title'] = 'Agregar Lugar Almacenamiento'
+    section = {'title': 'Agregar Lugar de Almacenamiento'}
     mensaje = ""
     if request.user.is_authenticated():
         if request.method == 'POST':
             form = LugarAlmacenamientoForm(request.POST, request.FILES)
-            formPos = PosicionesLugarAlmacenamientoForm(request.POST or None, request.FILES or None)
-            # items = request.POST.get('items').split('\r\n')
+            formPos = PosicionesAlmacenamientoForm(request.POST or None, request.FILES or None)
 
             if form.is_valid() and formPos.is_valid():
-                lugar = form.save(commit=False)
-                lugarEnLab = formPos.save(commit=False)
+                lugar = form.save(commit = False)
+                lugarEnLab = formPos.save(commit = False)
 
-                ocupado = MaquinaEnLab.objects.filter(idLaboratorio=lugarEnLab.idLaboratorio, xPos=lugarEnLab.posX,
-                                                      yPos=lugarEnLab.posY).exists()
-                # lamisma = MaquinaEnLab.objects.filter(pk=lugarEnLab.pk).exists()
+                ocupado = MaquinaEnLab.objects.filter(idLaboratorio = lugarEnLab.idLaboratorio, posX = lugarEnLab.posX,
+                                                      posY = lugarEnLab.posY).exists()
 
                 if ocupado:
                     formPos.add_error("posX", "La posición x ya esta ocupada")
@@ -143,7 +145,7 @@ def agregar_lugar(request):
                     mensaje = "El lugar en el que desea guadar ya esta ocupado"
                 else:
                     mensaje = "La posición [" + str(lugarEnLab.posX) + "," + str(
-                        lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio"
+                            lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio"
                     lab = lugarEnLab.idLaboratorio
                     masX = lab.numX >= lugarEnLab.posX
                     masY = lab.numY >= lugarEnLab.posY
@@ -158,89 +160,88 @@ def agregar_lugar(request):
                         lugarEnLab.idLugar = lugar
                         lugarEnLab.save()
 
-                        # if items is not None and len(items) > 0:
-                        #     for item in items:
-                        #         if item is not None and item != '':
-                        #            tamano = item.split(',')[0].split(':')[1]
-                        #            cantidad = item.split(',')[1].split(':')[1]
                         for cantidad in range(lugar.capacidad):
-                            bandeja = Bandeja(lugarAlmacenamiento=lugar,
-                                              libre=True)
+                            bandeja = Bandeja(lugarAlmacenamiento = lugar,
+                                              libre = True)
                             bandeja.save()
 
                         return HttpResponseRedirect(reverse('home'))
         else:
             form = LugarAlmacenamientoForm()
-            formPos = PosicionesLugarAlmacenamientoForm()
+            formPos = PosicionesAlmacenamientoForm()
         context = {'form': form, 'formPos': formPos, 'mensaje': mensaje, 'section': section}
 
-        return render(request, 'LugarAlmacenamiento/agregar.html', context)
+        return render(request, 'almacenamientos/agregar.html', context)
     else:
-        return HttpResponse('No autorizado', status=401)
+        return HttpResponse('No autorizado', status = 401)
+
 
 def comprobarPostMaquina(form, formPos, request, template_name, section):
     """Desplegar y comprobar los valores a insertar.
-        Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
+        Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :
+        Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
         Se encarga de:
             * Mostar el formulario para agregar una máquina.
             * Mostar el formulario para editar una máquina ya existente.
-            * Agregar una máquina a la base de datos, agregar la relación entre la máquina y el laboratorio en el que está.
+            * Agregar una máquina a la base de datos, agregar la relación entre la máquina y el 
+            laboratorio en el que está.
 
      :param form: La información relevante de la máquina.
      :type form: MaquinaForm.
      :param formPos: La posición y el laboratorio en el que se va a guardar la máquina.
-     :type formPos: PosicionesForm.
+     :type formPos: PosicionesMaquinaForm.
      :param request: El HttpRequest que se va a responder.
      :type request: HttpRequest.
      :param template_name: La template sobre la cual se va a renderizar.
      :type template_name: html.
      :param section: Objeto que permite diferenciar entre la modificación de una máquina y la adición de esta.
      :type section: {‘title’:,’agregar’}.
-     :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la modificación de la nueva máquina. Sino redirecciona al mismo formulario mostrand los errores.
+     :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la
+      modificación de la nueva máquina. Sino redirecciona al mismo formulario mostrand los errores.
 
     """
 
     mensaje = ""
 
     if form.is_valid() and formPos.is_valid():
-        new_maquina = form.save(commit=False)
-        new_maquinaEnLab = formPos.save(commit=False)
-        xPos = new_maquinaEnLab.xPos
-        yPos = new_maquinaEnLab.yPos
-        ocupadoX = MaquinaEnLab.objects.filter(idLaboratorio=new_maquinaEnLab.idLaboratorio, xPos=xPos).exists()
-        ocupadoY = MaquinaEnLab.objects.filter(idLaboratorio=new_maquinaEnLab.idLaboratorio, yPos=yPos).exists()
-        # lamisma=MaquinaEnLab.objects.filter(idLaboratorio=new_maquinaEnLab.idLaboratorio, yPos=yPos,xPos=xPos,idMaquina).exists()
-        lamisma = MaquinaEnLab.objects.filter(pk=new_maquinaEnLab.pk).exists()
+        new_maquina = form.save(commit = False)
+        new_maquinaEnLab = formPos.save(commit = False)
+        posX = new_maquinaEnLab.posX
+        posY = new_maquinaEnLab.posY
+        ocupadoX = MaquinaEnLab.objects.filter(idLaboratorio = new_maquinaEnLab.idLaboratorio, posX = posX).exists()
+        ocupadoY = MaquinaEnLab.objects.filter(idLaboratorio = new_maquinaEnLab.idLaboratorio, posY = posY).exists()
+        lamisma = MaquinaEnLab.objects.filter(pk = new_maquinaEnLab.pk).exists()
         if (ocupadoX and ocupadoY) and not lamisma:
             if (ocupadoX):
-                formPos.add_error("xPos", "La posición x ya esta ocupada")
+                formPos.add_error("posX", "La posición x ya esta ocupada")
             if (ocupadoY):
-                formPos.add_error("yPos", "La posición y ya esta ocupada")
+                formPos.add_error("posY", "La posición y ya esta ocupada")
             mensaje = "El lugar en el que desea guadar ya esta ocupado"
         else:
-            mensaje = "La posición [" + str(xPos) + "," + str(yPos) + "] no se encuentra en el rango del labortorio"
+            mensaje = "La posición [" + str(posX) + "," + str(posY) + "] no se encuentra en el rango del labortorio"
             lab = new_maquinaEnLab.idLaboratorio
-            masX = lab.numX >= xPos
-            masY = lab.numY >= yPos
+            masX = lab.numX >= posX
+            masY = lab.numY >= posY
             posible = masX and masY
             if not posible:
                 if not masX:
-                    formPos.add_error("xPos", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
+                    formPos.add_error("posX", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
                 if not masY:
-                    formPos.add_error("yPos", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
+                    formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
             else:
                 new_maquina.save()
                 new_maquinaEnLab.idMaquina = new_maquina
                 new_maquinaEnLab.save()
-                return redirect(reverse('maquina-update', kwargs={'pk': new_maquina.pk}))
+                return redirect(reverse('maquina-update', kwargs = {'pk': new_maquina.pk}))
 
     return render(request, template_name,
                   {'form': form, 'formPos': formPos, 'section': section, 'mensaje': mensaje})
 
 
-def maquina_create(request, template_name='Maquinas/agregar.html'):
+def maquina_create(request, template_name = 'maquinas/agregar.html'):
     """Comporbar si el usuario puede agregar una máquina y obtener los campos necesarios.
-        Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
+        Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :
+        Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
         Se encarga de:
             * Comprobar si hay un usario logeuado
             * Comprobar si el suario tiene permisos para agregar máquinas
@@ -255,22 +256,22 @@ def maquina_create(request, template_name='Maquinas/agregar.html'):
      :type template_name: html.
      :param section: Objeto que permite diferenciar entre la modificación de una máquina y la adición de esta.
      :type section: {‘title’:,’agregar’}.
-     :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la modificación de la nueva
-                               máquina. Sino redirecciona al mismo formulario mostrando los errores. Si no esta autorizado se envia un código 401
+     :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a 
+     la modificación de la nueva
+                               máquina. Sino redirecciona al mismo formulario mostrando los errores. 
+                               Si no esta autorizado se envia un código 401
 
     """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addMachine"):
-        section = {}
-        section['title'] = 'Agregar Máquina'
-        section['agregar'] = True
+        section = {'title': 'Agregar Máquina', 'agregar': True}
         form = MaquinaForm(request.POST or None, request.FILES or None)
-        formPos = PosicionesForm(request.POST or None, request.FILES or None)
+        formPos = PosicionesMaquinaForm(request.POST or None, request.FILES or None)
         return comprobarPostMaquina(form, formPos, request, template_name, section)
     else:
-        return HttpResponse('No autorizado', status=401)
+        return HttpResponse('No autorizado', status = 401)
 
 
-def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
+def maquina_update(request, pk, template_name = 'maquinas/agregar.html'):
     """Comporbar si el usuario puede modificar una máquina, obtener los campos necesarios.
 
         Se encarga de:
@@ -289,28 +290,29 @@ def maquina_update(request, pk, template_name='Maquinas/agregar.html'):
      :type pk: String.
      :param section: Objeto que permite diferenciar entre la modificación de una máquina y la adición de esta.
      :type section: {‘title’:,’agregar’}.
-     :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a si mismo. Sino redirecciona al mismo formulario mostrando los errores. Si no esta autorizado se envia un código 401
+     :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a si mismo. 
+     Sino redirecciona al mismo formulario mostrando los errores. Si no esta autorizado se envia un código 401
 
     """
 
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_edditMachine"):
-        server = get_object_or_404(MaquinaProfile, pk=pk)
-        serverRelacionLab = get_object_or_404(MaquinaEnLab, idMaquina=server)
+        server = get_object_or_404(MaquinaProfile, pk = pk)
+        serverRelacionLab = get_object_or_404(MaquinaEnLab, idMaquina = server)
         mensaje = ""
-        form = MaquinaForm(request.POST or None, request.FILES or None, instance=server)
-        formPos = PosicionesForm(request.POST or None, request.FILES or None, instance=serverRelacionLab)
-        section = {}
-        section['title'] = 'Modificar Máquina'
-        section['agregar'] = False
+        form = MaquinaForm(request.POST or None, request.FILES or None, instance = server)
+        formPos = PosicionesMaquinaForm(request.POST or None, request.FILES or None, instance = serverRelacionLab)
+        section = {'title': 'Modificar Máquina', 'agregar': False}
         return comprobarPostMaquina(form, formPos, request, template_name, section)
     else:
-        return HttpResponse('No autorizado', status=401)
+        return HttpResponse('No autorizado', status = 401)
 
 
 def listarMaquinas(request):
     """Comprobar si el usario puede ver las máquinas y mostraselas filtrando por una búsqueda.
-           Historia de usuario: ALF-20:Yo como Jefe de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
-           Historia de usuario: ALF-25:Yo como Asistente de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
+           Historia de usuario: ALF-20:Yo como Jefe de Laboratorio quiero poder filtrar las máquinas existentes por 
+           nombre para visualizar sólo las que me interesan.
+           Historia de usuario: ALF-25:Yo como Asistente de Laboratorio quiero poder filtrar las máquinas existentes 
+           por nombre para visualizar sólo las que me interesan.
            Se encarga de:
                * Comprobar si hay un usario logueado
                * Comprobar si el suario tiene permisos para ver las máquinas
@@ -323,7 +325,8 @@ def listarMaquinas(request):
         :type que: String.
         :param num: Opcional: El número de máquinas a ver en cada página
         :type num: String.
-        :returns: HttpResponse -- La respuesta a la petición. Retorna páginada la lista de las máquias que cumplen con la búsqueda. Si no esta autorizado se envia un código 401
+        :returns: HttpResponse -- La respuesta a la petición. Retorna páginada la lista de las máquias que cumplen
+         con la búsqueda. Si no esta autorizado se envia un código 401
 
     """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
@@ -331,28 +334,30 @@ def listarMaquinas(request):
         section['title'] = 'Listar Máquinas'
         edita = request.user.has_perm("LabModule.can_edditMachine")
         if not edita:
-            lista_maquinas = MaquinaProfile.objects.all().filter(activa=True).extra(order_by=['nombre'])
+            lista_maquinas = MaquinaProfile.objects.all().filter(activa = True).extra(order_by = ['nombre'])
         else:
-            lista_maquinas = MaquinaProfile.objects.all().extra(order_by=['nombre'])
+            lista_maquinas = MaquinaProfile.objects.all().extra(order_by = ['nombre'])
 
         idMquinas = [maquina.idSistema for maquina in lista_maquinas]
-        lista_Posiciones = MaquinaEnLab.objects.all().filter(idMaquina__in=idMquinas)
+        lista_Posiciones = MaquinaEnLab.objects.all().filter(idMaquina__in = idMquinas)
         maquinasConUbicacion = zip(lista_maquinas, lista_Posiciones)
         context = {'section': section, 'maquinasBien': maquinasConUbicacion}
-        return render(request, 'Maquinas/ListaMaquinas.html', context)
+        return render(request, 'maquinas/listar.html', context)
     else:
-        return HttpResponse('No autorizado', status=401)
+        return HttpResponse('No autorizado', status = 401)
 
 
 def listar_lugares(request):
     """Desplegar y comprobar los valores a consultar.
-              Historia de usuario: ALF-39 - Yo como Jefe de Laboratorio quiero poder filtrar los lugares de almacenamiento existentes por nombre para visualizar sólo los que me interesan.
+              Historia de usuario: ALF-39 - Yo como Jefe de Laboratorio quiero poder filtrar los lugares de 
+              almacenamiento existentes por nombre para visualizar sólo los que me interesan.
               Se encarga de:
                   * Mostar el formulario para consultar los lugares de almacenamiento.
 
            :param request: El HttpRequest que se va a responder.
            :type request: HttpRequest.
-           :returns: HttpResponse -- La respuesta a la petición, con información de los lugares de almacenamiento existentes.
+           :returns: HttpResponse -- La respuesta a la petición, con información de los lugares de 
+           almacenamiento existentes.
 
           """
     section = {}
@@ -360,14 +365,15 @@ def listar_lugares(request):
     if request.user.is_authenticated():
         lista_lugares = LugarAlmacenamientoEnLab.objects.all()
         context = {'section': section, 'lista_lugares': lista_lugares}
-        return render(request, 'LugarAlmacenamiento/listar.html', context)
+        return render(request, 'almacenamientos/listar.html', context)
     else:
-        return HttpResponse('No autorizado', status=401)
+        return HttpResponse('No autorizado', status = 401)
 
 
 def crear_solicitud_maquina(request):
     """Realiza la solicitud de máquinas por el usuario que la necesita
-        Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una maquina normal en una franja de tiempo especifica para hacer uso de ella
+        Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una maquina normal en una 
+        franja de tiempo especifica para hacer uso de ella
         Se encarga de:
             * Comprobar si hay un usuario logueado
             * Comprobar si el usuario tiene permisos para realizar la solicitud de máquinas
@@ -384,10 +390,10 @@ def crear_solicitud_maquina(request):
         contexto = {}
         try:
 
-            maquina = MaquinaProfile.objects.get(pk=request.GET.get('id', 0), activa=True)
-            profile = Usuario.objects.get(user_id=request.user.id)
-            maquinaEnLab = MaquinaEnLab.objects.get(idMaquina=maquina.pk)
-            proyectos = Projecto.objects.filter(asistentes=profile.id, activo=True)
+            maquina = MaquinaProfile.objects.get(pk = request.GET.get('id', 0), activa = True)
+            profile = Usuario.objects.get(user_id = request.user.id)
+            maquinaEnLab = MaquinaEnLab.objects.get(idMaquina = maquina.pk)
+            proyectos = Projecto.objects.filter(asistentes = profile.id, activo = True)
             form = SolicitudForm()
             if request.method == 'POST':
                 if form.verificar_fecha(maquina.pk, request.POST['fechaInicial'], request.POST['fechaFinal']) == True:
@@ -400,7 +406,7 @@ def crear_solicitud_maquina(request):
                     else:
                         requestObj.estado = 'aprobada'
                     requestObj.solicitante = profile
-                    requestObj.paso = Paso.objects.get(id=request.POST['step'])
+                    requestObj.paso = Paso.objects.get(id = request.POST['step'])
                     requestObj.save()
                     maquinaRequest = MaquinaSolicitud()
                     maquinaRequest.maquina = maquina
@@ -410,7 +416,7 @@ def crear_solicitud_maquina(request):
                 else:
                     mensaje = "Ya existe una solicitud para estas fechas"
 
-            contexto = {'form': form, 'mensaje': mensaje, 'maquina': maquina, 'proyectos': proyectos,
+            contexto = {'form'        : form, 'mensaje': mensaje, 'maquina': maquina, 'proyectos': proyectos,
                         'maquinaEnLab': maquinaEnLab}
         except ObjectDoesNotExist as e:
             contexto = {'mensaje': 'No hay maquinas o pasos con el id solicitado'}
@@ -418,12 +424,13 @@ def crear_solicitud_maquina(request):
             contexto = {'mensaje': 'Muchas maquinas con ese id'}
         return render(request, "Solicitudes/crear_maquina_solicitud.html", contexto)
     else:
-        return HttpResponse('No autorizado', status=401)
+        return HttpResponse('No autorizado', status = 401)
 
 
 def listar_lugar(request, pk):
     """Desplegar y comprobar los valores a consultar.
-                Historia de usuario: ALF-42-Yo como Jefe de Laboratorio quiero poder ver el detalle de un lugar de almacenamiento para conocer sus características
+                Historia de usuario: ALF-42-Yo como Jefe de Laboratorio quiero poder ver el detalle de un 
+                lugar de almacenamiento para conocer sus características
                 Se encarga de:
                 * Mostar el formulario para consultar los lugares de almacenamiento.
 
@@ -434,31 +441,32 @@ def listar_lugar(request, pk):
             :returns: HttpResponse -- La respuesta a la petición, con información de los lugares de almacenamiento existentes.
         """
     if request.user.is_authenticated():
-        lista_lugar = LugarAlmacenamientoEnLab.objects.filter(idLugar_id=pk)
+        lista_lugar = LugarAlmacenamientoEnLab.objects.filter(idLugar_id = pk)
         if lista_lugar is None:
             return listar_lugares(request)
         else:
             lugar = lista_lugar[0]
-            bandejasOcupadas = Bandeja.objects.filter(lugarAlmacenamiento_id=pk, libre=False).count()
-            bandejasLibres = Bandeja.objects.filter(lugarAlmacenamiento_id=pk, libre=True).count()
+            bandejasOcupadas = Bandeja.objects.filter(lugarAlmacenamiento_id = pk, libre = False).count()
+            bandejasLibres = Bandeja.objects.filter(lugarAlmacenamiento_id = pk, libre = True).count()
             # tamano = 0
             # lista = Bandeja.objects.filter(lugarAlmacenamiento_id=pk)
 
             # for x in lista:
             # tamano += Decimal(x.tamano)
 
-            laboratorio = LaboratorioProfile.objects.get(pk=lugar.idLaboratorio_id).nombre
+            laboratorio = LaboratorioProfile.objects.get(pk = lugar.idLaboratorio_id).nombre
 
-            context = {'lugar': lugar, 'bandejasOcupadas': bandejasOcupadas, 'bandejasLibres': bandejasLibres,
+            context = {'lugar'      : lugar, 'bandejasOcupadas': bandejasOcupadas, 'bandejasLibres': bandejasLibres,
                        'laboratorio': laboratorio}
-            return render(request, 'LugarAlmacenamiento/detalle.html', context)
+            return render(request, 'almacenamientos/detalle.html', context)
     else:
-        return HttpResponse('No autorizado', status=401)
+        return HttpResponse('No autorizado', status = 401)
 
 
 def crear_solicitud_muestra(request):
     """Realiza la solicitud de muestras por el usuario que la necesita
-            Historia de usuario: ALF-81:Yo como Asistente de Laboratorio quiero poder solicitar una muestra para continuar con mis experimentos
+            Historia de usuario: ALF-81:Yo como Asistente de Laboratorio quiero poder solicitar una muestra para
+             continuar con mis experimentos
             Se encarga de:
                 * Comprobar si hay un usuario logueado
                 * Comprobar si el usuario tiene permisos para realizar la solicitud de muestras
@@ -476,12 +484,12 @@ def crear_solicitud_muestra(request):
         contexto = {}
         try:
 
-            muestra = Muestra.objects.get(id=request.GET.get('id', 0), activa=True)
-            profile = Usuario.objects.get(user_id=request.user.id)
-            proyectos = Projecto.objects.filter(asistentes=profile.id, activo=True);
+            muestra = Muestra.objects.get(id = request.GET.get('id', 0), activa = True)
+            profile = Usuario.objects.get(user_id = request.user.id)
+            proyectos = Projecto.objects.filter(asistentes = profile.id, activo = True);
 
-            muestra = Muestra.objects.get(id=request.GET.get('id', 0))
-            profile = Usuario.objects.get(user_id=request.user.id)
+            muestra = Muestra.objects.get(id = request.GET.get('id', 0))
+            profile = Usuario.objects.get(user_id = request.user.id)
 
             if request.method == 'POST':
 
@@ -490,7 +498,7 @@ def crear_solicitud_muestra(request):
                 requestObj.fechaInicial = request.POST['fechaInicial']
                 requestObj.estado = 'creada'
                 requestObj.solicitante = profile
-                requestObj.paso = Paso.objects.get(id=request.POST['step'])
+                requestObj.paso = Paso.objects.get(id = request.POST['step'])
                 requestObj.save()
                 sampleRequest = MuestraSolicitud()
                 sampleRequest.solicitud = requestObj
@@ -503,7 +511,7 @@ def crear_solicitud_muestra(request):
             else:
                 form = SolicitudForm()
                 form_muestra = MuestraSolicitudForm()
-            contexto = {'form': form, 'mensaje': mensaje, 'muestra': muestra, 'proyectos': proyectos,
+            contexto = {'form'        : form, 'mensaje': mensaje, 'muestra': muestra, 'proyectos': proyectos,
                         'form_muestra': form_muestra}
         except ObjectDoesNotExist as e:
             contexto = {'mensaje': 'No hay muestras o pasos con el id solicitado'}
@@ -513,12 +521,13 @@ def crear_solicitud_muestra(request):
 
         return render(request, "Solicitudes/crear_muestra_solicitud.html", contexto)
     else:
-        return HttpResponse('No autorizado', status=401)
+        return HttpResponse('No autorizado', status = 401)
 
 
 def listar_muestra(request, pk):
     """Desplegar y comprobar los valores a consultar.
-                Historia de usuario: ALF-50 - Yo como Asistente de Laboratorio quiero poder ver el detalle de una muestra para conocer sus características.
+                Historia de usuario: ALF-50 - Yo como Asistente de Laboratorio quiero poder ver el detalle de una 
+                muestra para conocer sus características.
                 Se encarga de:
                 * Mostar el formulario para consultar las muestras.
 
@@ -529,7 +538,7 @@ def listar_muestra(request, pk):
             :returns: HttpResponse -- La respuesta a la petición, con información de la muestra existente.
         """
     if request.user.is_authenticated():
-        lista_muestra = Muestra.objects.filter(id=pk)
+        lista_muestra = Muestra.objects.filter(id = pk)
         if lista_muestra is None:
             # cambiar por listado de muestras
             return listar_lugares(request)
@@ -539,18 +548,20 @@ def listar_muestra(request, pk):
 
             return render(request, 'Muestra/detalle.html', context)
     else:
-        return HttpResponse('No autorizado', status=401)
+        return HttpResponse('No autorizado', status = 401)
 
 
 def reservar_muestra(request):
     """Desplegar y comprobar los valores a insertar.
-           Historia de usuario: ALF-50 - Yo como Asistente de Laboratorio quiero poder ver el detalle de una muestra para conocer sus características.
+           Historia de usuario: ALF-50 - Yo como Asistente de Laboratorio quiero poder ver el detalle de una muestra 
+           para conocer sus características.
            Se encarga de:
                * Reservar la muestra
 
         :param request: El HttpRequest que se va a responder.
         :type request: HttpRequest.
-        :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la listado de muestras. Sino redirecciona al mismo formulario mostrando los errores.
+        :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la listado 
+        de muestras. Sino redirecciona al mismo formulario mostrando los errores.
 
        """
     mensaje = ""
@@ -566,14 +577,15 @@ def reservar_muestra(request):
         else:
             form = MuestraForm()
 
-        return render(request, 'Muestra/detalle.html', {'form': form, 'mensaje': mensaje})
+        return render(request, 'muestra/detalle.html', {'form': form, 'mensaje': mensaje})
     else:
-        return HttpResponse('No autorizado', status=401)
+        return HttpResponse('No autorizado', status = 401)
 
 
 def reservar_maquina(request, pk):
     """Desplegar y comprobar los valores a consultar.
-                Historia de usuario:     ALF-3 - Yo como Asistente de Laboratorio quiero poder ver la agenda de una máquina para visualizar cuándo podré usarla.
+                Historia de usuario:     ALF-3 - Yo como Asistente de Laboratorio quiero poder ver la agenda de una 
+                máquina para visualizar cuándo podré usarla.
                 Se encarga de:
                 * Reservar una máquina en una fecha determinada.
 
@@ -581,26 +593,29 @@ def reservar_maquina(request, pk):
             :type request: HttpRequest.
             :param pk: La llave primaria de la máquina
             :type pk: String.
-            :returns: HttpResponse -- La respuesta a la petición, con información del calendario para reservar la máquina.
+            :returns: HttpResponse -- La respuesta a la petición, con información del calendario para reservar la 
+                                      máquina.
         """
     if request.user.is_authenticated():
-        lista_maquina = MaquinaEnLab.objects.filter(idMaquina_id=pk)
+        lista_maquina = MaquinaEnLab.objects.filter(idMaquina_id = pk)
         if lista_maquina is None:
             # cambiar por listado de maquinas
             return listar_lugares(request)
         else:
-            maquinaEnLab = lista_maquina[0]
-            maquinaProfile = maquinaEnLab.idMaquina
-            context = {'maquinaEnLab': maquinaEnLab, 'maquinaProfile': maquinaProfile}
+            maquina_en_lab = lista_maquina[0]
+            maquina_profile = maquina_en_lab.idMaquina
+            context = {'maquina_en_lab': maquina_en_lab, 'maquina_profile': maquina_profile}
 
-            return render(request, 'Maquinas/agenda.html', context)
+            return render(request, 'maquinas/agenda.html', context)
     else:
-        return HttpResponse('No autorizado', status=401)
+        return HttpResponse('No autorizado', status = 401)
 
 
 def poblar_datos(request):
     """Realiza la población de datos para máquinas
-            Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
+            Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :
+            Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas 
+            por los asistentes.
             Se encarga de:
                 * Poblar la información para las máquinas
 
@@ -611,16 +626,17 @@ def poblar_datos(request):
 
         """
     MaquinaProfile.objects.create(
-        nombre='Laboratorio genomica',
-        descripcion="Aca se hace genomica",
-        idSistema="Lab_101")
+            nombre = 'Laboratorio genomica',
+            descripcion = "Aca se hace genomica",
+            idSistema = "Lab_101")
     return HttpResponseRedirect(reverse('home'))
 
 
 @csrf_exempt
 def cargar_experimentos(request):
     """Realiza el cargue de datos de experimentos existentes por identificador del proyecto
-                Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una maquina normal en una franja de tiempo especifica para hacer uso de ella
+                Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una maquina normal en una 
+                franja de tiempo especifica para hacer uso de ella
                 Se encarga de:
                     * Cargue de datos de experimentos
                 :param request: El HttpRequest que se va a responder.
@@ -630,9 +646,9 @@ def cargar_experimentos(request):
 
             """
     if request.GET['project_id'] != "":
-        experiments = Experimento.objects.filter(projecto=request.GET['project_id'])
-        experimentsDict = dict([(c.id, c.nombre) for c in experiments])
-        return HttpResponse(json.dumps(experimentsDict))
+        experiments = Experimento.objects.filter(projecto = request.GET['project_id'])
+        experiments_dict = dict([(c.id, c.nombre) for c in experiments])
+        return HttpResponse(json.dumps(experiments_dict))
     else:
         return HttpResponse()
 
@@ -640,7 +656,8 @@ def cargar_experimentos(request):
 @csrf_exempt
 def cargar_protocolos(request):
     """Realiza el cargue de datos de protocolos existentes por identificador del experimento
-                  Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una maquina normal en una franja de tiempo especifica para hacer uso de ella
+                  Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una maquina normal en una
+                  franja de tiempo especifica para hacer uso de ella
                   Se encarga de:
                       * Cargue de datos de protocolos
                   :param request: El HttpRequest que se va a responder.
@@ -650,9 +667,9 @@ def cargar_protocolos(request):
 
               """
     if request.GET['experiment_id'] != "":
-        protocols = Protocolo.objects.filter(experimento=request.GET['experiment_id'])
-        protocolsDict = dict([(c.id, c.nombre) for c in protocols])
-        return HttpResponse(json.dumps(protocolsDict))
+        protocols = Protocolo.objects.filter(experimento = request.GET['experiment_id'])
+        protocols_dict = dict([(c.id, c.nombre) for c in protocols])
+        return HttpResponse(json.dumps(protocols_dict))
     else:
         return HttpResponse()
 
@@ -660,7 +677,8 @@ def cargar_protocolos(request):
 @csrf_exempt
 def cargar_pasos(request):
     """Realiza el cargue de datos de pasos existentes por identificador del protocolo
-                    Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una maquina normal en una franja de tiempo especifica para hacer uso de ella
+                    Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una maquina normal en 
+                    una franja de tiempo especifica para hacer uso de ella
                     Se encarga de:
                         * Cargue de datos de pasos
                     :param request: El HttpRequest que se va a responder.
@@ -670,8 +688,8 @@ def cargar_pasos(request):
 
                 """
     if request.GET['protocol_id'] != "":
-        steps = Paso.objects.filter(protocolo=request.GET['protocol_id'])
-        stepsDict = dict([(c.id, c.nombre) for c in steps])
-        return HttpResponse(json.dumps(stepsDict))
+        steps = Paso.objects.filter(protocolo = request.GET['protocol_id'])
+        steps_dict = dict([(c.id, c.nombre) for c in steps])
+        return HttpResponse(json.dumps(steps_dict))
     else:
         return HttpResponse()

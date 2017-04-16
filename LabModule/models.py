@@ -282,8 +282,8 @@ class MaquinaEnLab(models.Model):
         Atributos:
             :idLaboratorio (String): Id del laboratorio en el que la máquina esta guardada.
             :idMaquina (String): Id de la máquina que esta guaradada
-            :xPos (Integer): Posición x en la que la máquina esta guardada. No puede ser nulo, por defecto 0.
-            :yPos (Integer): Posición y en la que la máquina esta guardada. No puede sr nulo, por defecto 0.
+            :posX (Integer): Posición x en la que la máquina esta guardada. No puede ser nulo, por defecto 0.
+            :posY (Integer): Posición y en la que la máquina esta guardada. No puede sr nulo, por defecto 0.
     """
 
     class Meta:
@@ -305,19 +305,19 @@ class MaquinaEnLab(models.Model):
         verbose_name="Máquina",
         primary_key=True
     )
-    xPos = models.PositiveIntegerField(
-        verbose_name="Posición x",
+    posX = models.PositiveIntegerField(
+            verbose_name = "Posición X",
         null=False,
         default=0
     )
-    yPos = models.PositiveIntegerField(
-        verbose_name="Posición y",
+    posY = models.PositiveIntegerField(
+            verbose_name = "Posición Y",
         null=False,
         default=0
     )
 
     def __unicode__(self):
-        return self.idLaboratorio.id + ":" + str(self.xPos) + "," + str(self.yPos)
+        return self.idLaboratorio.id + ":" + str(self.posX) + "," + str(self.posY)
 
 
 class LugarAlmacenamiento(models.Model):
@@ -390,8 +390,8 @@ class LugarAlmacenamientoEnLab(models.Model):
         Atributos:
             :idLaboratorio (String): Id del laboratorio.
             :idLugar (String): Id del lugar Almacenamiento
-            :xPos (Integer): Posición x en la que el lugar Almacenamiento esta guardado.
-            :yPos (Integer): Posición y en la que el lugar Almacenamiento esta guardado.
+            :posX (Integer): Posición x en la que el lugar Almacenamiento esta guardado.
+            :posY (Integer): Posición y en la que el lugar Almacenamiento esta guardado.
      """
 
     class Meta:
@@ -414,14 +414,14 @@ class LugarAlmacenamientoEnLab(models.Model):
         primary_key=True
     )
     posX = models.PositiveIntegerField(
-        verbose_name="Posición x"
+            verbose_name = "Posición X"
     )
     posY = models.PositiveIntegerField(
-        verbose_name="Posición y"
+            verbose_name = "Posición Y"
     )
 
     def __unicode__(self):
-        return str(self.posX) + "," + str(self.posY)
+        return self.idLaboratorio.id + ":" + str(self.posX) + "," + str(self.posY)
 
 
 class Protocolo(models.Model):
@@ -453,7 +453,7 @@ class Protocolo(models.Model):
         max_length=50,
         blank=False,
         null=True,
-        verbose_name="Nombre protocolo"
+            verbose_name = "Nombre Protocolo"
     )
     descripcion = models.TextField(
         max_length=200,

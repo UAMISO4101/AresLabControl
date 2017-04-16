@@ -1,3 +1,14 @@
+.panel {
+    border-color: #C7CAE1 !important;
+    border: 1px solid;
+    border-radius: 5px !important;
+}
+
+.panel-body {
+    background: rgba(199, 202, 225, 0.3) !important;
+
+}
+
 .panel-heading {
     /*background: #464E8E !important;*/
     background: #8187B7; /* For browsers that do not support gradients */
@@ -8,21 +19,8 @@
     /*color: #C7CAE1 !important;*/
     border: 1px solid;
     border-radius: 5px 5px 0px 0px !important;
-
 }
 
 .panel-title {
     font-weight: bold !important;
 }
-
-.panel-body {
-    background: rgba(199, 202, 225, 0.3) !important;
-
-}
-
-.panel {
-    border-color: #C7CAE1 !important;
-    border: 1px solid;
-    border-radius: 5px !important;
-}
-

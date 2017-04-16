@@ -49,90 +49,90 @@ class AddMaquinasTest(TestCase):
         self.LaboratorioPrueba = LaboratorioProfile.objects.create(nombre="Laboratorio genetica", id="LAB_101")
 
         self.maquinaPrueba = {
-            "nombre": "Autoclave Portátil",
-            "descripcion": "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
-            "idSistema": "AUTO_010",
-            "con_reserva": False,
-            "xPos": 0,
-            "yPos": 0,
+            "nombre"       : "Autoclave Portátil",
+            "descripcion"  : "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
+            "idSistema"    : "AUTO_010",
+            "con_reserva"  : False,
+            "posX"         : 0,
+            "posY"         : 0,
             "idLaboratorio": self.LaboratorioPrueba.id
         }
 
         self.maquina1 = {
-            "nombre": "Autoclave Portátil",
-            "descripcion": "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
-            "idSistema": "AUTO_001",
-            "con_reserva": False,
-            "xPos": 10,
-            "yPos": 10,
+            "nombre"       : "Autoclave Portátil",
+            "descripcion"  : "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
+            "idSistema"    : "AUTO_001",
+            "con_reserva"  : False,
+            "posX"         : 10,
+            "posY"         : 10,
             "idLaboratorio": self.LaboratorioPrueba.id
         }
         self.maquina2 = {
-            "nombre": "Autoclave Portátil",
-            "descripcion": "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
-            "idSistema": "AUTO_002",
-            "con_reserva": False,
-            "xPos": 0,
-            "yPos": 0,
+            "nombre"       : "Autoclave Portátil",
+            "descripcion"  : "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
+            "idSistema"    : "AUTO_002",
+            "con_reserva"  : False,
+            "posX"         : 0,
+            "posY"         : 0,
             "idLaboratorio": self.LaboratorioPrueba.id
         }
 
         self.maquina3 = {
-            "nombre": "Autoclave Portátil",
-            "descripcion": "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
-            "idSistema": "AUTO_010",
-            "con_reserva": False,
-            "xPos": 1,
-            "yPos": 1,
+            "nombre"       : "Autoclave Portátil",
+            "descripcion"  : "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
+            "idSistema"    : "AUTO_010",
+            "con_reserva"  : False,
+            "posX"         : 1,
+            "posY"         : 1,
             "idLaboratorio": self.LaboratorioPrueba.id
         }
 
         self.maquina4 = {
-            "nombre": "Autoclave Portátil",
-            "descripcion": "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
-            "idSistema": "AUTO_004",
-            "con_reserva": False,
-            "xPos": 2,
-            "yPos": 2,
+            "nombre"       : "Autoclave Portátil",
+            "descripcion"  : "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
+            "idSistema"    : "AUTO_004",
+            "con_reserva"  : False,
+            "posX"         : 2,
+            "posY"         : 2,
             "idLaboratorio": "No existente"
         }
 
         self.maquina5 = {
-            "nombre": "Autoclave Portátil",
-            "descripcion": "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
-            "idSistema": "AUTO_005",
-            "con_reserva": False,
-            "xPos": -1,
-            "yPos": -1,
+            "nombre"       : "Autoclave Portátil",
+            "descripcion"  : "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
+            "idSistema"    : "AUTO_005",
+            "con_reserva"  : False,
+            "posX"         : -1,
+            "posY"         : -1,
             "idLaboratorio": self.LaboratorioPrueba.id
         }
 
         self.maquina6 = {
-            "nombre": "Autoclave Portátil",
-            "descripcion": "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
-            "idSistema": "AUTO_005",
-            "con_reserva": False,
-            "xPos": 100,
-            "yPos": 3,
+            "nombre"       : "Autoclave Portátil",
+            "descripcion"  : "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
+            "idSistema"    : "AUTO_005",
+            "con_reserva"  : False,
+            "posX"         : 100,
+            "posY"         : 3,
             "idLaboratorio": self.LaboratorioPrueba.id
         }
 
         self.maquina7 = {
-            "nombre": "Autoclave Portátil",
-            "descripcion": "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
-            "idSistema": "AUTO_005",
-            "con_reserva": False,
-            "xPos": 3,
-            "yPos": 100,
+            "nombre"       : "Autoclave Portátil",
+            "descripcion"  : "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
+            "idSistema"    : "AUTO_005",
+            "con_reserva"  : False,
+            "posX"         : 3,
+            "posY"         : 100,
             "idLaboratorio": self.LaboratorioPrueba.id
         }
         self.maquina8 = {
-            "nombres": "Autoclave Portátil",
-            "descripcions": "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
-            "idSistema": "AUTO_008",
-            "con_reserva": False,
-            "xPos": 1,
-            "yPos": 1,
+            "nombres"      : "Autoclave Portátil",
+            "descripcions" : "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
+            "idSistema"    : "AUTO_008",
+            "con_reserva"  : False,
+            "posX"         : 1,
+            "posY"         : 1,
             "idLaboratorio": self.LaboratorioPrueba.id
         }
 
@@ -280,13 +280,13 @@ class listMaquinasTest(TestCase):
                                                            descripcion="Maquina de prueba",
                                                            idSistema="MAQ001")
         MaquinaEnLab.objects.get_or_create(idLaboratorio=self.LaboratorioPrueba, idMaquina=self.MaquinaPrueba,
-                                           xPos=0, yPos=0)
+                                           posX = 0, posY = 0)
 
         self.MaquinaPrueba = MaquinaProfile.objects.create(nombre="Autoclave",
                                                            descripcion="prueba",
                                                            idSistema="MAQ002")
         MaquinaEnLab.objects.get_or_create(idLaboratorio=self.LaboratorioPrueba, idMaquina=self.MaquinaPrueba,
-                                           xPos=1, yPos=1)
+                                           posX = 1, posY = 1)
 
     def test_PermisoVer(self):
         """Comprueba que solo los usarios autorizados puedan ver la lista de máquinas

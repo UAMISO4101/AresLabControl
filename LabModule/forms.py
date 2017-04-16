@@ -70,7 +70,7 @@ class LugarAlmacenamientoForm(ModelForm):
         fields = ['nombre', 'descripcion', 'capacidad', 'temperatura', 'imagen']
 
 
-class PosicionesLugarAlmacenamientoForm(ModelForm):
+class PosicionesAlmacenamientoForm(ModelForm):
     """Formulario  para crear y modificar la ubicación de un lugar almacenamiento.
 
         Se encarga de:
@@ -162,7 +162,7 @@ class MaquinaForm(ModelForm):
                   'imagen']
 
 
-class PosicionesForm(ModelForm):
+class PosicionesMaquinaForm(ModelForm):
     """Formulario  para crear y modificar la ubicación de una máquina.
         Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
         Se encarga de:
@@ -178,5 +178,5 @@ class PosicionesForm(ModelForm):
 
     class Meta:
         model = MaquinaEnLab
-        # fields=['xPos','yPos','idLaboratorio','idMaquina']
+        fields = ['posX', 'posY', 'idLaboratorio']
         exclude = ('idMaquina',)

@@ -46,8 +46,8 @@ def crearMaquina():
                                                                                   )
             nuevare, exre = MaquinaEnLab.objects.get_or_create(idLaboratorio=nuevoLab,
                                                                idMaquina=nuevaMaquina,
-                                                               xPos=maquina['x'],
-                                                               yPos=maquina['y'])
+                                                               posX = maquina['x'],
+                                                               posY = maquina['y'])
             if maquinaExistente:
                 rta = 0
     return rta

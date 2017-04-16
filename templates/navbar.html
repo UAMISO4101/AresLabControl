@@ -3,16 +3,6 @@
     <link href="{% static 'css/navbarCustom.css' %}" rel="stylesheet">
 {% endblock %}
 
-<script>
-    function cambiarColorClick(element) {
-        element.style.background = "#6269A2";
-    }
-    function cambiarColorBlur(element) {
-        element.style.background = "#464E8E";
-    }
-
-</script>
-
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -95,9 +85,18 @@
             {% if request.user.is_authenticated %}
                 <li>
                     <a href="{% url 'home' %}" class="navtext" onmouseover="cambiarColorBlur(this)">Bienvenido a
-                        LabControl {{ user.get_username }}</a>
+                        LabControl: {{ user.get_username }}</a>
                 </li>
             {% endif %}
         </ul>
     </div>
 </nav>
+
+<script>
+    function cambiarColorClick(element) {
+        element.style.background = "#6269A2";
+    }
+    function cambiarColorBlur(element) {
+        element.style.background = "#464E8E";
+    }
+</script>
