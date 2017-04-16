@@ -20,6 +20,10 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from registration.backends.default.views import RegistrationView
+#from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
+
+
 
 from models import Bandeja, Projecto, MaquinaSolicitud, LaboratorioProfile
 from models import Experimento

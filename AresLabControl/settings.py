@@ -17,6 +17,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+#lANGUAGE
+LANGUAGE_CODE = "es-es"
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,6 +46,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+MIDDLEWARE_CLASSES = [
+    'django.middleware.locale.LocaleMiddleware'
 ]
 
 ROOT_URLCONF = 'AresLabControl.urls'
@@ -188,3 +193,7 @@ DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
 
 AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
+USE_I18N = True
+LANGUAGES = [
+    ('es', ('Spanish')),
+]
