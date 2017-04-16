@@ -17,17 +17,20 @@ from models import Solicitud
 from models import TipoDocumento
 from models import Usuario
 
+
 class TipoDocumentoAdmin(admin.ModelAdmin):
     list_display = ["__unicode__", "descripcion"]
 
     class Meta:
         model = TipoDocumento
 
+
 class UsuarioAdmin(admin.ModelAdmin):
     list_display = ["__unicode__", "correo_electronico", "codigo_usuario"]
 
     class Meta:
         model = Usuario
+
 
 # Register your models here.
 admin.site.register(Experimento)

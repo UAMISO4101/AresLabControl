@@ -29,14 +29,14 @@ class TipoDocumento(models.Model):
         verbose_name_plural = 'Tipos de Indentificación'
 
     nombre_corto = models.CharField(
-        max_length=5,
-        default='',
-        verbose_name='Abreviación Tipo Identificación'
+            max_length = 5,
+            default = '',
+            verbose_name = 'Abreviación Tipo Identificación'
     )
     descripcion = models.CharField(
-        max_length=100,
-        default='',
-        verbose_name='Descripción Tipo Identificación'
+            max_length = 100,
+            default = '',
+            verbose_name = 'Descripción Tipo Identificación'
     )
 
     def __unicode__(self):
@@ -70,81 +70,81 @@ class Usuario(models.Model):
         )
 
     nombre_usuario = models.CharField(
-        verbose_name='Nombre de Usuario',
-        max_length=255,
-        validators=[
-            RegexValidator(
-                regex=USERNAME_REGEX,
-                message='El nombre de usuario debe ser alfanúmerico o contener los siguientes: ". - _" ',
-                code='invalid_username'
-            )],
-        unique=True,
+            verbose_name = 'Nombre de Usuario',
+            max_length = 255,
+            validators = [
+                RegexValidator(
+                        regex = USERNAME_REGEX,
+                        message = 'El nombre de usuario debe ser alfanúmerico o contener los siguientes: ". - _" ',
+                        code = 'invalid_username'
+                )],
+            unique = True,
     )
     correo_electronico = models.EmailField(
-        verbose_name='Correo Electrónico',
-        max_length=255,
-        validators=[
-            RegexValidator(
-                regex=USERMAIL_REGEX,
-                message='El correo eletrónico debe ser alfanúmerico o contener los siguientes: ". @ + - _" ',
-                code='invalid_email'
-            )],
-        unique=True,
+            verbose_name = 'Correo Electrónico',
+            max_length = 255,
+            validators = [
+                RegexValidator(
+                        regex = USERMAIL_REGEX,
+                        message = 'El correo eletrónico debe ser alfanúmerico o contener los siguientes: ". @ + - _" ',
+                        code = 'invalid_email'
+                )],
+            unique = True,
     )
     codigo_usuario = models.CharField(
-        verbose_name="Código de Usuario",
-        max_length=20,
-        validators=[
-            RegexValidator(
-                regex=USERCODE_REGEX,
-                message='El código de usuario debe ser alfanúmerico.',
-                code='invalid_usercode'
-            )],
-        default='',
-        unique=True,
+            verbose_name = "Código de Usuario",
+            max_length = 20,
+            validators = [
+                RegexValidator(
+                        regex = USERCODE_REGEX,
+                        message = 'El código de usuario debe ser alfanúmerico.',
+                        code = 'invalid_usercode'
+                )],
+            default = '',
+            unique = True,
     )
     nombres = models.CharField(
-        max_length=30,
-        default='',
-        verbose_name='Nombres'
+            max_length = 30,
+            default = '',
+            verbose_name = 'Nombres'
     )
     apellidos = models.CharField(
-        max_length=30,
-        default='',
-        verbose_name='Apellidos'
+            max_length = 30,
+            default = '',
+            verbose_name = 'Apellidos'
     )
     telefono = models.CharField(
-        max_length=20,
-        default='',
-        verbose_name='Teléfono'
+            max_length = 20,
+            default = '',
+            verbose_name = 'Teléfono'
     )
     userNatIdTyp = models.ForeignKey(
-        TipoDocumento,
-        blank=False,
-        null=False,
-        on_delete=models.CASCADE,
-        verbose_name='Tipo Identificación'
+            TipoDocumento,
+            blank = False,
+            null = False,
+            on_delete = models.CASCADE,
+            verbose_name = 'Tipo Identificación'
     )
     userNatIdNum = models.CharField(
-        max_length=15,
-        default='',
-        verbose_name='Número de Identificación'
+            max_length = 15,
+            default = '',
+            verbose_name = 'Número de Identificación'
     )
     grupo = models.ForeignKey(
-        Group,
-        on_delete=models.CASCADE,
-        related_name='profile',
-        verbose_name='Grupo',
-        null=False
+            Group,
+            on_delete = models.CASCADE,
+            related_name = 'profile',
+            verbose_name = 'Grupo',
+            null = False
     )
     user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        related_name='profile'
+            User,
+            on_delete = models.CASCADE,
+            related_name = 'profile'
     )
     contrasena = models.CharField(
-        max_length=15,
-        verbose_name='Contraseña'
+            max_length = 15,
+            verbose_name = 'Contraseña'
     )
 
     def __unicode__(self):
@@ -177,27 +177,27 @@ class LaboratorioProfile(models.Model):
         )
 
     nombre = models.CharField(
-        max_length=100,
-        default='',
-        verbose_name="Nombre",
-        null=False
+            max_length = 100,
+            default = '',
+            verbose_name = "Nombre",
+            null = False
     )
     id = models.CharField(
-        max_length=100,
-        default='',
-        verbose_name="Identificación",
-        null=False,
-        primary_key=True
+            max_length = 100,
+            default = '',
+            verbose_name = "Identificación",
+            null = False,
+            primary_key = True
     )
     numX = models.PositiveIntegerField(
-        verbose_name="Cantidad de filas",
-        null=False,
-        default=10
+            verbose_name = "Cantidad de filas",
+            null = False,
+            default = 10
     )
     numY = models.PositiveIntegerField(
-        verbose_name="Cantidad de columnas",
-        null=False,
-        default=10
+            verbose_name = "Cantidad de columnas",
+            null = False,
+            default = 10
     )
 
     def __unicode__(self):
@@ -234,43 +234,43 @@ class MaquinaProfile(models.Model):
         )
 
     nombre = models.CharField(
-        max_length=100,
-        default='',
-        verbose_name="Nombre",
-        null=False
+            max_length = 100,
+            default = '',
+            verbose_name = "Nombre",
+            null = False
     )
     descripcion = models.CharField(
-        max_length=1000,
-        default='',
-        verbose_name="Descripción",
-        null=True
+            max_length = 1000,
+            default = '',
+            verbose_name = "Descripción",
+            null = True
     )
     imagen = models.ImageField(
-        upload_to='images',
-        verbose_name="Imagen",
-        default='images/image-not-found.jpg'
+            upload_to = 'images',
+            verbose_name = "Imagen",
+            default = 'images/image-not-found.jpg'
     )
     idSistema = models.CharField(
-        max_length=20,
-        default='',
-        verbose_name="Identificación",
-        null=False,
-        primary_key=True
+            max_length = 20,
+            default = '',
+            verbose_name = "Identificación",
+            null = False,
+            primary_key = True
     )
     con_reserva = models.BooleanField(
-        default=True,
-        verbose_name="Reservable"
+            default = True,
+            verbose_name = "Reservable"
     )
     activa = models.BooleanField(
-        default=True,
-        verbose_name="Activa"
+            default = True,
+            verbose_name = "Activa"
     )
 
     def __str__(self):
         return self.idSistema + " " + self.nombre
 
     def get_absolute_url(self):
-        return reverse('author-detail', kwargs={'pk': self.pk})
+        return reverse('author-detail', kwargs = {'pk': self.pk})
 
 
 class MaquinaEnLab(models.Model):
@@ -291,29 +291,29 @@ class MaquinaEnLab(models.Model):
         verbose_name_plural = 'Máquinas en laboratorio'
 
     idLaboratorio = models.ForeignKey(
-        LaboratorioProfile,
-        blank=False,
-        null=True,
-        on_delete=models.CASCADE,
-        verbose_name="Laboratorio"
+            LaboratorioProfile,
+            blank = False,
+            null = True,
+            on_delete = models.CASCADE,
+            verbose_name = "Laboratorio"
     )
     idMaquina = models.OneToOneField(
-        MaquinaProfile,
-        blank=False,
-        null=False,
-        on_delete=models.CASCADE,
-        verbose_name="Máquina",
-        primary_key=True
+            MaquinaProfile,
+            blank = False,
+            null = False,
+            on_delete = models.CASCADE,
+            verbose_name = "Máquina",
+            primary_key = True
     )
     posX = models.PositiveIntegerField(
             verbose_name = "Posición X",
-        null=False,
-        default=0
+            null = False,
+            default = 0
     )
     posY = models.PositiveIntegerField(
             verbose_name = "Posición Y",
-        null=False,
-        default=0
+            null = False,
+            default = 0
     )
 
     def __unicode__(self):
@@ -349,36 +349,35 @@ class LugarAlmacenamiento(models.Model):
         )
 
     nombre = models.CharField(
-        max_length=100,
-        default='',
-        verbose_name='Nombre'
+            max_length = 100,
+            default = '',
+            verbose_name = 'Nombre'
     )
     descripcion = models.TextField(
-        max_length=1000,
-        default='',
-        verbose_name="Descripcion"
+            max_length = 1000,
+            default = '',
+            verbose_name = "Descripcion"
     )
 
     capacidad = models.IntegerField(
-        verbose_name="Capacidad"
+            verbose_name = "Capacidad"
     )
     temperatura = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        verbose_name="Temperatura"
+            max_digits = 5,
+            decimal_places = 2,
+            verbose_name = "Temperatura"
     )
     estado = models.CharField(
-        max_length=100,
-        default='',
-        verbose_name='Estado',
-        null=True
+            max_length = 100,
+            default = '',
+            verbose_name = 'Estado',
+            null = True
     )
     imagen = models.ImageField(
-        upload_to='images',
-        verbose_name="Imagen",
-        default='images/image-not-found.jpg'
+            upload_to = 'images',
+            verbose_name = "Imagen",
+            default = 'images/image-not-found.jpg'
     )
-
 
 
 class LugarAlmacenamientoEnLab(models.Model):
@@ -399,19 +398,19 @@ class LugarAlmacenamientoEnLab(models.Model):
         verbose_name_plural = 'Lugar almacenamiento en laboratorio'
 
     idLaboratorio = models.ForeignKey(
-        LaboratorioProfile,
-        blank=False,
-        null=True,
-        on_delete=models.CASCADE,
-        verbose_name="Laboratorio"
+            LaboratorioProfile,
+            blank = False,
+            null = True,
+            on_delete = models.CASCADE,
+            verbose_name = "Laboratorio"
     )
     idLugar = models.OneToOneField(
-        LugarAlmacenamiento,
-        blank=False,
-        null=False,
-        on_delete=models.CASCADE,
-        verbose_name="Lugar Almacenamiento",
-        primary_key=True
+            LugarAlmacenamiento,
+            blank = False,
+            null = False,
+            on_delete = models.CASCADE,
+            verbose_name = "Lugar Almacenamiento",
+            primary_key = True
     )
     posX = models.PositiveIntegerField(
             verbose_name = "Posición X"
@@ -450,22 +449,22 @@ class Protocolo(models.Model):
         )
 
     nombre = models.CharField(
-        max_length=50,
-        blank=False,
-        null=True,
+            max_length = 50,
+            blank = False,
+            null = True,
             verbose_name = "Nombre Protocolo"
     )
     descripcion = models.TextField(
-        max_length=200,
-        blank=False,
-        null=True,
-        verbose_name="Descripcion del protocolo"
+            max_length = 200,
+            blank = False,
+            null = True,
+            verbose_name = "Descripcion del protocolo"
     )
     objetivo = models.TextField(
-        max_length=200,
-        blank=False,
-        null=True,
-        verbose_name="Objetivo del protocolo"
+            max_length = 200,
+            blank = False,
+            null = True,
+            verbose_name = "Objetivo del protocolo"
     )
 
 
@@ -495,22 +494,22 @@ class Paso(models.Model):
         )
 
     nombre = models.CharField(
-        max_length=50,
-        blank=False,
-        null=True,
-        verbose_name="Nombre paso"
+            max_length = 50,
+            blank = False,
+            null = True,
+            verbose_name = "Nombre paso"
     )
     descripcion = models.TextField(
-        max_length=200,
-        blank=False,
-        null=True,
-        verbose_name="Descripcion del paso"
+            max_length = 200,
+            blank = False,
+            null = True,
+            verbose_name = "Descripcion del paso"
     )
     protocolo = models.ForeignKey(
-        Protocolo,
-        blank=False,
-        null=True,
-        verbose_name="Seleccion de Protocolo"
+            Protocolo,
+            blank = False,
+            null = True,
+            verbose_name = "Seleccion de Protocolo"
     )
 
 
@@ -544,51 +543,51 @@ class Muestra(models.Model):
         )
 
     nombre = models.CharField(
-        max_length=50,
-        blank=False,
-        null=True,
-        verbose_name="Nombre de la muestra"
+            max_length = 50,
+            blank = False,
+            null = True,
+            verbose_name = "Nombre de la muestra"
     )
     descripcion = models.TextField(
-        max_length=200,
-        blank=False,
-        null=True,
-        verbose_name="Descripcion de la muestra"
+            max_length = 200,
+            blank = False,
+            null = True,
+            verbose_name = "Descripcion de la muestra"
     )
 
     valor = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        null=True,
-        verbose_name="Valor"
+            max_digits = 5,
+            decimal_places = 2,
+            null = True,
+            verbose_name = "Valor"
     )
     activa = models.BooleanField(
-        default=True,
-        verbose_name="Activa"
+            default = True,
+            verbose_name = "Activa"
     )
     controlado = models.BooleanField(
-        blank=False,
-        default=False,
-        verbose_name="Muestra controlada"
+            blank = False,
+            default = False,
+            verbose_name = "Muestra controlada"
     )
 
     imagen = models.ImageField(
-        upload_to='images',
-        verbose_name="Imagen",
-        default='images/image-not-found.jpg'
+            upload_to = 'images',
+            verbose_name = "Imagen",
+            default = 'images/image-not-found.jpg'
     )
     unidadBase = models.CharField(
-        max_length=50,
-        blank=False,
-        null=True,
-        verbose_name="Unidad de medida"
+            max_length = 50,
+            blank = False,
+            null = True,
+            verbose_name = "Unidad de medida"
     )
 
     def __unicode__(self):
         return 'Muestra: ' + str(self.nombre)
 
     def calc_disp(self):
-        bandejas = Bandeja.objects.filter(muestra=self)
+        bandejas = Bandeja.objects.filter(muestra = self)
         for bandeja in bandejas:
             if not bandeja.libre:
                 return 'Si'
@@ -596,7 +595,7 @@ class Muestra(models.Model):
 
     def calc_cuantos_disp(self):
         contador = 0
-        bandejas = Bandeja.objects.filter(muestra=self)
+        bandejas = Bandeja.objects.filter(muestra = self)
         for bandeja in bandejas:
             if bandeja.libre == False:
                 contador += 1
@@ -626,24 +625,23 @@ class Bandeja(models.Model):
         verbose_name = 'Bandeja'
         verbose_name_plural = 'Bandejas'
 
-
     libre = models.BooleanField(
-        blank=False,
-        default=True,
-        verbose_name="Libre"
+            blank = False,
+            default = True,
+            verbose_name = "Libre"
     )
     muestra = models.ForeignKey(
-        Muestra,
-        blank=False,
-        null=True,
-        verbose_name="Seleccion de muestra"
+            Muestra,
+            blank = False,
+            null = True,
+            verbose_name = "Seleccion de muestra"
     )
     lugarAlmacenamiento = models.ForeignKey(
-        LugarAlmacenamiento,
-        blank=False,
-        null=True,
-        on_delete=models.CASCADE,
-        verbose_name="Seleccion de Lugar almacenamiento"
+            LugarAlmacenamiento,
+            blank = False,
+            null = True,
+            on_delete = models.CASCADE,
+            verbose_name = "Seleccion de Lugar almacenamiento"
     )
 
 
@@ -666,54 +664,54 @@ class Solicitud(models.Model):
         verbose_name_plural = 'Solicitudes'
 
     descripcion = models.TextField(
-        max_length=200,
-        blank=False,
-        null=True,
-        verbose_name="Descripcion de la solicitud"
+            max_length = 200,
+            blank = False,
+            null = True,
+            verbose_name = "Descripcion de la solicitud"
     )
     fechaInicial = models.DateField(
-        blank=False,
-        null=True,
-        verbose_name="Fecha inicial",
-        default=datetime.date.today
+            blank = False,
+            null = True,
+            verbose_name = "Fecha inicial",
+            default = datetime.date.today
     )
     fechaFinal = models.DateField(
-        blank=False,
-        null=True,
-        verbose_name="Fecha final",
-        default=datetime.date.today
+            blank = False,
+            null = True,
+            verbose_name = "Fecha final",
+            default = datetime.date.today
     )
     estado = models.CharField(
-        max_length=30,
-        blank=False,
-        null=True,
-        verbose_name="Estado solicitud"
+            max_length = 30,
+            blank = False,
+            null = True,
+            verbose_name = "Estado solicitud"
     )
     solicitante = models.ForeignKey(
-        Usuario,
-        blank=False,
-        null=True,
-        verbose_name="Solicitante",
-        related_name="solicitudesHechas"
+            Usuario,
+            blank = False,
+            null = True,
+            verbose_name = "Solicitante",
+            related_name = "solicitudesHechas"
     )
     aprobador = models.ForeignKey(
-        Usuario,
-        blank=False,
-        null=True,
-        verbose_name="Aprobador",
-        related_name="solicitudesAprobadas"
+            Usuario,
+            blank = False,
+            null = True,
+            verbose_name = "Aprobador",
+            related_name = "solicitudesAprobadas"
     )
     fechaActual = models.DateField(
-        blank=False,
-        null=True,
-        verbose_name="Fecha actual",
-        default=datetime.date.today
+            blank = False,
+            null = True,
+            verbose_name = "Fecha actual",
+            default = datetime.date.today
     )
     paso = models.ForeignKey(
-        Paso,
-        blank=False,
-        null=True,
-        verbose_name="Seleccion de Paso"
+            Paso,
+            blank = False,
+            null = True,
+            verbose_name = "Seleccion de Paso"
     )
 
 
@@ -741,22 +739,22 @@ class MuestraSolicitud(models.Model):
 
     solicitud = models.OneToOneField(Solicitud)
     muestra = models.ForeignKey(
-        Muestra,
-        blank=False,
-        null=True,
-        verbose_name="Seleccion de Muestra"
+            Muestra,
+            blank = False,
+            null = True,
+            verbose_name = "Seleccion de Muestra"
     )
     cantidad = models.IntegerField(
-        blank=False,
-        null=True,
-        default=1,
-        verbose_name="Cantidad de muestra"
+            blank = False,
+            null = True,
+            default = 1,
+            verbose_name = "Cantidad de muestra"
     )
     tipo = models.CharField(
-        max_length=30,
-        blank=False,
-        null=True,
-        verbose_name="Tipo solicitud"
+            max_length = 30,
+            blank = False,
+            null = True,
+            verbose_name = "Tipo solicitud"
     )
 
 
@@ -770,10 +768,10 @@ class MaquinaSolicitud(models.Model):
 
     solicitud = models.OneToOneField(Solicitud)
     maquina = models.ForeignKey(
-        MaquinaProfile,
-        blank=False,
-        null=True,
-        verbose_name="Seleccion de Maquina"
+            MaquinaProfile,
+            blank = False,
+            null = True,
+            verbose_name = "Seleccion de Maquina"
     )
 
 
@@ -807,39 +805,39 @@ class Projecto(models.Model):
         )
 
     nombre = models.CharField(
-        max_length=50,
-        blank=False,
-        null=True,
-        verbose_name="Nombre proyecto"
+            max_length = 50,
+            blank = False,
+            null = True,
+            verbose_name = "Nombre proyecto"
     )
     descripcion = models.TextField(
-        max_length=200,
-        blank=False,
-        null=True,
-        verbose_name="Descripcion del proyecto"
+            max_length = 200,
+            blank = False,
+            null = True,
+            verbose_name = "Descripcion del proyecto"
     )
     objetivo = models.TextField(
-        max_length=200,
-        blank=False,
-        null=True,
-        verbose_name="Objetivo del proyecto"
+            max_length = 200,
+            blank = False,
+            null = True,
+            verbose_name = "Objetivo del proyecto"
     )
     lider = models.ForeignKey(
-        Usuario,
-        blank=False,
-        null=True,
-        verbose_name="Seleccion lider",
-        related_name="lider"
+            Usuario,
+            blank = False,
+            null = True,
+            verbose_name = "Seleccion lider",
+            related_name = "lider"
     )
     asistentes = models.ManyToManyField(
-        Usuario,
-        related_name="asistentes"
+            Usuario,
+            related_name = "asistentes"
     )
     activo = models.BooleanField(
-        blank=False,
-        null=False,
-        default=True,
-        verbose_name='Estado de actividad del proyecto'
+            blank = False,
+            null = False,
+            default = True,
+            verbose_name = 'Estado de actividad del proyecto'
     )
 
 
@@ -872,32 +870,32 @@ class Experimento(models.Model):
         )
 
     nombre = models.CharField(
-        max_length=50,
-        blank=False,
-        null=True,
-        verbose_name="Nombre expermento"
+            max_length = 50,
+            blank = False,
+            null = True,
+            verbose_name = "Nombre expermento"
     )
     descripcion = models.TextField(
-        max_length=200,
-        blank=False,
-        null=True,
-        verbose_name="Descripcion del experimento"
+            max_length = 200,
+            blank = False,
+            null = True,
+            verbose_name = "Descripcion del experimento"
     )
     objetivo = models.TextField(
-        max_length=200,
-        blank=False,
-        null=True,
-        verbose_name="Objetivo del experimento"
+            max_length = 200,
+            blank = False,
+            null = True,
+            verbose_name = "Objetivo del experimento"
     )
     projecto = models.ForeignKey(
-        Projecto,
-        blank=False,
-        null=True,
-        on_delete=models.CASCADE,
-        verbose_name="Seleccion de Proyecto",
-        related_name="proyecto"
+            Projecto,
+            blank = False,
+            null = True,
+            on_delete = models.CASCADE,
+            verbose_name = "Seleccion de Proyecto",
+            related_name = "proyecto"
     )
     protocolos = models.ManyToManyField(
-        Protocolo,
-        related_name="experimento"
+            Protocolo,
+            related_name = "experimento"
     )

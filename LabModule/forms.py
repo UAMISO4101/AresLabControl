@@ -29,14 +29,14 @@ class RegistroUsuarioForm(forms.ModelForm):
         exclude = ('user',)
 
     contrasena = forms.CharField(
-        label="Escriba su contraseña",
-        widget=forms.PasswordInput,
-        strip=False, )
+            label = "Escriba su contraseña",
+            widget = forms.PasswordInput,
+            strip = False, )
     password2 = forms.CharField(
-        label="Confirme su contraseña",
-        widget=forms.PasswordInput,
-        strip=False,
-        help_text="Repita la contraseña para verificar que sean iguales.",
+            label = "Confirme su contraseña",
+            widget = forms.PasswordInput,
+            strip = False,
+            help_text = "Repita la contraseña para verificar que sean iguales.",
     )
 
     error_messages = {
@@ -95,17 +95,18 @@ class SolicitudForm(ModelForm):
         model = Solicitud
         fields = ['fechaInicial', 'fechaFinal', 'descripcion', 'estado', 'solicitante', 'fechaActual', 'paso']
         widgets = {
-            'fechaInicial': forms.DateInput(attrs={'class': 'form-control datepicker'}),
-            'fechaFinal': forms.DateInput(attrs={'class': 'form-control datepicker'}),
+            'fechaInicial': forms.DateInput(attrs = {'class': 'form-control datepicker'}),
+            'fechaFinal'  : forms.DateInput(attrs = {'class': 'form-control datepicker'}),
         }
 
     def verificar_fecha(self, maquina_id, fechaIni, fechaFin):
 
         solicitudes = Solicitud.objects.filter(
-            Q(fechaInicial=fechaIni, fechaFinal=fechaFin) | Q(fechaInicial__lte=fechaIni, fechaFinal__gte=fechaIni) | Q(
-                fechaInicial__lte=fechaFin, fechaFinal__gte=fechaFin)).exclude(estado='rechazada')
+                Q(fechaInicial = fechaIni, fechaFinal = fechaFin) | Q(fechaInicial__lte = fechaIni,
+                                                                      fechaFinal__gte = fechaIni) | Q(
+                        fechaInicial__lte = fechaFin, fechaFinal__gte = fechaFin)).exclude(estado = 'rechazada')
         for sol in solicitudes:
-            otras_maquinas = MaquinaSolicitud.objects.filter(solicitud=sol.pk, maquina=maquina_id).count()
+            otras_maquinas = MaquinaSolicitud.objects.filter(solicitud = sol.pk, maquina = maquina_id).count()
             if otras_maquinas > 0:
                 return False
         return True

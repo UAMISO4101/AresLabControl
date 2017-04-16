@@ -54,10 +54,10 @@ ROOT_URLCONF = 'AresLabControl.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'BACKEND' : 'django.template.backends.django.DjangoTemplates',
+        'DIRS'    : [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
-        'OPTIONS': {
+        'OPTIONS' : {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -78,12 +78,12 @@ url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': url.path[1:],
-        'USER': url.username,
+        'ENGINE'  : 'django.db.backends.postgresql',
+        'NAME'    : url.path[1:],
+        'USER'    : url.username,
         'PASSWORD': url.password,
-        'HOST': url.hostname,
-        'PORT': url.port,
+        'HOST'    : url.hostname,
+        'PORT'    : url.port,
     }
     # 'default': {
     #    'ENGINE': 'django.db.backends.postgresql',
@@ -178,7 +178,7 @@ EMAIL_USE_TLS = True
 
 GRAPH_MODELS = {
     'all_applications': True,
-    'group_models': True,
+    'group_models'    : True,
 }
 
 # Atributos por defecto para creacion de superusuario (pasar a variables de entorno)

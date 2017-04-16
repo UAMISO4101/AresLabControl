@@ -6,346 +6,346 @@
     <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
 {% endblock %}
 
-{% block head_title %}{{block.super}}Solicitar Máquina py{% endblock%}
+{% block head_title %}{{ block.super }}Solicitar Máquina py{% endblock %}
 
 
 
 {% block content %}
     <div id="mensajes-error"></div>
-    {%if mensaje != "ok"%}
-                <div class="alert alert-danger col-md-6">
-                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        {{mensaje}}
-                </div>
-    {%endif%}
+    {% if mensaje != "ok" %}
+        <div class="alert alert-danger col-md-6">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            {{ mensaje }}
+        </div>
+    {% endif %}
 
     <div class="page-header text-center">
-        <h2>Solicitar Máquina {{ maquina.nombre}}</h2>
+        <h2>Solicitar Máquina {{ maquina.nombre }}</h2>
     </div>
 
-        <div class="panel panel-default">
+    <div class="panel panel-default">
 
-            <div class="panel-heading">
-                <h3 class="panel-title text-left">Información básica ID {{ maquina.pk }}</h3>
+        <div class="panel-heading">
+            <h3 class="panel-title text-left">Información básica ID {{ maquina.pk }}</h3>
+        </div>
+
+        <div class="panel-body text-left">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-2">
+                        <strong>Descripción:</strong>
+                    </div>
+                    <div class="col-md-3 col-sm-4">
+
+                        <p id="items" name="items" rows="5"> {{ maquina.descripcion }}</p>
+                    </div>
+                    <div class="col-md-5 col-sm-6">
+                        <div class="panel panel-default">
+                            <div class="panel-body text-left" style="text-align:center">
+
+                                <a href="{{ maquina.imagen.url }}" target="_blank">
+                                    <img src="{{ maquina.imagen.url }}" alt="Imagen Maquina"
+                                         class="imageIndex" style="width:60%; ">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>
 
-            <div class="panel-body text-left">
-                <div class="container">
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-left">Caracteristicas muestra</h3>
+                </div>
+                <div class="panel-body text-left">
                     <div class="row">
-
-                        <div class="col-md-2">
-                            <strong>Descripción:</strong>
+                        <div class="col-md-6">
+                            <strong>PosX:</strong>
                         </div>
-                        <div class="col-md-3 col-sm-4">
-
-                          <p id="items" name="items"  rows="5" > {{maquina.descripcion}}</p>
-                        </div>
-                        <div class="col-md-5 col-sm-6">
-                            <div class="panel panel-default">
-                                 <div class="panel-body text-left" style="text-align:center">
-
-                                    <a href="{{maquina.imagen.url}}" target="_blank">
-                                        <img src="{{maquina.imagen.url}}" alt="Imagen Maquina"
-                                             class="imageIndex" style="width:60%; ">
-                                    </a>
-                                 </div>
-                            </div>
+                        <div class="col-md-6">
+                            <strong> {{ maquinaEnLab.xPos }} </strong>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>PosY:</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <strong> {{ maquinaEnLab.yPos }} </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-left"></h3>
+                </div>
+                <div class="panel-body text-left">
+                    <form method="post" action="" name="formSolicitud" id="formSolicitud">{% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-2">
+                                <strong>Proyectos:</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control requerido" name="project" id="project">
+                                    <option value="">--Seleccione--</option>
+                                    {% for proyecto in proyectos %}
+
+                                        <option value="{{ proyecto.id }}">{{ proyecto.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <strong>Experimentos:</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control requerido" name="experiment" id="experiment">
+                                    <option value="">--Seleccione--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <strong>Protocolos:</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control requerido" name="protocol" id="protocol">
+                                    <option value="">--Seleccione--</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <strong>Pasos:</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control requerido" name="step" id="step">
+                                    <option value="">--Seleccione--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <strong>{{ form.fechaInicial.label }}</strong>
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.fechaInicial }}
+                            </div>
+                            <div class="col-md-2">
+                                <strong>{{ form.fechaFinal.label }}</strong>
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.fechaFinal }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input class='btn btn-block btn-primary' style="margin-bottom:0px" type="submit"
+                                       value="Solicitar" id="solicitar"/>
+                            </div>
+                        </div>
+
+                    </form>
                 </div>
             </div>
         </div>
 
-
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title text-left">Caracteristicas muestra</h3>
-                    </div>
-                    <div class="panel-body text-left" >
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>PosX:</strong>
-                            </div>
-                            <div class="col-md-6">
-                                <strong> {{ maquinaEnLab.xPos}} </strong>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>PosY:</strong>
-                            </div>
-                            <div class="col-md-6">
-                                <strong> {{ maquinaEnLab.yPos}} </strong>
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-                <div class="col-md-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title text-left"></h3>
-                        </div>
-                        <div class="panel-body text-left" >
-                            <form method="post" action="" name="formSolicitud" id="formSolicitud">{% csrf_token %}
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <strong>Proyectos:</strong>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <select class="form-control requerido" name="project" id="project"  >
-                                            <option value="">--Seleccione--</option>
-                                            {% for proyecto in proyectos %}
-
-                                                <option value="{{proyecto.id}}">{{proyecto.nombre}}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <strong>Experimentos:</strong>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <select class="form-control requerido" name="experiment" id="experiment" >
-                                            <option value="">--Seleccione--</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <strong>Protocolos:</strong>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <select class="form-control requerido" name="protocol" id="protocol" >
-                                            <option value="">--Seleccione--</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <strong>Pasos:</strong>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <select class="form-control requerido" name="step" id="step" >
-                                            <option value="">--Seleccione--</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <strong>{{form.fechaInicial.label}}</strong>
-                                    </div>
-                                    <div class="col-md-4">
-                                        {{form.fechaInicial}}
-                                    </div>
-                                    <div class="col-md-2">
-                                        <strong>{{form.fechaFinal.label}}</strong>
-                                    </div>
-                                    <div class="col-md-4">
-                                        {{form.fechaFinal}}
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <input class='btn btn-block btn-primary' style="margin-bottom:0px" type="submit" value="Solicitar" id="solicitar"/>
-                                    </div>
-                                </div>
-
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    </div>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
-            $('#project').change(function(){
-                project_id = $(this).val();
-                request_url = '/solicitarMuestra/experimentos/?project_id=' + project_id ;
-                $('#experiment')
+        $('#project').change(function () {
+            project_id = $(this).val();
+            request_url = '/solicitarMuestra/experimentos/?project_id=' + project_id;
+            $('#experiment')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
                 .val('');
 
-                $('#protocol')
+            $('#protocol')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
                 .val('');
 
-                $('#step')
+            $('#step')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
                 .val('');
 
-                if (this.value == -1 || this.value=="") {
+            if (this.value == -1 || this.value == "") {
 
-                    return false;
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: request_url,
+                data: JSON.stringify({
+                    id_country: project_id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    if (data != null) {
+                        $.each(data, function (key, value) {
+                            $('#experiment').append($("<option/>").val(key).text(value));
+                        });
+                    } else {
+                        console.log('error')
+                    }
+
+                },
+                failure: function (errMsg) {
+                    alert('Hubo un error');
                 }
-                $.ajax({
-                    type: "POST",
-                    url: request_url,
-                    data: JSON.stringify({
-                        id_country: project_id
-                    }),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data != null) {
-                            $.each(data, function (key, value) {
-                                $('#experiment').append($("<option/>").val(key).text(value));
-                            });
-                        } else {
-                            console.log('error')
-                        }
-
-                    },
-                    failure: function (errMsg) {
-                        alert('Hubo un error');
-                    }
-                });
             });
-            $('#experiment').change(function(){
-                experiment_id = $(this).val();
-                request_url = '/solicitarMuestra/protocolos/?experiment_id=' + experiment_id ;
-                $('#protocol')
+        });
+        $('#experiment').change(function () {
+            experiment_id = $(this).val();
+            request_url = '/solicitarMuestra/protocolos/?experiment_id=' + experiment_id;
+            $('#protocol')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
                 .val('');
 
-                $('#step')
+            $('#step')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
                 .val('');
 
-                if (this.value == -1 || this.value=="") {
-                    return false;
+            if (this.value == -1 || this.value == "") {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: request_url,
+                data: JSON.stringify({
+                    id_country: experiment_id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    if (data != null) {
+                        $.each(data, function (key, value) {
+                            $('#protocol').append($("<option/>").val(key).text(value));
+                        });
+                    } else {
+                        console.log('error')
+                    }
+
+                },
+                failure: function (errMsg) {
+                    alert('Hubo un error');
                 }
-                $.ajax({
-                    type: "POST",
-                    url: request_url,
-                    data: JSON.stringify({
-                        id_country: experiment_id
-                    }),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data != null) {
-                            $.each(data, function (key, value) {
-                                $('#protocol').append($("<option/>").val(key).text(value));
-                            });
-                        } else {
-                            console.log('error')
-                        }
-
-                    },
-                    failure: function (errMsg) {
-                        alert('Hubo un error');
-                    }
-                });
             });
-            $('#protocol').change(function(){
-                protocol_id = $(this).val();
-                request_url = '/solicitarMuestra/pasos/?protocol_id=' + protocol_id ;
-                $('#step')
+        });
+        $('#protocol').change(function () {
+            protocol_id = $(this).val();
+            request_url = '/solicitarMuestra/pasos/?protocol_id=' + protocol_id;
+            $('#step')
                 .find('option')
                 .remove()
                 .end()
                 .append('<option value="">--Seleccione--</option>')
                 .val('');
 
-                if (this.value == -1 || this.value=="") {
-                    return false;
+            if (this.value == -1 || this.value == "") {
+                return false;
+            }
+            $.ajax({
+                type: "POST",
+                url: request_url,
+                data: JSON.stringify({
+                    id_country: protocol_id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    if (data != null) {
+                        $.each(data, function (key, value) {
+                            $('#step').append($("<option/>").val(key).text(value));
+                        });
+                    } else {
+                        console.log('error')
+                    }
+
+                },
+                failure: function (errMsg) {
+                    alert('Hubo un error');
                 }
-                $.ajax({
-                    type: "POST",
-                    url: request_url,
-                    data: JSON.stringify({
-                        id_country: protocol_id
-                    }),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data != null) {
-                            $.each(data, function (key, value) {
-                                $('#step').append($("<option/>").val(key).text(value));
-                            });
-                        } else {
-                            console.log('error')
-                        }
+            });
+        });
 
-                    },
-                    failure: function (errMsg) {
-                        alert('Hubo un error');
-                    }
-                });
+
+        $("#formSolicitud").submit(function (e) {
+
+            e.preventDefault();
+            validarRequeridos(function (res) {
+                if (res && validarFechas()) {
+                    $("#formSolicitud").submit();
+
+                }
             });
 
+        });
 
+        $(".datepicker").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "2017:2030",
+            dateFormat: 'yy-mm-dd'
+            // You can put more options here.
 
-            $("#formSolicitud").submit(function(e) {
+        });
+        function validarRequeridos(callback) {
+            var cont = $(".requerido").length;
+            $(".requerido").each(function () {
 
-                e.preventDefault();
-                validarRequeridos(function(res){
-                    if(res && validarFechas()){
-                        $("#formSolicitud").submit();
-
-                    }
-                });
-
+                if ($(this).val() == "") {
+                    $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
+                        'Los campos requeridos deben ser diligenciados</div>');
+                    callback(false);
+                } else {
+                    cont--;
+                }
+                if (cont == 0) {
+                    callback(true);
+                }
             });
 
-            $( ".datepicker" ).datepicker({
-              changeMonth: true,
-              changeYear: true,
-              yearRange: "2017:2030",
-              dateFormat: 'yy-mm-dd'
-              // You can put more options here.
+        }
 
-            });
-            function validarRequeridos(callback){
-                var cont=$(".requerido").length;
-                $(".requerido").each(function(){
+        function validarFechas() {
+            if (new Date($("#id_fechaInicial").val()) >= new Date($("#id_fechaFinal").val())) {
 
-                    if($(this).val()==""){
-                        $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
-                                'Los campos requeridos deben ser diligenciados</div>');
-                        callback(false);
-                    }else{
-                        cont--;
-                    }
-                    if(cont==0){
-                        callback(true);
-                    }
-                });
-
+                $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
+                    'La fecha inicial debe ser menor que la fecha final</div>');
+                return false;
             }
 
-            function validarFechas(){
-                if(new Date($("#id_fechaInicial").val())>=new Date($("#id_fechaFinal").val())){
-
-                    $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
-                                'La fecha inicial debe ser menor que la fecha final</div>');
-                        return false;
-                }
-
-                return true;
-            }
+            return true;
+        }
     </script>
 {% endblock %}
