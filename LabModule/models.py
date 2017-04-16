@@ -230,7 +230,7 @@ class MaquinaProfile(models.Model):
         permissions = (
             ('can_addMachine', 'maquina||agregar'),
             ('can_edditMachine', 'maquina||editar'),
-            ('can_viewMachine', 'maquina||ver')
+            ('can_viewMachine', 'maquina||ver'),
         )
 
     nombre = models.CharField(

@@ -86,11 +86,13 @@ def createGroups():
     maquinasAgregar = Permission.objects.get(name='maquina||agregar')
     maquinasEditar = Permission.objects.get(name='maquina||editar')
     maquinasVer = Permission.objects.get(name='maquina||ver')
+    maquinasSolicitar = Permission.objects.get(name='maquina||solicitar')
     agregarUsuario = Permission.objects.get(name='usuario||agregar')
 
     cientificos.permissions.add(maquinasAgregar, maquinasEditar, maquinasVer, agregarUsuario)
     jefes.permissions.add(maquinasVer, agregarUsuario)
     asistentes.permissions.add(maquinasVer)
+    asistentes.permissions.add(maquinasSolicitar)
     if created1 or created2 or created3:
         return 0
     return 1
