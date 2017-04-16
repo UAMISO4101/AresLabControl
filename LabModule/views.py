@@ -422,7 +422,7 @@ def crear_solicitud_maquina(request):
             contexto = {'mensaje': 'No hay maquinas o pasos con el id solicitado'}
         except MultipleObjectsReturned as e:
             contexto = {'mensaje': 'Muchas maquinas con ese id'}
-        return render(request, "Solicitudes/crear_maquina_solicitud.html", contexto)
+        return render(request, "solicitudes/crear_maquina_solicitud.html", contexto)
     else:
         return HttpResponse('No autorizado', status = 401)
 
@@ -519,7 +519,7 @@ def crear_solicitud_muestra(request):
         except MultipleObjectsReturned as e:
             contexto = {'mensaje': 'Muchas muestras con ese id'}
 
-        return render(request, "Solicitudes/crear_muestra_solicitud.html", contexto)
+        return render(request, "solicitudes/crear_muestra_solicitud.html", contexto)
     else:
         return HttpResponse('No autorizado', status = 401)
 
