@@ -46,6 +46,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+MIDDLEWARE_CLASSES = [
+    'django.middleware.locale.LocaleMiddleware'
+]
+
 ROOT_URLCONF = 'AresLabControl.urls'
 
 TEMPLATES = [
@@ -125,13 +129,17 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-co'
 
-TIME_ZONE = 'UTC-5'
+TIME_ZONE = 'America/Bogota'
 
-USE_I18N = False
+USE_I18N = True
 
-USE_L10N = False
+USE_L10N = True
 
-USE_TZ = False
+USE_TZ = True
+
+LANGUAGES = [
+    ('es', ('Spanish')),
+]
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -183,6 +191,7 @@ AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
 STATICFILES_LOCATION = 'static'
 MEDIAFILES_LOCATION = 'media'
+
 MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
 DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
 
