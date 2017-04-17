@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-17 10:40-0500\n"
+"POT-Creation-Date: 2017-04-17 14:09-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,26 +17,384 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: .\AresLabControl\settings.py:115
-msgid "English"
-msgstr ""
-
 #: .\AresLabControl\settings.py:116
-msgid "Spanish"
-msgstr ""
+msgid "English"
+msgstr "Ingles"
 
 #: .\AresLabControl\settings.py:117
+msgid "Spanish"
+msgstr "Español"
+
+#: .\AresLabControl\settings.py:118
 msgid "Colombian Spanish"
+msgstr "Español Colombia"
+
+#: .\LabModule\models.py:108 .\LabModule\models.py:205
+msgid "Tipo Identificación"
+msgstr "Tipo Identificación"
+
+#: .\LabModule\models.py:109
+msgid "Tipos de Indentificación"
+msgstr "Tipos de Indentificación"
+
+#: .\LabModule\models.py:114
+msgid "Abreviación Tipo Identificación"
+msgstr "Abreviación Tipo Identificación"
+
+#: .\LabModule\models.py:119
+msgid "Descripción Tipo Identificación"
+msgstr "Descripción Tipo Identificación"
+
+#: .\LabModule\models.py:146
+msgid "Usuario"
+msgstr "Usuario"
+
+#: .\LabModule\models.py:147
+msgid "Usuarios"
+msgstr "Usuarios"
+
+#: .\LabModule\models.py:151
+msgid "Nombre de Usuario"
+msgstr "Nombre de Usuario"
+
+#: .\LabModule\models.py:156
+msgid ""
+"El nombre de usuario debe ser alfanúmerico o contener los siguientes: \". - _"
+"\" "
 msgstr ""
+"El nombre de usuario debe ser alfanúmerico o contener los siguientes: \". - _"
+"\" "
+
+#: .\LabModule\models.py:162
+msgid "Correo Electrónico"
+msgstr "Correo Electrónico"
+
+#: .\LabModule\models.py:168
+msgid ""
+"El correo eletrónico debe ser alfanúmerico o contener los siguientes: \". @ "
+"+ - _\" "
+msgstr ""
+"El correo eletrónico debe ser alfanúmerico o contener los siguientes: \". @ "
+"+ - _\" "
+
+#: .\LabModule\models.py:174
+msgid "Código de Usuario"
+msgstr "Código de Usuario"
+
+#: .\LabModule\models.py:179
+msgid "El código de usuario debe ser alfanúmerico."
+msgstr "El código de usuario debe ser alfanúmerico."
+
+#: .\LabModule\models.py:188
+msgid "Nombres"
+msgstr "Nombres"
+
+#: .\LabModule\models.py:193
+msgid "Apellidos"
+msgstr "Apellidos"
+
+#: .\LabModule\models.py:198
+msgid "Teléfono"
+msgstr "Teléfono"
+
+#: .\LabModule\models.py:210
+msgid "Número de Identificación"
+msgstr "Número de Identificación"
+
+#: .\LabModule\models.py:226
+msgid "Contraseña"
+msgstr "Contraseña"
+
+#: .\LabModule\models.py:259 .\LabModule\models.py:312
+#: .\LabModule\models.py:423
+msgid "Nombre"
+msgstr "Nombre"
+
+#: .\LabModule\models.py:265 .\LabModule\models.py:329
+msgid "Identificación"
+msgstr "Identificación"
+
+#: .\LabModule\models.py:270
+msgid "Cantidad de Filas"
+msgstr "Cantidad de Filas"
+
+#: .\LabModule\models.py:275
+msgid "Cantidad de Columnas"
+msgstr "Cantidad de Columnas"
+
+#: .\LabModule\models.py:305
+msgid "Máquina"
+msgstr "Máquina"
+
+#: .\LabModule\models.py:306
+msgid "Máquinas"
+msgstr "Máquinas"
+
+#: .\LabModule\models.py:318
+msgid "Descripción"
+msgstr "Descripción"
+
+#: .\LabModule\models.py:323 .\LabModule\models.py:447
+#: .\LabModule\models.py:633
+msgid "Imagen"
+msgstr "Imagen"
+
+#: .\LabModule\models.py:335
+msgid "Reservable"
+msgstr "Reservable"
+
+#: .\LabModule\models.py:339 .\LabModule\models.py:623
+msgid "Activa"
+msgstr "Activa"
+
+#: .\LabModule\models.py:363
+msgid "Máquina en Laboratorio"
+msgstr "Máquina en Laboratorio"
+
+#: .\LabModule\models.py:364
+msgid "Máquinas en Laboratorio"
+msgstr "Máquinas en Laboratorio"
+
+#: .\LabModule\models.py:416 .\LabModule\models.py:481
+msgid "Lugar Almacenamiento"
+msgstr "Lugar Almacenamiento"
+
+#: .\LabModule\models.py:417
+msgid "Lugares de Almacenamiento"
+msgstr "Lugares de Almacenamiento"
+
+#: .\LabModule\models.py:428
+msgid "Descripción"
+msgstr "Descripción"
+
+#: .\LabModule\models.py:432
+msgid "Capacidad"
+msgstr "Capacidad"
+
+#: .\LabModule\models.py:437
+msgid "Temperatura"
+msgstr "Temperatura"
+
+#: .\LabModule\models.py:442
+msgid "Estado"
+msgstr "Estado"
+
+#: .\LabModule\models.py:474
+msgid "Laboratorio"
+msgstr "Laboratorio"
+
+#: .\LabModule\models.py:485
+msgid "Posición X"
+msgstr "Posición X"
+
+#: .\LabModule\models.py:488
+msgid "Posición Y"
+msgstr "Posición Y"
+
+#: .\LabModule\models.py:512
+msgid "Protocolo"
+msgstr "Protocolo"
+
+#: .\LabModule\models.py:513
+msgid "Protocolos"
+msgstr "Protocolos"
+
+#: .\LabModule\models.py:520
+msgid "Nombre Protocolo"
+msgstr "Nombre Protocolo"
+
+#: .\LabModule\models.py:526
+msgid "Descripción del Protocolo"
+msgstr "Descripción del Protocolo"
+
+#: .\LabModule\models.py:532
+msgid "Objetivo del Protocolo"
+msgstr "Objetivo del Protocolo"
+
+#: .\LabModule\models.py:553
+msgid "Paso"
+msgstr "Paso"
+
+#: .\LabModule\models.py:554
+msgid "Pasos"
+msgstr "Pasos"
+
+#: .\LabModule\models.py:598
+msgid "Muestra"
+msgstr "Muestra"
+
+#: .\LabModule\models.py:599
+msgid "Muestras"
+msgstr "Muestras"
+
+#: .\LabModule\models.py:606
+msgid "Nombre de la Muestra"
+msgstr "Nombre de la Muestra"
+
+#: .\LabModule\models.py:612
+msgid "Descripción de la Muestra"
+msgstr "Descripción de la Muestra"
+
+#: .\LabModule\models.py:619
+msgid "Valor"
+msgstr "Valor"
+
+#: .\LabModule\models.py:628
+msgid "Muestra Controlada"
+msgstr "Muestra Controlada"
+
+#: .\LabModule\models.py:640
+msgid "Unidad de Medida"
+msgstr "Unidad de Medida"
+
+#: .\LabModule\models.py:682
+msgid "Bandeja"
+msgstr "Bandeja"
+
+#: .\LabModule\models.py:683
+msgid "Bandejas"
+msgstr "Bandejas"
+
+#: .\LabModule\models.py:689
+msgid "Libre"
+msgstr "Libre"
+
+#: .\LabModule\models.py:695 .\LabModule\models.py:802
+msgid "Selección de Muestra"
+msgstr "Selección de Muestra"
+
+#: .\LabModule\models.py:702
+msgid "Selección de Lugar Almacenamiento"
+msgstr "Selección de Lugar Almacenamiento"
+
+#: .\LabModule\models.py:721
+msgid "Solicitud"
+msgstr "Solicitud"
+
+#: .\LabModule\models.py:722
+msgid "Solicitudes"
+msgstr "Solicitudes"
+
+#: .\LabModule\models.py:729
+msgid "Descripción de la Solicitud"
+msgstr "Descripción de la Solicitud"
+
+#: .\LabModule\models.py:734
+msgid "Fecha Inicial"
+msgstr "Fecha Inicial"
+
+#: .\LabModule\models.py:741
+msgid "Fecha Final"
+msgstr "Fecha Final"
+
+#: .\LabModule\models.py:748
+msgid "Estado Solicitud"
+msgstr "Estado Solicitud"
+
+#: .\LabModule\models.py:754
+msgid "Solicitante"
+msgstr "Solicitante"
+
+#: .\LabModule\models.py:761
+msgid "Aprobador"
+msgstr "Aprobador"
+
+#: .\LabModule\models.py:767
+msgid "Fecha Actual"
+msgstr "Fecha Actual"
+
+#: .\LabModule\models.py:774
+msgid "Selección de Paso"
+msgstr "Selección de Paso"
+
+#: .\LabModule\models.py:794
+msgid "Solicitud de Muestra"
+msgstr "Solicitud de Muestra"
+
+#: .\LabModule\models.py:795
+msgid "Solicitudes de Muestra"
+msgstr "Solicitudes de Muestra"
+
+#: .\LabModule\models.py:808
+msgid "Cantidad de Muestra"
+msgstr "Cantidad de Muestra"
+
+#: .\LabModule\models.py:814
+msgid "Tipo Solicitud"
+msgstr "Tipo Solicitud"
+
+#: .\LabModule\models.py:820
+msgid "Solicitud de Máquina"
+msgstr "Solicitud de Máquina"
+
+#: .\LabModule\models.py:821
+msgid "Solicitudes de Máquina"
+msgstr "Solicitudes de Máquina"
+
+#: .\LabModule\models.py:828
+msgid "Selección de Máquina"
+msgstr "Selección de Máquina"
+
+#: .\LabModule\models.py:853 .\LabModule\models.py:942
+msgid "Proyecto"
+msgstr "Proyecto"
+
+#: .\LabModule\models.py:854
+msgid "Proyectos"
+msgstr "Proyectos"
+
+#: .\LabModule\models.py:861
+msgid "Nombre del Proyecto"
+msgstr "Nombre del Proyecto"
+
+#: .\LabModule\models.py:867
+msgid "Descripción del Proyecto"
+msgstr "Descripción del Proyecto"
+
+#: .\LabModule\models.py:873
+msgid "Objetivo del Proyecto"
+msgstr "Objetivo del Proyecto"
+
+#: .\LabModule\models.py:879
+msgid "Líder"
+msgstr "Líder"
+
+#: .\LabModule\models.py:884
+msgid "Asistentes"
+msgstr "Asistentes"
+
+#: .\LabModule\models.py:891
+msgid "Estado de Actividad del Proyecto"
+msgstr "Estado de Actividad del Proyecto"
+
+#: .\LabModule\models.py:915
+msgid "Experimento"
+msgstr "Experimento"
+
+#: .\LabModule\models.py:916
+msgid "Experimentos"
+msgstr "Experimentos"
+
+#: .\LabModule\models.py:923
+msgid "Nombre Expermento"
+msgstr "Nombre Expermento"
+
+#: .\LabModule\models.py:929
+msgid "Descripción del Experimento"
+msgstr "Descripción del Experimento"
+
+#: .\LabModule\models.py:935
+msgid "Objetivo del Experimento"
+msgstr "Objetivo del Experimento"
 
 #: .\LabModule\views.py:90
-msgid "Agregar usuario"
-msgstr ""
+msgid "Agregar Usuario"
+msgstr "Agregar Usuario"
 
 #: .\LabModule\views.py:106
 msgid "Un usuario con este id ya existe"
-msgstr ""
+msgstr "Un usuario con este id ya existe"
 
 #: .\LabModule\views.py:109
 msgid "No autorizado"
-msgstr ""
+msgstr "No autorizado"

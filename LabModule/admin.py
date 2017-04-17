@@ -11,8 +11,8 @@ from models import MaquinaProfile
 from models import Muestra
 from models import MuestraSolicitud
 from models import Paso
-from models import Projecto
 from models import Protocolo
+from models import Proyecto
 from models import Solicitud
 from models import TipoDocumento
 from models import Usuario
@@ -40,7 +40,7 @@ admin.site.register(MaquinaProfile)
 admin.site.register(Muestra)
 admin.site.register(MuestraSolicitud)
 admin.site.register(Paso)
-admin.site.register(Projecto)
+admin.site.register(Proyecto)
 admin.site.register(Protocolo)
 admin.site.register(Solicitud)
 admin.site.register(Bandeja)

@@ -34,8 +34,8 @@ from models import MaquinaSolicitud
 from models import Muestra
 from models import MuestraSolicitud
 from models import Paso
-from models import Projecto
 from models import Protocolo
+from models import Proyecto
 from models import Solicitud
 from models import Usuario
 
@@ -87,7 +87,7 @@ def registrar_usuario(request):
         si no tiene permisos responde no autorizado 
        """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addUser"):
-        section = {'title': _('Agregar usuario')}
+        section = {'title': _('Agregar Usuario')}
         form = RegistroUsuarioForm(request.POST or None)
         if form.is_valid():
             nuevo_usuario = form.save(commit = False)
@@ -296,7 +296,7 @@ def maquina_update(request, pk, template_name = 'maquinas/agregar.html'):
 
     """
 
-    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_edditMachine"):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_editMachine"):
         server = get_object_or_404(MaquinaProfile, pk = pk)
         serverRelacionLab = get_object_or_404(MaquinaEnLab, idMaquina = server)
         mensaje = ""
@@ -386,7 +386,7 @@ def crear_solicitud_maquina(request):
      :returns: HttpResponse -- La respuesta a la petición. Si no esta autorizado se envia un código 401
 
     """
-    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_solMaquina"):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_requestMachine"):
         mensaje = 'ok'
         contexto = {}
         try:
@@ -394,7 +394,7 @@ def crear_solicitud_maquina(request):
             maquina = MaquinaProfile.objects.get(pk = request.GET.get('id', 0), activa = True)
             profile = Usuario.objects.get(user_id = request.user.id)
             maquinaEnLab = MaquinaEnLab.objects.get(idMaquina = maquina.pk)
-            proyectos = Projecto.objects.filter(asistentes = profile.id, activo = True)
+            proyectos = Proyecto.objects.filter(asistentes = profile.id, activo = True)
             form = SolicitudForm()
             if request.method == 'POST':
                 if form.verificar_fecha(maquina.pk, request.POST['fechaInicial'], request.POST['fechaFinal']) == True:
@@ -480,14 +480,14 @@ def crear_solicitud_muestra(request):
 
     """
 
-    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_solMuestra"):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_requestSample"):
         mensaje = 'ok'
         contexto = {}
         try:
 
             muestra = Muestra.objects.get(id = request.GET.get('id', 0), activa = True)
             profile = Usuario.objects.get(user_id = request.user.id)
-            proyectos = Projecto.objects.filter(asistentes = profile.id, activo = True);
+            proyectos = Proyecto.objects.filter(asistentes = profile.id, activo = True);
 
             muestra = Muestra.objects.get(id = request.GET.get('id', 0))
             profile = Usuario.objects.get(user_id = request.user.id)
