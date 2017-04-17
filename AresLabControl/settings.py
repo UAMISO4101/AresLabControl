@@ -3,6 +3,8 @@ from __future__ import print_function
 import os
 import urlparse
 
+from django.utils.translation import gettext_lazy as _
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -17,8 +19,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-#lANGUAGE
-LANGUAGE_CODE = "es-es"
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,24 +41,22 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-MIDDLEWARE_CLASSES = [
-    'django.middleware.locale.LocaleMiddleware'
-]
 
 ROOT_URLCONF = 'AresLabControl.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'BACKEND' : 'django.template.backends.django.DjangoTemplates',
+        'DIRS'    : [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
-        'OPTIONS': {
+        'OPTIONS' : {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -79,32 +77,32 @@ url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': url.path[1:],
-        'USER': url.username,
+        'ENGINE'  : 'django.db.backends.postgresql',
+        'NAME'    : url.path[1:],
+        'USER'    : url.username,
         'PASSWORD': url.password,
-        'HOST': url.hostname,
-        'PORT': url.port,
+        'HOST'    : url.hostname,
+        'PORT'    : url.port,
     }
     # 'default': {
-    #    'ENGINE': 'django.db.backends.postgresql',
-    #    'NAME': 'lab',
-    #    'HOST':'127.0.0.1',
-    #    'PORT':'5432',
-    #    'USER':'postgres',
-    #    'PASSWORD':''
+    #     'ENGINE'  : 'django.db.backends.postgresql',
+    #     'NAME'    : 'lab',
+    #     'HOST'    : '127.0.0.1',
+    #     'PORT'    : '5432',
+    #     'USER'    : 'postgres',
+    #     'PASSWORD': ''
     # }
     # 'default': {
-    #    'ENGINE': 'django.db.backends.postgresql',
-    #    'NAME': 'areslab',
-    #    'HOST':'localhost',
-    #    'PORT':'5432',
-    #    'USER':'postgres',
-    #    'PASSWORD':'admin'
+    #     'ENGINE'  : 'django.db.backends.postgresql',
+    #     'NAME'    : 'areslab',
+    #     'HOST'    : 'localhost',
+    #     'PORT'    : '5432',
+    #     'USER'    : 'postgres',
+    #     'PASSWORD': 'admin'
     # }
     # 'default': {
-    #    'ENGINE': 'django.db.backends.sqlite3',
-    #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME'  : os.path.join(BASE_DIR, 'db.sqlite3'),
     # }
 }
 
@@ -125,18 +123,31 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
+# Globalization (i18n/l10n)
+# https://docs.djangoproject.com/en/1.10/ref/settings/#globalization-i18n-l10n
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
+
+# Default formatting for date objects. See all available format strings here:
+# http://docs.djangoproject.com/en/dev/ref/templates/builtins/#date
+DATE_FORMAT = 'D, j F Y'
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
 
 LANGUAGE_CODE = 'es-co'
 
+LANGUAGES = [
+    ('en', _('English')),
+    ('es', _('Spanish')),
+    ('es-co', _('Colombian Spanish')),
+]
+
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'conf/', 'locale/')]
+
 TIME_ZONE = 'America/Bogota'
-
-USE_I18N = False
-
-USE_L10N = False
-
-USE_TZ = False
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -175,7 +186,7 @@ EMAIL_USE_TLS = True
 
 GRAPH_MODELS = {
     'all_applications': True,
-    'group_models': True,
+    'group_models'    : True,
 }
 
 # Atributos por defecto para creacion de superusuario (pasar a variables de entorno)
@@ -188,12 +199,9 @@ AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
 STATICFILES_LOCATION = 'static'
 MEDIAFILES_LOCATION = 'media'
+
 MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
 DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
 
 AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
-USE_I18N = True
-LANGUAGES = [
-    ('es', ('Spanish')),
-]

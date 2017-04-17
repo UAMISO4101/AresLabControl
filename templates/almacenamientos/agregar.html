@@ -15,15 +15,9 @@
         </div>
     {% endif %}
 
-    {% for error in formPos.non_field_errors %}
+    {% for error in formPos.errors %}
         <div class="alert alert-danger">
-            <strong>{{ error|escape }}</strong>
-        </div>
-    {% endfor %}
-
-    {% for error in form.non_field_errors %}
-        <div class="alert alert-danger">
-            <strong>{{ error|escape }}</strong>
+            Campo: <strong>{{ error|escape }}</strong>
         </div>
     {% endfor %}
 
@@ -31,7 +25,7 @@
         <h2>{{ section.title }}</h2>
     </div>
 
-    <form enctype="multipart/form-data" method="post">
+    <form action="{% url 'agregarLugar' %}" enctype="multipart/form-data" method="post">
         {% csrf_token %}
         <div class="panel panel-default">
             <div class="panel-heading ">
@@ -87,7 +81,46 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-left">Bandejas</h3>
+                    </div>
+                    <div class="panel-body text-left" style="height:140px">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>{{ form.capacidad.label_tag }}</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.capacidad|addcss:"form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-left">Medidas</h3>
+                    </div>
+                    <div class="panel-body text-left" style="height:140px">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <strong>{{ form.temperatura.label_tag }}</strong>
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.temperatura|addcss:"form-control" }}
+                            </div>
+                            <div class="col-md-2">
+                                <strong>°C</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title text-left">Ubicación</h3>
@@ -124,35 +157,7 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title text-left">Estado</h3>
-                    </div>
-                    <div class="panel-body text-left" style="height:140px">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>{{ form.con_reserva.label_tag }}</strong>
-                            </div>
-                            <div class="col-md-6">
-                                {{ form.con_reserva|addcss:"form-control" }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>{{ form.activa.label_tag }}</strong>
-                            </div>
-                            <div class="col-md-6">
-                                {{ form.activa|addcss:"form-control" }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-
         <div class="row center">
             <div>
                 <input class="btn btn-primary" type="submit" value="Guardar"/>
@@ -160,4 +165,5 @@
             </div>
         </div>
     </form>
+
 {% endblock %}

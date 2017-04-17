@@ -8,7 +8,7 @@
     <link href="{% static 'css/datatablesCustom.css' %}" rel="stylesheet">
 {% endblock %}
 
-{% block head_title %}{{ block.super }}Lista Lugares Almacenamiento {% endblock %}
+{% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
 
 {% block content %}
 
@@ -32,47 +32,41 @@
         <tbody>
 
         {% for lugar in lista_lugares %}
-
             <tr>
                 <td>{{ lugar.idLugar.id }}</td>
                 <td>{{ lugar.idLugar.nombre }}</td>
                 <td>{{ lugar.posX }}</td>
                 <td>{{ lugar.posY }}</td>
                 <td>{{ lugar.idLugar.temperatura }}</td>
-                <td align="center"><a class="btn btn-primary" href="/verLugar/{{ lugar.idLugar.id }}">Ver Detalle</a></td>
+                <td align="center"><a class="btn btn-primary" href="/verLugar/{{ lugar.idLugar.id }}">Ver Detalle</a>
+                </td>
             </tr>
-
         {% endfor %}
-
         </tbody>
     </table>
-    {% block scripts_others %}
-
-        <script src="//code.jquery.com/jquery-1.12.4.js"></script>
-        <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
-        <script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
-
-        <script>
-            $(function () {
-
-                if ($.fn.dataTable.isDataTable('#lugares_table')) {
-                    $('#lugares_table').DataTable();
-                }
-                else {
-                    $('#lugares_table').DataTable({
-                        responsive: true,
-                        sPaginationType: "full_numbers",
-                        bJQueryUI: true,
-                        language: {
-                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
-                        }
-                    });
-                }
-
-
-            });
-        </script>
-    {% endblock %}
-
 {% endblock %}
+{% block scripts_others %}
+
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
+    <script>
+        $(function () {
+
+            if ($.fn.dataTable.isDataTable('#lugares_table')) {
+                $('#lugares_table').DataTable();
+            }
+            else {
+                $('#lugares_table').DataTable({
+                    responsive: true,
+                    sPaginationType: "full_numbers",
+                    bJQueryUI: true,
+                    language: {
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}v
