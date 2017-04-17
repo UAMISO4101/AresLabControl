@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
 from registration.backends.default.views import RegistrationView
 
@@ -86,7 +87,7 @@ def registrar_usuario(request):
         si no tiene permisos responde no autorizado 
        """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addUser"):
-        section = {'title': 'Agregar usuario'}
+        section = {'title': _('Agregar usuario')}
         form = RegistroUsuarioForm(request.POST or None)
         if form.is_valid():
             nuevo_usuario = form.save(commit = False)
@@ -102,10 +103,10 @@ def registrar_usuario(request):
                 nuevo_usuario.save()
                 return HttpResponseRedirect(reverse('home'))
             except:
-                form.add_error("userCode", "Un usuario con este id ya existe")
+                form.add_error("userCode", _("Un usuario con este id ya existe"))
         context = {'form': form, 'section': section}
         return render(request, 'registration/registration_form.html', context)
-    return HttpResponse('No autorizado', status = 401)
+    return HttpResponse(_('No autorizado'), status = 401)
 
 
 def agregar_lugar(request):

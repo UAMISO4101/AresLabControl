@@ -3,6 +3,8 @@ from __future__ import print_function
 import os
 import urlparse
 
+from django.utils.translation import gettext_lazy as _
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -39,15 +41,12 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
-
-MIDDLEWARE_CLASSES = [
-    'django.middleware.locale.LocaleMiddleware'
 ]
 
 ROOT_URLCONF = 'AresLabControl.urls'
@@ -86,24 +85,24 @@ DATABASES = {
         'PORT'    : url.port,
     }
     # 'default': {
-    #    'ENGINE': 'django.db.backends.postgresql',
-    #    'NAME': 'lab',
-    #    'HOST':'127.0.0.1',
-    #    'PORT':'5432',
-    #    'USER':'postgres',
-    #    'PASSWORD':''
+    #     'ENGINE'  : 'django.db.backends.postgresql',
+    #     'NAME'    : 'lab',
+    #     'HOST'    : '127.0.0.1',
+    #     'PORT'    : '5432',
+    #     'USER'    : 'postgres',
+    #     'PASSWORD': ''
     # }
     # 'default': {
-    #    'ENGINE': 'django.db.backends.postgresql',
-    #    'NAME': 'areslab',
-    #    'HOST':'localhost',
-    #    'PORT':'5432',
-    #    'USER':'postgres',
-    #    'PASSWORD':'admin'
+    #     'ENGINE'  : 'django.db.backends.postgresql',
+    #     'NAME'    : 'areslab',
+    #     'HOST'    : 'localhost',
+    #     'PORT'    : '5432',
+    #     'USER'    : 'postgres',
+    #     'PASSWORD': 'admin'
     # }
     # 'default': {
-    #    'ENGINE': 'django.db.backends.sqlite3',
-    #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME'  : os.path.join(BASE_DIR, 'db.sqlite3'),
     # }
 }
 
@@ -124,12 +123,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
+# Globalization (i18n/l10n)
+# https://docs.djangoproject.com/en/1.10/ref/settings/#globalization-i18n-l10n
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'es-co'
-
-TIME_ZONE = 'America/Bogota'
+# Default formatting for date objects. See all available format strings here:
+# http://docs.djangoproject.com/en/dev/ref/templates/builtins/#date
+DATE_FORMAT = 'D, j F Y'
 
 USE_I18N = True
 
@@ -137,9 +137,17 @@ USE_L10N = True
 
 USE_TZ = True
 
+LANGUAGE_CODE = 'es-co'
+
 LANGUAGES = [
-    ('es', ('Spanish')),
+    ('en', _('English')),
+    ('es', _('Spanish')),
+    ('es-co', _('Colombian Spanish')),
 ]
+
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'conf/', 'locale/')]
+
+TIME_ZONE = 'America/Bogota'
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
