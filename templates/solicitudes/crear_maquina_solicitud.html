@@ -29,7 +29,7 @@
             <h3 class="panel-title text-left">Información básica ID {{ maquina.pk }}</h3>
         </div>
 
-        <div class="panel-body text-left">
+        <div class="panel-body text-left" >
             <div class="container">
                 <div class="row">
 
@@ -56,21 +56,21 @@
         </div>
     </div>
 
-
+    <form method="post" action="" name="formSolicitud" id="formSolicitud">{% csrf_token %}
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title text-left">Caracteristicas muestra</h3>
+                    <h3 class="panel-title text-left">Caracteristicas máquina</h3>
                 </div>
-                <div class="panel-body text-left">
+                <div class="panel-body text-left" style="min-height:140px">
                     <div class="row">
                         <div class="col-md-6">
                             <strong>PosX:</strong>
                         </div>
                         <div class="col-md-6">
-                            <strong> {{ maquinaEnLab.xPos }} </strong>
+                            <strong> {{ maquinaEnLab.posX }} </strong>
                         </div>
                     </div>
                     <div class="row">
@@ -78,7 +78,7 @@
                             <strong>PosY:</strong>
                         </div>
                         <div class="col-md-6">
-                            <strong> {{ maquinaEnLab.yPos }} </strong>
+                            <strong> {{ maquinaEnLab.posY }} </strong>
                         </div>
 
                     </div>
@@ -86,22 +86,20 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title text-left"></h3>
+                    <h3 class="panel-title text-left">Solicitud</h3>
                 </div>
-                <div class="panel-body text-left">
-                    <form method="post" action="" name="formSolicitud" id="formSolicitud">{% csrf_token %}
+                <div class="panel-body text-left" style="min-height:140px">
+
                         <div class="row">
                             <div class="col-md-2">
                                 <strong>Proyectos:</strong>
                             </div>
                             <div class="col-md-4">
                                 <select class="form-control requerido" name="project" id="project">
-                                    <option value="">--Seleccione--</option>
+                                    <option value="">----------</option>
                                     {% for proyecto in proyectos %}
 
                                         <option value="{{ proyecto.id }}">{{ proyecto.nombre }}</option>
@@ -113,7 +111,7 @@
                             </div>
                             <div class="col-md-4">
                                 <select class="form-control requerido" name="experiment" id="experiment">
-                                    <option value="">--Seleccione--</option>
+                                    <option value="">----------</option>
                                 </select>
                             </div>
                         </div>
@@ -123,7 +121,7 @@
                             </div>
                             <div class="col-md-4">
                                 <select class="form-control requerido" name="protocol" id="protocol">
-                                    <option value="">--Seleccione--</option>
+                                    <option value="">----------</option>
                                 </select>
                             </div>
                             <div class="col-md-2">
@@ -131,7 +129,7 @@
                             </div>
                             <div class="col-md-4">
                                 <select class="form-control requerido" name="step" id="step">
-                                    <option value="">--Seleccione--</option>
+                                    <option value="">----------</option>
                                 </select>
                             </div>
                         </div>
@@ -149,20 +147,21 @@
                                 {{ form.fechaFinal }}
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <input class='btn btn-block btn-primary' style="margin-bottom:0px" type="submit"
-                                       value="Solicitar" id="solicitar"/>
-                            </div>
-                        </div>
-
-                    </form>
                 </div>
             </div>
         </div>
 
     </div>
+
+
+    <div class="row center" >
+        <div >
+            <input class='btn  btn-primary'  type="submit" value="Solicitar" id="solicitar"/>
+
+            <a class="btn btn-default" href="/" id="cancel" name="cancel">Cancelar</a>
+        </div>
+    </div>
+    </form>
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -174,21 +173,21 @@
                 .find('option')
                 .remove()
                 .end()
-                .append('<option value="">--Seleccione--</option>')
+                .append('<option value="">----------</option>')
                 .val('');
 
             $('#protocol')
                 .find('option')
                 .remove()
                 .end()
-                .append('<option value="">--Seleccione--</option>')
+                .append('<option value="">----------</option>')
                 .val('');
 
             $('#step')
                 .find('option')
                 .remove()
                 .end()
-                .append('<option value="">--Seleccione--</option>')
+                .append('<option value="">----------</option>')
                 .val('');
 
             if (this.value == -1 || this.value == "") {
@@ -225,14 +224,14 @@
                 .find('option')
                 .remove()
                 .end()
-                .append('<option value="">--Seleccione--</option>')
+                .append('<option value="">----------</option>')
                 .val('');
 
             $('#step')
                 .find('option')
                 .remove()
                 .end()
-                .append('<option value="">--Seleccione--</option>')
+                .append('<option value="">----------</option>')
                 .val('');
 
             if (this.value == -1 || this.value == "") {
@@ -268,7 +267,7 @@
                 .find('option')
                 .remove()
                 .end()
-                .append('<option value="">--Seleccione--</option>')
+                .append('<option value="">----------</option>')
                 .val('');
 
             if (this.value == -1 || this.value == "") {

@@ -674,6 +674,7 @@ class Solicitud(models.Model):
             null = True,
             verbose_name = "Fecha inicial",
             default = datetime.date.today
+
     )
     fechaFinal = models.DateField(
             blank = False,
