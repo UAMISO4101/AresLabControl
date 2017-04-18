@@ -239,7 +239,7 @@ def comprobarPostMaquina(form, formPos, request, template_name, section):
                   {'form': form, 'formPos': formPos, 'section': section, 'mensaje': mensaje})
 
 
-def maquina_create(request, template_name = 'Maquinas/agregar.html'):
+def maquina_create(request, template_name = 'maquinas/agregar.html'):
     """Comporbar si el usuario puede agregar una máquina y obtener los campos necesarios.
         Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :
         Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
@@ -272,7 +272,7 @@ def maquina_create(request, template_name = 'Maquinas/agregar.html'):
         return HttpResponse('No autorizado', status = 401)
 
 
-def maquina_update(request, pk, template_name = 'Maquinas/agregar.html'):
+def maquina_update(request, pk, template_name = 'maquinas/agregar.html'):
     """Comporbar si el usuario puede modificar una máquina, obtener los campos necesarios.
 
         Se encarga de:
@@ -343,7 +343,7 @@ def listarMaquinas(request):
         lista_Posiciones = MaquinaEnLab.objects.all().filter(idMaquina__in = idMquinas)
         maquinasConUbicacion = zip(lista_maquinas, lista_Posiciones)
         context = {'section': section, 'maquinasBien': maquinasConUbicacion}
-        return render(request, 'Maquinas/listar.html', context)
+        return render(request, 'maquinas/listar.html', context)
     else:
         return HttpResponse('No autorizado', status = 401)
 
@@ -607,7 +607,7 @@ def reservar_maquina(request, pk):
             maquina_profile = maquina_en_lab.idMaquina
             context = {'maquina_en_lab': maquina_en_lab, 'maquina_profile': maquina_profile}
 
-            return render(request, 'Maquinas/agenda.html', context)
+            return render(request, 'maquinas/agenda.html', context)
     else:
         return HttpResponse('No autorizado', status = 401)
 
