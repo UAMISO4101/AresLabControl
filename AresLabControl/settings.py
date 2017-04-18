@@ -189,7 +189,7 @@ GRAPH_MODELS = {
     'group_models'    : True,
 }
 
-# Atributos por defecto para creacion de superusuario (pasar a variables de entorno)
+# Atributos por defecto para creacion de superusuario
 SUPERUSUARIO = os.environ["SUPERUSUARIO"]
 CONTRASENA = os.environ["CONTRASENA"]
 
