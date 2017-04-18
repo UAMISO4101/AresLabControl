@@ -24,7 +24,9 @@
                 <th>Id</th>
                 <th>Nombre</th>
                 <th>Ubicación</th>
-                <th>Se debe reservar</th>
+                {% if perms.LabModule.can_requestMachine %}
+                    <th></th>
+                {% endif %}
             </tr>
             </thead>
 
@@ -37,7 +39,13 @@
                     <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ maquina.idSistema }}</td>
                     <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ maquina.nombre }}</td>
                     <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ ubicacion }}</td>
-                    <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ maquina.con_reserva|yesno:"Si,No" }}</td>
+                    {% if perms.LabModule.can_requestMachine %}
+                        <td class="{{ maquina.con_reserva|yesno:"danger," }}">
+                            <a href="{% url 'reservarMaquina' maquina.idSistema %} "
+                               class="btn btn-primary {{ maquina.con_reserva|yesno:"danger," }}"
+                               role="button">Reservar</a>
+                        </td>
+                    {% endif %}
                 </tr>
 
             {% endfor %}
