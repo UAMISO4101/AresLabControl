@@ -296,9 +296,9 @@ class MaquinaProfile(models.Model):
             :activa (boolean): Dice si la máquina se puede solicitar. Por defecto verdadero
 
         Permisos:
-            :can_addMachine: Permite agregar Maquinas
-            :can_edditMachine: Permite modificar Maquinas
-            :can_viewMachine: Permite modificar Maquinas
+            :can_addMachine: Permite agregar maquinas
+            :can_edditMachine: Permite modificar maquinas
+            :can_viewMachine: Permite modificar maquinas
             """
 
     class Meta:

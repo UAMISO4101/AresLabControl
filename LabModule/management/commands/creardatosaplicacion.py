@@ -28,6 +28,10 @@ def crearTiposDocumento():
 def crearLaboratorio():
     nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre = "Laboratorio principal",
                                                                             id = "LAB001")
+    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre = "Laboratorio Secundario",
+                                                                            id = "LAB002")
+    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre = "Laboratorio Terciario",
+                                                                            id = "LAB003")
     if laboratioExistente:
         return 0
     return 1
