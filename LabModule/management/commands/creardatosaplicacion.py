@@ -13,6 +13,7 @@ from LabModule.models import MaquinaEnLab
 from LabModule.models import MaquinaProfile
 from LabModule.models import TipoDocumento
 from LabModule.models import Usuario
+from LabModule.models import Projecto
 
 CONTRASENA = getattr(settings, "CONTRASENA", '1a2d3m4i5n6')
 
@@ -63,7 +64,16 @@ def crearMuestra():
 
 
 def crearProyecto():
+    nuevoProyecto,noexistia=Projecto.objects.get_or_create(nombre="Colombia Viva")
+    
+    nuevoProyecto.descripcion="Proyecto para sintetizar una droga que reduzca el cansancio"
+    nuevoProyecto.objetivo="Crear"
+    nuevoProyecto.lider=Usuario.objects.get(nombre_usuario='acastro')
+    nuevoProyecto.asistentes=[Usuario.objects.get(nombre_usuario='mgalindo')]
+    nuevoProyecto.activo=True
     return 0
+
+    return 1
 
 
 def crearExperimento():
@@ -208,6 +218,16 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Maquinas '))
         else:
             self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Maquinas '))
+
+        if (createGroups() == 0):
+            self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Grupos '))
+        else:
+            self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Grupos '))
+        if (createUsers() == 0):
+            self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Usuarios '))
+        else:
+            self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Usuarios '))
+
         if (crearBandeja() == 0):
             self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Bandejas '))
         else:
@@ -236,11 +256,3 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Pasos '))
         else:
             self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Pasos '))
-        if (createGroups() == 0):
-            self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Grupos '))
-        else:
-            self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Grupos '))
-        if (createUsers() == 0):
-            self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Usuarios '))
-        else:
-            self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Usuarios '))
