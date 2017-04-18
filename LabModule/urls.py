@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'accounts/register/$', views.registrar_usuario, name = 'registration_register'),
     # Maquinas
     url(r'^maquina/add/$', views.maquina_create, name = 'maquina-add'),
-    url(r'^maquina/$', views.listarMaquinas, name = 'maquinas-listar'),
+    url(r'^maquina/$', views.listarMaquinas, name = 'Maquinas-listar'),
     url(r'^maquina/(?P<pk>[\w\-]+)/$', views.maquina_update, name = 'maquina-update'),
     url(r'^reservarMaquina/(?P<pk>[\w\-]+)/$', views.reservar_maquina, name = 'reservarMaquina'),
     # Muestras
