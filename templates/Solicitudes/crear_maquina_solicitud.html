@@ -6,7 +6,7 @@
     <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
 {% endblock %}
 
-{% block head_title %}{{block.super}}Solicitar Máquina py{% endblock%}
+{% block head_title %}{{block.super}}Solicitar Máquina {% endblock%}
 
 
 
@@ -20,7 +20,7 @@
     {%endif%}
 
     <div class="page-header text-center">
-        <h2>Solicitar Muestra {{ maquina.nombre}}</h2>
+        <h2>Solicitar Máquina {{ maquina.nombre}}</h2>
     </div>
 
         <div class="panel panel-default">
