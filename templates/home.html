@@ -1,33 +1,38 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
-{% block head_title %}Inicio | {% endblock%}
+{% block head_title %}{{ block.super }}Inicio{% endblock %}
 
 {% load staticfiles %}
+
 {% block head_others %}
     <link href="{% static 'css/homeCustom.css' %}" rel="stylesheet">
 {% endblock %}
-{% block content %}
 
-<div class="starter-template">
-    <div class="row" >
-        <div class="col-md-12 banner-container" >
-            <img  class="d-block img-fluid banner" src="https://s3-us-west-2.amazonaws.com/maquinasymuestras/media/images/laboratorio-banner.jpg" alt="Third slide" >
+{% block content %}
+    <div class="starter-template">
+        <div class="row">
+            <div class="col-md-12 banner-container">
+                <img class="d-block img-fluid banner"
+                     src="https://s3-us-west-2.amazonaws.com/maquinasymuestras/media/images/laboratorio-banner.jpg"
+                     alt="Third slide">
+            </div>
         </div>
-    </div>
-      <div class="row">
+        <div class="row">
             <div class="col-md-4">
                 <div class="panel panel-default">
 
-                    <div class="panel-body text-left" style="min-height:300px " >
+                    <div class="panel-body text-left" style="min-height:300px ">
                         <div class="row">
-                            <div class="col-md-12 home-icono-container" >
-                                <img class="d-block img-fluid home-icono"  src="https://s3-us-west-2.amazonaws.com/maquinasymuestras/media/images/muestra-icono.png" >
+                            <div class="col-md-12 home-icono-container">
+                                <img class="d-block img-fluid home-icono"
+                                     src="https://s3-us-west-2.amazonaws.com/maquinasymuestras/media/images/muestra-icono.png">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <h4>Administración de Muestras</h4>
-                                <p>Podrá llevar el control de quién está usando las muestras de su laboratorio, para que las está usando y que muestras se van a crear producto de nuevos experimentos.</p>
+                                <p>Podrá llevar el control de quién está usando las muestras de su laboratorio, para que
+                                    las está usando y que muestras se van a crear producto de nuevos experimentos.</p>
                             </div>
                         </div>
                     </div>
@@ -37,14 +42,16 @@
                 <div class="panel panel-default">
                     <div class="panel-body text-left" style="min-height:300px ">
                         <div class="row">
-                            <div class="col-md-12 home-icono-container" >
-                                <img class="d-block img-fluid home-icono"  src="https://s3-us-west-2.amazonaws.com/maquinasymuestras/media/images/maquinas-icono.png" >
+                            <div class="col-md-12 home-icono-container">
+                                <img class="d-block img-fluid home-icono"
+                                     src="https://s3-us-west-2.amazonaws.com/maquinasymuestras/media/images/maquinas-icono.png">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <h4>Administración de Máquinas</h4>
-                                <p>Podrá llevar el control de quién está usando las máquinas de su laboratorio y para que las está usando. Además, podrá aprobar solicitudes de uso.</p>
+                                <p>Podrá llevar el control de quién está usando las máquinas de su laboratorio y para
+                                    que las está usando. Además, podrá aprobar solicitudes de uso.</p>
                             </div>
                         </div>
                     </div>
@@ -54,22 +61,22 @@
                 <div class="panel panel-default">
                     <div class="panel-body text-left" style="min-height:300px ">
                         <div class="row">
-                            <div class="col-md-12 home-icono-container" >
-                                <img class="d-block img-fluid home-icono"  src="https://s3-us-west-2.amazonaws.com/maquinasymuestras/media/images/almacen-icono.png" >
+                            <div class="col-md-12 home-icono-container">
+                                <img class="d-block img-fluid home-icono"
+                                     src="https://s3-us-west-2.amazonaws.com/maquinasymuestras/media/images/almacen-icono.png">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <h4>Almacenamiento de Muestras</h4>
-                                <p>Podrá  determinar el lugar donde se almacenaran las diferentes muestras y en que condiciones específicas.</p>
+                                <p>Podrá determinar el lugar dónde se almacenarán las diferentes muestras y en qué
+                                    condiciones específicas.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-
-</div>
-
-{% endblock%}
+{% endblock %}

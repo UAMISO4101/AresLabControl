@@ -3,9 +3,14 @@ from django import forms
 from django.db.models import Q
 from django.forms import ModelForm
 
-from .models import LugarAlmacenamiento, MaquinaEnLab, MaquinaProfile
+from .models import LugarAlmacenamiento
 from .models import LugarAlmacenamientoEnLab
-from .models import Solicitud, MuestraSolicitud, MaquinaSolicitud, Muestra
+from .models import MaquinaEnLab
+from .models import MaquinaProfile
+from .models import MaquinaSolicitud
+from .models import Muestra
+from .models import MuestraSolicitud
+from .models import Solicitud
 from .models import Usuario
 
 
@@ -24,14 +29,14 @@ class RegistroUsuarioForm(forms.ModelForm):
         exclude = ('user',)
 
     contrasena = forms.CharField(
-        label="Escriba su contraseña",
-        widget=forms.PasswordInput,
-        strip=False, )
+            label = "Escriba su contraseña",
+            widget = forms.PasswordInput,
+            strip = False, )
     password2 = forms.CharField(
-        label="Confirme su contraseña",
-        widget=forms.PasswordInput,
-        strip=False,
-        help_text="Repita la contraseña para verificar que sean iguales.",
+            label = "Confirme su contraseña",
+            widget = forms.PasswordInput,
+            strip = False,
+            help_text = "Repita la contraseña para verificar que sean iguales.",
     )
 
     error_messages = {
@@ -65,7 +70,7 @@ class LugarAlmacenamientoForm(ModelForm):
         fields = ['nombre', 'descripcion', 'capacidad', 'temperatura', 'imagen']
 
 
-class PosicionesLugarAlmacenamientoForm(ModelForm):
+class PosicionesAlmacenamientoForm(ModelForm):
     """Formulario  para crear y modificar la ubicación de un lugar almacenamiento.
 
         Se encarga de:
@@ -90,17 +95,18 @@ class SolicitudForm(ModelForm):
         model = Solicitud
         fields = ['fechaInicial', 'fechaFinal', 'descripcion', 'estado', 'solicitante', 'fechaActual', 'paso']
         widgets = {
-            'fechaInicial': forms.DateInput(attrs={'class': 'form-control datepicker'}),
-            'fechaFinal': forms.DateInput(attrs={'class': 'form-control datepicker'}),
+            'fechaInicial': forms.DateInput(attrs = {'class': 'form-control datepicker'},format= ("%Y-%m-%d")),
+            'fechaFinal'  : forms.DateInput(attrs = {'class': 'form-control datepicker'},format= ("%Y-%m-%d")),
         }
 
     def verificar_fecha(self, maquina_id, fechaIni, fechaFin):
 
         solicitudes = Solicitud.objects.filter(
-            Q(fechaInicial=fechaIni, fechaFinal=fechaFin) | Q(fechaInicial__lte=fechaIni, fechaFinal__gte=fechaIni) | Q(
-                fechaInicial__lte=fechaFin, fechaFinal__gte=fechaFin)).exclude(estado='rechazada')
+                Q(fechaInicial = fechaIni, fechaFinal = fechaFin) | Q(fechaInicial__lte = fechaIni,
+                                                                      fechaFinal__gte = fechaIni) | Q(
+                        fechaInicial__lte = fechaFin, fechaFinal__gte = fechaFin)).exclude(estado = 'rechazada')
         for sol in solicitudes:
-            otras_maquinas = MaquinaSolicitud.objects.filter(solicitud=sol.pk, maquina=maquina_id).count()
+            otras_maquinas = MaquinaSolicitud.objects.filter(solicitud = sol.pk, maquina = maquina_id).count()
             if otras_maquinas > 0:
                 return False
         return True
@@ -157,7 +163,7 @@ class MaquinaForm(ModelForm):
                   'imagen']
 
 
-class PosicionesForm(ModelForm):
+class PosicionesMaquinaForm(ModelForm):
     """Formulario  para crear y modificar la ubicación de una máquina.
         Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
         Se encarga de:
@@ -173,5 +179,5 @@ class PosicionesForm(ModelForm):
 
     class Meta:
         model = MaquinaEnLab
-        # fields=['xPos','yPos','idLaboratorio','idMaquina']
+        fields = ['posX', 'posY', 'idLaboratorio']
         exclude = ('idMaquina',)
