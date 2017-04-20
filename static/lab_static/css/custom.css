@@ -1,33 +1,48 @@
-.navicon {
-  max-height: 22px !important;
-}
 body {
+    margin: 0;
     padding-top: 65px !important;
 }
-.img-maquina{
-        width:300px;
-        height:300px;
+
+img.imageIndex {
+    width: 300px;
+    height: 200px;
 }
 
-.lugar div[class^="row"]{
-    margin-bottom: 5px;
+.btn-primary {
+    background: #464E8E !important;
+    color: #C7CAE1 !important;
 }
 
-.center{
-  display: table !important;
-  margin: 0 auto !important;
+.center {
+    display: table !important;
+    margin: 0 auto !important;
 }
 
-img.imageIndex{
-    width:300px;
-    height:200px;
-}
-
-h2{
+.h1, h1 {
     color: #6269A2 !important;
 }
 
-.btn-primary{
-    background: #464E8E !important;
-    color: #C7CAE1 !important;
+.h2, h2 {
+    color: #6269A2 !important;
+}
+
+.h3, h3 {
+    color: #6269A2 !important;
+}
+
+.h4, h4 {
+    color: #464E8E !important;
+}
+
+.img-maquina {
+    width: 300px;
+    height: 300px;
+}
+
+.lugar div[class^="row"] {
+    margin-bottom: 5px;
+}
+
+.navicon {
+    max-height: 22px !important;
 }

@@ -8,31 +8,30 @@ from . import views
 
 urlpatterns = [
     # Peticiones a vistas
-    url(r'^$', views.home, name='home'),
+    url(r'^$', views.home, name = 'home'),
     # Lugar de almacenamiento
-    url(r'^agregarLugar/$', views.agregar_lugar, name='agregarLugar'),
-    url(r'^listaLugares/$', views.listar_lugares, name='listaLugares'),
-    url(r'^verLugar/(?P<pk>[\w\-]+)/$', views.listar_lugar, name='verLugar'),
+    url(r'^agregarLugar/$', views.agregar_lugar, name = 'agregarLugar'),
+    url(r'^listaLugares/$', views.listar_lugares, name = 'listaLugares'),
+    url(r'^verLugar/(?P<pk>[\w\-]+)/$', views.listar_lugar, name = 'verLugar'),
     # Usuarios
-    url(r'accounts/register/$', views.registrar_usuario, name='registration_register'),
+    url(r'accounts/register/$', views.registrar_usuario, name = 'registration_register'),
     # Maquinas
-    url(r'^maquina/add/$', views.maquina_create, name='maquina-add'),
-    url(r'^maquina/$', views.listarMaquinas, name='maquinas-listar'),
-    url(r'^maquina/update/(?P<pk>[\w\-]+)/$', views.maquina_update, name='maquina-update'),
-    url(r'^maquina/(?P<pk>[\w\-]+)/$', views.maquina_update, name='maquina-detail'),
-    url(r'^reservarMaquina/(?P<pk>[\w\-]+)/$', views.reservar_maquina, name='reservarMaquina'),
+    url(r'^maquina/add/$', views.maquina_create, name = 'maquina-add'),
+    url(r'^maquina/$', views.listarMaquinas, name = 'maquinas-listar'),
+    url(r'^maquina/(?P<pk>[\w\-]+)/$', views.maquina_update, name = 'maquina-detail'),
+    url(r'^maquina/update/(?P<pk>[\w\-]+)/$', views.maquina_update, name = 'maquina-update'),
+    url(r'^reservarMaquina/(?P<pk>[\w\-]+)/$', views.reservar_maquina, name = 'reservarMaquina'),
     # Muestras
-    url(r'^solicitarMuestra/$', views.crear_solicitud_muestra, name='solicitarMuestra'),
-    url(r'^solicitarMuestra/experimentos/$', views.cargar_experimentos, name='experimentos'),
-    url(r'^solicitarMuestra/protocolos/$', views.cargar_protocolos, name='protocolos'),
-    url(r'^solicitarMuestra/pasos/$', views.cargar_pasos, name='pasos'),
-    url(r'^solicitarMaquina/$', views.crear_solicitud_maquina, name='solicitarMaquina'),
+    url(r'^solicitarMuestra/$', views.crear_solicitud_muestra, name = 'solicitarMuestra'),
+    url(r'^solicitarMuestra/experimentos/$', views.cargar_experimentos, name = 'experimentos'),
+    url(r'^solicitarMuestra/protocolos/$', views.cargar_protocolos, name = 'protocolos'),
+    url(r'^solicitarMuestra/pasos/$', views.cargar_pasos, name = 'pasos'),
+    url(r'^solicitarMaquina/$', views.crear_solicitud_maquina, name = 'solicitarMaquina'),
     # Detalle Muestra
-    url(r'^verMuestra/(?P<pk>[\w\-]+)/$', views.listar_muestra, name='verMuestra'),
-    url(r'^reservarMuestra/$', views.reservar_muestra, name='reservarMuestra'),
-
+    url(r'^verMuestra/(?P<pk>[\w\-]+)/$', views.listar_muestra, name = 'verMuestra'),
+    url(r'^reservarMuestra/$', views.reservar_muestra, name = 'reservarMuestra'),
 
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

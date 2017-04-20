@@ -19,33 +19,42 @@ CONTRASENA = getattr(settings, "CONTRASENA", '1a2d3m4i5n6')
 
 
 def crearTiposDocumento():
-    nuevoTipoDoc, tipoDocExistente = TipoDocumento.objects.get_or_create(nombre_corto='CC')
+    nuevoTipoDoc, tipoDocExistente = TipoDocumento.objects.get_or_create(nombre_corto = 'CC')
     if tipoDocExistente:
         nuevoTipoDoc.descripcion = 'Cedula de Ciudadania'
         nuevoTipoDoc.save()
         return 0
     return 1
 
+
 def crearLaboratorio():
-    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre="Laboratorio principal", id="LAB001")
+    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre = "Laboratorio principal",
+                                                                            id = "LAB001")
+    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre = "Laboratorio Secundario",
+                                                                            id = "LAB002")
+    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre = "Laboratorio Terciario",
+                                                                            id = "LAB003")
     if laboratioExistente:
         return 0
     return 1
 
 
 def crearMaquina():
-    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre="Laboratorio principal", id="LAB001")
+    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre = "Laboratorio principal",
+                                                                            id = "LAB001")
     rta = 1
     with open(".///" + static('lab_static/json/maquinas.json')) as data_file:
         data = json.load(data_file)
         for maquina in data:
-            nuevaMaquina, maquinaExistente = MaquinaProfile.objects.get_or_create(nombre=maquina['nombre'],
-                                                                                  descripcion=maquina['descripcion'],
-                                                                                  idSistema=maquina['idSistema'],
-                                                                                  con_reserva=maquina['con_reserva']
+            nuevaMaquina, maquinaExistente = MaquinaProfile.objects.get_or_create(nombre = maquina['nombre'],
+                                                                                  descripcion = maquina['descripcion'],
+                                                                                  idSistema = maquina['idSistema'],
+                                                                                  con_reserva = maquina['con_reserva']
                                                                                   )
-            nuevare, exre = MaquinaEnLab.objects.get_or_create(idLaboratorio=nuevoLab, idMaquina=nuevaMaquina,
-                                                               xPos=maquina['x'], yPos=maquina['y'])
+            nuevare, exre = MaquinaEnLab.objects.get_or_create(idLaboratorio = nuevoLab,
+                                                               idMaquina = nuevaMaquina,
+                                                               posX = maquina['x'],
+                                                               posY = maquina['y'])
             if maquinaExistente:
                 rta = 0
     return rta
@@ -89,9 +98,9 @@ def crearPaso():
 
 
 def createGroups():
-    cientificos, created1 = Group.objects.get_or_create(name='Cientifico Experimentado')
-    asistentes, created2 = Group.objects.get_or_create(name='Asistente de Laboratorio')
-    jefes, created3 = Group.objects.get_or_create(name='Jefe de Laboratorio')
+    cientificos, created1 = Group.objects.get_or_create(name = 'Cientifico Experimentado')
+    asistentes, created2 = Group.objects.get_or_create(name = 'Asistente de Laboratorio')
+    jefes, created3 = Group.objects.get_or_create(name = 'Jefe de Laboratorio')
 
     maquinasAgregar = Permission.objects.get(name='maquina||agregar')
     maquinasEditar = Permission.objects.get(name='maquina||editar')
@@ -109,14 +118,13 @@ def createGroups():
 
 
 def createUsers():
-    cientificos = Group.objects.get(name='Cientifico Experimentado')
-    jefes = Group.objects.get(name='Jefe de Laboratorio')
-    asistentes = Group.objects.get(name='Asistente de Laboratorio')
+    cientificos = Group.objects.get(name = 'Cientifico Experimentado')
+    jefes = Group.objects.get(name = 'Jefe de Laboratorio')
+    asistentes = Group.objects.get(name = 'Asistente de Laboratorio')
 
-    tipDocumento = TipoDocumento.objects.get(nombre_corto='CC')
+    tipDocumento = TipoDocumento.objects.get(nombre_corto = 'CC')
 
-    exist_cientifico, new_cientifico = User.objects.get_or_create(
-        username='acastro')
+    exist_cientifico, new_cientifico = User.objects.get_or_create(username = 'acastro')
 
     if new_cientifico:
         exist_cientifico.email = 'acastro@uniandes.edu.co'
@@ -130,21 +138,20 @@ def createUsers():
         exist_cientifico.save()
 
     exist_usuario, new_usuario = Usuario.objects.get_or_create(
-        nombre_usuario='acastro',
-        correo_electronico='acastro@uniandes.edu.co',
-        codigo_usuario='19950912',
-        nombres='Aquiles',
-        apellidos='Castro',
-        telefono='7453694',
-        userNatIdTyp=tipDocumento,
-        userNatIdNum='79325416',
-        grupo=cientificos,
-        user=exist_cientifico,
-        contrasena=CONTRASENA,
+            nombre_usuario = 'acastro',
+            correo_electronico = 'acastro@uniandes.edu.co',
+            codigo_usuario = '19950912',
+            nombres = 'Aquiles',
+            apellidos = 'Castro',
+            telefono = '7453694',
+            userNatIdTyp = tipDocumento,
+            userNatIdNum = '79325416',
+            grupo = cientificos,
+            user = exist_cientifico,
+            contrasena = CONTRASENA,
     )
 
-    exist_jefe, new_jefe = User.objects.get_or_create(
-        username='bcamelas')
+    exist_jefe, new_jefe = User.objects.get_or_create(username = 'bcamelas')
     if new_jefe:
         exist_jefe.email = 'bcamelas@uniandes.edu.co'
         exist_jefe.set_password(CONTRASENA)
@@ -157,21 +164,21 @@ def createUsers():
         exist_jefe.save()
 
     exist_usuario, new_usuario = Usuario.objects.get_or_create(
-        nombre_usuario='bcamelas',
-        correo_electronico='bcamelas@uniandes.edu.co',
-        codigo_usuario='19950913',
-        nombres='Benito',
-        apellidos='Camelas',
-        telefono='7453619',
-        userNatIdTyp=tipDocumento,
-        userNatIdNum='79163482',
-        grupo=jefes,
-        user=exist_jefe,
-        contrasena=CONTRASENA,
+            nombre_usuario = 'bcamelas',
+            correo_electronico = 'bcamelas@uniandes.edu.co',
+            codigo_usuario = '19950913',
+            nombres = 'Benito',
+            apellidos = 'Camelas',
+            telefono = '7453619',
+            userNatIdTyp = tipDocumento,
+            userNatIdNum = '79163482',
+            grupo = jefes,
+            user = exist_jefe,
+            contrasena = CONTRASENA,
     )
 
     exist_asistente, new_asistente = User.objects.get_or_create(
-        username='mgalindo')
+            username = 'mgalindo')
     if new_asistente:
         exist_asistente.email = 'mgalindo@uniandes.edu.co'
         exist_asistente.set_password(CONTRASENA)
@@ -184,17 +191,17 @@ def createUsers():
         exist_asistente.save()
 
     exist_usuario, new_usuario = Usuario.objects.get_or_create(
-        nombre_usuario='mgalindo',
-        correo_electronico='mgalindo@uniandes.edu.co',
-        codigo_usuario='19950914',
-        nombres='Monica',
-        apellidos='Galindo',
-        telefono='7453698',
-        userNatIdTyp=tipDocumento,
-        userNatIdNum='31852496',
-        grupo=asistentes,
-        user=exist_asistente,
-        contrasena=CONTRASENA,
+            nombre_usuario = 'mgalindo',
+            correo_electronico = 'mgalindo@uniandes.edu.co',
+            codigo_usuario = '19950914',
+            nombres = 'Monica',
+            apellidos = 'Galindo',
+            telefono = '7453698',
+            userNatIdTyp = tipDocumento,
+            userNatIdNum = '31852496',
+            grupo = asistentes,
+            user = exist_asistente,
+            contrasena = CONTRASENA,
     )
 
     if new_cientifico or new_jefe or new_asistente:
