@@ -597,8 +597,8 @@ def reservar_maquina(request, pk):
             :returns: HttpResponse -- La respuesta a la petición, con información del calendario para reservar la 
                                       máquina.
         """
-    if request.user.is_authenticated():
-        lista_maquina = MaquinaEnLab.objects.filter(idMaquina_id = pk)
+    if request.user.is_authenticated() and request.user.has_perm('LabModule.can_requestMachine'):
+        lista_maquina = MaquinaEnLab.objects.filter(idMaquina_id=pk)
         if lista_maquina is None:
             # cambiar por listado de maquinas
             return listar_lugares(request)

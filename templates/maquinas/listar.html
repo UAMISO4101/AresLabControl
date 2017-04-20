@@ -34,7 +34,7 @@
 
             {% for maquina, ubicacion in maquinasBien %}
 
-                <tr class="clickable-row {{ maquina.con_reserva|yesno:"danger," }}"
+                <tr class=" {{ maquina.con_reserva|yesno:"danger," }}"
                     data-href="/maquina/{{ maquina.idSistema }}">
                     <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ maquina.idSistema }}</td>
                     <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ maquina.nombre }}</td>
