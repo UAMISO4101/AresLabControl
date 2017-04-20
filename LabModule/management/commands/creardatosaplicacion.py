@@ -13,7 +13,7 @@ from LabModule.models import MaquinaEnLab
 from LabModule.models import MaquinaProfile
 from LabModule.models import TipoDocumento
 from LabModule.models import Usuario
-from LabModule.models import Projecto
+from LabModule.models import Proyecto
 
 CONTRASENA = getattr(settings, "CONTRASENA", '1a2d3m4i5n6')
 
@@ -73,7 +73,7 @@ def crearMuestra():
 
 
 def crearProyecto():
-    nuevoProyecto,noexistia=Projecto.objects.get_or_create(nombre="Colombia Viva")
+    nuevoProyecto,noexistia=Proyecto.objects.get_or_create(nombre="Colombia Viva")
     
     nuevoProyecto.descripcion="Proyecto para sintetizar una droga que reduzca el cansancio"
     nuevoProyecto.objetivo="Crear"
