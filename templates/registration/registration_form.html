@@ -1,21 +1,21 @@
 {% extends "base.html" %}
-{% block head_title %}{{block.super}}Registrarse{% endblock%}
+{% block head_title %}{{ block.super }}Registrarse{% endblock %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class='row'>
-    <div class='col-sm-6 col-sm-offset-3'>
-        <h1>Registro de Usuario Nuevo</h1>
-        <form method="post" action="." enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <input class='btn btn-block btn-primary' type="submit" value="Completar Registro"/>
-        </form>
+    <div class='row'>
+        <div class='col-sm-6 col-sm-offset-3'>
+            <h1>Registro de Usuario Nuevo</h1>
+            <form method="post" action="." enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input class='btn btn-block btn-primary' type="submit" value="Completar Registro"/>
+            </form>
+        </div>
     </div>
-</div>
-<hr/>
-<div class='row'>
-    <div class='col-sm-6 col-sm-offset-3 text-align-center'>
-        <p>Ya tiene una cuenta activa. <a href="{% url 'auth_login' %}">Ingresar</a>?</p>
+    <hr/>
+    <div class='row'>
+        <div class='col-sm-6 col-sm-offset-3 text-align-center'>
+            <p>Ya tiene una cuenta activa. <a href="{% url 'auth_login' %}">Ingresar</a>?</p>
+        </div>
     </div>
-</div>
 {% endblock %}
