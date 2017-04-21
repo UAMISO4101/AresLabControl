@@ -29,9 +29,9 @@
                                onblur="cambiarColorBlur(this)">Lugares <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 {% if perms.LabModule.can_addStorage %}
-                                    <li><a href="{% url 'agregarLugar' %}" class="navtext">Agregar Lugar</a></li>
+                                    <li><a href="{% url 'lugar-add' %}" class="navtext">Agregar Lugar</a></li>
                                 {% endif %}
-                                <li><a href="{% url 'listaLugares' %}" class="navtext">Listar Lugares</a></li>
+                                <li><a href="{% url 'lugar-list' %}" class="navtext">Listar Lugares</a></li>
                             </ul>
                         </li>
                     {% endif %}
@@ -46,7 +46,7 @@
                                 {% if perms.LabModule.can_addMachine %}
                                     <li><a href="{% url 'maquina-add' %}" class="navtext">Agregar Máquina</a></li>
                                 {% endif %}
-                                <li><a href="{% url 'maquinas-listar' %}" class="navtext">Listar Máquinas</a></li>
+                                <li><a href="{% url 'maquina-list' %}" class="navtext">Listar Máquinas</a></li>
                             </ul>
                         </li>
                     {% endif %}

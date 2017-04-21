@@ -10,26 +10,29 @@ urlpatterns = [
     # Peticiones a vistas
     url(r'^$', views.home, name = 'home'),
     # Lugar de almacenamiento
-    url(r'^agregarLugar/$', views.agregar_lugar, name = 'agregarLugar'),
-    url(r'^listaLugares/$', views.listar_lugares, name = 'listaLugares'),
-    url(r'^verLugar/(?P<pk>[\w\-]+)/$', views.listar_lugar, name = 'verLugar'),
+    url(r'^almacenamiento/add/$', views.lugar_add, name = 'lugar-add'),
+    url(r'^almacenamiento/update/(?P<pk>[\w\-]+)/$', views.lugar_detail, name = 'lugar-update'),
+    url(r'^almacenamiento/(?P<pk>[\w\-]+)/$', views.lugar_detail, name = 'lugar-detail'),
+    url(r'^almacenamiento/$', views.lugar_list, name = 'lugar-list'),
     # Usuarios
     url(r'accounts/register/$', views.registrar_usuario, name = 'registration_register'),
     # Maquinas
-    url(r'^maquina/add/$', views.maquina_create, name = 'maquina-add'),
-    url(r'^maquina/$', views.listarMaquinas, name = 'maquinas-listar'),
+    url(r'^maquina/add/$', views.maquina_add, name = 'maquina-add'),
+    url(r'^maquina/$', views.maquina_list, name = 'maquina-list'),
+    url(r'^maquina/solicitar/$', views.maquina_request, name = 'maquina-request'),
+    # url(r'^maquina/solicitar/(?P<pk>[\w\-]+)/$', views.maquina_request, name = 'maquina-request'),
     url(r'^maquina/(?P<pk>[\w\-]+)/$', views.maquina_update, name = 'maquina-detail'),
     url(r'^maquina/update/(?P<pk>[\w\-]+)/$', views.maquina_update, name = 'maquina-update'),
-    url(r'^reservarMaquina/(?P<pk>[\w\-]+)/$', views.reservar_maquina, name = 'reservarMaquina'),
     # Muestras
-    url(r'^solicitarMuestra/$', views.crear_solicitud_muestra, name = 'solicitarMuestra'),
-    url(r'^solicitarMuestra/experimentos/$', views.cargar_experimentos, name = 'experimentos'),
-    url(r'^solicitarMuestra/protocolos/$', views.cargar_protocolos, name = 'protocolos'),
-    url(r'^solicitarMuestra/pasos/$', views.cargar_pasos, name = 'pasos'),
-    url(r'^solicitarMaquina/$', views.crear_solicitud_maquina, name = 'solicitarMaquina'),
-    # Detalle Muestra
-    url(r'^verMuestra/(?P<pk>[\w\-]+)/$', views.listar_muestra, name = 'verMuestra'),
-    url(r'^reservarMuestra/$', views.reservar_muestra, name = 'reservarMuestra'),
+    # url(r'^muestra/add/$', views.muestra_create, name = 'muestra-add'),
+    # url(r'^muestra/$', views.muestra_list, name = 'muestra-list'),
+    url(r'^muestra/solicitar/$', views.muestra_request, name = 'muestra-request'),
+    url(r'^muestra/(?P<pk>[\w\-]+)/$', views.muestra_detail, name = 'muestra-detail'),
+    # url(r'^muestra/update/(?P<pk>[\w\-]+)/$', views.muestra_update, name = 'muestra-update'),
+    # Servicios
+    url(r'^solicitarMuestra/experimentos/$', views.cargar_experimentos, name = 's-experimentos-list'),
+    url(r'^solicitarMuestra/protocolos/$', views.cargar_protocolos, name = 's-protocolos-list'),
+    url(r'^solicitarMuestra/pasos/$', views.cargar_pasos, name = 's-pasos-list'),
 
 ]
 

@@ -27,6 +27,7 @@ from forms import SolicitudForm
 from models import Bandeja
 from models import Experimento
 from models import LaboratorioProfile
+from models import LugarAlmacenamiento
 from models import LugarAlmacenamientoEnLab
 from models import MaquinaEnLab
 from models import MaquinaProfile
@@ -109,7 +110,7 @@ def registrar_usuario(request):
     return HttpResponse(_('No autorizado'), status = 401)
 
 
-def agregar_lugar(request):
+def lugar_add(request):
     """Desplegar y comprobar los valores a insertar.
            Historia de usuario: ALF-37 - Yo como Jefe de Laboratorio quiero poder agregar nuevos lugares de 
            almacenamiento para poder utilizarlos en el sistema.
@@ -239,7 +240,7 @@ def comprobarPostMaquina(form, formPos, request, template_name, section):
                   {'form': form, 'formPos': formPos, 'section': section, 'mensaje': mensaje})
 
 
-def maquina_create(request, template_name = 'maquinas/agregar.html'):
+def maquina_add(request, template_name = 'maquinas/agregar.html'):
     """Comporbar si el usuario puede agregar una máquina y obtener los campos necesarios.
         Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :
         Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
@@ -308,7 +309,7 @@ def maquina_update(request, pk, template_name = 'maquinas/agregar.html'):
         return HttpResponse('No autorizado', status = 401)
 
 
-def listarMaquinas(request):
+def maquina_list(request):
     """Comprobar si el usario puede ver las máquinas y mostraselas filtrando por una búsqueda.
            Historia de usuario: ALF-20:Yo como Jefe de Laboratorio quiero poder filtrar las máquinas existentes por 
            nombre para visualizar sólo las que me interesan.
@@ -333,14 +334,14 @@ def listarMaquinas(request):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
         section = {}
         section['title'] = 'Listar Máquinas'
-        edita = request.user.has_perm("LabModule.can_edditMachine")
+        edita = request.user.has_perm("LabModule.can_editMachine")
         if not edita:
             lista_maquinas = MaquinaProfile.objects.all().filter(activa = True).extra(order_by = ['nombre'])
         else:
             lista_maquinas = MaquinaProfile.objects.all().extra(order_by = ['nombre'])
 
-        idMquinas = [maquina.idSistema for maquina in lista_maquinas]
-        lista_Posiciones = MaquinaEnLab.objects.all().filter(idMaquina__in = idMquinas)
+        id_maquina = [maquina.idSistema for maquina in lista_maquinas]
+        lista_Posiciones = MaquinaEnLab.objects.all().filter(idMaquina__in = id_maquina)
         maquinasConUbicacion = zip(lista_maquinas, lista_Posiciones)
         context = {'section': section, 'maquinasBien': maquinasConUbicacion}
         return render(request, 'maquinas/listar.html', context)
@@ -348,7 +349,7 @@ def listarMaquinas(request):
         return HttpResponse('No autorizado', status = 401)
 
 
-def listar_lugares(request):
+def lugar_list(request):
     """Desplegar y comprobar los valores a consultar.
               Historia de usuario: ALF-39 - Yo como Jefe de Laboratorio quiero poder filtrar los lugares de 
               almacenamiento existentes por nombre para visualizar sólo los que me interesan.
@@ -361,17 +362,25 @@ def listar_lugares(request):
            almacenamiento existentes.
 
           """
-    section = {}
-    section['title'] = 'Listar Lugares Almacenamiento'
-    if request.user.is_authenticated():
-        lista_lugares = LugarAlmacenamientoEnLab.objects.all()
-        context = {'section': section, 'lista_lugares': lista_lugares}
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewStorage"):
+        section = {}
+        section['title'] = 'Listar Almacenamientos'
+        edita = request.user.has_perm("LabModule.can_editStorage")
+        if not edita:
+            lista_almacenamiento = LugarAlmacenamiento.objects.all().filter(activa = True).extra(order_by = ['nombre'])
+        else:
+            lista_almacenamiento = LugarAlmacenamiento.objects.all().extra(order_by = ['nombre'])
+
+        id_almacenamiento = [maquina.id for maquina in lista_almacenamiento]
+        lista_Posiciones = LugarAlmacenamientoEnLab.objects.all().filter(idLugar__in = id_almacenamiento)
+        lugaresConUbicacion = zip(lista_almacenamiento, lista_Posiciones)
+        context = {'section': section, 'lista_lugares': lugaresConUbicacion}
         return render(request, 'almacenamientos/listar.html', context)
     else:
         return HttpResponse('No autorizado', status = 401)
 
 
-def crear_solicitud_maquina(request):
+def maquina_request(request):
     """Realiza la solicitud de máquinas por el usuario que la necesita
         Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una maquina normal en una 
         franja de tiempo especifica para hacer uso de ella
@@ -428,7 +437,7 @@ def crear_solicitud_maquina(request):
         return HttpResponse('No autorizado', status = 401)
 
 
-def listar_lugar(request, pk):
+def lugar_detail(request, pk):
     """Desplegar y comprobar los valores a consultar.
                 Historia de usuario: ALF-42-Yo como Jefe de Laboratorio quiero poder ver el detalle de un 
                 lugar de almacenamiento para conocer sus características
@@ -444,7 +453,7 @@ def listar_lugar(request, pk):
     if request.user.is_authenticated():
         lista_lugar = LugarAlmacenamientoEnLab.objects.filter(idLugar_id = pk)
         if lista_lugar is None:
-            return listar_lugares(request)
+            return lugar_list(request)
         else:
             lugar = lista_lugar[0]
             bandejasOcupadas = Bandeja.objects.filter(lugarAlmacenamiento_id = pk, libre = False).count()
@@ -464,7 +473,7 @@ def listar_lugar(request, pk):
         return HttpResponse('No autorizado', status = 401)
 
 
-def crear_solicitud_muestra(request):
+def muestra_request(request):
     """Realiza la solicitud de muestras por el usuario que la necesita
             Historia de usuario: ALF-81:Yo como Asistente de Laboratorio quiero poder solicitar una muestra para
              continuar con mis experimentos
@@ -525,7 +534,7 @@ def crear_solicitud_muestra(request):
         return HttpResponse('No autorizado', status = 401)
 
 
-def listar_muestra(request, pk):
+def muestra_detail(request, pk):
     """Desplegar y comprobar los valores a consultar.
                 Historia de usuario: ALF-50 - Yo como Asistente de Laboratorio quiero poder ver el detalle de una 
                 muestra para conocer sus características.
@@ -542,12 +551,12 @@ def listar_muestra(request, pk):
         lista_muestra = Muestra.objects.filter(id = pk)
         if lista_muestra is None:
             # cambiar por listado de muestras
-            return listar_lugares(request)
+            return lugar_list(request)
         else:
             muestra = lista_muestra[0]
             context = {'muestra': muestra}
 
-            return render(request, 'Muestra/detalle.html', context)
+            return render(request, 'muestra/detalle.html', context)
     else:
         return HttpResponse('No autorizado', status = 401)
 
@@ -598,10 +607,10 @@ def reservar_maquina(request, pk):
                                       máquina.
         """
     if request.user.is_authenticated() and request.user.has_perm('LabModule.can_requestMachine'):
-        lista_maquina = MaquinaEnLab.objects.filter(idMaquina_id=pk)
+        lista_maquina = MaquinaEnLab.objects.filter(idMaquina_id = pk)
         if lista_maquina is None:
             # cambiar por listado de maquinas
-            return listar_lugares(request)
+            return lugar_list(request)
         else:
             maquina_en_lab = lista_maquina[0]
             maquina_profile = maquina_en_lab.idMaquina
@@ -610,27 +619,6 @@ def reservar_maquina(request, pk):
             return render(request, 'maquinas/agenda.html', context)
     else:
         return HttpResponse('No autorizado', status = 401)
-
-
-def poblar_datos(request):
-    """Realiza la población de datos para máquinas
-            Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :
-            Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas 
-            por los asistentes.
-            Se encarga de:
-                * Poblar la información para las máquinas
-
-            :param request: El HttpRequest que se va a responder.
-            :type request: HttpRequest.
-
-            :returns: HttpResponse -- Redirección a la pagina inicial de la aplicación
-
-        """
-    MaquinaProfile.objects.create(
-            nombre = 'Laboratorio genomica',
-            descripcion = "Aca se hace genomica",
-            idSistema = "Lab_101")
-    return HttpResponseRedirect(reverse('home'))
 
 
 @csrf_exempt

@@ -11,9 +11,9 @@ from django.templatetags.static import static
 from LabModule.models import LaboratorioProfile
 from LabModule.models import MaquinaEnLab
 from LabModule.models import MaquinaProfile
+from LabModule.models import Proyecto
 from LabModule.models import TipoDocumento
 from LabModule.models import Usuario
-from LabModule.models import Proyecto
 
 CONTRASENA = getattr(settings, "CONTRASENA", '1a2d3m4i5n6')
 
@@ -102,11 +102,11 @@ def createGroups():
     asistentes, created2 = Group.objects.get_or_create(name = 'Asistente de Laboratorio')
     jefes, created3 = Group.objects.get_or_create(name = 'Jefe de Laboratorio')
 
-    maquinasAgregar = Permission.objects.get(name='maquina||agregar')
-    maquinasEditar = Permission.objects.get(name='maquina||editar')
-    maquinasVer = Permission.objects.get(name='maquina||ver')
-    maquinasSolicitar = Permission.objects.get(name='maquina||solicitar')
-    agregarUsuario = Permission.objects.get(name='usuario||agregar')
+    maquinasAgregar = Permission.objects.get(name = 'maquina||agregar')
+    maquinasEditar = Permission.objects.get(name = 'maquina||editar')
+    maquinasVer = Permission.objects.get(name = 'maquina||ver')
+    maquinasSolicitar = Permission.objects.get(name = 'maquina||solicitar')
+    agregarUsuario = Permission.objects.get(name = 'usuario||agregar')
 
     cientificos.permissions.add(maquinasAgregar, maquinasEditar, maquinasVer, agregarUsuario)
     jefes.permissions.add(maquinasVer, agregarUsuario)

@@ -13,7 +13,7 @@
 {% block content %}
 
     <div class="page-header text-center">
-        <h2 style="color: #6269A2 ">Lugares de almacenamiento</h2>
+        <h2>{% block title %}{{ section.title }}{% endblock %} </h2>
     </div>
 
     <table id="lugares_table" class="datatable display compact responsive nowrap" cellspacing="0"
@@ -22,23 +22,32 @@
         <tr>
             <th>Id</th>
             <th>Nombre</th>
-            <th>PosX</th>
-            <th>PosY</th>
+            <th>Ubicación</th>
             <th>Temp(Grados)</th>
-            <th></th>
+            <th>Acciones</th>
         </tr>
         </thead>
 
         <tbody>
 
-        {% for lugar in lista_lugares %}
+        {% for lugar,ubicacion in lista_lugares %}
             <tr>
-                <td>{{ lugar.idLugar.id }}</td>
-                <td>{{ lugar.idLugar.nombre }}</td>
-                <td>{{ lugar.posX }}</td>
-                <td>{{ lugar.posY }}</td>
-                <td>{{ lugar.idLugar.temperatura }}</td>
-                <td align="center"><a class="btn btn-primary" href="/verLugar/{{ lugar.idLugar.id }}">Ver Detalle</a>
+                <td>{{ lugar.id }}</td>
+                <td>{{ lugar.nombre }}</td>
+                <td>{{ ubicacion }}</td>
+                <td>{{ lugar.temperatura }}ºC</td>
+                <td>
+                    {% if perms.LabModule.can_viewStorage %}
+                        <a href="{% url 'lugar-detail' lugar.id %} "
+                           class="btn btn-primary"
+                           role="button">Ver</a>
+                    {% endif %}
+                    {% if perms.LabModule.can_editStorage %}
+                        <a href="{% url 'lugar-update' lugar.id %} "
+                           class="btn btn-primary {{ maquina.con_reserva|yesno:"danger," }}"
+                           role="button">Editar</a>
+                    {% endif %}
+
                 </td>
             </tr>
         {% endfor %}

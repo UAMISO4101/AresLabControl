@@ -14,8 +14,8 @@ from django.test import TestCase
 from LabModule.models import LaboratorioProfile
 from LabModule.models import MaquinaEnLab
 from LabModule.models import MaquinaProfile
-from .views import listarMaquinas
-from .views import maquina_create
+from .views import maquina_add
+from .views import maquina_list
 from .views import maquina_update
 
 c = Client(HTTP_USER_AGENT = 'Mozilla/5.0')
@@ -138,7 +138,7 @@ class AddMaquinasTest(TestCase):
 
         request = self.factory.post('/maquina/add', data = self.maquinaPrueba)
         request.user = self.user
-        maquina_create(request)
+        maquina_add(request)
 
     def test_PermisoAgregar(self):
         """Comprueba que un usario no autenticado no pueda agregar máquinas.
@@ -146,12 +146,12 @@ class AddMaquinasTest(TestCase):
         """
         request = self.factory.get('/maquina/add', follow = True)
         request.user = AnonymousUser()
-        response = maquina_create(request)
+        response = maquina_add(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
 
         request.user = self.user
 
-        response = maquina_create(request)
+        response = maquina_add(request)
         self.assertEqual(response.status_code, 200, "Debe estar autorizado")
 
     def test_ModificarMaquina(self):
@@ -175,7 +175,7 @@ class AddMaquinasTest(TestCase):
         """
         request = self.factory.post('/maquina/add', data = self.maquina1)
         request.user = self.user
-        response = maquina_create(request)
+        response = maquina_add(request)
         eMaquina = MaquinaProfile.objects.filter(pk = "AUTO_001").exists()
         self.assertEqual(eMaquina, True, "El cientifico debe poder agregar máquinas")
 
@@ -190,7 +190,7 @@ class AddMaquinasTest(TestCase):
         """
         request = self.factory.post('/maquina/add', data = self.maquina2)
         request.user = self.user
-        response = maquina_create(request)
+        response = maquina_add(request)
         eMaquina = MaquinaProfile.objects.filter(pk = "AUTO_002").exists()
         self.assertEqual(eMaquina, False, "El campo ya esta ocupado")
 
@@ -199,7 +199,7 @@ class AddMaquinasTest(TestCase):
         """
         request = self.factory.post('/maquina/add', data = self.maquina3)
         request.user = self.user
-        response = maquina_create(request)
+        response = maquina_add(request)
         con = MaquinaProfile.objects.filter(con_reserva = False).count()
         eMaquina = con == 1
         self.assertEqual(eMaquina, True, "Deberia solo haber una maquia pero hay " + str(con))
@@ -210,7 +210,7 @@ class AddMaquinasTest(TestCase):
 
         request = self.factory.post('/maquina/add', data = self.maquina4)
         request.user = self.user
-        response = maquina_create(request)
+        response = maquina_add(request)
         eMaquina = MaquinaProfile.objects.filter(pk = "AUTO_004").exists()
         self.assertEqual(eMaquina, False, "El laboratorio no es valido")
 
@@ -221,7 +221,7 @@ class AddMaquinasTest(TestCase):
 
         request = self.factory.post('/maquina/add', data = self.maquina5)
         request.user = self.user
-        response = maquina_create(request)
+        response = maquina_add(request)
         eMaquina = MaquinaProfile.objects.filter(pk = "AUTO_005").exists()
         self.assertEqual(eMaquina, False, "La posicion es invalida")
 
@@ -231,7 +231,7 @@ class AddMaquinasTest(TestCase):
 
         request = self.factory.post('/maquina/add', data = self.maquina6)
         request.user = self.user
-        response = maquina_create(request)
+        response = maquina_add(request)
         eMaquina = MaquinaProfile.objects.filter(pk = "AUTO_005").exists()
         self.assertEqual(eMaquina, False, "La posicion es invalida")
 
@@ -241,7 +241,7 @@ class AddMaquinasTest(TestCase):
 
         request = self.factory.post('/maquina/add', data = self.maquina7)
         request.user = self.user
-        response = maquina_create(request)
+        response = maquina_add(request)
         eMaquina = MaquinaProfile.objects.filter(pk = "AUTO_005").exists()
         self.assertEqual(eMaquina, False, "La posicion es invalida")
 
@@ -251,7 +251,7 @@ class AddMaquinasTest(TestCase):
 
         request = self.factory.post('/maquina/add', data = self.maquina8)
         request.user = self.user
-        response = maquina_create(request)
+        response = maquina_add(request)
         eMaquina = MaquinaProfile.objects.filter(pk = "AUTO_008").exists()
         self.assertEqual(eMaquina, False, "La posicion es invalida")
 
@@ -293,10 +293,10 @@ class listMaquinasTest(TestCase):
         """
         request = self.factory.get('/maquina', follow = True)
         request.user = AnonymousUser()
-        response = listarMaquinas(request)
+        response = maquina_list(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
         request.user = self.cientifico
-        response = listarMaquinas(request)
+        response = maquina_list(request)
         self.assertEqual(response.status_code, 200, "El cientifico debe estar autorizado")
 
     def test_Filtro(self):
@@ -304,13 +304,13 @@ class listMaquinasTest(TestCase):
         """
         request = self.factory.get('/maquina?que=blabla', follow = True)
         request.user = self.cientifico
-        response = listarMaquinas(request)
+        response = maquina_list(request)
         self.assertEqual(response.status_code, 200, "El cientifico debe estar autorizado")
         self.assertEqual("MAQ001" in response.content, False, "No debe encontrar la máquinas")
 
         request = self.factory.get('/maquina?que=auto', follow = True)
         request.user = self.cientifico
-        response = listarMaquinas(request)
+        response = maquina_list(request)
         self.assertEqual("MAQ002" in response.content, True, "Debe encontrar la máquinas")
 
 
