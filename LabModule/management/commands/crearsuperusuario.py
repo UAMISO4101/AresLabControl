@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.conf import settings
 
 from django.contrib.auth.models import User
@@ -13,11 +14,12 @@ def crearsuperusuario():
     password = CONTRASENA
     email = EMAIL_HOST_USER
 
-    if User.objects.filter(username=username).count() == 0:
+    if User.objects.filter(username = username).count() == 0:
         User.objects.create_superuser(username, email, password)
         return 0
     else:
         return 1
+
 
 class Command(BaseCommand):
     help = 'Configuracion Inicial SuperUsuario'
