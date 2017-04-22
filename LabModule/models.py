@@ -448,6 +448,19 @@ class LugarAlmacenamiento(models.Model):
             default = 'images/image-not-found.jpg'
     )
 
+    id= models.CharField(
+            max_length = 100,
+            default = '',
+            verbose_name = _("Identificación"),
+            null = False,
+            primary_key = True
+    )
+    
+    def __unicode__(self):
+        return self.id+":"+self.nombre 
+
+
+
 
 class LugarAlmacenamientoEnLab(models.Model):
     """Relación entre :class:`LugarAlmacenamiento` y :class:`LaboratorioProfile`
@@ -463,8 +476,8 @@ class LugarAlmacenamientoEnLab(models.Model):
      """
 
     class Meta:
-        verbose_name = "Lugar Almacenamiento en Laboratorio"
-        verbose_name_plural = 'Lugar Almacenamiento en Laboratorio'
+        verbose_name = "Lugar de almacenamiento en Laboratorio"
+        verbose_name_plural = 'Lugares de almacenamiento en Laboratorio'
 
     idLaboratorio = models.ForeignKey(
             LaboratorioProfile,
@@ -701,6 +714,14 @@ class Bandeja(models.Model):
             on_delete = models.CASCADE,
             verbose_name = _("Selección de Lugar Almacenamiento")
     )
+
+    posicion= models.PositiveIntegerField(
+            verbose_name = _("Número de bandeja"),
+            null=False,
+            blank=False
+    )
+
+
 
 
 class Solicitud(models.Model):
