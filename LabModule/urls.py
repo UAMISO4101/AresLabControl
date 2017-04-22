@@ -33,7 +33,8 @@ urlpatterns = [
     url(r'^solicitarMuestra/experimentos/$', views.cargar_experimentos, name = 's-experimentos-list'),
     url(r'^solicitarMuestra/protocolos/$', views.cargar_protocolos, name = 's-protocolos-list'),
     url(r'^solicitarMuestra/pasos/$', views.cargar_pasos, name = 's-pasos-list'),
-
+    url(r'^aprobarSolicitudMuestras/listar/$', views.listar_solicitud_muestra, name = 'verSolicitudes'),
+    url(r'^aprobarSolicitudMuestras/aprobar/$', views.aprobar_solicitud_muestra, name = 'aprobarSolicitud'),
 ]
 
 if settings.DEBUG:

@@ -694,6 +694,10 @@ class Bandeja(models.Model):
             null = True,
             verbose_name = _("Selección de Muestra")
     )
+    posicion = models.IntegerField(
+        null=True,
+        verbose_name="Posicion"
+    )
     lugarAlmacenamiento = models.ForeignKey(
             LugarAlmacenamiento,
             blank = False,

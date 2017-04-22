@@ -2,6 +2,8 @@
 
 from __future__ import absolute_import
 
+from datetime import date
+
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.models import Permission
@@ -11,7 +13,7 @@ from django.test import Client
 from django.test import RequestFactory
 from django.test import TestCase
 
-from LabModule.models import LaboratorioProfile
+from LabModule.models import LaboratorioProfile, Muestra, Solicitud
 from LabModule.models import MaquinaEnLab
 from LabModule.models import MaquinaProfile
 from .views import maquina_add
@@ -353,3 +355,32 @@ class LoginTest(TestCase):
         postData = {"username": "incorrecto", "password": "estamal"}
         response = c.post('/accounts/login/', postData, follow = True)
         self.assertEqual("correct username" in response.content, True, "No debe poder inciar sesións")
+
+class AprobarSolMuestraTest:
+    def setUp(self):
+        """"Aprobar solicitudes de muestra
+        """
+        # Every test needs access to the request factory.
+        self.factory = RequestFactory()
+        self.LaboratorioPrueba = LaboratorioProfile.objects.create(nombre="Laboratorio genetica", id="LAB_101")
+        self.user = User.objects.create_user(username = 'john',
+                                                   email = 'jlennon@beatles.com',
+                                                   password = CONTRASENA)
+        c.login(username=self.user.username, password=CONTRASENA)
+
+        #ver = Permission.objects.get(name = 'usuario||agregar')
+        #self.cientifico.user_permissions.add(ver)
+        self.muestra=Muestra.objects.create(nombre="Muestra #1",descripcion="Esta es una muestra de prueba",valor="1",unidadBase="sobres",
+                               activa=True, controlado=True)
+        self.solicitud=Solicitud.objects.create(descripcion="Solicitud de muestra",fechaInicial=date('2017','06','02'),
+                                                fechaFinal=date('2017', '06', '08'),estado='creada',solicitante='',
+                                                fechaActual=date('2017','06','02'),paso='')
+        self.lugarAlmacenamiento = {
+            "nombre": "Lugar # 1",
+            "descripcion": "Lugar de almacenamiento de prueba",
+            "capacidad": "5",
+            "temperatura": "20.0",
+            "idLaboratorio": self.LaboratorioPrueba.id,
+            "posX": "2",
+            "posY": "10"
+        }

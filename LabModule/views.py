@@ -164,7 +164,7 @@ def lugar_add(request):
 
                         for cantidad in range(lugar.capacidad):
                             bandeja = Bandeja(lugarAlmacenamiento = lugar,
-                                              libre = True)
+                                              libre = True,posicion=cantidad)
                             bandeja.save()
 
                         return HttpResponseRedirect(reverse('home'))
@@ -682,3 +682,50 @@ def cargar_pasos(request):
         return HttpResponse(json.dumps(steps_dict))
     else:
         return HttpResponse()
+
+def listar_solicitud_muestra(request):
+
+    if request.user.is_authenticated():
+        section = {}
+        section['title'] = 'Listar Solicitudes de Muestras'
+
+
+        lista_solicitudes = Solicitud.objects.all().exclude(estado = 'aprobada')
+
+        idSolicitudes = [solicitud.id for solicitud in lista_solicitudes]
+        lista_MuestraSol = MuestraSolicitud.objects.all().filter(solicitud__in = idSolicitudes)
+
+        context = {'section': section, 'solicitudes': lista_MuestraSol}
+        return render(request, 'solicitudes/aprobarMuestras.html', context)
+    else:
+        return HttpResponse('No autorizado', status = 401)
+
+def aprobar_solicitud_muestra(request):
+
+    if request.user.is_authenticated():
+        lista_lugares_pos={}
+        muestraSolicitud = MuestraSolicitud.objects.get(id=request.GET.get('id', 0))
+        contador = muestraSolicitud.cantidad
+        muestra= muestraSolicitud.muestra
+        if muestra.calc_disp()=='Si':
+            bandejas = Bandeja.objects.all().filter(muestra = muestra).extra(order_by = ['lugarAlmacenamiento'])
+            for bandeja in bandejas:
+                if contador>0 and bandeja.libre==False:
+                    lugar=bandeja.lugarAlmacenamiento.nombre
+                    if lugar in lista_lugares_pos:
+                        lista_lugares_pos[lugar] += str(bandeja.posicion)
+                    else:
+                        lista_lugares_pos[lugar] = str(bandeja.posicion)
+                    bandeja.libre=True
+                    bandeja.save()
+                    contador=contador - 1
+            muestraSolicitud.solicitud.estado='aprobada'
+            muestraSolicitud.solicitud.save()
+
+            context = { 'lugaresConPos': lista_lugares_pos}
+            return render(request, 'solicitudes/resumenAprobadoMuestra.html', context)
+        else:
+            context = {'mensaje': 'No es posible aprobar la solicitud porque no hay bandejas disponibles para suplir la demanda'}
+            return render(request, 'solicitudes/aprobarMuestras.html', context)
+    else:
+        return HttpResponse('No autorizado', status = 401)
