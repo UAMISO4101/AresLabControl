@@ -19,7 +19,8 @@ from LabModule.models import Usuario
 from LabModule.models import Proyecto
 from LabModule.models import LugarAlmacenamientoEnLab
 from LabModule.models import LugarAlmacenamiento
-
+from LabModule.models import Muestra
+from LabModule.models import Bandeja
 CONTRASENA = getattr(settings, "CONTRASENA", '1a2d3m4i5n6')
 
 
@@ -74,6 +75,7 @@ def crearAlmacenamiento():
     with open(".///" + static('lab_static/json/lugares.json')) as data_file:
         data=json.load(data_file)
         idAct=0
+
         for row in data: 
             nombre=row['nombre']
             descripcion=row['descripcion']
@@ -109,7 +111,38 @@ def crearAlmacenamiento():
 
 
 def crearMuestra():
-    return 0
+    rta=1
+    with open(".///" + static('lab_static/json/muestras.json')) as data_file:
+        data=json.load(data_file)
+        idAct=0
+        for row in data: 
+            nombre=row['nombre']
+            descripcion=row['descripcion'] 
+            Tipo=row['Tipo'] 
+            valor=row['valor'] 
+            activa=row['activa']  
+            controlado=row['controlado']  
+            imagen=row['imagen']
+            unidadBase=row['unidadBase']  
+            idAlmacenamiento=row['idAlmacenamiento']
+            nuevaMuestra, mustraCreada = Muestra.objects.get_or_create(nombre=nombre,descripcion=descripcion,valor=valor,activa=activa,controlado=controlado,
+                unidadBase=unidadBase)
+            nuevoLugar,LugarExistente=LugarAlmacenamiento.objects.get_or_create(id=idAlmacenamiento)
+            if mustraCreada:
+                print("Creando muestra",nombre)
+                rta=0
+                img_url = imagen
+                img_filename = urlparse(img_url).path.split('/')[-1]
+                img_temp = NamedTemporaryFile()
+                img_temp.write(urllib2.urlopen(img_url).read())
+                img_temp.flush()
+                nuevaMuestra.imagen.save(img_filename, File(img_temp))
+                cuenta=Bandeja.objects.filter(lugarAlmacenamiento = nuevoLugar).count()
+                posicion = 1 if cuenta==0 else cuenta+1
+                nuevaBandeja,bandejaExistenet=Bandeja.objects.get_or_create(muestra=nuevaMuestra,lugarAlmacenamiento=nuevoLugar,posicion=posicion)
+
+                
+    return rta
 
 
 def crearProyecto():
@@ -279,10 +312,10 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Bandejas '))
         else:
             self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Bandejas '))
-        if (crearAlmacenamiento() == 0):
-            self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Almacenamientos '))
-        else:
-            self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Almacenamientos '))
+        # if (crearAlmacenamiento() == 0):
+        #     self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Almacenamientos '))
+        # else:
+        #     self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Almacenamientos '))
         if (crearMuestra() == 0):
             self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Muestras '))
         else:

@@ -7,6 +7,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext as _
+from django.db.models import Max
 
 # Create your models here.
 
@@ -613,13 +614,13 @@ class Muestra(models.Model):
         permissions = permissions_sample
 
     nombre = models.CharField(
-            max_length = 50,
+            max_length = 1000,
             blank = False,
             null = True,
             verbose_name = _("Nombre de la Muestra")
     )
     descripcion = models.TextField(
-            max_length = 200,
+            max_length = 1000,
             blank = False,
             null = True,
             verbose_name = _("Descripción de la Muestra")
@@ -654,7 +655,7 @@ class Muestra(models.Model):
     )
 
     def __unicode__(self):
-        return 'Muestra: ' + str(self.nombre)
+        return 'Muestra: ' + self.nombre
 
     def calc_disp(self):
         bandejas = Bandeja.objects.filter(muestra = self)
@@ -718,8 +719,15 @@ class Bandeja(models.Model):
     posicion= models.PositiveIntegerField(
             verbose_name = _("Número de bandeja"),
             null=False,
+            default=1,
             blank=False
     )
+
+    def __unicode__(self):
+        return 'Bandeja: ' + self.muestra.__unicode__()+" "+self.lugarAlmacenamiento.__unicode__()+ " "+ str(self.posicion)
+
+
+
 
 
 
