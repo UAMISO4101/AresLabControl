@@ -59,6 +59,8 @@ class ListarMuestras(TestCase):
     
 
     def test_IngresarURL(self):
+        """ Comprueba que solo los usuarios autorizados puedan acceder a la lista de muestras
+        """
         request=self.factory.get(reverse('muestra-list'))
         request.user=self.anomimus
         response = muestra_list(request)
@@ -67,5 +69,7 @@ class ListarMuestras(TestCase):
         self.assertEqual(response.status_code, 200, "Debe ser capaz de acceder a la URL")
 
     def test_Listar(self):
+        """ Comprueba que un usuario autenticado pueda listar las muestras actuales
+        """
         response = self.client.get(reverse('muestra-list'))
         self.assertEqual(' acetilsalicilico' in response.content,True,"Debe listar la primera muestra")

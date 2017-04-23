@@ -622,6 +622,17 @@ def reservar_maquina(request, pk):
 
 
 def muestra_list(request):
+     """Listar y filtrar muestras
+                Historia de usuario:     ALF-52 - Yo como Asistente de Laboratorio quiero poder filtrar las muestras existentes por nombre para visualizar sólo las que me interesan.
+                Se encarga de:
+                * Listar, páginar y filtrar muestras
+
+            :param request: El HttpRequest que se va a responder.
+            :type request: HttpRequest.
+
+            :returns: HttpResponse -- La respuesta a la petición, con un datatable con las muestras.
+            Si el usuario no puede editarlas solo se muestran las muestras activas
+        """   
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_listSample"):
         section = {}
         section['title'] = 'Listar Muestras'
