@@ -42,10 +42,12 @@ from models import Solicitud
 from models import Usuario
 from .forms import LugarAlmacenamientoForm, SolicitudForm
 from .forms import MuestraSolicitudForm
-from .forms import PosicionesLugarAlmacenamientoForm
 from .forms import RegistroUsuarioForm
 
-
+import datetime
+from schedule.models import Calendar
+from schedule.models import Event
+from schedule.models import Rule
 # Create your views here.
 def home(request):
     """Metodo inicial de la aplicación
@@ -627,7 +629,7 @@ def reservar_maquina(request, pk):
 
 
 def muestra_list(request):
-     """Listar y filtrar muestras
+    """Listar y filtrar muestras
                 Historia de usuario:     ALF-52 - Yo como Asistente de Laboratorio quiero poder filtrar las muestras existentes por nombre para visualizar sólo las que me interesan.
                 Se encarga de:
                 * Listar, páginar y filtrar muestras
@@ -715,3 +717,27 @@ def cargar_pasos(request):
         return HttpResponse(json.dumps(steps_dict))
     else:
         return HttpResponse()
+
+
+def celendar(request):
+    # try:
+    #     rule = Rule.objects.get(name="WEEKLY")
+    # except Rule.DoesNotExist:
+    #     rule = Rule(frequency="WEEKLY", name="WEEKLY", description="will recur once every week")
+    #     rule.save()
+    # rule = Rule.objects.get(frequency="WEEKLY")
+    # calendario_maquinas=Calendar.objects.get(slug='calendario-maquinas')
+    # today = datetime.date.today()
+    # data = {
+    #     'title': 'Ping pong',
+    #     'start': datetime.datetime(today.year, today.month, today.day, 8, 0),
+    #     'end': datetime.datetime(today.year, today.month, today.day, 9, 0),
+    #     'end_recurring_period': datetime.datetime(today.year + 2, 5, 5, 0, 0),
+    #     'rule': rule,
+    #     'calendar': calendario_maquinas
+    # }
+    # event = Event(**data) 
+    # event.save()
+    section = {'title': _('Calendario')}
+    context={"section":section}
+    return render(request, 'Maquinas/calendario.html', context)
