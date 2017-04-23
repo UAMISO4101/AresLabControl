@@ -312,10 +312,10 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Bandejas '))
         else:
             self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Bandejas '))
-        # if (crearAlmacenamiento() == 0):
-        #     self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Almacenamientos '))
-        # else:
-        #     self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Almacenamientos '))
+        if (crearAlmacenamiento() == 0):
+            self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Almacenamientos '))
+        else:
+            self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % 'Almacenamientos '))
         if (crearMuestra() == 0):
             self.stdout.write(self.style.SUCCESS('"%sCreados."' % 'Muestras '))
         else:
