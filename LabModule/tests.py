@@ -422,12 +422,10 @@ class SolicitarMaquinaTest(TestCase):
         """
         request = self.factory.get('/maquina/solicitar', follow = True)
         request.user = AnonymousUser()
-        request.id='1'
         response = maquina_request(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
 
         request.user = self.userSinPermisos
-        request.id = '1'
         response = maquina_request(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
 
@@ -452,7 +450,9 @@ class SolicitarMaquinaTest(TestCase):
         }
         request = self.factory.post('/maquina/solicitar', data=self.data)
         request.user = self.user
-        request.id = '1'
+        request.GET= request.GET.copy()
+        request.GET['id']=1
         response = maquina_request(request)
         sMaquina = MaquinaSolicitud.objects.filter(maquina=self.maquinaPrueba).exists()
         self.assertEqual(sMaquina, False, "La solicitud no fue creada")
+
