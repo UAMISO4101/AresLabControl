@@ -415,7 +415,6 @@ class SolicitarMaquinaTest(TestCase):
             objetivo= "Comprobar funcionalidad de solicitud maquinas",projecto= self.proyectoPrueba)
         self.experimentoPrueba.protocolos.add(self.protocoloPrueba)
 
-
     def test_UsuarioNoAutorizado(self):
         """Comprueba que un usario no autenticado no pueda solicitar máquinas.
            También comprueba con un usario con el permiso de agregar máquinas pueda hacerlo
