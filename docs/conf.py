@@ -54,7 +54,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Laboratorio Farmaceutico'
+project = u'Laboratorio Farmacéutico'
 copyright = u'2017, Ares'
 author = u'Ares'
 

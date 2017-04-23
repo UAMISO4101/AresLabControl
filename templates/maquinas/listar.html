@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block head_others %}
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.jqueryui.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css">
+    <link href="{% static 'css/datatablesCustom.css' %}" rel="stylesheet">
+{% endblock %}
+{% block head_title %}{{ block.super }}{{ section.title }} {% endblock %}
+{% load lab_module_extras %}
+{% block content %}
+
+    <div class="page-header text-center">
+        <h2>{% block title %}{{ section.title }}{% endblock %} </h2>
+    </div>
+
+
+    <div class="row">
+        <table id="maquinas_table" class="datatable display compact responsive nowrap" cellspacing="0"
+               width="100%">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Ubicación</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for maquina, ubicacion in maquinasBien %}
+                <tr class= {{ maquina.con_reserva|yesno:"danger," }}>
+                    <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ maquina.idSistema }}</td>
+                    <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ maquina.nombre }}</td>
+                    <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ ubicacion }}</td>
+                    <td class="{{ maquina.con_reserva|yesno:"danger," }}">
+                        {% if perms.LabModule.can_viewMachine %}
+                            <a href="{% url 'maquina-detail' maquina.idSistema %} "
+                               class="btn btn-primary {{ maquina.con_reserva|yesno:"danger," }}"
+                               role="button">Ver</a>
+                        {% endif %}
+                        {% if perms.LabModule.can_editMachine %}
+                            <a href="{% url 'maquina-update' maquina.idSistema %} "
+                               class="btn btn-primary {{ maquina.con_reserva|yesno:"danger," }}"
+                               role="button">Editar</a>
+                        {% endif %}
+                        {% if perms.LabModule.can_requestMachine and maquina.con_reserva %}
+                            <a href="{% url 'maquina-request' %}?id={{ maquina.idSistema }}"
+                               class="btn btn-primary {{ maquina.con_reserva|yesno:"danger," }}"
+                               role="button">Reservar</a>
+                    {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% block scripts_others %}
+
+        <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
+
+        <script>
+            $(function () {
+
+                if ($.fn.dataTable.isDataTable('#maquinas_table')) {
+                    $('#maquinas_table').DataTable();
+                }
+                else {
+                    $('#maquinas_table').DataTable({
+                        responsive: true,
+                        sPaginationType: "full_numbers",
+                        bJQueryUI: true,
+                        language: {
+                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                        }
+                    });
+                }
+
+
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

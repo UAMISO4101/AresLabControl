@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block head_others %}
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.jqueryui.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css">
+    <link href="{% static 'css/datatablesCustom.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
+
+{% block content %}
+
+    <div class="page-header text-center">
+        <h2>{% block title %}{{ section.title }}{% endblock %} </h2>
+    </div>
+
+    <table id="muetras_table" class="datatable display compact responsive nowrap" cellspacing="0"
+           width="100%">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Valor</th>
+            <th>Unidad Base</th>
+            <th>Activa</th>
+            <th>Controlada</th>
+            <th>Ubicación Laboratorio</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        {% for muestra in lista_muetras %}
+            <tr>
+                <td>{{ muestra.id }}</td>
+                <td>{{ muestra.nombre }}</td>
+                <td>{{ muestra.valor }}</td>
+                <td>{{ muestra.unidadBase }}</td>
+                <td>{{ muestra.activa }}</td>
+                <td>{{ muestra.controlado }}</td>
+                <td>{{ muestra.calc_posicion }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+{% block scripts_others %}
+
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
+    <script>
+        $(function () {
+
+            if ($.fn.dataTable.isDataTable('#muetras_table')) {
+                $('#muetras_table').DataTable();
+            }
+            else {
+                $('#muetras_table').DataTable({
+                    responsive: true,
+                    sPaginationType: "full_numbers",
+                    bJQueryUI: true,
+                    order: [[ 1, "asc" ]],
+                    language: {
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}v
