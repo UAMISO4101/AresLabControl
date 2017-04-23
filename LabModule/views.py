@@ -472,9 +472,6 @@ def muestra_request(request):
             profile = Usuario.objects.get(user_id=request.user.id)
             proyectos = Proyecto.objects.filter(asistentes=profile.id, activo=True);
 
-            muestra = Muestra.objects.get(id=request.GET.get('id', 0))
-            profile = Usuario.objects.get(user_id=request.user.id)
-
             if request.method == 'POST':
 
                 requestObj = Solicitud()
