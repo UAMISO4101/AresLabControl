@@ -5,7 +5,7 @@ from __future__ import absolute_import
 from datetime import date
 
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.models import AnonymousUser, Group
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
 from django.http import Http404
@@ -13,10 +13,11 @@ from django.test import Client
 from django.test import RequestFactory
 from django.test import TestCase
 
-from LabModule.models import LaboratorioProfile, Muestra, Solicitud
+from LabModule.models import LaboratorioProfile, Muestra, Solicitud, Protocolo, Paso, Proyecto, Experimento, \
+    TipoDocumento, Usuario, MuestraSolicitud, Bandeja, LugarAlmacenamiento
 from LabModule.models import MaquinaEnLab
 from LabModule.models import MaquinaProfile
-from .views import maquina_add
+from .views import maquina_add, lugar_add, listar_solicitud_muestra
 from .views import maquina_list
 from .views import maquina_update
 
@@ -356,7 +357,7 @@ class LoginTest(TestCase):
         response = c.post('/accounts/login/', postData, follow = True)
         self.assertEqual("correct username" in response.content, True, "No debe poder inciar sesións")
 
-class AprobarSolMuestraTest:
+class AprobarSolMuestraTest(TestCase):
     def setUp(self):
         """"Aprobar solicitudes de muestra
         """
@@ -370,12 +371,49 @@ class AprobarSolMuestraTest:
 
         #ver = Permission.objects.get(name = 'usuario||agregar')
         #self.cientifico.user_permissions.add(ver)
+
+        self.tipoId = TipoDocumento.objects.create(nombre_corto="cc", descripcion="")
+        self.grupo = Group.objects.create(name='asistentes')
+        self.usuario = Usuario.objects.create(nombre_usuario="jlennon", correo_electronico="jlennon@beatles.com",
+                                              codigo_usuario="201610780", nombres="John", apellidos="Lennon",
+                                              telefono="3005717606", userNatIdTyp=self.tipoId, userNatIdNum="51603784",
+                                              grupo=self.grupo, user=self.user, contrasena=CONTRASENA)
+        self.userSinPermisos = User.objects.create_user(username='camilo',
+                                                        email='ccastillo@amigos.com',
+                                                        password=CONTRASENA)
+        c.login(username=self.userSinPermisos.username, password=CONTRASENA)
+
+
+        self.protocoloPrueba = Protocolo.objects.create(nombre="Protocolo # 1",
+                                                        descripcion="Este es un protocolo de prueba",
+                                                        objetivo="Comprobar funcionalidad de solicitud maquinas")
+        self.pasoPrueba = Paso.objects.create(id="1", nombre="Paso # 1", descripcion="Este es un paso de prueba",
+                                              protocolo=self.protocoloPrueba)
+        self.proyectoPrueba = Proyecto.objects.create(nombre="Proyecto # 1",
+                                                      descripcion="Este es un proyecto de prueba",
+                                                      objetivo="Comprobar funcionalidad de solicitud maquinas",
+                                                      lider=self.usuario, activo=True)
+        self.proyectoPrueba.asistentes.add(self.usuario)
+        self.experimentoPrueba = Experimento.objects.create(nombre="Experimento # 1",
+                                                            descripcion="Este es un experimento de prueba",
+                                                            objetivo="Comprobar funcionalidad de solicitud maquinas",
+                                                            projecto=self.proyectoPrueba)
+        self.experimentoPrueba.protocolos.add(self.protocoloPrueba)
         self.muestra=Muestra.objects.create(nombre="Muestra #1",descripcion="Esta es una muestra de prueba",valor="1",unidadBase="sobres",
                                activa=True, controlado=True)
-        self.solicitud=Solicitud.objects.create(descripcion="Solicitud de muestra",fechaInicial=date('2017','06','02'),
-                                                fechaFinal=date('2017', '06', '08'),estado='creada',solicitante='',
-                                                fechaActual=date('2017','06','02'),paso='')
-        self.lugarAlmacenamiento = {
+        self.solicitud=Solicitud.objects.create(descripcion="Solicitud de muestra",fechaInicial=date(2017,6,2),
+                                                fechaFinal=date(2017, 6, 8),estado='creada',solicitante=self.usuario,
+                                                fechaActual=date(2017,6,2),paso=self.pasoPrueba)
+        self.solicitudMuestra= MuestraSolicitud.objects.create(tipo="uso",cantidad="2",solicitud=self.solicitud,
+                                                               muestra=self.muestra)
+        self.segundaSolicitud = Solicitud.objects.create(descripcion="Solicitud de muestra #2",
+                                                  fechaInicial=date(2017, 6, 2),
+                                                  fechaFinal=date(2017, 6, 8), estado='creada',
+                                                  solicitante=self.usuario,
+                                                  fechaActual=date(2017, 6, 2), paso=self.pasoPrueba)
+        self.segundaSolicitudMuestra = MuestraSolicitud.objects.create(tipo="uso", cantidad="3", solicitud=self.segundaSolicitud,
+                                                                muestra=self.muestra)
+        self.data = {
             "nombre": "Lugar # 1",
             "descripcion": "Lugar de almacenamiento de prueba",
             "capacidad": "5",
@@ -384,3 +422,39 @@ class AprobarSolMuestraTest:
             "posX": "2",
             "posY": "10"
         }
+        request = self.factory.post('almacenamiento/add/', data=self.data)
+        request.user = self.user
+        lugar_add(request)
+        self.lugarAlmacenamiento= LugarAlmacenamiento.objects.all().filter(nombre="Lugar # 1")
+        self.bandejas=Bandeja.objects.all().filter(lugarAlmacenamiento=self.lugarAlmacenamiento)
+        for bandeja in self.bandejas:
+            bandeja.muestra=self.muestra
+            bandeja.save()
+
+    def test_ingresar(self):
+        """Comprueba que un usario no autenticado no pueda aprobar solicitud de muestra.
+           También comprueba con un usario con el permiso de aprobar solicitud de muestra pueda hacerlo
+        """
+        request = self.factory.get('aprobarSolicitudMuestras/listar/', follow = True)
+        request.user = AnonymousUser()
+        response = listar_solicitud_muestra(request)
+        self.assertEqual(response.status_code, 401, "No debe estar autorizado")
+
+        request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow=True)
+        request.user = AnonymousUser()
+        response = listar_solicitud_muestra(request)
+        self.assertEqual(response.status_code, 401, "No debe estar autorizado")
+
+    def test_listar_solicitudes(self):
+        """Comprueba que se pueda obtener la lista de solicitudes de muestra
+                """
+        lista_solicitudes = Solicitud.objects.all().exclude(estado='aprobada')
+        self.assertEqual(len(lista_solicitudes), 2, "No es la cantidad de solicitudes correcta")
+        idSolicitudes = [solicitud.id for solicitud in lista_solicitudes]
+        lista_MuestraSol = MuestraSolicitud.objects.all().filter(solicitud__in=idSolicitudes)
+        self.assertEqual(len(lista_MuestraSol), 2, "No es la cantidad de solicitudes de muestra correcta")
+
+    def test_muestras_disponibles(self):
+        """Comprueba que hayan muestras disponibles
+                        """
+        self.assertEqual(self.muestra.calc_disp(),'Si','Deberian haber muestras disponibles')
