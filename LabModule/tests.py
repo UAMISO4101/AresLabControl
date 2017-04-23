@@ -17,7 +17,7 @@ from LabModule.models import LaboratorioProfile, Muestra, Solicitud, Protocolo, 
     TipoDocumento, Usuario, MuestraSolicitud, Bandeja, LugarAlmacenamiento
 from LabModule.models import MaquinaEnLab
 from LabModule.models import MaquinaProfile
-from .views import maquina_add, lugar_add, listar_solicitud_muestra
+from .views import maquina_add, lugar_add, listar_solicitud_muestra, aprobar_solicitud_muestra
 from .views import maquina_list
 from .views import maquina_update
 
@@ -369,8 +369,8 @@ class AprobarSolMuestraTest(TestCase):
                                                    password = CONTRASENA)
         c.login(username=self.user.username, password=CONTRASENA)
 
-        #ver = Permission.objects.get(name = 'usuario||agregar')
-        #self.cientifico.user_permissions.add(ver)
+        admin = Permission.objects.get(name = 'solicitud||admin')
+        self.user.user_permissions.add(admin)
 
         self.tipoId = TipoDocumento.objects.create(nombre_corto="cc", descripcion="")
         self.grupo = Group.objects.create(name='asistentes')
@@ -425,10 +425,11 @@ class AprobarSolMuestraTest(TestCase):
         request = self.factory.post('almacenamiento/add/', data=self.data)
         request.user = self.user
         lugar_add(request)
-        self.lugarAlmacenamiento= LugarAlmacenamiento.objects.all().filter(nombre="Lugar # 1")
+        self.lugarAlmacenamiento= LugarAlmacenamiento.objects.get(nombre="Lugar # 1")
         self.bandejas=Bandeja.objects.all().filter(lugarAlmacenamiento=self.lugarAlmacenamiento)
         for bandeja in self.bandejas:
             bandeja.muestra=self.muestra
+            bandeja.libre=False
             bandeja.save()
 
     def test_ingresar(self):
@@ -442,7 +443,17 @@ class AprobarSolMuestraTest(TestCase):
 
         request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow=True)
         request.user = AnonymousUser()
+        response = aprobar_solicitud_muestra(request)
+        self.assertEqual(response.status_code, 401, "No debe estar autorizado")
+
+        request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow=True)
+        request.user = self.userSinPermisos
         response = listar_solicitud_muestra(request)
+        self.assertEqual(response.status_code, 401, "No debe estar autorizado")
+
+        request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow=True)
+        request.user = self.userSinPermisos
+        response = aprobar_solicitud_muestra(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
 
     def test_listar_solicitudes(self):
@@ -456,5 +467,18 @@ class AprobarSolMuestraTest(TestCase):
 
     def test_muestras_disponibles(self):
         """Comprueba que hayan muestras disponibles
-                        """
+                       """
         self.assertEqual(self.muestra.calc_disp(),'Si','Deberian haber muestras disponibles')
+
+    def test_aprobar_solicitud(self):
+        """Comprueba que se pueda aprobar solicitud de muestra
+                       """
+        request = self.factory.get('aprobarSolicitudMuestras/aprobar/')
+        request.GET = request.GET.copy()
+        request.GET['pk'] = self.solicitud.pk
+        request.user = self.user
+        aprobar_solicitud_muestra(request)
+        bandejasLibres = Bandeja.objects.all().filter(lugarAlmacenamiento=self.lugarAlmacenamiento,libre=True)
+        self.assertEqual(len(bandejasLibres),2,'Deberian haber bandejas libres')
+        muestraSol=MuestraSolicitud.objects.get(id=1)
+        self.assertEqual(muestraSol.solicitud.estado,'aprobada', 'Deberian estar la solicitud aprobada')
