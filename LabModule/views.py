@@ -523,13 +523,12 @@ def muestra_detail(request, pk):
     if request.user.is_authenticated():
         lista_muestra = Muestra.objects.filter(id=pk)
         if lista_muestra is None:
-            # cambiar por listado de muestras
-            return lugar_list(request)
+            return muestra_list(request)
         else:
             muestra = lista_muestra[0]
             context = {'muestra': muestra}
 
-            return render(request, 'muestra/detalle.html', context)
+            return render(request, 'muestras/detalle.html', context)
     else:
         return HttpResponse('No autorizado', status=401)
 

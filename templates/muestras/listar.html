@@ -27,6 +27,7 @@
             <th>Activa</th>
             <th>Controlada</th>
             <th>Ubicación Laboratorio</th>
+            <th>Acciones</th>
         </tr>
         </thead>
 
@@ -41,7 +42,13 @@
                 <td>{{ muestra.activa }}</td>
                 <td>{{ muestra.controlado }}</td>
                 <td>{{ muestra.calc_posicion }}</td>
-
+                <td>
+                    {% if perms.LabModule.can_viewStorage %}
+                        <a href="{% url 'muestra-detail' muestra.id %} "
+                           class="btn btn-primary"
+                           role="button">Ver</a>
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
         </tbody>
