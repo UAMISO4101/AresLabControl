@@ -1,0 +1,110 @@
+[
+  {
+    "nombre": "Nevera",
+    "descripcion": "Entorno para replicar células y para llevar a cabo\nexperimentos en algunas de éstas para determinar \ncómo es que las afectan las bacterias u otros microorganismos",
+    "capacidad": 9,
+    "temperatura": 5,
+    "estado": "activa",
+    "imagen": "http://2.bp.blogspot.com/-sTfuhJtBIkk/VidZXNvWThI/AAAAAAAAAJY/KefpIqKImWs/s1600/neveras%2Bde%2Blaboratorios.JPG",
+    "cantidad": 4,
+    "posX": 1,
+    "posY": 12,
+    "idLaboratorio": "LAB001"
+  },
+  {
+    "nombre": "Nevera criogénica",
+    "descripcion": "Para preservar, almacenar y/o transportar muestras a temperaturas \nde hasta -80ºC,  utilizando nitrógeno liquido. Son principalmente \nutilizados para conservar vacunas, muestras genéticas, viales, etc.",
+    "capacidad": 9,
+    "temperatura": -80,
+    "estado": "activa",
+    "imagen": "https://sc01.alicdn.com/kf/HTB1gGUkHpXXXXXIXVXXq6xXFXXXx/BT-5V-2-8-degree-Upright-Storage.jpg",
+    "cantidad": 5,
+    "posX": 5,
+    "posY": 12,
+    "idLaboratorio": "LAB001"
+  },
+  {
+    "nombre": "Gabinete de almacenamiento de microscopios",
+    "descripcion": "Esta es la descripción de un lugar",
+    "capacidad": 1,
+    "temperatura": 25,
+    "estado": "activa",
+    "imagen": "https://www.enasco.com/prod/images/products/52/AC026363l.jpg",
+    "cantidad": 3,
+    "posX": 10,
+    "posY": 12,
+    "idLaboratorio": "LAB001"
+  },
+  {
+    "nombre": "Mesa de laboratorio",
+    "descripcion": "Esta es la descripción de un lugar",
+    "capacidad": 14,
+    "temperatura": 25,
+    "estado": "activa",
+    "imagen": "http://www.singladura.net/imagenes/mesa-laboratorio-central-2caras/mesa-laboratorio-central-2caras.jpg",
+    "cantidad": 4,
+    "posX": 3,
+    "posY": 13,
+    "idLaboratorio": "LAB001"
+  },
+  {
+    "nombre": "Escurridor de equipos",
+    "descripcion": "Esta es la descripción de un lugar",
+    "capacidad": 13,
+    "temperatura": 25,
+    "estado": "activa",
+    "imagen": "http://static.letslab.com/media/catalog/product/cache/1/image/500x500/9df78eab33525d08d6e5fb8d27136e95/1/9/197_4.jpg",
+    "cantidad": 2,
+    "posX": 7,
+    "posY": 13,
+    "idLaboratorio": "LAB001"
+  },
+  {
+    "nombre": "Carrito de laboratorio",
+    "descripcion": "Esta es la descripción de un lugar",
+    "capacidad": 9,
+    "temperatura": 25,
+    "estado": "activa",
+    "imagen": "http://roymaplast.com/wp-content/uploads/photo-gallery/accesorio-laboratorio-carrito-transporte1.jpg",
+    "cantidad": 4,
+    "posX": 9,
+    "posY": 13,
+    "idLaboratorio": "LAB001"
+  },
+  {
+    "nombre": "Gabinete de pared grande",
+    "descripcion": "Esta es la descripción de un lugar",
+    "capacidad": 4,
+    "temperatura": 25,
+    "estado": "activa",
+    "imagen": "https://ae01.alicdn.com/kf/HTB1dYLpHVXXXXXFXVXXq6xXFXXXg/6u-Totem-gabinete-0-35-m-WM6406-gabinetes-gabinetes-de-pared-peque%C3%B1o-gabinete-de-red.jpg",
+    "cantidad": 3,
+    "posX": 3,
+    "posY": 14,
+    "idLaboratorio": "LAB001"
+  },
+  {
+    "nombre": "Gabinete de pared pequeño",
+    "descripcion": "Esta es la descripción de un lugar",
+    "capacidad": 20,
+    "temperatura": 25,
+    "estado": "activa",
+    "imagen": "https://www.blackbox.com.mx/_AppData/Images/Full/5504.jpg",
+    "cantidad": 3,
+    "posX": 6,
+    "posY": 14,
+    "idLaboratorio": "LAB001"
+  },
+  {
+    "nombre": "Repisa de acero inóxidable",
+    "descripcion": "Esta es la descripción de un lugar",
+    "capacidad": 20,
+    "temperatura": 25,
+    "estado": "activa",
+    "imagen": "https://image.jimcdn.com/app/cms/image/transf/dimension=600x1024:format=jpg/path/sb9b53d3b75dd1f22/image/id42c9ff94f79d96a/version/1366228964/image.jpg",
+    "cantidad": 4,
+    "posX": 9,
+    "posY": 14,
+    "idLaboratorio": "LAB001"
+  }
+]

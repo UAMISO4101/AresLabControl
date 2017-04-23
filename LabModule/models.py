@@ -7,6 +7,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext as _
+from django.db.models import Max
 
 # Create your models here.
 
@@ -448,6 +449,19 @@ class LugarAlmacenamiento(models.Model):
             default = 'images/image-not-found.jpg'
     )
 
+    id= models.CharField(
+            max_length = 100,
+            default = '',
+            verbose_name = _("Identificación"),
+            null = False,
+            primary_key = True
+    )
+    
+    def __unicode__(self):
+        return self.id+":"+self.nombre 
+
+
+
 
 class LugarAlmacenamientoEnLab(models.Model):
     """Relación entre :class:`LugarAlmacenamiento` y :class:`LaboratorioProfile`
@@ -463,8 +477,8 @@ class LugarAlmacenamientoEnLab(models.Model):
      """
 
     class Meta:
-        verbose_name = "Lugar Almacenamiento en Laboratorio"
-        verbose_name_plural = 'Lugar Almacenamiento en Laboratorio'
+        verbose_name = "Lugar de almacenamiento en Laboratorio"
+        verbose_name_plural = 'Lugares de almacenamiento en Laboratorio'
 
     idLaboratorio = models.ForeignKey(
             LaboratorioProfile,
@@ -600,13 +614,13 @@ class Muestra(models.Model):
         permissions = permissions_sample
 
     nombre = models.CharField(
-            max_length = 50,
+            max_length = 1000,
             blank = False,
             null = True,
             verbose_name = _("Nombre de la Muestra")
     )
     descripcion = models.TextField(
-            max_length = 200,
+            max_length = 1000,
             blank = False,
             null = True,
             verbose_name = _("Descripción de la Muestra")
@@ -641,7 +655,7 @@ class Muestra(models.Model):
     )
 
     def __unicode__(self):
-        return 'Muestra: ' + str(self.nombre)
+        return 'Muestra: ' + self.nombre
 
     def calc_disp(self):
         bandejas = Bandeja.objects.filter(muestra = self)
@@ -664,6 +678,16 @@ class Muestra(models.Model):
         else:
             return 'No'
 
+    def calc_posicion(self):
+        '''
+        Retorna -1 cuando la muestra no esta activa o no se encuentra en ningun lugar de almacenimiento
+        '''
+        bandeja = Bandeja.objects.filter(muestra=self).first()
+        if bandeja is not None:
+           lugar = bandeja.lugarAlmacenamiento
+           laboratorio = LugarAlmacenamientoEnLab.objects.filter(idLugar=lugar).first().idLaboratorio
+           return laboratorio.__unicode__()
+        return "No disponible"
 
 class Bandeja(models.Model):
     """Representación de una bandeja del lugar de almacenamiento.
@@ -701,6 +725,21 @@ class Bandeja(models.Model):
             on_delete = models.CASCADE,
             verbose_name = _("Selección de Lugar Almacenamiento")
     )
+
+    posicion= models.PositiveIntegerField(
+            verbose_name = _("Número de bandeja"),
+            null=False,
+            default=1,
+            blank=False
+    )
+
+    def __unicode__(self):
+        return 'Bandeja: ' + self.muestra.__unicode__()+" "+self.lugarAlmacenamiento.__unicode__()+ " "+ str(self.posicion)
+
+
+
+
+
 
 
 class Solicitud(models.Model):

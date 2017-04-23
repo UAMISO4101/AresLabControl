@@ -22,6 +22,18 @@
 
             <ul class="nav navbar-nav navbar-right">
                 {% if request.user.is_authenticated %}
+
+                    {% if perms.LabModule.can_viewStorage %}
+                        <li class="dropdown navsubmenu">
+                            <a href="#" class="dropdown-toggle navtext" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false" onclick="cambiarColorClick(this)"
+                               onblur="cambiarColorBlur(this)">Muestras <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url 'muestra-list' %}" class="navtext">Listar Muestras</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+
                     {% if perms.LabModule.can_viewStorage %}
                         <li class="dropdown navsubmenu">
                             <a href="#" class="dropdown-toggle navtext" data-toggle="dropdown" role="button"
