@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block head_title %}{{block.super}}LogOut{% endblock%}
+{% block head_title %}{{ block.super }}LogOut{% endblock %}
 {% block content %}
-<div class="col-sm-6 col-sm-offset-3">
-    <p class='text-align-center lead'>Ha cerrado la sesi&oacute;n.</p>
-    <p class='text-align-center lead'><a href="{% url 'auth_login' %}">Ingresar</a></p></p>
-</div>
+    <div class="col-sm-6 col-sm-offset-3">
+        <p class='text-align-center lead'>Ha cerrado la sesi&oacute;n.</p>
+        <p class='text-align-center lead'><a href="{% url 'auth_login' %}">Ingresar</a></p></p>
+    </div>
 {% endblock %}
