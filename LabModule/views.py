@@ -622,7 +622,7 @@ def reservar_maquina(request, pk):
 
 
 def muestra_list(request):
-    if request.user.is_authenticated() and request.user.has_perm("Muestra.can_listSample"):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_listSample"):
         return HttpResponse(status=200)
     else:
         return HttpResponse('No autorizado', status=401)
