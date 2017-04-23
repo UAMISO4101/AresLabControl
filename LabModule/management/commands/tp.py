@@ -54,6 +54,8 @@ class ListarMuestras(TestCase):
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
         self.anomimus=AnonymousUser()
+        self.client = Client(HTTP_USER_AGENT = 'Mozilla/5.0')
+        self.client.login(username='mgalindo',password=CONTRASENA)
     
 
     def test_IngresarURL(self):
@@ -66,6 +68,6 @@ class ListarMuestras(TestCase):
         #request=self.factory.get('url muestra-list')
         #request.user=self.anomimus
         #response = muestra_list(request)
-        response = c.get(reverse('muestra-list'))
+        response = self.client.get(reverse('muestra-list'))
         self.assertEqual(response.status_code, 200, "Debe ser capaz de acceder a la URL")
 
