@@ -63,7 +63,7 @@ class LugarAlmacenamientoForm(ModelForm):
 
     class Meta:
         model = LugarAlmacenamiento
-        fields = ['nombre', 'descripcion', 'capacidad', 'temperatura', 'imagen']
+        fields = ['id','nombre', 'descripcion', 'capacidad', 'temperatura', 'imagen']
 
 
 class PosicionesAlmacenamientoForm(ModelForm):
