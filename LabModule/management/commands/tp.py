@@ -18,10 +18,27 @@ from LabModule.views import maquina_add
 from LabModule.views import maquina_list
 from LabModule.views import maquina_update
 from LabModule.views import muestra_list
+from django.core.management.base import BaseCommand
+import unittest
+from django.core.urlresolvers import reverse
+
 
 c = Client(HTTP_USER_AGENT = 'Mozilla/5.0')
 CONTRASENA = getattr(settings, "CONTRASENA")
 
+
+
+
+class Command(BaseCommand):
+    help = """
+    If you need Arguments, please check other modules in 
+    django/core/management/commands.
+    """
+
+    def handle(self, **options):
+        suite = unittest.TestLoader().loadTestsFromTestCase(ListarMuestras)
+        unittest.TextTestRunner().run(suite)
+        
 
 class ListarMuestras(TestCase):
     """Hisotria de usuario desarrollada con TDD
@@ -46,8 +63,9 @@ class ListarMuestras(TestCase):
                 * Crear un laboratorio
                 * Definir varias máquinas que serviran para probar la lógica del negocio
         """
-        request=self.factory.get('url muestra-list')
-        request.user=self.anomimus
-        response = muestra_list(request)
+        #request=self.factory.get('url muestra-list')
+        #request.user=self.anomimus
+        #response = muestra_list(request)
+        response = c.get(reverse('muestra-list'))
         self.assertEqual(response.status_code, 200, "Debe ser capaz de acceder a la URL")
 
