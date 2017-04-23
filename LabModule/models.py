@@ -678,6 +678,16 @@ class Muestra(models.Model):
         else:
             return 'No'
 
+    def calc_posicion(self):
+        '''
+        Retorna -1 cuando la muestra no esta activa o no se encuentra en ningun lugar de almacenimiento
+        '''
+        bandeja = Bandeja.objects.filter(muestra=self).first()
+        if bandeja is not None:
+           lugar = bandeja.lugarAlmacenamiento
+           laboratorio = LugarAlmacenamientoEnLab.objects.filter(idLugar=lugar).first().idLaboratorio
+           return laboratorio.__unicode__()
+        return "No disponible"
 
 class Bandeja(models.Model):
     """Representación de una bandeja del lugar de almacenamiento.

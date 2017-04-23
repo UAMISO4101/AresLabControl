@@ -623,8 +623,15 @@ def reservar_maquina(request, pk):
 
 def muestra_list(request):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_listSample"):
-        lista_muetras = Muestra.objects.all().extra(order_by=['nombre'])
-        context = {'lista_muetras': lista_muetras}
+        section = {}
+        section['title'] = 'Listar Muestras'
+        edita = request.user.has_perm("LabModule.can_editSample")
+        if not edita:
+            lista_muetras = Muestra.objects.all().filter(activa=True).extra(order_by=['nombre'])
+        else:
+            lista_muetras = Muestra.objects.all().extra(order_by=['nombre'])
+        
+        context = {'lista_muetras': lista_muetras,'section':section}
         return render(request, 'muestras/listar.html', context)
     else:
         return HttpResponse('No autorizado', status=401)
