@@ -623,7 +623,9 @@ def reservar_maquina(request, pk):
 
 def muestra_list(request):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_listSample"):
-        return HttpResponse(status=200)
+        lista_muetras = Muestra.objects.all().extra(order_by=['nombre'])
+        context = {'lista_muetras': lista_muetras}
+        return render(request, 'muestras/listar.html', context)
     else:
         return HttpResponse('No autorizado', status=401)
 
