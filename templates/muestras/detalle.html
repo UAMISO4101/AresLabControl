@@ -11,12 +11,12 @@
 {% block content %}
 
     <div class="page-header text-center">
-        <h2>{{ section.title }} {{ lugar.idLugar.nombre }}</h2>
+        <h2>{{ section.title }} {{ muestra.nombre }}</h2>
     </div>
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title text-left">Información básica ID {{ lugar.idLugar.id }}</h3>
+            <h3 class="panel-title text-left">Información básica</h3>
         </div>
 
         <div class="panel-body text-left">
@@ -25,18 +25,50 @@
                     <div class="col-md-5 col-sm-6">
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Nombre:</strong>
+                                <strong>Id:</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ lugar.idLugar.nombre }} </p>
+                                <p id="items" name="items"> {{ muestra.id }} </p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Descripción:</strong>
+                                <strong>Nombre:</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ lugar.idLugar.descripcion }} </p>
+                                <p id="items" name="items"> {{ muestra.nombre }} </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Controlada:</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ muestra.controlado }} </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Estado:</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ muestra.activa }} </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Unidad:</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ muestra.unidadBase }} </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Valor:</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ muestra.valor }} </p>
                             </div>
                         </div>
                     </div>
@@ -50,8 +82,8 @@
 
                             <div class="panel panel-default">
                                 <div class="panel-body text-left" style="text-align:center">
-                                    <a href="{{ lugar.idLugar.imagen.url }}" target="_blank">
-                                        <img src="{{ lugar.idLugar.imagen.url }}" alt="Imagen Lugar Almacenamiento"
+                                    <a href="{{ muestra.imagen.url }}" target="_blank">
+                                        <img src="{{ muestra.imagen.url }}" alt="Imagen Muestra"
                                              class="imageIndex" style="width:60%; ">
                                     </a>
                                 </div>
@@ -66,88 +98,16 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title text-left">Bandejas</h3>
-                </div>
-                <div class="panel-body text-left" style="height:140px">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Usadas:</strong>
-                        </div>
-                        <div class="col-md-6">
-                            <strong> {{ bandejasOcupadas }} </strong>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Libres:</strong>
-                        </div>
-                        <div class="col-md-6">
-                            <strong> {{ bandejasLibres }} </strong>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Capacidad:</strong>
-                        </div>
-                        <div class="col-md-6">
-                            <strong> {{ lugar.idLugar.capacidad }} </strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title text-left">Descripción</h3>
         </div>
-
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title text-left">Medidas</h3>
-                </div>
-                <div class="panel-body text-left" style="height:140px">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <strong>Temperatura:</strong>
-                        </div>
-                        <div class="col-md-4">
-                            <strong> {{ lugar.idLugar.temperatura }} </strong>
-                        </div>
-                        <div class="col-md-2">
-                            <strong>°C</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title text-left">Ubicación</h3>
-                </div>
-                <div class="panel-body text-left" style="height:140px">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Laboratorio:</strong>
-                        </div>
-                        <div class="col-md-6">
-                            <strong> {{ laboratorio }} </strong>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Localización:</strong>
-                        </div>
-                        <div class="col-md-6">
-                            <strong>{{ lugar.posX }} </strong>
-                            <strong>{{ lugar.posY }} </strong>
-                        </div>
-                    </div>
-
-                </div>
+        <div class="panel-body text-left" style="height:100px">
+            <div class="row">
+                <p id="items" name="items"> {{ muestra.descripcion }} </p>
             </div>
         </div>
     </div>
+
 {% endblock %}

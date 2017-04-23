@@ -521,12 +521,14 @@ def muestra_detail(request, pk):
             :returns: HttpResponse -- La respuesta a la petición, con información de la muestra existente.
         """
     if request.user.is_authenticated():
+        section = {}
+        section['title'] = 'Detalles '
         lista_muestra = Muestra.objects.filter(id=pk)
         if lista_muestra is None:
             return muestra_list(request)
         else:
             muestra = lista_muestra[0]
-            context = {'muestra': muestra}
+            context = {'section': section, 'muestra': muestra}
 
             return render(request, 'muestras/detalle.html', context)
     else:
