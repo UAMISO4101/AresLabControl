@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^maquina/$', views.maquina_list, name = 'maquina-list'),
     url(r'^maquina/solicitar/$', views.maquina_request, name = 'maquina-request'),
     # url(r'^maquina/solicitar/(?P<pk>[\w\-]+)/$', views.maquina_request, name = 'maquina-request'),
-    url(r'^maquina/(?P<pk>[\w\-]+)/$', views.maquina_update, name = 'maquina-detail'),
+    url(r'^maquina/(?P<pk>[\w\-]+)/$', views.maquina_detail, name = 'maquina-detail'),
     url(r'^maquina/update/(?P<pk>[\w\-]+)/$', views.maquina_update, name = 'maquina-update'),
     # Muestras
     # url(r'^muestra/add/$', views.muestra_create, name = 'muestra-add'),
@@ -34,9 +34,8 @@ urlpatterns = [
     url(r'^solicitarMuestra/pasos/$', views.cargar_pasos, name = 's-pasos-list'),
 
     #Schedule
-    url(r'^schedule/', include('schedule.urls')),
 
-    url(r'^intentocalendario/', views.celendar,name = 'intentoCalendario'),
+    url(r'^maquina/events/(?P<pk>[\w\-]+)/$', views.maquina_reservations,name = 'maquina-reservations'),
 
 ]
 

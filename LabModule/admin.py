@@ -17,7 +17,7 @@ from models import Solicitud
 from models import TipoDocumento
 from models import Usuario
 from models import LugarAlmacenamientoEnLab
-
+from models import MaquinaSolicitud
 
 class TipoDocumentoAdmin(admin.ModelAdmin):
     list_display = ["__unicode__", "descripcion"]
@@ -46,6 +46,7 @@ admin.site.register(Protocolo)
 admin.site.register(Solicitud)
 admin.site.register(Bandeja)
 admin.site.register(LugarAlmacenamientoEnLab)
+admin.site.register(MaquinaSolicitud)
 admin.site.register(LugarAlmacenamiento)
 admin.site.register(TipoDocumento, TipoDocumentoAdmin)
 admin.site.register(Usuario, UsuarioAdmin)

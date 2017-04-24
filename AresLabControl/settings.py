@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     'django_extensions',
     'registration',
     'storages',
-    'schedule',
     # Our Apps
     'LabModule',
 ]
@@ -70,7 +69,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'AresLabControl.wsgi.application'
 
-TEMPLATE_CONTEXT_PROCESSORS=['django.core.context_processors.request',]
 
 
 # Database configuration
@@ -139,7 +137,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False 
 
 LANGUAGE_CODE = 'es-co'
 

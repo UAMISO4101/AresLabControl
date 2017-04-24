@@ -5,7 +5,7 @@
 {% block head_others %}
     <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
 {% endblock %}
-{% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
+{% block head_title %}{{ block.super }}{{ section.title }} {{maquina.nombre}}{% endblock %}
 
 {% block content %}
     {% if mensaje != "" %}
@@ -15,26 +15,13 @@
         </div>
     {% endif %}
 
-    {% for error in formPos.non_field_errors %}
-        <div class="alert alert-danger">
-            <strong>{{ error|escape }}</strong>
-        </div>
-    {% endfor %}
-
-    {% for error in form.non_field_errors %}
-        <div class="alert alert-danger">
-            <strong>{{ error|escape }}</strong>
-        </div>
-    {% endfor %}
+   
 
     <div class="page-header text-center">
-        <h2>{{ section.title }}</h2>
+        <h2>{{ section.title }} {{maquina.nombre}}</h2>
     </div>
 
-     {% if perms.LabModule.can_editMachine %}
-    <form id="formMaquina" naombre="formMaquina" enctype="multipart/form-data" method="post">
-        {% csrf_token %}
-    {% endif %}
+
         <div class="panel panel-default">
             <div class="panel-heading ">
                 <h3 class="panel-title text-left">Información Básica</h3>
@@ -46,50 +33,48 @@
                         <div class="col-md-5 col-sm-6">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <strong>{{ form.nombre.label_tag }}</strong>
+                                    <strong>Nombre</strong>
                                 </div>
                                 <div class="col-md-7 col-sm-4">
-                                    {{ form.nombre|addcss:"form-control" }}
+                                    {{ maquina.nombre}}
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-3">
-                                    <strong>{{ form.idSistema.label_tag }}</strong>
+                                    <strong>Id sistema</strong>
                                 </div>
                                 <div class="col-md-7 col-sm-4">
-                                    {{ form.idSistema|addcss:"form-control" }}
+                                    {{ maquina.idSistema }}
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-3">
-                                    <strong>{{ form.descripcion.label_tag }}</strong>
+                                    <strong>Descripción</strong>
                                 </div>
                                 <div class="col-md-7 col-sm-4">
-                                    {{ form.descripcion|addcss:"form-control" }}
+                                    {{ maquina.descripcion}}
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-5 col-sm-6">
                             <div class="row">
                                 <div>
-                                    <strong>{{ form.imagen.label_tag }}</strong>
+                                    <strong>Imágen</strong>
                                 </div>
                             </div>
                             <div class="row">
-                                {% if not section.agregar %}
+                                
                                     <div class="panel panel-default">
                                         <div class="panel-body text-left" style="text-align:center">
-                                            <a href="{{ form.instance.imagen.url }}" target="_blank">
-                                                <img src="{{ form.instance.imagen.url }} " alt="Imagen Máquina"
+                                            <a href="{{ maquina.imagen.url }}" target="_blank">
+                                                <img src="{{ maquina.imagen.url }} " alt="Imagen Máquina"
                                                      class="imageIndex" style="width:60%" ;>
                                             </a>
                                         </div>
                                     </div>
-                                {% endif %}
+                               
                             </div>
-                            <div class=" row">
-                                {{ form.imagen }}
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -105,10 +90,10 @@
                     <div class="panel-body text-left" style="height:140px">
                         <div class="row">
                             <div class="col-md-6">
-                                <strong>{{ formPos.idLaboratorio.label_tag }}</strong>
+                                <strong>Laboratorio</strong>
                             </div>
                             <div class="col-md-6">
-                                {{ formPos.idLaboratorio|addcss:"form-control" }}
+                                {{ maquinaEnLab.idLaboratorio}}
                             </div>
                         </div>
                         <div class="row">
@@ -118,17 +103,17 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <strong>{{ formPos.posX.label_tag }}</strong>
+                                <strong>Posición X</strong>
                             </div>
                             <div class="col-md-6">
-                                {{ formPos.posX|addcss:"form-control" }}
+                                {{ maquinaEnLab.posX }}
                             </div>
 
                             <div class="col-md-6">
-                                <strong>{{ formPos.posY.label_tag }}</strong>
+                                <strong>Posicion Y</strong>
                             </div>
                             <div class="col-md-6">
-                                {{ formPos.posY|addcss:"form-control" }}
+                                {{ maquinaEnLab.posY }}
                             </div>
                         </div>
                     </div>
@@ -143,34 +128,27 @@
                     <div class="panel-body text-left" style="height:140px">
                         <div class="row">
                             <div class="col-md-6">
-                                <strong>{{ form.con_reserva.label_tag }}</strong>
+                                <strong>¿Se debe aprobar por el cientifico experimentado?</strong>
                             </div>
                             <div class="col-md-6">
-                                {{ form.con_reserva|addcss:"form-control" }}
+                            {{ maquina.con_reserva|yesno:"Si,No" }}
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6">
-                                <strong>{{ form.activa.label_tag }}</strong>
+                                <strong>¿Esta activa?</strong>
                             </div>
                             <div class="col-md-6">
-                                {{ form.activa|addcss:"form-control" }}
+                            {{ maquina.activa|yesno:"Si,No" }}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        {% if perms.LabModule.can_editMachine %}
-        <div class="row center">
-            <div>
-                <input class="btn btn-primary" type="submit" value="Guardar"/>
-                <a class="btn btn-default" href="/" id="cancel" name="cancel">Cancelar</a>
-            </div>
-        </div>
-        {% endif %}
-    </form>
+
+    
 {% include 'Maquinas/calendario.html' %}
 
 

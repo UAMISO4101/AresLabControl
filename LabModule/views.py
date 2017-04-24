@@ -16,6 +16,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
 from registration.backends.default.views import RegistrationView
+from django.core import serializers
 
 from forms import LugarAlmacenamientoForm
 from forms import MaquinaForm
@@ -43,7 +44,6 @@ from models import Usuario
 from .forms import LugarAlmacenamientoForm, SolicitudForm
 from .forms import MuestraSolicitudForm
 from .forms import RegistroUsuarioForm
-
 import datetime
 from schedule.models import Calendar
 from schedule.models import Event
@@ -276,6 +276,22 @@ def maquina_add(request, template_name='maquinas/agregar.html'):
         return HttpResponse('No autorizado', status=401)
 
 
+def maquina_detail(request,pk, template_name='maquinas/detalle.html'):
+    
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
+        maquina = get_object_or_404(MaquinaProfile, pk=pk)
+        maquinaEnLab = get_object_or_404(MaquinaEnLab, idMaquina=maquina)
+        mensaje = ""
+        section = {'title': 'Ver detalle ', 'agregar': "ver"}
+        mensajeCalendario="Este es el horario disponible de la máquina. Seleccione el horario que más le convenga"
+        return render(request, template_name,
+                  {'maquina': maquina, 'maquinaEnLab': maquinaEnLab, 'section': section, 'mensaje': mensaje,'mensajeCalendario':mensajeCalendario})
+    else:
+        return HttpResponse('No autorizado', status=401)
+
+
+
+
 def maquina_update(request, pk, template_name='maquinas/agregar.html'):
     """Comporbar si el usuario puede modificar una máquina, obtener los campos necesarios.
 
@@ -404,7 +420,8 @@ def maquina_request(request):
     """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_requestMachine"):
         mensaje = 'ok'
-        contexto = {}
+        contexto = {'start':request.GET.get('start', ''),'end':request.GET.get('end', '')}
+        
         try:
 
             maquina = MaquinaProfile.objects.get(pk=request.GET.get('id', 0), activa=True)
@@ -429,12 +446,12 @@ def maquina_request(request):
                     maquinaRequest.maquina = maquina
                     maquinaRequest.solicitud = requestObj
                     maquinaRequest.save()
-                    return redirect("../")
+                    return redirect(reverse('maquina-detail',kwargs={'pk':request.GET.get('id', 0)}))
                 else:
                     mensaje = "Ya existe una solicitud para estas fechas"
 
             contexto = {'form': form, 'mensaje': mensaje, 'maquina': maquina, 'proyectos': proyectos,
-                        'maquinaEnLab': maquinaEnLab}
+                        'maquinaEnLab': maquinaEnLab,'start':request.GET.get('start', ''),'end':request.GET.get('end', '')}
         except ObjectDoesNotExist as e:
             contexto = {'mensaje': 'No hay maquinas o pasos con el id solicitado'}
         except MultipleObjectsReturned as e:
@@ -717,6 +734,17 @@ def cargar_pasos(request):
         return HttpResponse(json.dumps(steps_dict))
     else:
         return HttpResponse()
+
+@csrf_exempt
+def maquina_reservations(request,pk):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_listRequest"):
+        lista_maquina = MaquinaProfile.objects.filter(idSistema=pk)
+        solicitudes=MaquinaSolicitud.objects.filter(maquina=lista_maquina)
+        results = [ob.as_json(request.user.id) for ob in solicitudes]
+        return HttpResponse(json.dumps(results), content_type="application/json")
+    else:
+        return HttpResponse()
+
 
 
 def celendar(request):

@@ -95,15 +95,15 @@ class SolicitudForm(ModelForm):
         model = Solicitud
         fields = ['fechaInicial', 'fechaFinal', 'descripcion', 'estado', 'solicitante', 'fechaActual', 'paso']
         widgets = {
-            'fechaInicial': forms.DateInput(attrs = {'class': 'form-control datepicker'},format= ("%Y-%m-%d")),
-            'fechaFinal'  : forms.DateInput(attrs = {'class': 'form-control datepicker'},format= ("%Y-%m-%d")),
+            'fechaInicial': forms.DateInput(attrs = {'class': 'form-control date '},format= ("%H:%m %Y-%m-%d")),
+            'fechaFinal'  : forms.DateInput(attrs = {'class': 'form-control date '},format= ("%H:%m %Y-%m-%d")),
         }
 
     def verificar_fecha(self, maquina_id, fechaIni, fechaFin):
 
         solicitudes = Solicitud.objects.filter(
-                Q(fechaInicial = fechaIni, fechaFinal = fechaFin) | Q(fechaInicial__lte = fechaIni,
-                                                                      fechaFinal__gte = fechaIni) | Q(
+                Q(fechaInicial = fechaIni, fechaFinal = fechaFin) | Q(fechaInicial__lt = fechaIni,
+                                                                      fechaFinal__gt = fechaIni) | Q(
                         fechaInicial__lte = fechaFin, fechaFinal__gte = fechaFin)).exclude(estado = 'rechazada')
         for sol in solicitudes:
             otras_maquinas = MaquinaSolicitud.objects.filter(solicitud = sol.pk, maquina = maquina_id).count()
