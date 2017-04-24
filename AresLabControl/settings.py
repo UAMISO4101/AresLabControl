@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import os
+import sys
 import urlparse
 
 from django.utils.translation import gettext_lazy as _
@@ -105,6 +106,14 @@ DATABASES = {
     #     'NAME'  : os.path.join(BASE_DIR, 'db.sqlite3'),
     # }
 }
+
+SOUTH_TESTS_MIGRATE = False
+
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'test_dblpbhpi2otb4q'
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
