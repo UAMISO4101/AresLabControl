@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.conf import settings
 from django.conf.urls import url
 from django.conf.urls.static import static
@@ -25,7 +23,7 @@ urlpatterns = [
     url(r'^maquina/update/(?P<pk>[\w\-]+)/$', views.maquina_update, name = 'maquina-update'),
     # Muestras
     # url(r'^muestra/add/$', views.muestra_create, name = 'muestra-add'),
-    # url(r'^muestra/$', views.muestra_list, name = 'muestra-list'),
+    url(r'^muestra/$', views.muestra_list, name = 'muestra-list'),
     url(r'^muestra/solicitar/$', views.muestra_request, name = 'muestra-request'),
     url(r'^muestra/(?P<pk>[\w\-]+)/$', views.muestra_detail, name = 'muestra-detail'),
     # url(r'^muestra/update/(?P<pk>[\w\-]+)/$', views.muestra_update, name = 'muestra-update'),

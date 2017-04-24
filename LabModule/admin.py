@@ -16,6 +16,7 @@ from models import Proyecto
 from models import Solicitud
 from models import TipoDocumento
 from models import Usuario
+from models import LugarAlmacenamientoEnLab
 
 
 class TipoDocumentoAdmin(admin.ModelAdmin):
@@ -44,6 +45,8 @@ admin.site.register(Proyecto)
 admin.site.register(Protocolo)
 admin.site.register(Solicitud)
 admin.site.register(Bandeja)
+admin.site.register(LugarAlmacenamientoEnLab)
 admin.site.register(LugarAlmacenamiento)
 admin.site.register(TipoDocumento, TipoDocumentoAdmin)
 admin.site.register(Usuario, UsuarioAdmin)
+
