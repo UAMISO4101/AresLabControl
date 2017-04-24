@@ -38,6 +38,14 @@
                         <div class="col-md-5 col-sm-6">
                             <div class="row">
                                 <div class="col-md-3">
+                                    <strong>{{ form.id.label_tag }}</strong>
+                                </div>
+                                <div class="col-md-7 col-sm-4">
+                                    {{ form.id|addcss:"form-control" }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
                                     <strong>{{ form.nombre.label_tag }}</strong>
                                 </div>
                                 <div class="col-md-7 col-sm-4">

@@ -3,21 +3,23 @@
 from __future__ import absolute_import
 
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.models import AnonymousUser, Group
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.test import Client
 from django.test import RequestFactory
 from django.test import TestCase
 
-from LabModule.models import LaboratorioProfile
+from LabModule.forms import SolicitudForm
+from LabModule.models import LaboratorioProfile, Protocolo, Paso, Proyecto, Experimento, Usuario, TipoDocumento, \
+    Solicitud, MaquinaSolicitud
 from LabModule.models import MaquinaEnLab
 from LabModule.models import MaquinaProfile
-from .views import maquina_add
+from .views import maquina_add, maquina_request
 from .views import maquina_list
 from .views import maquina_update
-from .views import muestra_list
 
 c = Client(HTTP_USER_AGENT = 'Mozilla/5.0')
 CONTRASENA = getattr(settings, "CONTRASENA")
@@ -355,4 +357,101 @@ class LoginTest(TestCase):
         response = c.post('/accounts/login/', postData, follow = True)
         self.assertEqual("correct username" in response.content, True, "No debe poder inciar sesións")
 
+class SolicitarMaquinaTest(TestCase):
+    """Inicia el estado del test
+                Se encarga de :
+                    * Crear un usario y darle los permisos de solicitar
+                    * Crear un laboratorio
+                    * Definir varias máquinas que serviran para probar la lógica del negocio
+                    * Crear proyecto, experimento, protocolos y pasos de prueba
+            """
+
+    # Every test needs access to the request factory.
+    def setUp(self):
+
+        self.factory = RequestFactory()
+        self.user = User.objects.create_user(username = 'john',
+                                             email = 'jlennon@beatles.com',
+                                             password = CONTRASENA)
+        c.login(username = self.user.username, password = CONTRASENA)
+        self.tipoId=TipoDocumento.objects.create(nombre_corto="cc",descripcion="")
+        self.grupo=Group.objects.create(name='asistentes')
+        self.usuario=Usuario.objects.create(nombre_usuario="jlennon",correo_electronico="jlennon@beatles.com",
+                                            codigo_usuario="201610780", nombres="John", apellidos="Lennon",
+                                            telefono="3005717606", userNatIdTyp=self.tipoId,userNatIdNum="51603784",
+                                            grupo=self.grupo, user=self.user,contrasena=CONTRASENA)
+        self.userSinPermisos = User.objects.create_user(username='camilo',
+                                             email='ccastillo@amigos.com',
+                                             password=CONTRASENA)
+        c.login(username=self.userSinPermisos.username, password=CONTRASENA)
+
+        solicitar = Permission.objects.get(name = 'maquina||solicitar')
+
+        self.user.user_permissions.add(solicitar)
+        self.LaboratorioPrueba = LaboratorioProfile.objects.create(nombre = "Laboratorio genetica", id = "LAB_101")
+
+        self.maquinaPrueba = {
+            "id":"1",
+            "nombre"       : "Autoclave Portátil",
+            "descripcion"  : "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
+            "idSistema"    : "AUTO_010",
+            "con_reserva"  : False,
+            "posX"         : 0,
+            "posY"         : 0,
+            "idLaboratorio": self.LaboratorioPrueba.id
+        }
+
+        request = self.factory.post('/maquina/add', data = self.maquinaPrueba)
+        request.user = self.user
+        maquina_add(request)
+        self.protocoloPrueba=Protocolo.objects.create(nombre= "Protocolo # 1",descripcion= "Este es un protocolo de prueba",
+            objetivo= "Comprobar funcionalidad de solicitud maquinas")
+        self.pasoPrueba=Paso.objects.create(id="1",nombre= "Paso # 1",descripcion= "Este es un paso de prueba",
+                                            protocolo= self.protocoloPrueba)
+        self.proyectoPrueba=Proyecto.objects.create(nombre="Proyecto # 1",descripcion= "Este es un proyecto de prueba",
+            objetivo= "Comprobar funcionalidad de solicitud maquinas",lider= self.usuario,activo= True)
+        self.proyectoPrueba.asistentes.add(self.usuario)
+        self.experimentoPrueba=Experimento.objects.create(nombre= "Experimento # 1",descripcion= "Este es un experimento de prueba",
+            objetivo= "Comprobar funcionalidad de solicitud maquinas",projecto= self.proyectoPrueba)
+        self.experimentoPrueba.protocolos.add(self.protocoloPrueba)
+
+    def test_UsuarioNoAutorizado(self):
+        """Comprueba que un usario no autenticado no pueda solicitar máquinas.
+           También comprueba con un usario con el permiso de agregar máquinas pueda hacerlo
+        """
+        request = self.factory.get('/maquina/solicitar', follow = True)
+        request.user = AnonymousUser()
+        response = maquina_request(request)
+        self.assertEqual(response.status_code, 401, "No debe estar autorizado")
+
+        request.user = self.userSinPermisos
+        response = maquina_request(request)
+        self.assertEqual(response.status_code, 401, "No debe estar autorizado")
+
+    def test_MaquinaInexistente(self):
+        """Comprueba que un usario no pueda solicitar una maquina que no exista.
+
+                """
+        try:
+            MaquinaProfile.objects.get(pk='0', activa=True)
+            self.fail("No deberia poder crear nada")
+        except ObjectDoesNotExist:
+            pass
+
+    def test_crearSolicitud(self):
+        """Comprueba que un usario pueda solicitar maquinas.
+
+                        """
+        self.data={
+            "fechaInicial":"2017-06-02",
+            "fechaFinal":"2017-06-08",
+            "step":"1"
+        }
+        request = self.factory.post('/maquina/solicitar', data=self.data)
+        request.user = self.user
+        request.GET= request.GET.copy()
+        request.GET['id']=1
+        response = maquina_request(request)
+        sMaquina = MaquinaSolicitud.objects.filter(maquina=self.maquinaPrueba).exists()
+        self.assertEqual(sMaquina, False, "La solicitud no fue creada")
 

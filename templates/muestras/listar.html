@@ -27,6 +27,7 @@
             <th>Activa</th>
             <th>Controlada</th>
             <th>Ubicación Laboratorio</th>
+            <th>Acciones</th>
         </tr>
         </thead>
 
@@ -41,7 +42,17 @@
                 <td>{{ muestra.activa }}</td>
                 <td>{{ muestra.controlado }}</td>
                 <td>{{ muestra.calc_posicion }}</td>
+                <td>
+                    {% if perms.LabModule.can_viewStorage %}
+                        <a href="{% url 'muestra-detail' muestra.id %} "
+                           class="btn btn-primary"
+                           role="button">Ver</a>
+                    {% endif %}
 
+                    <a href="{% url 'muestra-request' %}?id={{ muestra.id }}"
+                       class="btn btn-primary"
+                       role="button">Solicitar</a>
+                </td>
             </tr>
         {% endfor %}
         </tbody>
@@ -64,7 +75,7 @@
                     responsive: true,
                     sPaginationType: "full_numbers",
                     bJQueryUI: true,
-                    order: [[ 1, "asc" ]],
+                    order: [[1, "asc"]],
                     language: {
                         "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
                     }
