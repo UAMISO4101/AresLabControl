@@ -57,6 +57,15 @@ def crearMaquina():
                                                                                   idSistema = maquina['idSistema'],
                                                                                   con_reserva = maquina['con_reserva']
                                                                                   )
+            if maquinaExistente:
+                if not maquina['imagen']=='':
+                    img_url = maquina['imagen']
+                    img_filename = urlparse(img_url).path.split('/')[-1]
+                    img_temp = NamedTemporaryFile()
+                    img_temp.write(urllib2.urlopen(img_url).read())
+                    img_temp.flush()
+                    nuevaMaquina.imagen.save(img_filename, File(img_temp))  
+
             nuevare, exre = MaquinaEnLab.objects.get_or_create(idLaboratorio = nuevoLab,
                                                                idMaquina = nuevaMaquina,
                                                                posX = maquina['x'],
