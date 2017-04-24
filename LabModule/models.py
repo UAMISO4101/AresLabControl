@@ -449,16 +449,16 @@ class LugarAlmacenamiento(models.Model):
             default = 'images/image-not-found.jpg'
     )
 
-    id= models.CharField(
-            max_length = 100,
-            default = '',
-            verbose_name = _("Identificación"),
-            null = False,
-            primary_key = True
-    )
+    #id= models.CharField(
+    #        max_length = 100,
+    #        default = '',
+    #        verbose_name = _("Identificación"),
+    #        null = False,
+    #        primary_key = True
+    #)
     
     def __unicode__(self):
-        return self.id+":"+self.nombre 
+        return self.id+":"+self.nombre
 
 
 
@@ -738,7 +738,7 @@ class Bandeja(models.Model):
     )
 
     def __unicode__(self):
-        return 'Bandeja: ' + self.muestra.__unicode__()+" "+self.lugarAlmacenamiento.__unicode__()+ " "+ str(self.posicion)
+        return 'Bandeja: ' + self.lugarAlmacenamiento.__unicode__()+ " "+ str(self.posicion)
 
 
 
