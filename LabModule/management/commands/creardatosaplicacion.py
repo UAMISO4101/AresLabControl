@@ -201,6 +201,31 @@ def createGroups():
     return 1
 
 
+def crearAsistente(user,num,tipDocumento,asistentes):
+    exist_asistente, new_asistente = User.objects.get_or_create(
+            username = user+str(num))
+
+    if new_asistente:
+        exist_asistente.email = user+str(num)+'@uniandes.edu.co'
+        exist_asistente.set_password(CONTRASENA)
+        exist_asistente.groups.add(asistentes)
+        exist_asistente.save()
+
+    exist_usuario, new_usuario = Usuario.objects.get_or_create(
+            nombre_usuario = user+str(num),
+            correo_electronico = user+str(num)+'@uniandes.edu.co',
+            codigo_usuario = '19950914'+str(num),
+            nombres = 'Monica',
+            apellidos = 'Galindo',
+            telefono = '7453698',
+            userNatIdTyp = tipDocumento,
+            userNatIdNum = '31852496',
+            grupo = asistentes,
+            user = exist_asistente,
+            contrasena = CONTRASENA,
+    )
+  
+
 def createUsers():
     cientificos = Group.objects.get(name = 'Cientifico Experimentado')
     jefes = Group.objects.get(name = 'Jefe de Laboratorio')
@@ -261,34 +286,12 @@ def createUsers():
             contrasena = CONTRASENA,
     )
 
-    exist_asistente, new_asistente = User.objects.get_or_create(
-            username = 'mgalindo')
-    if new_asistente:
-        exist_asistente.email = 'mgalindo@uniandes.edu.co'
-        exist_asistente.set_password(CONTRASENA)
-        exist_asistente.groups.add(asistentes)
-        exist_asistente.save()
-    else:
-        exist_asistente.email = 'mgalindo@uniandes.edu.co'
-        exist_asistente.set_password(CONTRASENA)
-        exist_asistente.groups.add(asistentes)
-        exist_asistente.save()
+    for i in range(10):
+        crearAsistente('mgalindo',i,tipDocumento,asistentes)
 
-    exist_usuario, new_usuario = Usuario.objects.get_or_create(
-            nombre_usuario = 'mgalindo',
-            correo_electronico = 'mgalindo@uniandes.edu.co',
-            codigo_usuario = '19950914',
-            nombres = 'Monica',
-            apellidos = 'Galindo',
-            telefono = '7453698',
-            userNatIdTyp = tipDocumento,
-            userNatIdNum = '31852496',
-            grupo = asistentes,
-            user = exist_asistente,
-            contrasena = CONTRASENA,
-    )
 
-    if new_cientifico or new_jefe or new_asistente:
+
+    if new_cientifico or new_jefe :
         return 0
     return 1
 
