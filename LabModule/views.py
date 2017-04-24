@@ -516,7 +516,7 @@ def muestra_request(request):
                 sampleRequest.cantidad = request.POST['cantidad']
                 sampleRequest.tipo = 'uso'
                 sampleRequest.save()
-                return redirect("../")
+                return redirect("../../")
 
             else:
                 form = SolicitudForm()
@@ -695,7 +695,7 @@ def listar_solicitud_muestra(request):
         idSolicitudes = [solicitud.id for solicitud in lista_solicitudes]
         lista_MuestraSol = MuestraSolicitud.objects.all().filter(solicitud__in = idSolicitudes)
 
-        context = {'section': section, 'solicitudes': lista_MuestraSol}
+        context = {'section': section, 'solicitudes': lista_MuestraSol,'mensaje':'ok'}
         return render(request, 'solicitudes/aprobarMuestras.html', context)
     else:
         return HttpResponse('No autorizado', status = 401)
@@ -703,10 +703,13 @@ def listar_solicitud_muestra(request):
 def aprobar_solicitud_muestra(request):
 
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_manageRequest"):
+        section = {}
+        section['title'] = 'Detalle Solicitud de Muestras'
         try:
             lista_lugares_pos={}
             solicitud=Solicitud.objects.get(pk=request.GET.get('pk', 0))
             muestraSolicitud = MuestraSolicitud.objects.get(solicitud=solicitud)
+            usuario= Usuario.objects.get(user=request.user)
             contador = muestraSolicitud.cantidad
             muestra= muestraSolicitud.muestra
             if muestra.calc_disp()=='Si':
@@ -715,16 +718,17 @@ def aprobar_solicitud_muestra(request):
                     if contador>0 and bandeja.libre==False:
                         lugar=bandeja.lugarAlmacenamiento.nombre
                         if lugar in lista_lugares_pos:
-                            lista_lugares_pos[lugar] += str(bandeja.posicion)
+                            lista_lugares_pos[lugar] += ','+str(bandeja.posicion)
                         else:
                             lista_lugares_pos[lugar] = str(bandeja.posicion)
                         bandeja.libre=True
                         bandeja.save()
                         contador=contador - 1
+                muestraSolicitud.solicitud.aprobador= usuario
                 muestraSolicitud.solicitud.estado='aprobada'
                 muestraSolicitud.solicitud.save()
 
-                contexto = { 'lugaresConPos': lista_lugares_pos}
+                contexto = { 'lugaresConPos': lista_lugares_pos, 'section': section, 'muestraSolicitud':muestraSolicitud}
                 return render(request, 'solicitudes/resumenAprobadoMuestra.html', contexto)
             else:
                 contexto = {'mensaje': 'No es posible aprobar la solicitud porque no hay bandejas disponibles para suplir la demanda'}

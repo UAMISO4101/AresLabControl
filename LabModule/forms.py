@@ -116,6 +116,10 @@ class MuestraSolicitudForm(ModelForm):
     class Meta:
         model = MuestraSolicitud
         fields = ['cantidad', 'solicitud', 'muestra', 'tipo']
+        widgets = {
+            'cantidad': forms.TextInput(attrs={'class': 'form-control'})
+        }
+
 
 
 class MuestraForm(ModelForm):
@@ -134,6 +138,7 @@ class MuestraForm(ModelForm):
     class Meta:
         model = Muestra
         fields = ['nombre', 'descripcion', 'imagen']
+
 
 
 class MaquinaForm(ModelForm):
