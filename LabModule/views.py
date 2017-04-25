@@ -258,7 +258,7 @@ def maquina_add(request, template_name = 'maquinas/agregar.html'):
         return HttpResponse('No autorizado', status = 401)
 
 
-def maquina_detail(request, pk, template_name = 'maquinas/detalle.html'):
+def maquina_detail(request, pk, template_name = 'Maquinas/detalle.html'):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
         maquina = get_object_or_404(MaquinaProfile, pk = pk)
         maquinaEnLab = get_object_or_404(MaquinaEnLab, idMaquina = maquina)
@@ -272,7 +272,7 @@ def maquina_detail(request, pk, template_name = 'maquinas/detalle.html'):
         return HttpResponse('No autorizado', status = 401)
 
 
-def maquina_update(request, pk, template_name = 'maquinas/agregar.html'):
+def maquina_update(request, pk, template_name = 'Maquinas/agregar.html'):
     """Comporbar si el usuario puede modificar una máquina, obtener los campos necesarios.
         Se encarga de:
             * Comprobar si hay un usario logeuado
