@@ -45,9 +45,7 @@ from .forms import LugarAlmacenamientoForm, SolicitudForm
 from .forms import MuestraSolicitudForm
 from .forms import RegistroUsuarioForm
 import datetime
-from schedule.models import Calendar
-from schedule.models import Event
-from schedule.models import Rule
+
 # Create your views here.
 def home(request):
     """Metodo inicial de la aplicación
@@ -512,7 +510,7 @@ def muestra_request(request):
                 sampleRequest.cantidad = request.POST['cantidad']
                 sampleRequest.tipo = 'uso'
                 sampleRequest.save()
-                return redirect("../../")
+                return redirect(reverse('muestra-list',kwargs={}))
 
             else:
                 form = SolicitudForm()
@@ -719,7 +717,7 @@ def aprobar_solicitud_muestra(request):
         section['title'] = 'Detalle Solicitud de Muestras'
         try:
             lista_lugares_pos={}
-            solicitud=Solicitud.objects.get(pk=request.GET.get('pk', 0))
+            solicitud=Solicitud.objects.get(id=request.GET.get('pk', 0))
             muestraSolicitud = MuestraSolicitud.objects.get(solicitud=solicitud)
             usuario= Usuario.objects.get(user=request.user)
             contador = muestraSolicitud.cantidad

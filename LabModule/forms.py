@@ -88,8 +88,8 @@ class SolicitudForm(ModelForm):
         model = Solicitud
         fields = ['fechaInicial', 'fechaFinal', 'descripcion', 'estado', 'solicitante', 'fechaActual', 'paso']
         widgets = {
-            'fechaInicial': forms.DateInput(attrs = {'class': 'form-control date '},format= ("%H:%m %Y-%m-%d")),
-            'fechaFinal'  : forms.DateInput(attrs = {'class': 'form-control date '},format= ("%H:%m %Y-%m-%d")),
+            'fechaInicial': forms.DateInput(attrs = {'class': 'form-control date '},format= ("%Y-%m-%d %H:%m")),
+            'fechaFinal'  : forms.DateInput(attrs = {'class': 'form-control date '},format= ("%Y-%m-%d %H:%m")),
         }
 
     def verificar_fecha(self, maquina_id, fechaIni, fechaFin):

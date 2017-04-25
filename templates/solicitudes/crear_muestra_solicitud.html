@@ -57,7 +57,7 @@
     </div>
 
 
-<form method="post" action="" name="formSolicitud" id="formSolicitud">{% csrf_token %}
+<form method="post" action="" name="formSolicitud" id="formSolicitud" onsubmit="return validateForm();">{% csrf_token %}
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-default">
@@ -321,9 +321,7 @@
         });
 
 
-        $("#formSolicitud").submit(function (e) {
-
-            e.preventDefault();
+        function validateForm() {
 
             validarRequeridos(function (res) {
                 if (res && validarCantidad()) {
@@ -331,8 +329,8 @@
 
                 }
             });
-
-        });
+            return false;
+        };
 
         $(".datepicker").datepicker({
             changeMonth: true,

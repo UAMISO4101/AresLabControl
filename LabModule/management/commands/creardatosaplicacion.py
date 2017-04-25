@@ -11,7 +11,7 @@ from django.core.management.base import BaseCommand
 from django.templatetags.static import static
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
-from LabModule.models import LaboratorioProfile
+from LabModule.models import LaboratorioProfile, Experimento, Protocolo, Paso
 from LabModule.models import MaquinaEnLab
 from LabModule.models import MaquinaProfile
 from LabModule.models import TipoDocumento
@@ -105,7 +105,7 @@ def crearAlmacenamiento():
             for i in range(1,int(cantidad)+1):
                     idAct+=1
                     nuevoLugar, luarCreado = LugarAlmacenamiento.objects.get_or_create(nombre=nombre+" "+str(i),descripcion=descripcion,capacidad=capacidad,
-                        temperatura=temperatura,estado=estado,id="LUGAR"+str(idAct))
+                        temperatura=temperatura,estado=estado,id=idAct)
                     nuevoLugar.imagen.save(img_filename, File(img_temp))      
                     print ("creando",nombre+" "+str(i))
                     if  luarCreado:
@@ -148,21 +148,36 @@ def crearMuestra():
                 nuevaMuestra.imagen.save(img_filename, File(img_temp))
                 cuenta=Bandeja.objects.filter(lugarAlmacenamiento = nuevoLugar).count()
                 posicion = 1 if cuenta==0 else cuenta+1
-                nuevaBandeja,bandejaExistenet=Bandeja.objects.get_or_create(muestra=nuevaMuestra,lugarAlmacenamiento=nuevoLugar,posicion=posicion)
+                nuevaBandeja,bandejaExistenet=Bandeja.objects.get_or_create(muestra=nuevaMuestra,lugarAlmacenamiento=nuevoLugar,posicion=posicion,libre=False)
 
                 
     return rta
 
 
 def crearProyecto():
+    nuevoProtocolo,noexistiaproto=Protocolo.objects.get_or_create(nombre="Protocolo Colombia Viva")
+    nuevoProtocolo.descripcion = "Protocolo que hace parte de Colombia Viva"
+    nuevoProtocolo.objetivo = "Crear"
+    nuevoProtocolo.save()
+    nuevoPaso,noexistiapaso=Paso.objects.get_or_create(nombre="Paso Colombia Viva")
+    nuevoPaso.descripcion = "Paso que hace parte de Colombia Viva"
+    nuevoPaso.objetivo = "Crear"
+    nuevoPaso.protocolo=nuevoProtocolo
+    nuevoPaso.save()
     nuevoProyecto,noexistia=Proyecto.objects.get_or_create(nombre="Colombia Viva")
-    
     nuevoProyecto.descripcion="Proyecto para sintetizar una droga que reduzca el cansancio"
     nuevoProyecto.objetivo="Crear"
     nuevoProyecto.lider=Usuario.objects.get(nombre_usuario='acastro')
-    nuevoProyecto.asistentes=[Usuario.objects.get(nombre_usuario='mgalindo')]
+    nuevoProyecto.asistentes=[Usuario.objects.get(nombre_usuario='mgalindo1'),Usuario.objects.get(nombre_usuario='admin')]
     nuevoProyecto.activo=True
-    return 0
+    nuevoProyecto.save()
+    nuevoExperimento,noexistiaexp = Experimento.objects.get_or_create(nombre="Experimento Colombia")
+    nuevoExperimento.descripcion = "Experimento que hace parte de Colombia Viva"
+    nuevoExperimento.objetivo = "Crear"
+    nuevoExperimento.protocolos.add(nuevoProtocolo)
+    nuevoExperimento.projecto=Proyecto.objects.get(nombre="Colombia Viva")
+    nuevoExperimento.save()
+
 
     return 1
 
@@ -190,12 +205,14 @@ def createGroups():
     maquinasSolicitar = Permission.objects.get(name='maquina||solicitar')
     agregarUsuario = Permission.objects.get(name='usuario||agregar')
     listarmuestras=Permission.objects.get(name='muestra||listar')
-
+    muestraVer = Permission.objects.get(name='muestra||ver')
+    muestraSolicitar=Permission.objects.get(name='muestra||solicitar')
     listarEventosMaquina=Permission.objects.get(name='solicitud||listar')
+    adminSolicitud=Permission.objects.get(name='solicitud||admin')
     
     cientificos.permissions.add(maquinasAgregar,listarEventosMaquina, maquinasEditar, maquinasVer, agregarUsuario)
-    jefes.permissions.add(maquinasVer, listarEventosMaquina,agregarUsuario)
-    asistentes.permissions.add(maquinasVer,listarEventosMaquina,listarmuestras,maquinasSolicitar)
+    jefes.permissions.add(maquinasVer, listarEventosMaquina,agregarUsuario,adminSolicitud)
+    asistentes.permissions.add(maquinasVer,listarEventosMaquina,listarmuestras,maquinasSolicitar,muestraVer,muestraSolicitar)
     if created1 or created2 or created3:
         return 0
     return 1
@@ -234,6 +251,7 @@ def createUsers():
     tipDocumento = TipoDocumento.objects.get(nombre_corto = 'CC')
 
     exist_cientifico, new_cientifico = User.objects.get_or_create(username = 'acastro')
+    exist_admin=User.objects.get(username = 'admin')
 
     if new_cientifico:
         exist_cientifico.email = 'acastro@uniandes.edu.co'
@@ -289,7 +307,19 @@ def createUsers():
     for i in range(10):
         crearAsistente('mgalindo',i,tipDocumento,asistentes)
 
-
+    exist_usuario, new_usuario = Usuario.objects.get_or_create(
+        nombre_usuario='admin',
+        correo_electronico='admin@uniandes.edu.co',
+        codigo_usuario='100000',
+        nombres='Administrador',
+        apellidos='Administrador',
+        telefono='100000',
+        userNatIdTyp=tipDocumento,
+        userNatIdNum='1000000',
+        grupo=cientificos,
+        user=exist_admin,
+        contrasena=CONTRASENA,
+    )
 
     if new_cientifico or new_jefe :
         return 0

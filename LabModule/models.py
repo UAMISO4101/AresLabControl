@@ -458,7 +458,7 @@ class LugarAlmacenamiento(models.Model):
     #)
     
     def __unicode__(self):
-        return self.id+":"+self.nombre
+        return str(self.pk)+":"+self.nombre
 
 
 

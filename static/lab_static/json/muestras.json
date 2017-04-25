@@ -8,7 +8,7 @@
     "controlado": true,
     "imagen": "http://www.abc.es/Media/201105/30/escherichia-coli-sintomas--644x362.jpg",
     "unidadBase": "sobre",
-    "idAlmacenamiento": "LUGAR26"
+    "idAlmacenamiento": "26"
   },
   {
     "nombre": "Bacillus subtilis",
@@ -19,7 +19,7 @@
     "controlado": true,
     "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Bacillus_subtilis.jpg/1200px-Bacillus_subtilis.jpg",
     "unidadBase": "sobre",
-    "idAlmacenamiento": "LUGAR26"
+    "idAlmacenamiento": "26"
   },
   {
     "nombre": "Levaduras",
@@ -30,7 +30,7 @@
     "controlado": false,
     "imagen": "http://www.catadelvino.com/fotos/como-podemos-activar-las-levaduras-si-hacemos-vino-casero-5762-1.jpg",
     "unidadBase": "gramos",
-    "idAlmacenamiento": "LUGAR1"
+    "idAlmacenamiento": "1"
   },
   {
     "nombre": "Trufas",
@@ -41,7 +41,7 @@
     "controlado": false,
     "imagen": "http://static.iris.net.co/cocinasemana/upload/images/2014/1/7/31229_10527_1.jpg",
     "unidadBase": "gramos",
-    "idAlmacenamiento": "LUGAR1"
+    "idAlmacenamiento": "1"
   },
   {
     "nombre": "EcoRI",
@@ -52,7 +52,7 @@
     "controlado": true,
     "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Ecor1_2ckq.png/220px-Ecor1_2ckq.png",
     "unidadBase": "mg",
-    "idAlmacenamiento": "LUGAR27"
+    "idAlmacenamiento": "27"
   },
   {
     "nombre": "SmaI",
@@ -63,7 +63,7 @@
     "controlado": true,
     "imagen": "http://www.sigmaaldrich.com/content/dam/sigma-aldrich/product5/026/sma-i.eps/_jcr_content/renditions/sma-i-medium.jpg",
     "unidadBase": "mg",
-    "idAlmacenamiento": "LUGAR27"
+    "idAlmacenamiento": "27"
   },
   {
     "nombre": "Fúngicas",
@@ -74,7 +74,7 @@
     "controlado": true,
     "imagen": "http://www.enzymedevelopment.com/wp-content/uploads/2012/07/pro.jpg",
     "unidadBase": "mg",
-    "idAlmacenamiento": "LUGAR27"
+    "idAlmacenamiento": "27"
   },
   {
     "nombre": "Pepsina",
@@ -85,7 +85,7 @@
     "controlado": true,
     "imagen": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcROTdAEOchlP74jQBp006DmSNYrCHssw3YUPXSquDlxKhQMeqDR",
     "unidadBase": "mg",
-    "idAlmacenamiento": "LUGAR27"
+    "idAlmacenamiento": "27"
   },
   {
     "nombre": "Paracetamol",
@@ -96,7 +96,7 @@
     "controlado": true,
     "imagen": "http://3.bp.blogspot.com/-VRVEsZIakzk/Ufg6M0CZpAI/AAAAAAAAAbk/dOB2mPKwrjM/s1600/PARACETA.jpg",
     "unidadBase": "mg",
-    "idAlmacenamiento": "LUGAR27"
+    "idAlmacenamiento": "27"
   },
   {
     "nombre": "Amoxicilina",
@@ -107,7 +107,7 @@
     "controlado": true,
     "imagen": "https://thumbs.dreamstime.com/x/modelo-molecular-de-la-amoxicilina-22855697.jpg",
     "unidadBase": "mg",
-    "idAlmacenamiento": "LUGAR27"
+    "idAlmacenamiento": "27"
   },
   {
     "nombre": "Ibuprofeno",
@@ -118,7 +118,7 @@
     "controlado": true,
     "imagen": "https://previews.123rf.com/images/elec/elec1202/elec120200040/12416381-El-ibuprofeno-estructura-molecular-Foto-de-archivo.jpg",
     "unidadBase": "mg",
-    "idAlmacenamiento": "LUGAR27"
+    "idAlmacenamiento": "27"
   },
   {
     "nombre": "ácido acetilsalicilico",
@@ -129,6 +129,6 @@
     "controlado": true,
     "imagen": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Aspirin-skeletal.svg/220px-Aspirin-skeletal.svg.png",
     "unidadBase": "mg",
-    "idAlmacenamiento": "LUGAR27"
+    "idAlmacenamiento": "27"
   }
 ]
