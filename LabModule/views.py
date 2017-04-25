@@ -272,7 +272,7 @@ def maquina_detail(request, pk, template_name = 'Maquinas/detalle.html'):
         return HttpResponse('No autorizado', status = 401)
 
 
-def maquina_update(request, pk, template_name = 'Maquinas/agregar.html'):
+def maquina_update(request, pk, template_name = 'maquinas/agregar.html'):
     """Comporbar si el usuario puede modificar una máquina, obtener los campos necesarios.
         Se encarga de:
             * Comprobar si hay un usario logeuado
