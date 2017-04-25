@@ -343,20 +343,29 @@ def createGroups():
             can_viewTray,
     )
     jefes.permissions.add(
+            can_listRequest,
+            can_viewRequest,
+            can_manageRequest,
             can_listMachine,
             can_viewMachine,
-            can_listRequest,
+            can_editMachine,
+            can_listStorage,
+            can_viewStorage,
+            can_editStorage,
+            can_addSample,
+            can_editSample,
+            can_listSample,
+            can_viewSample,
             can_addUser,
-            can_manageRequest, )
+    )
     asistentes.permissions.add(
             can_listMachine,
             can_viewMachine,
-            can_listRequest,
-            can_listSample,
-            can_requestSample,
             can_requestMachine,
             can_listSample,
-            can_viewSample, )
+            can_viewSample,
+            can_requestSample,
+    )
     if created1 or created2 or created3:
         return 0
     return 1
