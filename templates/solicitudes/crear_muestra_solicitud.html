@@ -4,6 +4,9 @@
 {% load staticfiles %}
 {% block head_others %}
     <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css"
+rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
 {% endblock %}
 
 
@@ -186,9 +189,13 @@
             </div>
         </div>
     </form>
-    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
+<script src="{% static 'js/boot-es.js' %}"></script>
+
     <script>
         $('#project').change(function () {
             project_id = $(this).val();
@@ -333,14 +340,15 @@
             return false;
         };
 
-        $(".datepicker").datepicker({
-            changeMonth: true,
-            changeYear: true,
-            yearRange: "2017:2030",
-            dateFormat: 'yy-mm-dd'
-            // You can put more options here.
-
+        $(function () {
+        $('#id_fechaInicial').datetimepicker({
+            locale: 'es',
+            showTodayButton: true,
+            format: 'YYYY-MM-DD HH:mm',
+            stepping: 30,
+            minDate: new Date()
         });
+    })
         function validarRequeridos(callback) {
             var cont = $(".requerido").length;
             $(".requerido").each(function () {
