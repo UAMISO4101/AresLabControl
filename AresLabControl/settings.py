@@ -32,8 +32,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Third Party Apps
     'crispy_forms',
+    'djangobower',
     'django_extensions',
     'registration',
+    'schedule',
     'storages',
     # Our Apps
     'LabModule',
@@ -70,8 +72,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'AresLabControl.wsgi.application'
 
-
-
 # Database configuration
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
@@ -79,14 +79,14 @@ urlparse.uses_netloc.append("postgres")
 url = urlparse.urlparse(os.environ["DATABASE_URL"])
 
 DATABASES = {
-     'default': {
-         'ENGINE'  : 'django.db.backends.postgresql',
-         'NAME'    : url.path[1:],
-         'USER'    : url.username,
-         'PASSWORD': url.password,
-         'HOST'    : url.hostname,
-         'PORT'    : url.port,
-     }
+    'default': {
+        'ENGINE'  : 'django.db.backends.postgresql',
+        'NAME'    : url.path[1:],
+        'USER'    : url.username,
+        'PASSWORD': url.password,
+        'HOST'    : url.hostname,
+        'PORT'    : url.port,
+    }
     # 'default': {
     #     'ENGINE'  : 'django.db.backends.postgresql',
     #     'NAME'    : 'lab',
@@ -114,7 +114,7 @@ SOUTH_TESTS_MIGRATE = False
 if 'test' in sys.argv:
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'test_dblpbhpi2otb4q'
+        'NAME'  : 'test_dblpbhpi2otb4q'
     }
 
 # Password validation
@@ -146,7 +146,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False 
+USE_TZ = False
 
 LANGUAGE_CODE = 'es-co'
 

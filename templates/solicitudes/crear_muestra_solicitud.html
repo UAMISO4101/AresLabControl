@@ -57,65 +57,66 @@
     </div>
 
 
-<form method="post" action="" name="formSolicitud" id="formSolicitud" onsubmit="return validateForm();">{% csrf_token %}
-    <div class="row">
-        <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title text-left">Caracteristicas muestra</h3>
-                </div>
-                <div class="panel-body text-left" style="min-height:160px">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Unidad Base:</strong>
-                        </div>
-                        <div class="col-md-6">
-                            <strong> {{ muestra.unidadBase }} </strong>
-                        </div>
+    <form method="post" action="" name="formSolicitud" id="formSolicitud"
+          onsubmit="return validateForm();">{% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-left">Caracteristicas muestra</h3>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Disponible:</strong>
+                    <div class="panel-body text-left" style="min-height:160px">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Unidad Base:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong> {{ muestra.unidadBase }} </strong>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <strong> {{ muestra.calc_disp }} </strong>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Disponible:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong> {{ muestra.calc_disp }} </strong>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Cantidad disponible:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong id="cantidadActual"> {{ muestra.calc_cuantos_disp }} </strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Controlada:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong> {{ muestra.calc_controled }} </strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Valor unidad:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong> {{ muestra.valor }} </strong>
+                            </div>
                         </div>
 
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Cantidad disponible:</strong>
-                        </div>
-                        <div class="col-md-6">
-                            <strong id="cantidadActual"> {{ muestra.calc_cuantos_disp }} </strong>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Controlada:</strong>
-                        </div>
-                        <div class="col-md-6">
-                            <strong> {{ muestra.calc_controled }} </strong>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Valor unidad:</strong>
-                        </div>
-                        <div class="col-md-6">
-                            <strong> {{ muestra.valor }} </strong>
-                        </div>
-                    </div>
-
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title text-left">Solicitud</h3>
-                </div>
-                <div class="panel-body text-left" style="min-height:160px">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-left">Solicitud</h3>
+                    </div>
+                    <div class="panel-body text-left" style="min-height:160px">
 
                         <div class="row">
                             <div class="col-md-2">
@@ -171,19 +172,19 @@
                                 {{ form.fechaInicial }}
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row center">
-        <div >
-            {% if muestra.calc_disp != "No" %}
-                <input class='btn  btn-primary'  type="submit" value="Solicitar" id="solicitar"/>
-            {% endif %}
-            <a class="btn btn-default" href="/" id="cancel" name="cancel">Cancelar</a>
+        <div class="row center">
+            <div>
+                {% if muestra.calc_disp != "No" %}
+                    <input class='btn  btn-primary' type="submit" value="Solicitar" id="solicitar"/>
+                {% endif %}
+                <a class="btn btn-default" href="/" id="cancel" name="cancel">Cancelar</a>
+            </div>
         </div>
-    </div>
     </form>
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 

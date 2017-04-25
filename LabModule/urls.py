@@ -1,6 +1,7 @@
 from django.conf import settings
-from django.conf.urls import url,include
+from django.conf.urls import url
 from django.conf.urls.static import static
+
 from . import views
 
 urlpatterns = [
@@ -30,12 +31,11 @@ urlpatterns = [
     url(r'^solicitarMuestra/experimentos/$', views.cargar_experimentos, name = 's-experimentos-list'),
     url(r'^solicitarMuestra/protocolos/$', views.cargar_protocolos, name = 's-protocolos-list'),
     url(r'^solicitarMuestra/pasos/$', views.cargar_pasos, name = 's-pasos-list'),
+    # Solicitudes
     url(r'^aprobarSolicitudMuestras/listar/$', views.listar_solicitud_muestra, name = 'solicitudes-muestra-list'),
     url(r'^aprobarSolicitudMuestras/aprobar/$', views.aprobar_solicitud_muestra, name = 'solicitud-muestra-aprobar'),
-
-    #Schedule
-
-    url(r'^maquina/events/(?P<pk>[\w\-]+)/$', views.maquina_reservations,name = 'maquina-reservations'),
+    # Schedule
+    url(r'^maquina/events/(?P<pk>[\w\-]+)/$', views.maquina_reservations, name = 'maquina-reservations'),
 
 ]
 

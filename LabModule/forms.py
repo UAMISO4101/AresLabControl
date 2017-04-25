@@ -63,7 +63,7 @@ class LugarAlmacenamientoForm(ModelForm):
 
     class Meta:
         model = LugarAlmacenamiento
-        fields = ['id','nombre', 'descripcion', 'capacidad', 'temperatura', 'imagen']
+        fields = ['id', 'nombre', 'descripcion', 'capacidad', 'temperatura', 'imagen']
 
 
 class PosicionesAlmacenamientoForm(ModelForm):
@@ -88,8 +88,8 @@ class SolicitudForm(ModelForm):
         model = Solicitud
         fields = ['fechaInicial', 'fechaFinal', 'descripcion', 'estado', 'solicitante', 'fechaActual', 'paso']
         widgets = {
-            'fechaInicial': forms.DateInput(attrs = {'class': 'form-control date '},format= ("%Y-%m-%d %H:%m")),
-            'fechaFinal'  : forms.DateInput(attrs = {'class': 'form-control date '},format= ("%Y-%m-%d %H:%m")),
+            'fechaInicial': forms.DateInput(attrs = {'class': 'form-control date '}, format = ("%Y-%m-%d %H:%m")),
+            'fechaFinal'  : forms.DateInput(attrs = {'class': 'form-control date '}, format = ("%Y-%m-%d %H:%m")),
         }
 
     def verificar_fecha(self, maquina_id, fechaIni, fechaFin):
@@ -110,9 +110,8 @@ class MuestraSolicitudForm(ModelForm):
         model = MuestraSolicitud
         fields = ['cantidad', 'solicitud', 'muestra', 'tipo']
         widgets = {
-            'cantidad': forms.TextInput(attrs={'class': 'form-control'})
+            'cantidad': forms.TextInput(attrs = {'class': 'form-control'})
         }
-
 
 
 class MuestraForm(ModelForm):
@@ -128,7 +127,6 @@ class MuestraForm(ModelForm):
     class Meta:
         model = Muestra
         fields = ['nombre', 'descripcion', 'imagen']
-
 
 
 class MaquinaForm(ModelForm):

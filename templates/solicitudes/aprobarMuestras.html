@@ -40,19 +40,19 @@
             </thead>
             <tbody>
             {% for solicitudMuestra in solicitudes %}
-                <tr >
-                    <td >{{ solicitudMuestra.solicitud.id }}</td>
-                    <td >{{ solicitudMuestra.tipo }}</td>
-                    <td >{{ solicitudMuestra.muestra.nombre }}</td>
-                    <td >{{ solicitudMuestra.cantidad }}</td>
-                    <td >{{ solicitudMuestra.solicitud.fechaActual }}</td>
-                    <td >{{ solicitudMuestra.solicitud.solicitante.nombre_usuario }}</td>
-                    <td >{{ solicitudMuestra.solicitud.paso.nombre }}</td>
-                    <td >{{ solicitudMuestra.solicitud.paso.descripcion }}</td>
-                    <td >
-                            <a href="{% url 'solicitud-muestra-aprobar' %}?pk={{ solicitudMuestra.solicitud.pk }} "
-                               class="btn btn-primary "
-                               role="button">Aprobar</a>
+                <tr>
+                    <td>{{ solicitudMuestra.solicitud.id }}</td>
+                    <td>{{ solicitudMuestra.tipo }}</td>
+                    <td>{{ solicitudMuestra.muestra.nombre }}</td>
+                    <td>{{ solicitudMuestra.cantidad }}</td>
+                    <td>{{ solicitudMuestra.solicitud.fechaActual }}</td>
+                    <td>{{ solicitudMuestra.solicitud.solicitante.nombre_usuario }}</td>
+                    <td>{{ solicitudMuestra.solicitud.paso.nombre }}</td>
+                    <td>{{ solicitudMuestra.solicitud.paso.descripcion }}</td>
+                    <td>
+                        <a href="{% url 'solicitud-muestra-aprobar' %}?pk={{ solicitudMuestra.solicitud.pk }} "
+                           class="btn btn-primary "
+                           role="button">Aprobar</a>
 
                     </td>
                 </tr>

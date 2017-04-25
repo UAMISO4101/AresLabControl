@@ -31,147 +31,147 @@
         <h2>{{ section.title }}</h2>
     </div>
 
-     {% if perms.LabModule.can_editMachine %}
-    <form id="formMaquina" naombre="formMaquina" enctype="multipart/form-data" method="post">
+    {% if perms.LabModule.can_editMachine %}
+        <form id="formMaquina" naombre="formMaquina" enctype="multipart/form-data" method="post">
         {% csrf_token %}
     {% endif %}
-        <div class="panel panel-default">
-            <div class="panel-heading ">
-                <h3 class="panel-title text-left">Información Básica</h3>
-            </div>
+<div class="panel panel-default">
+    <div class="panel-heading ">
+        <h3 class="panel-title text-left">Información Básica</h3>
+    </div>
 
-            <div class="panel-body text-left">
-                <div class="container">
+    <div class="panel-body text-left">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5 col-sm-6">
                     <div class="row">
-                        <div class="col-md-5 col-sm-6">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <strong>{{ form.nombre.label_tag }}</strong>
-                                </div>
-                                <div class="col-md-7 col-sm-4">
-                                    {{ form.nombre|addcss:"form-control" }}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <strong>{{ form.idSistema.label_tag }}</strong>
-                                </div>
-                                <div class="col-md-7 col-sm-4">
-                                    {{ form.idSistema|addcss:"form-control" }}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <strong>{{ form.descripcion.label_tag }}</strong>
-                                </div>
-                                <div class="col-md-7 col-sm-4">
-                                    {{ form.descripcion|addcss:"form-control" }}
-                                </div>
-                            </div>
+                        <div class="col-md-3">
+                            <strong>{{ form.nombre.label_tag }}</strong>
                         </div>
-                        <div class="col-md-5 col-sm-6">
-                            <div class="row">
-                                <div>
-                                    <strong>{{ form.imagen.label_tag }}</strong>
+                        <div class="col-md-7 col-sm-4">
+                            {{ form.nombre|addcss:"form-control" }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <strong>{{ form.idSistema.label_tag }}</strong>
+                        </div>
+                        <div class="col-md-7 col-sm-4">
+                            {{ form.idSistema|addcss:"form-control" }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <strong>{{ form.descripcion.label_tag }}</strong>
+                        </div>
+                        <div class="col-md-7 col-sm-4">
+                            {{ form.descripcion|addcss:"form-control" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 col-sm-6">
+                    <div class="row">
+                        <div>
+                            <strong>{{ form.imagen.label_tag }}</strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {% if not section.agregar %}
+                            <div class="panel panel-default">
+                                <div class="panel-body text-left" style="text-align:center">
+                                    <a href="{{ form.instance.imagen.url }}" target="_blank">
+                                        <img src="{{ form.instance.imagen.url }} " alt="Imagen Máquina"
+                                             class="imageIndex" style="width:60%" ;>
+                                    </a>
                                 </div>
                             </div>
-                            <div class="row">
-                                {% if not section.agregar %}
-                                    <div class="panel panel-default">
-                                        <div class="panel-body text-left" style="text-align:center">
-                                            <a href="{{ form.instance.imagen.url }}" target="_blank">
-                                                <img src="{{ form.instance.imagen.url }} " alt="Imagen Máquina"
-                                                     class="imageIndex" style="width:60%" ;>
-                                            </a>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class=" row">
-                                {{ form.imagen }}
-                            </div>
-                        </div>
+                        {% endif %}
+                    </div>
+                    <div class=" row">
+                        {{ form.imagen }}
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title text-left">Ubicación</h3>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title text-left">Ubicación</h3>
+            </div>
+            <div class="panel-body text-left" style="height:140px">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>{{ formPos.idLaboratorio.label_tag }}</strong>
                     </div>
-                    <div class="panel-body text-left" style="height:140px">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>{{ formPos.idLaboratorio.label_tag }}</strong>
-                            </div>
-                            <div class="col-md-6">
-                                {{ formPos.idLaboratorio|addcss:"form-control" }}
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>Localización:</strong>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>{{ formPos.posX.label_tag }}</strong>
-                            </div>
-                            <div class="col-md-6">
-                                {{ formPos.posX|addcss:"form-control" }}
-                            </div>
-
-                            <div class="col-md-6">
-                                <strong>{{ formPos.posY.label_tag }}</strong>
-                            </div>
-                            <div class="col-md-6">
-                                {{ formPos.posY|addcss:"form-control" }}
-                            </div>
-                        </div>
+                    <div class="col-md-6">
+                        {{ formPos.idLaboratorio|addcss:"form-control" }}
                     </div>
                 </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title text-left">Estado</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Localización:</strong>
                     </div>
-                    <div class="panel-body text-left" style="height:140px">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>{{ form.con_reserva.label_tag }}</strong>
-                            </div>
-                            <div class="col-md-6">
-                                {{ form.con_reserva|addcss:"form-control" }}
-                            </div>
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>{{ formPos.posX.label_tag }}</strong>
+                    </div>
+                    <div class="col-md-6">
+                        {{ formPos.posX|addcss:"form-control" }}
+                    </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>{{ form.activa.label_tag }}</strong>
-                            </div>
-                            <div class="col-md-6">
-                                {{ form.activa|addcss:"form-control" }}
-                            </div>
-                        </div>
+                    <div class="col-md-6">
+                        <strong>{{ formPos.posY.label_tag }}</strong>
+                    </div>
+                    <div class="col-md-6">
+                        {{ formPos.posY|addcss:"form-control" }}
                     </div>
                 </div>
             </div>
         </div>
-        {% if perms.LabModule.can_editMachine %}
-        <div class="row center">
-            <div>
-                <input class="btn btn-primary" type="submit" value="Guardar"/>
-                <a class="btn btn-default" href="/" id="cancel" name="cancel">Cancelar</a>
+    </div>
+
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title text-left">Estado</h3>
+            </div>
+            <div class="panel-body text-left" style="height:140px">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>{{ form.con_reserva.label_tag }}</strong>
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.con_reserva|addcss:"form-control" }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>{{ form.activa.label_tag }}</strong>
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.activa|addcss:"form-control" }}
+                    </div>
+                </div>
             </div>
         </div>
-        {% endif %}
-    </form>
-{% include 'Maquinas/calendario.html' %}
+    </div>
+</div>
+{% if perms.LabModule.can_editMachine %}
+    <div class="row center">
+        <div>
+            <input class="btn btn-primary" type="submit" value="Guardar"/>
+            <a class="btn btn-default" href="/" id="cancel" name="cancel">Cancelar</a>
+        </div>
+    </div>
+{% endif %}
+</form>
+    {% include 'Maquinas/calendario.html' %}
 
 
 {% endblock %}

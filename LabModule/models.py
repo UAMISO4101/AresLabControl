@@ -227,8 +227,10 @@ class Usuario(models.Model):
 
     def __unicode__(self):
         return self.user.username
+
     def nombre_completo(self):
-        return self.nombres +" "+ self.apellidos
+        return self.nombres + " " + self.apellidos
+
 
 class LaboratorioProfile(models.Model):
     """Representación del laboratorio
@@ -448,18 +450,16 @@ class LugarAlmacenamiento(models.Model):
             default = 'images/image-not-found.jpg'
     )
 
-    #id= models.CharField(
+    # id= models.CharField(
     #        max_length = 100,
     #        default = '',
     #        verbose_name = _("Identificación"),
     #        null = False,
     #        primary_key = True
-    #)
-    
+    # )
+
     def __unicode__(self):
-        return str(self.pk)+":"+self.nombre
-
-
+        return str(self.pk) + ":" + self.nombre
 
 
 class LugarAlmacenamientoEnLab(models.Model):
@@ -548,6 +548,7 @@ class Protocolo(models.Model):
     def __unicode__(self):
         return self.nombre
 
+
 class Paso(models.Model):
     """Representación de Paso
          Se encarga de:
@@ -590,6 +591,7 @@ class Paso(models.Model):
 
     def __unicode__(self):
         return self.nombre
+
 
 class Muestra(models.Model):
     """Representación de Muestra
@@ -685,12 +687,13 @@ class Muestra(models.Model):
         '''
         Retorna -1 cuando la muestra no esta activa o no se encuentra en ningun lugar de almacenimiento
         '''
-        bandeja = Bandeja.objects.filter(muestra=self).first()
+        bandeja = Bandeja.objects.filter(muestra = self).first()
         if bandeja is not None:
-           lugar = bandeja.lugarAlmacenamiento
-           laboratorio = LugarAlmacenamientoEnLab.objects.filter(idLugar=lugar).first().idLaboratorio
-           return laboratorio.__unicode__()
+            lugar = bandeja.lugarAlmacenamiento
+            laboratorio = LugarAlmacenamientoEnLab.objects.filter(idLugar = lugar).first().idLaboratorio
+            return laboratorio.__unicode__()
         return "No disponible"
+
 
 class Bandeja(models.Model):
     """Representación de una bandeja del lugar de almacenamiento.
@@ -722,8 +725,8 @@ class Bandeja(models.Model):
             verbose_name = _("Selección de Muestra")
     )
     posicion = models.IntegerField(
-        null=True,
-        verbose_name="Posicion"
+            null = True,
+            verbose_name = "Posicion"
     )
     lugarAlmacenamiento = models.ForeignKey(
             LugarAlmacenamiento,
@@ -733,15 +736,16 @@ class Bandeja(models.Model):
             verbose_name = _("Selección de Lugar Almacenamiento")
     )
 
-    posicion= models.PositiveIntegerField(
+    posicion = models.PositiveIntegerField(
             verbose_name = _("Número de bandeja"),
-            null=False,
-            default=1,
-            blank=False
+            null = False,
+            default = 1,
+            blank = False
     )
 
     def __unicode__(self):
-        return 'Bandeja: ' + self.lugarAlmacenamiento.__unicode__()+ " "+ str(self.posicion)
+        return 'Bandeja: ' + self.lugarAlmacenamiento.__unicode__() + " " + str(self.posicion)
+
 
 class Solicitud(models.Model):
     """Representación de una bandeja del lugar de almacenamiento.
@@ -814,11 +818,8 @@ class Solicitud(models.Model):
             verbose_name = _("Selección de Paso")
     )
 
-
     def __unicode__(self):
-        return self.solicitante.__unicode__()+" "+self.estado
-
-
+        return self.solicitante.__unicode__() + " " + self.estado
 
 
 class MuestraSolicitud(models.Model):
@@ -873,13 +874,17 @@ class MaquinaSolicitud(models.Model):
             null = True,
             verbose_name = _("Selección de Máquina")
     )
-    def __unicode__(self):
-        return self.maquina.__unicode__()+" "+self.solicitud.__unicode__()
 
-    def as_json(self,id_user):
-        return dict(id_maquina=self.maquina.idSistema,id=self.solicitud.id,encargado=self.solicitud.solicitante.nombre_completo(),
-            start=self.solicitud.fechaInicial.isoformat().replace('+00:00','-05:00'),end=self.solicitud.fechaFinal.isoformat().replace('+00:00','-05:00'),
-            className='envent',editable=True if id_user==self.solicitud.solicitante.user.id else False,overlap=False,paso=self.solicitud.paso.nombre)
+    def __unicode__(self):
+        return self.maquina.__unicode__() + " " + self.solicitud.__unicode__()
+
+    def as_json(self, id_user):
+        return dict(id_maquina = self.maquina.idSistema, id = self.solicitud.id,
+                    encargado = self.solicitud.solicitante.nombre_completo(),
+                    start = self.solicitud.fechaInicial.isoformat().replace('+00:00', '-05:00'),
+                    end = self.solicitud.fechaFinal.isoformat().replace('+00:00', '-05:00'),
+                    className = 'envent', editable = True if id_user == self.solicitud.solicitante.user.id else False,
+                    overlap = False, paso = self.solicitud.paso.nombre)
 
 
 class Proyecto(models.Model):
@@ -946,6 +951,7 @@ class Proyecto(models.Model):
 
     def __unicode__(self):
         return self.nombre
+
 
 class Experimento(models.Model):
     """Representación de un experimento.

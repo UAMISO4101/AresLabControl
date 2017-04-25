@@ -28,7 +28,8 @@
                                 <strong>Solicitante:</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestraSolicitud.solicitud.solicitante.nombre_usuario }} </p>
+                                <p id="items"
+                                   name="items"> {{ muestraSolicitud.solicitud.solicitante.nombre_usuario }} </p>
                             </div>
                         </div>
                         <div class="row">
@@ -36,7 +37,8 @@
                                 <strong>Aprobador:</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestraSolicitud.solicitud.aprobador.nombre_usuario}} </p>
+                                <p id="items"
+                                   name="items"> {{ muestraSolicitud.solicitud.aprobador.nombre_usuario }} </p>
                             </div>
                         </div>
                         <div class="row">
@@ -44,7 +46,7 @@
                                 <strong>Tipo:</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestraSolicitud.tipo}} </p>
+                                <p id="items" name="items"> {{ muestraSolicitud.tipo }} </p>
                             </div>
                         </div>
                         <div class="row">
@@ -52,17 +54,17 @@
                                 <strong>Muestra:</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestraSolicitud.muestra.nombre}} </p>
+                                <p id="items" name="items"> {{ muestraSolicitud.muestra.nombre }} </p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-5 col-sm-6">
-                         <div class="row">
+                        <div class="row">
                             <div class="col-md-3">
                                 <strong>Fecha:</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestraSolicitud.solicitud.fechaActual}} </p>
+                                <p id="items" name="items"> {{ muestraSolicitud.solicitud.fechaActual }} </p>
                             </div>
                         </div>
                         <div class="row">
@@ -70,7 +72,7 @@
                                 <strong>Cantidad:</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestraSolicitud.cantidad}} </p>
+                                <p id="items" name="items"> {{ muestraSolicitud.cantidad }} </p>
                             </div>
                         </div>
                         <div class="row">
@@ -78,7 +80,7 @@
                                 <strong>Paso:</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestraSolicitud.solicitud.paso.nombre}} </p>
+                                <p id="items" name="items"> {{ muestraSolicitud.solicitud.paso.nombre }} </p>
                             </div>
                         </div>
                         <div class="row">
@@ -86,7 +88,7 @@
                                 <strong>Descripción Paso:</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestraSolicitud.solicitud.paso.descripcion}} </p>
+                                <p id="items" name="items"> {{ muestraSolicitud.solicitud.paso.descripcion }} </p>
                             </div>
                         </div>
                     </div>
@@ -101,8 +103,8 @@
                 <div class="panel-heading">
                     <h3 class="panel-title text-left">Bandejas</h3>
                 </div>
-                <div class="panel-body text-left" >
-                    {%for lugar,posiciones in lugaresConPos.items%}
+                <div class="panel-body text-left">
+                    {% for lugar,posiciones in lugaresConPos.items %}
                         <div class="row">
                             <div class="col-md-6">
                                 <strong>Lugar:</strong>
@@ -117,7 +119,7 @@
                                 <strong> {{ posiciones }} </strong>
                             </div>
                         </div>
-                    {%endfor%}
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -125,8 +127,8 @@
 
     </div>
     <div class="row center">
-            <div>
-                <a class="btn btn-default" href="/" id="cancel" name="cancel">Continuar</a>
-            </div>
+        <div>
+            <a class="btn btn-default" href="/" id="cancel" name="cancel">Continuar</a>
         </div>
+    </div>
 {% endblock %}

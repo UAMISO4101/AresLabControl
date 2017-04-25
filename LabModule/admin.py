@@ -6,8 +6,10 @@ from models import Bandeja
 from models import Experimento
 from models import LaboratorioProfile
 from models import LugarAlmacenamiento
+from models import LugarAlmacenamientoEnLab
 from models import MaquinaEnLab
 from models import MaquinaProfile
+from models import MaquinaSolicitud
 from models import Muestra
 from models import MuestraSolicitud
 from models import Paso
@@ -16,8 +18,7 @@ from models import Proyecto
 from models import Solicitud
 from models import TipoDocumento
 from models import Usuario
-from models import LugarAlmacenamientoEnLab
-from models import MaquinaSolicitud
+
 
 class TipoDocumentoAdmin(admin.ModelAdmin):
     list_display = ["__unicode__", "descripcion"]
@@ -50,4 +51,3 @@ admin.site.register(MaquinaSolicitud)
 admin.site.register(LugarAlmacenamiento)
 admin.site.register(TipoDocumento, TipoDocumentoAdmin)
 admin.site.register(Usuario, UsuarioAdmin)
-

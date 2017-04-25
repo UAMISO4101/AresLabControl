@@ -14,13 +14,27 @@ from django.test import Client
 from django.test import RequestFactory
 from django.test import TestCase
 
-from LabModule.forms import SolicitudForm
-from LabModule.models import LaboratorioProfile, Muestra, Solicitud, Protocolo, Paso, Proyecto, Experimento, \
-    TipoDocumento, Usuario, MuestraSolicitud, Bandeja, LugarAlmacenamiento, MaquinaSolicitud
+from LabModule.models import Bandeja
+from LabModule.models import Experimento
+from LabModule.models import LaboratorioProfile
+from LabModule.models import LugarAlmacenamiento
 from LabModule.models import MaquinaEnLab
 from LabModule.models import MaquinaProfile
-from .views import maquina_add, lugar_add, listar_solicitud_muestra, aprobar_solicitud_muestra,maquina_request
+from LabModule.models import MaquinaSolicitud
+from LabModule.models import Muestra
+from LabModule.models import MuestraSolicitud
+from LabModule.models import Paso
+from LabModule.models import Protocolo
+from LabModule.models import Proyecto
+from LabModule.models import Solicitud
+from LabModule.models import TipoDocumento
+from LabModule.models import Usuario
+from .views import aprobar_solicitud_muestra
+from .views import listar_solicitud_muestra
+from .views import lugar_add
+from .views import maquina_add
 from .views import maquina_list
+from .views import maquina_request
 from .views import maquina_update
 
 c = Client(HTTP_USER_AGENT = 'Mozilla/5.0')
@@ -359,79 +373,84 @@ class LoginTest(TestCase):
         response = c.post('/accounts/login/', postData, follow = True)
         self.assertEqual("correct username" in response.content, True, "No debe poder inciar sesións")
 
+
 class AprobarSolMuestraTest(TestCase):
     def setUp(self):
         """"Aprobar solicitudes de muestra
         """
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
-        self.LaboratorioPrueba = LaboratorioProfile.objects.create(nombre="Laboratorio genetica", id="LAB_101")
+        self.LaboratorioPrueba = LaboratorioProfile.objects.create(nombre = "Laboratorio genetica", id = "LAB_101")
         self.user = User.objects.create_user(username = 'john',
-                                                   email = 'jlennon@beatles.com',
-                                                   password = CONTRASENA)
-        c.login(username=self.user.username, password=CONTRASENA)
+                                             email = 'jlennon@beatles.com',
+                                             password = CONTRASENA)
+        c.login(username = self.user.username, password = CONTRASENA)
 
         admin = Permission.objects.get(name = 'solicitud||admin')
         self.user.user_permissions.add(admin)
 
-        self.tipoId = TipoDocumento.objects.create(nombre_corto="cc", descripcion="")
-        self.grupo = Group.objects.create(name='asistentes')
-        self.usuario = Usuario.objects.create(nombre_usuario="jlennon", correo_electronico="jlennon@beatles.com",
-                                              codigo_usuario="201610780", nombres="John", apellidos="Lennon",
-                                              telefono="3005717606", userNatIdTyp=self.tipoId, userNatIdNum="51603784",
-                                              grupo=self.grupo, user=self.user, contrasena=CONTRASENA)
-        self.userSinPermisos = User.objects.create_user(username='camilo',
-                                                        email='ccastillo@amigos.com',
-                                                        password=CONTRASENA)
-        c.login(username=self.userSinPermisos.username, password=CONTRASENA)
+        self.tipoId = TipoDocumento.objects.create(nombre_corto = "cc", descripcion = "")
+        self.grupo = Group.objects.create(name = 'asistentes')
+        self.usuario = Usuario.objects.create(nombre_usuario = "jlennon", correo_electronico = "jlennon@beatles.com",
+                                              codigo_usuario = "201610780", nombres = "John", apellidos = "Lennon",
+                                              telefono = "3005717606", userNatIdTyp = self.tipoId,
+                                              userNatIdNum = "51603784",
+                                              grupo = self.grupo, user = self.user, contrasena = CONTRASENA)
+        self.userSinPermisos = User.objects.create_user(username = 'camilo',
+                                                        email = 'ccastillo@amigos.com',
+                                                        password = CONTRASENA)
+        c.login(username = self.userSinPermisos.username, password = CONTRASENA)
 
-
-        self.protocoloPrueba = Protocolo.objects.create(nombre="Protocolo # 1",
-                                                        descripcion="Este es un protocolo de prueba",
-                                                        objetivo="Comprobar funcionalidad de solicitud maquinas")
-        self.pasoPrueba = Paso.objects.create(id="1", nombre="Paso # 1", descripcion="Este es un paso de prueba",
-                                              protocolo=self.protocoloPrueba)
-        self.proyectoPrueba = Proyecto.objects.create(nombre="Proyecto # 1",
-                                                      descripcion="Este es un proyecto de prueba",
-                                                      objetivo="Comprobar funcionalidad de solicitud maquinas",
-                                                      lider=self.usuario, activo=True)
+        self.protocoloPrueba = Protocolo.objects.create(nombre = "Protocolo # 1",
+                                                        descripcion = "Este es un protocolo de prueba",
+                                                        objetivo = "Comprobar funcionalidad de solicitud maquinas")
+        self.pasoPrueba = Paso.objects.create(id = "1", nombre = "Paso # 1", descripcion = "Este es un paso de prueba",
+                                              protocolo = self.protocoloPrueba)
+        self.proyectoPrueba = Proyecto.objects.create(nombre = "Proyecto # 1",
+                                                      descripcion = "Este es un proyecto de prueba",
+                                                      objetivo = "Comprobar funcionalidad de solicitud maquinas",
+                                                      lider = self.usuario, activo = True)
         self.proyectoPrueba.asistentes.add(self.usuario)
-        self.experimentoPrueba = Experimento.objects.create(nombre="Experimento # 1",
-                                                            descripcion="Este es un experimento de prueba",
-                                                            objetivo="Comprobar funcionalidad de solicitud maquinas",
-                                                            projecto=self.proyectoPrueba)
+        self.experimentoPrueba = Experimento.objects.create(nombre = "Experimento # 1",
+                                                            descripcion = "Este es un experimento de prueba",
+                                                            objetivo = "Comprobar funcionalidad de solicitud maquinas",
+                                                            projecto = self.proyectoPrueba)
         self.experimentoPrueba.protocolos.add(self.protocoloPrueba)
-        self.muestra=Muestra.objects.create(nombre="Muestra #1",descripcion="Esta es una muestra de prueba",valor="1",unidadBase="sobres",
-                               activa=True, controlado=True)
-        self.solicitud=Solicitud.objects.create(descripcion="Solicitud de muestra",fechaInicial=date(2017,6,2),
-                                                fechaFinal=date(2017, 6, 8),estado='creada',solicitante=self.usuario,
-                                                fechaActual=date(2017,6,2),paso=self.pasoPrueba)
-        self.solicitudMuestra= MuestraSolicitud.objects.create(tipo="uso",cantidad="2",solicitud=self.solicitud,
-                                                               muestra=self.muestra)
-        self.segundaSolicitud = Solicitud.objects.create(descripcion="Solicitud de muestra #2",
-                                                  fechaInicial=date(2017, 6, 2),
-                                                  fechaFinal=date(2017, 6, 8), estado='creada',
-                                                  solicitante=self.usuario,
-                                                  fechaActual=date(2017, 6, 2), paso=self.pasoPrueba)
-        self.segundaSolicitudMuestra = MuestraSolicitud.objects.create(tipo="uso", cantidad="3", solicitud=self.segundaSolicitud,
-                                                                muestra=self.muestra)
+        self.muestra = Muestra.objects.create(nombre = "Muestra #1", descripcion = "Esta es una muestra de prueba",
+                                              valor = "1", unidadBase = "sobres",
+                                              activa = True, controlado = True)
+        self.solicitud = Solicitud.objects.create(descripcion = "Solicitud de muestra", fechaInicial = date(2017, 6, 2),
+                                                  fechaFinal = date(2017, 6, 8), estado = 'creada',
+                                                  solicitante = self.usuario,
+                                                  fechaActual = date(2017, 6, 2), paso = self.pasoPrueba)
+        self.solicitudMuestra = MuestraSolicitud.objects.create(tipo = "uso", cantidad = "2",
+                                                                solicitud = self.solicitud,
+                                                                muestra = self.muestra)
+        self.segundaSolicitud = Solicitud.objects.create(descripcion = "Solicitud de muestra #2",
+                                                         fechaInicial = date(2017, 6, 2),
+                                                         fechaFinal = date(2017, 6, 8), estado = 'creada',
+                                                         solicitante = self.usuario,
+                                                         fechaActual = date(2017, 6, 2), paso = self.pasoPrueba)
+        self.segundaSolicitudMuestra = MuestraSolicitud.objects.create(tipo = "uso", cantidad = "3",
+                                                                       solicitud = self.segundaSolicitud,
+                                                                       muestra = self.muestra)
         self.data = {
-            "nombre": "Lugar # 1",
-            "descripcion": "Lugar de almacenamiento de prueba",
-            "capacidad": "5",
-            "temperatura": "20.0",
+            "nombre"       : "Lugar # 1",
+            "descripcion"  : "Lugar de almacenamiento de prueba",
+            "capacidad"    : "5",
+            "temperatura"  : "20.0",
             "idLaboratorio": self.LaboratorioPrueba.id,
-            "posX": "2",
-            "posY": "10"
+            "posX"         : "2",
+            "posY"         : "10"
         }
-        request = self.factory.post('almacenamiento/add/', data=self.data)
+        request = self.factory.post('almacenamiento/add/', data = self.data)
         request.user = self.user
         lugar_add(request)
-        self.lugarAlmacenamiento= LugarAlmacenamiento.objects.get(nombre="Lugar # 1")
-        self.bandejas=Bandeja.objects.all().filter(lugarAlmacenamiento=self.lugarAlmacenamiento)
+        self.lugarAlmacenamiento = LugarAlmacenamiento.objects.get(nombre = "Lugar # 1")
+        self.bandejas = Bandeja.objects.all().filter(lugarAlmacenamiento = self.lugarAlmacenamiento)
         for bandeja in self.bandejas:
-            bandeja.muestra=self.muestra
-            bandeja.libre=False
+            bandeja.muestra = self.muestra
+            bandeja.libre = False
             bandeja.save()
 
     def test_ingresar(self):
@@ -443,17 +462,17 @@ class AprobarSolMuestraTest(TestCase):
         response = listar_solicitud_muestra(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
 
-        request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow=True)
+        request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow = True)
         request.user = AnonymousUser()
         response = aprobar_solicitud_muestra(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
 
-        request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow=True)
+        request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow = True)
         request.user = self.userSinPermisos
         response = listar_solicitud_muestra(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
 
-        request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow=True)
+        request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow = True)
         request.user = self.userSinPermisos
         response = aprobar_solicitud_muestra(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
@@ -461,16 +480,16 @@ class AprobarSolMuestraTest(TestCase):
     def test_listar_solicitudes(self):
         """Comprueba que se pueda obtener la lista de solicitudes de muestra
                 """
-        lista_solicitudes = Solicitud.objects.all().exclude(estado='aprobada')
+        lista_solicitudes = Solicitud.objects.all().exclude(estado = 'aprobada')
         self.assertEqual(len(lista_solicitudes), 2, "No es la cantidad de solicitudes correcta")
         idSolicitudes = [solicitud.id for solicitud in lista_solicitudes]
-        lista_MuestraSol = MuestraSolicitud.objects.all().filter(solicitud__in=idSolicitudes)
+        lista_MuestraSol = MuestraSolicitud.objects.all().filter(solicitud__in = idSolicitudes)
         self.assertEqual(len(lista_MuestraSol), 2, "No es la cantidad de solicitudes de muestra correcta")
 
     def test_muestras_disponibles(self):
         """Comprueba que hayan muestras disponibles
                        """
-        self.assertEqual(self.muestra.calc_disp(),'Si','Deberian haber muestras disponibles')
+        self.assertEqual(self.muestra.calc_disp(), 'Si', 'Deberian haber muestras disponibles')
 
     def test_aprobar_solicitud(self):
         """Comprueba que se pueda aprobar solicitud de muestra
@@ -480,10 +499,12 @@ class AprobarSolMuestraTest(TestCase):
         request.GET['pk'] = self.solicitud.pk
         request.user = self.user
         aprobar_solicitud_muestra(request)
-        bandejasLibres = Bandeja.objects.all().filter(lugarAlmacenamiento=self.lugarAlmacenamiento,libre=True)
-        self.assertEqual(len(bandejasLibres),2,'Deberian haber bandejas libres')
-        muestraSol=MuestraSolicitud.objects.get(id=1)
-        self.assertEqual(muestraSol.solicitud.estado,'aprobada', 'Deberian estar la solicitud aprobada')
+        bandejasLibres = Bandeja.objects.all().filter(lugarAlmacenamiento = self.lugarAlmacenamiento, libre = True)
+        self.assertEqual(len(bandejasLibres), 2, 'Deberian haber bandejas libres')
+        muestraSol = MuestraSolicitud.objects.get(id = 1)
+        self.assertEqual(muestraSol.solicitud.estado, 'aprobada', 'Deberian estar la solicitud aprobada')
+
+
 class SolicitarMaquinaTest(TestCase):
     """Inicia el estado del test
                 Se encarga de :
@@ -501,16 +522,17 @@ class SolicitarMaquinaTest(TestCase):
                                              email = 'jlennon@beatles.com',
                                              password = CONTRASENA)
         c.login(username = self.user.username, password = CONTRASENA)
-        self.tipoId=TipoDocumento.objects.create(nombre_corto="cc",descripcion="")
-        self.grupo=Group.objects.create(name='asistentes')
-        self.usuario=Usuario.objects.create(nombre_usuario="jlennon",correo_electronico="jlennon@beatles.com",
-                                            codigo_usuario="201610780", nombres="John", apellidos="Lennon",
-                                            telefono="3005717606", userNatIdTyp=self.tipoId,userNatIdNum="51603784",
-                                            grupo=self.grupo, user=self.user,contrasena=CONTRASENA)
-        self.userSinPermisos = User.objects.create_user(username='camilo',
-                                             email='ccastillo@amigos.com',
-                                             password=CONTRASENA)
-        c.login(username=self.userSinPermisos.username, password=CONTRASENA)
+        self.tipoId = TipoDocumento.objects.create(nombre_corto = "cc", descripcion = "")
+        self.grupo = Group.objects.create(name = 'asistentes')
+        self.usuario = Usuario.objects.create(nombre_usuario = "jlennon", correo_electronico = "jlennon@beatles.com",
+                                              codigo_usuario = "201610780", nombres = "John", apellidos = "Lennon",
+                                              telefono = "3005717606", userNatIdTyp = self.tipoId,
+                                              userNatIdNum = "51603784",
+                                              grupo = self.grupo, user = self.user, contrasena = CONTRASENA)
+        self.userSinPermisos = User.objects.create_user(username = 'camilo',
+                                                        email = 'ccastillo@amigos.com',
+                                                        password = CONTRASENA)
+        c.login(username = self.userSinPermisos.username, password = CONTRASENA)
 
         solicitar = Permission.objects.get(name = 'maquina||solicitar')
 
@@ -518,7 +540,7 @@ class SolicitarMaquinaTest(TestCase):
         self.LaboratorioPrueba = LaboratorioProfile.objects.create(nombre = "Laboratorio genetica", id = "LAB_101")
 
         self.maquinaPrueba = {
-            "id":"1",
+            "id"           : "1",
             "nombre"       : "Autoclave Portátil",
             "descripcion"  : "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
             "idSistema"    : "AUTO_010",
@@ -531,15 +553,20 @@ class SolicitarMaquinaTest(TestCase):
         request = self.factory.post('/maquina/add', data = self.maquinaPrueba)
         request.user = self.user
         maquina_add(request)
-        self.protocoloPrueba=Protocolo.objects.create(nombre= "Protocolo # 1",descripcion= "Este es un protocolo de prueba",
-            objetivo= "Comprobar funcionalidad de solicitud maquinas")
-        self.pasoPrueba=Paso.objects.create(id="1",nombre= "Paso # 1",descripcion= "Este es un paso de prueba",
-                                            protocolo= self.protocoloPrueba)
-        self.proyectoPrueba=Proyecto.objects.create(nombre="Proyecto # 1",descripcion= "Este es un proyecto de prueba",
-            objetivo= "Comprobar funcionalidad de solicitud maquinas",lider= self.usuario,activo= True)
+        self.protocoloPrueba = Protocolo.objects.create(nombre = "Protocolo # 1",
+                                                        descripcion = "Este es un protocolo de prueba",
+                                                        objetivo = "Comprobar funcionalidad de solicitud maquinas")
+        self.pasoPrueba = Paso.objects.create(id = "1", nombre = "Paso # 1", descripcion = "Este es un paso de prueba",
+                                              protocolo = self.protocoloPrueba)
+        self.proyectoPrueba = Proyecto.objects.create(nombre = "Proyecto # 1",
+                                                      descripcion = "Este es un proyecto de prueba",
+                                                      objetivo = "Comprobar funcionalidad de solicitud maquinas",
+                                                      lider = self.usuario, activo = True)
         self.proyectoPrueba.asistentes.add(self.usuario)
-        self.experimentoPrueba=Experimento.objects.create(nombre= "Experimento # 1",descripcion= "Este es un experimento de prueba",
-            objetivo= "Comprobar funcionalidad de solicitud maquinas",projecto= self.proyectoPrueba)
+        self.experimentoPrueba = Experimento.objects.create(nombre = "Experimento # 1",
+                                                            descripcion = "Este es un experimento de prueba",
+                                                            objetivo = "Comprobar funcionalidad de solicitud maquinas",
+                                                            projecto = self.proyectoPrueba)
         self.experimentoPrueba.protocolos.add(self.protocoloPrueba)
 
     def test_UsuarioNoAutorizado(self):
@@ -560,7 +587,7 @@ class SolicitarMaquinaTest(TestCase):
 
                 """
         try:
-            MaquinaProfile.objects.get(pk='0', activa=True)
+            MaquinaProfile.objects.get(pk = '0', activa = True)
             self.fail("No deberia poder crear nada")
         except ObjectDoesNotExist:
             pass
@@ -569,16 +596,15 @@ class SolicitarMaquinaTest(TestCase):
         """Comprueba que un usario pueda solicitar maquinas.
 
                         """
-        self.data={
-            "fechaInicial":"2017-06-02",
-            "fechaFinal":"2017-06-08",
-            "step":"1"
+        self.data = {
+            "fechaInicial": "2017-06-02",
+            "fechaFinal"  : "2017-06-08",
+            "step"        : "1"
         }
-        request = self.factory.post('/maquina/solicitar', data=self.data)
+        request = self.factory.post('/maquina/solicitar', data = self.data)
         request.user = self.user
-        request.GET= request.GET.copy()
-        request.GET['id']=1
+        request.GET = request.GET.copy()
+        request.GET['id'] = 1
         response = maquina_request(request)
-        sMaquina = MaquinaSolicitud.objects.filter(maquina=self.maquinaPrueba).exists()
+        sMaquina = MaquinaSolicitud.objects.filter(maquina = self.maquinaPrueba).exists()
         self.assertEqual(sMaquina, False, "La solicitud no fue creada")
-
