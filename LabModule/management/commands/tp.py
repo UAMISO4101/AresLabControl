@@ -56,7 +56,7 @@ class ListarMuestras(TestCase):
         self.factory = RequestFactory()
         self.anomimus = AnonymousUser()
         self.client = Client(HTTP_USER_AGENT='Mozilla/5.0')
-        self.client.login(username='mgalindo', password=CONTRASENA)
+        self.client.login(username='mgalindo1', password=CONTRASENA)
 
     def test_IngresarURL(self):
         """ Comprueba que solo los usuarios autorizados puedan acceder a la lista de muestras

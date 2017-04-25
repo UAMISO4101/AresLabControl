@@ -373,19 +373,19 @@ def crearAsistente(user, num, tipDocumento, asistentes):
         exist_asistente.groups.add(asistentes)
         exist_asistente.save()
 
-    exist_usuario, new_usuario = Usuario.objects.get_or_create(
-            nombre_usuario = user + str(num),
-            correo_electronico = user + str(num) + '@uniandes.edu.co',
-            codigo_usuario = '19950914' + str(num),
-            nombres = 'Monica',
-            apellidos = 'Galindo',
-            telefono = '7453698',
-            userNatIdTyp = tipDocumento,
-            userNatIdNum = '31852496',
-            grupo = asistentes,
-            user = exist_asistente,
-            contrasena = CONTRASENA,
-    )
+        exist_usuario, new_usuario = Usuario.objects.get_or_create(
+                nombre_usuario = user + str(num),
+                correo_electronico = user + str(num) + '@uniandes.edu.co',
+                codigo_usuario = '19950914' + str(num),
+                nombres = 'Monica',
+                apellidos = 'Galindo',
+                telefono = '7453698',
+                userNatIdTyp = tipDocumento,
+                userNatIdNum = '31852496',
+                grupo = asistentes,
+                user = exist_asistente,
+                contrasena = CONTRASENA,
+        )
     print ('Asistentes Creadas')
 
 
@@ -404,11 +404,7 @@ def createUsers():
         exist_cientifico.set_password(CONTRASENA)
         exist_cientifico.groups.add(cientificos)
         exist_cientifico.save()
-    else:
-        exist_cientifico.email = 'acastro@uniandes.edu.co'
-        exist_cientifico.set_password(CONTRASENA)
-        exist_cientifico.groups.add(cientificos)
-        exist_cientifico.save()
+
 
     exist_usuario, new_usuario = Usuario.objects.get_or_create(
             nombre_usuario = 'acastro',
@@ -430,11 +426,7 @@ def createUsers():
         exist_jefe.set_password(CONTRASENA)
         exist_jefe.groups.add(jefes)
         exist_jefe.save()
-    else:
-        exist_jefe.email = 'bcamelas@uniandes.edu.co'
-        exist_jefe.set_password(CONTRASENA)
-        exist_jefe.groups.add(jefes)
-        exist_jefe.save()
+
 
     exist_usuario, new_usuario = Usuario.objects.get_or_create(
             nombre_usuario = 'bcamelas',
