@@ -46,3 +46,23 @@ img.imageIndex {
 .navicon {
     max-height: 22px !important;
 }
+
+
+.aprobada {
+    background-color: green  !important; /* background color */
+    border-color: green  !important;     /* border color */
+    color: white  !important;           /* text color */
+    }
+
+
+.ocupada  {
+    background-color: red  !important; /* background color */
+    border-color: red  !important;     /* border color */
+    color: white  !important;           /* text color */
+    }
+
+.pendiente  {
+    background-color: #ffff00  !important; /* background color */
+    border-color: #ffff00  !important;     /* border color */
+    color: black  !important;           /* text color */
+    }

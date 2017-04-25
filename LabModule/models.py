@@ -882,9 +882,10 @@ class MaquinaSolicitud(models.Model):
         return dict(id_maquina = self.maquina.idSistema, id = self.solicitud.id,
                     encargado = self.solicitud.solicitante.nombre_completo(),
                     start = self.solicitud.fechaInicial.isoformat().replace('+00:00', '-05:00'),
-                    end = self.solicitud.fechaFinal.isoformat().replace('+00:00', '-05:00'),
-                    className = 'envent', editable = True if id_user == self.solicitud.solicitante.user.id else False,
-                    overlap = False, paso = self.solicitud.paso.nombre)
+                    end = self.solicitud.fechaFinal.isoformat().replace('+00:00', '-05:00'), editable = False if id_user == self.solicitud.solicitante.user.id else False,
+                    overlap = False, paso = self.solicitud.paso.nombre,className='aprobada' if id_user == self.solicitud.solicitante.user.id 
+                    and self.solicitud.estado=='aprobada' else 'ocupada' if not id_user == self.solicitud.solicitante.user.id  else 'pendiente'
+                     )
 
 
 class Proyecto(models.Model):

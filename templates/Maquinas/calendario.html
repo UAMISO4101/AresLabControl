@@ -59,13 +59,14 @@
                 if (event.paso) {
                     element.find('.fc-content').append("<br/>" + event.paso);
                 }
+                element.find('.fc-event').className+=event.className;
             },
             select: function (start, end, jsEvent, view) {
                 if (view.name === "agendaDay" || view.name === "agendaWeek") {
                     id = 1
                     {% if perms.LabModule.can_requestMachine %}
-                        window.location.href = "/maquina/solicitar/?id={{maquina.idSistema}}&start=" + start + "&end=" + end;
-                        var title = null;
+                    window.location.href = "/maquina/solicitar/?id={{maquina.idSistema}}&start=" + start + "&end=" + end;
+                    var title = null;
                     {% endif %}
                     $('#calendar').fullCalendar('unselect');
                 }
@@ -77,10 +78,10 @@
         $('#calendar').fullCalendar('render');
     });
     {% if perms.LabModule.can_editMachine %}
-        $("#formMaquina").submit(function (e) {
-            e.preventDefault();
-            console.log($('#calendar').fullCalendar('clientEvents'))
-        });
+    $("#formMaquina").submit(function (e) {
+        e.preventDefault();
+        console.log($('#calendar').fullCalendar('clientEvents'))
+    });
     {% endif %}
 </script>
 
