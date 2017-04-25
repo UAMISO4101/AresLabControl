@@ -39,6 +39,7 @@ from .forms import LugarAlmacenamientoForm
 from .forms import MuestraSolicitudForm
 from .forms import RegistroUsuarioForm
 from .forms import SolicitudForm
+from django.contrib import messages
 
 
 # Create your views here.
@@ -120,7 +121,7 @@ def lugar_add(request):
     mensaje = ""
     if request.user.is_authenticated():
         if request.method == 'POST':
-            form = LugarAlmacenamientoForm(request.POST, request.FILES)
+            form = LugarAlmacenamientoForm(request.POST or None, request.FILES or None)
             formPos = PosicionesAlmacenamientoForm(request.POST or None, request.FILES or None)
 
             if form.is_valid() and formPos.is_valid():
@@ -148,16 +149,20 @@ def lugar_add(request):
                         if not masY:
                             formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
                     else:
-                        lugar.save()
-                        lugarEnLab.idLugar = lugar
-                        lugarEnLab.save()
+                        if lugar.capacidad<=0:
+                            form.add_error("capacidad", "La capacidad debe ser mayor a cero")
+                            mensaje = "La capacidad del lugar de almacenamiento debe ser mayor a cero"
+                        else:
+                            lugar.save()
+                            lugarEnLab.idLugar = lugar
+                            lugarEnLab.save()
 
-                        for cantidad in range(lugar.capacidad):
-                            bandeja = Bandeja(lugarAlmacenamiento = lugar,
-                                              libre = True, posicion = cantidad)
-                            bandeja.save()
-
-                        return HttpResponseRedirect(reverse('home'))
+                            for cantidad in range(lugar.capacidad):
+                                bandeja = Bandeja(lugarAlmacenamiento = lugar,
+                                                  libre = True, posicion = cantidad)
+                                bandeja.save()
+                            messages.success(request, "El lugar se añadio exitosamente")
+                            return HttpResponseRedirect(reverse('lugar-detail', kwargs = {'pk': lugar.pk}))
         else:
             form = LugarAlmacenamientoForm()
             formPos = PosicionesAlmacenamientoForm()
@@ -222,6 +227,10 @@ def comprobarPostMaquina(form, formPos, request, template_name, section):
                 new_maquina.save()
                 new_maquinaEnLab.idMaquina = new_maquina
                 new_maquinaEnLab.save()
+                if section['agregar']:
+                    messages.success(request, "La máquina se añadio exitosamente")
+                else:
+                    messages.success(request, "La máquina se actualizo correctamente")
                 return redirect(reverse('maquina-update', kwargs = {'pk': new_maquina.pk}))
 
     return render(request, template_name,
@@ -416,6 +425,7 @@ def maquina_request(request):
                     maquinaRequest.maquina = maquina
                     maquinaRequest.solicitud = requestObj
                     maquinaRequest.save()
+                    messages.success(request, "La máquina se reservo exitosamente")
                     return redirect(reverse('maquina-detail', kwargs = {'pk': request.GET.get('id', 0)}))
                 else:
                     mensaje = "Ya existe una solicitud para estas fechas"

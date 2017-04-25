@@ -378,7 +378,9 @@ class MaquinaEnLab(models.Model):
             null = False,
             on_delete = models.CASCADE,
             verbose_name = "Máquina",
-            primary_key = True
+            primary_key = True,
+            unique=True,
+            error_messages={'unique':"Ya existe una máquina con este ID"}
     )
     posX = models.PositiveIntegerField(
             verbose_name = "Posición X",
@@ -430,7 +432,7 @@ class LugarAlmacenamiento(models.Model):
             verbose_name = _("Descripción")
     )
 
-    capacidad = models.IntegerField(
+    capacidad = models.PositiveIntegerField(
             verbose_name = _("Capacidad")
     )
     temperatura = models.DecimalField(
@@ -450,13 +452,13 @@ class LugarAlmacenamiento(models.Model):
             default = 'images/image-not-found.jpg'
     )
 
-    # id= models.CharField(
-    #        max_length = 100,
-    #        default = '',
-    #        verbose_name = _("Identificación"),
-    #        null = False,
-    #        primary_key = True
-    # )
+    id= models.CharField(
+           max_length = 100,
+           default = '',
+           verbose_name = _("Identificación"),
+           null = False,
+           primary_key = True
+    )
 
     def __unicode__(self):
         return str(self.pk) + ":" + self.nombre

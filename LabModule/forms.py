@@ -62,8 +62,10 @@ class LugarAlmacenamientoForm(ModelForm):
        """
 
     class Meta:
-        model = LugarAlmacenamiento
-        fields = ['id', 'nombre', 'descripcion', 'capacidad', 'temperatura', 'imagen']
+
+      model = LugarAlmacenamiento
+      fields = ['id', 'nombre', 'descripcion', 'capacidad', 'temperatura', 'imagen']
+      # id=forms.CharField(error_messages={'Este campo es obigatorio,'})
 
 
 class PosicionesAlmacenamientoForm(ModelForm):

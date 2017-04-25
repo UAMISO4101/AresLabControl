@@ -15,6 +15,18 @@
         </div>
     {% endif %}
 
+    {% for error in form.errors %}
+        <div class="alert alert-danger">
+            Campo: <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+
+    {% for error in formPos.errors %}
+        <div class="alert alert-danger">
+            Campo: <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+
     {% for error in formPos.non_field_errors %}
         <div class="alert alert-danger">
             <strong>{{ error|escape }}</strong>
@@ -171,7 +183,5 @@
     </div>
 {% endif %}
 </form>
-    {% include 'Maquinas/calendario.html' %}
-
 
 {% endblock %}
