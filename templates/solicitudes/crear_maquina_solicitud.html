@@ -337,7 +337,6 @@ onsubmit="return validateForm();">{% csrf_token %}
             format: 'YYYY-MM-DD HH:mm',
             stepping: 30,
             minDate: new Date()
-            {{start}}
             {% if start.strip  %}
             ,defaultDate: new Date({{start}}+5 * 3600 * 1000)
             {% endif %}
