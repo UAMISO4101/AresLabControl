@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.utils import timezone
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext as _
-from django.db.models import Max
 
 # Create your models here.
 
@@ -546,6 +545,8 @@ class Protocolo(models.Model):
             verbose_name = _("Objetivo del Protocolo")
     )
 
+    def __unicode__(self):
+        return self.nombre
 
 class Paso(models.Model):
     """Representación de Paso
@@ -587,6 +588,8 @@ class Paso(models.Model):
             verbose_name = "Seleccion de Protocolo"
     )
 
+    def __unicode__(self):
+        return self.nombre
 
 class Muestra(models.Model):
     """Representación de Muestra
@@ -739,12 +742,6 @@ class Bandeja(models.Model):
 
     def __unicode__(self):
         return 'Bandeja: ' + self.lugarAlmacenamiento.__unicode__()+ " "+ str(self.posicion)
-
-
-
-
-
-
 
 class Solicitud(models.Model):
     """Representación de una bandeja del lugar de almacenamiento.
@@ -947,6 +944,8 @@ class Proyecto(models.Model):
             verbose_name = _('Estado de Actividad del Proyecto')
     )
 
+    def __unicode__(self):
+        return self.nombre
 
 class Experimento(models.Model):
     """Representación de un experimento.
@@ -1002,3 +1001,6 @@ class Experimento(models.Model):
             Protocolo,
             related_name = "experimento"
     )
+
+    def __unicode__(self):
+        return self.nombre

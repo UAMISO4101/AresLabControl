@@ -2,7 +2,6 @@
 from __future__ import print_function
 
 import json
-from decimal import Decimal
 
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
@@ -16,16 +15,11 @@ from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_exempt
 from registration.backends.default.views import RegistrationView
-from django.core import serializers
 
-from forms import LugarAlmacenamientoForm
 from forms import MaquinaForm
 from forms import MuestraForm
-from forms import MuestraSolicitudForm
 from forms import PosicionesAlmacenamientoForm
 from forms import PosicionesMaquinaForm
-from forms import RegistroUsuarioForm
-from forms import SolicitudForm
 from models import Bandeja
 from models import Experimento
 from models import LaboratorioProfile
@@ -44,7 +38,7 @@ from models import Usuario
 from .forms import LugarAlmacenamientoForm, SolicitudForm
 from .forms import MuestraSolicitudForm
 from .forms import RegistroUsuarioForm
-import datetime
+
 
 # Create your views here.
 def home(request):
@@ -333,7 +327,7 @@ def maquina_list(request):
          con la búsqueda. Si no esta autorizado se envia un código 401
     """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
-        edita = request.user.has_perm("LabModule.can_edditMachine")
+        edita = request.user.has_perm("LabModule.can_editMachine")
         pag = request.GET.get('pag', 1)
         que = request.GET.get("que", "")
         numer = int(request.GET.get("num", "10"))
