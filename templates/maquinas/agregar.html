@@ -31,8 +31,10 @@
         <h2>{{ section.title }}</h2>
     </div>
 
-    <form enctype="multipart/form-data" method="post">
+     {% if perms.LabModule.can_editMachine %}
+    <form id="formMaquina" naombre="formMaquina" enctype="multipart/form-data" method="post">
         {% csrf_token %}
+    {% endif %}
         <div class="panel panel-default">
             <div class="panel-heading ">
                 <h3 class="panel-title text-left">Información Básica</h3>
@@ -160,12 +162,16 @@
                 </div>
             </div>
         </div>
-
+        {% if perms.LabModule.can_editMachine %}
         <div class="row center">
             <div>
                 <input class="btn btn-primary" type="submit" value="Guardar"/>
                 <a class="btn btn-default" href="/" id="cancel" name="cancel">Cancelar</a>
             </div>
         </div>
+        {% endif %}
     </form>
+{% include 'Maquinas/calendario.html' %}
+
+
 {% endblock %}

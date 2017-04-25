@@ -19,7 +19,7 @@
 <body>
 
 {% include 'navbar.html' %}
-
+{% include 'javascripts.html' %}
 <div class="container">
     <div class='row'>
         {% block content %}
@@ -28,7 +28,7 @@
     </div>
 </div><!-- /.container -->
 
-{% include 'javascripts.html' %}
+
 <!-- Others JavaScript from another view.html -->
 {% block scripts_others %}{% endblock %}
 </body>

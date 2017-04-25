@@ -44,7 +44,7 @@
                                class="btn btn-primary {{ maquina.con_reserva|yesno:"danger," }}"
                                role="button">Editar</a>
                         {% endif %}
-                        {% if perms.LabModule.can_requestMachine and maquina.con_reserva %}
+                        {% if perms.LabModule.can_requestMachine  %}
                             <a href="{% url 'maquina-request' %}?id={{ maquina.idSistema }}"
                                class="btn btn-primary {{ maquina.con_reserva|yesno:"danger," }}"
                                role="button">Reservar</a>

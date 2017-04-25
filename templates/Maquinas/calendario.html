@@ -1,0 +1,90 @@
+
+
+{% load i18n staticfiles %}
+{% load staticfiles %}
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title text-left">Disponibilidad</h3>
+			</div>
+			<h3>{{mensajeCalendario}}</h3>
+			<div id="calendar"></div>
+		</div>
+	</div>
+</div>
+
+<script src='https://fullcalendar.io/js/fullcalendar-3.1.0/lib/moment.min.js'></script>
+<script src='https://fullcalendar.io/js/fullcalendar-3.1.0/lib/jquery-ui.min.js'></script>
+<script src='https://fullcalendar.io/js/fullcalendar-3.1.0/fullcalendar.min.js'></script>
+
+<script src='{% static 'js/es.js' %}'></script>
+
+<link rel='stylesheet' href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css" />
+<script >
+	$(document).ready(function() {
+    // page is now ready, initialize the calendar...
+    $('#calendar').fullCalendar({
+        // put your options and callbacks here
+        height: 650,
+        allDaySlot:false,
+        header: {
+        	left: 'prev,next today',
+        	center: 'title',
+        	right: 'month,agendaWeek,agendaDay'
+        },
+        minTime: "06:00:00",
+        maxTime: "20:00:00",
+        selectable: true,
+        selectOverlap:false,
+        selectHelper: true,
+        dayClick: function(date, jsEvent, view) {
+        	console.log(view.name);
+        	if (view.name === "month" ) {
+        		$('#calendar').fullCalendar('gotoDate', date);
+        		$('#calendar').fullCalendar('changeView', 'agendaDay');
+        	}},
+        	defaultView: 'agendaWeek',
+        	firstDay:1,
+        	eventRender: function(event, element, view) {
+
+             if(event.encargado)
+             {
+             element.find('.fc-content').append("<br/>"+ event.encargado); 
+             }
+             else
+             {
+                 element.find('.fc-content').append("<br/>"+"Reservar"); 
+             }
+             if(event.paso)
+             {
+            element.find('.fc-content').append("<br/>"+event.paso); 
+        }
+         },
+         select: function(start, end, jsEvent,view) 
+         {
+          if(view.name === "agendaDay" || view.name === "agendaWeek")
+          {
+            id=1
+            {% if perms.LabModule.can_requestMachine %}
+            window.location.href="/maquina/solicitar/?id={{maquina.idSistema}}&start="+start+"&end="+end;
+            var title = null;
+            {% endif %}
+            $('#calendar').fullCalendar('unselect');
+        }
+    },
+    editable: true,
+    events: '/maquina/events/{{maquina.idSistema}}'
+});
+
+    $('#calendar').fullCalendar('render');
+});
+    {% if perms.LabModule.can_editMachine %}
+    $("#formMaquina").submit(function (e) {
+        e.preventDefault();
+        console.log($('#calendar').fullCalendar('clientEvents'))
+    });
+    {% endif %}
+</script>
+

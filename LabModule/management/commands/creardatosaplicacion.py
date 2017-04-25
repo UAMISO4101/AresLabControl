@@ -57,6 +57,15 @@ def crearMaquina():
                                                                                   idSistema = maquina['idSistema'],
                                                                                   con_reserva = maquina['con_reserva']
                                                                                   )
+            if maquinaExistente:
+                if not maquina['imagen']=='':
+                    img_url = maquina['imagen']
+                    img_filename = urlparse(img_url).path.split('/')[-1]
+                    img_temp = NamedTemporaryFile()
+                    img_temp.write(urllib2.urlopen(img_url).read())
+                    img_temp.flush()
+                    nuevaMaquina.imagen.save(img_filename, File(img_temp))  
+
             nuevare, exre = MaquinaEnLab.objects.get_or_create(idLaboratorio = nuevoLab,
                                                                idMaquina = nuevaMaquina,
                                                                posX = maquina['x'],
@@ -181,13 +190,41 @@ def createGroups():
     maquinasSolicitar = Permission.objects.get(name='maquina||solicitar')
     agregarUsuario = Permission.objects.get(name='usuario||agregar')
     listarmuestras=Permission.objects.get(name='muestra||listar')
-    cientificos.permissions.add(maquinasAgregar, maquinasEditar, maquinasVer, agregarUsuario)
-    jefes.permissions.add(maquinasVer, agregarUsuario)
-    asistentes.permissions.add(maquinasVer,listarmuestras,maquinasSolicitar)
+
+    listarEventosMaquina=Permission.objects.get(name='solicitud||listar')
+    
+    cientificos.permissions.add(maquinasAgregar,listarEventosMaquina, maquinasEditar, maquinasVer, agregarUsuario)
+    jefes.permissions.add(maquinasVer, listarEventosMaquina,agregarUsuario)
+    asistentes.permissions.add(maquinasVer,listarEventosMaquina,listarmuestras,maquinasSolicitar)
     if created1 or created2 or created3:
         return 0
     return 1
 
+
+def crearAsistente(user,num,tipDocumento,asistentes):
+    exist_asistente, new_asistente = User.objects.get_or_create(
+            username = user+str(num))
+
+    if new_asistente:
+        exist_asistente.email = user+str(num)+'@uniandes.edu.co'
+        exist_asistente.set_password(CONTRASENA)
+        exist_asistente.groups.add(asistentes)
+        exist_asistente.save()
+
+    exist_usuario, new_usuario = Usuario.objects.get_or_create(
+            nombre_usuario = user+str(num),
+            correo_electronico = user+str(num)+'@uniandes.edu.co',
+            codigo_usuario = '19950914'+str(num),
+            nombres = 'Monica',
+            apellidos = 'Galindo',
+            telefono = '7453698',
+            userNatIdTyp = tipDocumento,
+            userNatIdNum = '31852496',
+            grupo = asistentes,
+            user = exist_asistente,
+            contrasena = CONTRASENA,
+    )
+  
 
 def createUsers():
     cientificos = Group.objects.get(name = 'Cientifico Experimentado')
@@ -249,34 +286,12 @@ def createUsers():
             contrasena = CONTRASENA,
     )
 
-    exist_asistente, new_asistente = User.objects.get_or_create(
-            username = 'mgalindo')
-    if new_asistente:
-        exist_asistente.email = 'mgalindo@uniandes.edu.co'
-        exist_asistente.set_password(CONTRASENA)
-        exist_asistente.groups.add(asistentes)
-        exist_asistente.save()
-    else:
-        exist_asistente.email = 'mgalindo@uniandes.edu.co'
-        exist_asistente.set_password(CONTRASENA)
-        exist_asistente.groups.add(asistentes)
-        exist_asistente.save()
+    for i in range(10):
+        crearAsistente('mgalindo',i,tipDocumento,asistentes)
 
-    exist_usuario, new_usuario = Usuario.objects.get_or_create(
-            nombre_usuario = 'mgalindo',
-            correo_electronico = 'mgalindo@uniandes.edu.co',
-            codigo_usuario = '19950914',
-            nombres = 'Monica',
-            apellidos = 'Galindo',
-            telefono = '7453698',
-            userNatIdTyp = tipDocumento,
-            userNatIdNum = '31852496',
-            grupo = asistentes,
-            user = exist_asistente,
-            contrasena = CONTRASENA,
-    )
 
-    if new_cientifico or new_jefe or new_asistente:
+
+    if new_cientifico or new_jefe :
         return 0
     return 1
 

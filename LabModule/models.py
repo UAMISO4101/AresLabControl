@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime
-
+from django.utils import timezone
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
@@ -229,7 +228,8 @@ class Usuario(models.Model):
 
     def __unicode__(self):
         return self.user.username
-
+    def nombre_completo(self):
+        return self.nombres +" "+ self.apellidos
 
 class LaboratorioProfile(models.Model):
     """Representación del laboratorio
@@ -340,7 +340,7 @@ class MaquinaProfile(models.Model):
             verbose_name = _("Activa")
     )
 
-    def __str__(self):
+    def __unicode__(self):
         return self.idSistema + " " + self.nombre
 
     def get_absolute_url(self):
@@ -771,18 +771,18 @@ class Solicitud(models.Model):
             null = True,
             verbose_name = _("Descripción de la Solicitud")
     )
-    fechaInicial = models.DateField(
+    fechaInicial = models.DateTimeField(
             blank = False,
             null = True,
             verbose_name = _("Fecha Inicial"),
-            default = datetime.date.today
+            default = timezone.now
 
     )
-    fechaFinal = models.DateField(
+    fechaFinal = models.DateTimeField(
             blank = False,
             null = True,
             verbose_name = _("Fecha Final"),
-            default = datetime.date.today
+            default = timezone.now
     )
     estado = models.CharField(
             max_length = 30,
@@ -808,7 +808,7 @@ class Solicitud(models.Model):
             blank = False,
             null = True,
             verbose_name = _("Fecha Actual"),
-            default = datetime.date.today
+            default = timezone.now
     )
     paso = models.ForeignKey(
             Paso,
@@ -816,6 +816,12 @@ class Solicitud(models.Model):
             null = True,
             verbose_name = _("Selección de Paso")
     )
+
+
+    def __unicode__(self):
+        return self.solicitante.__unicode__()+" "+self.estado
+
+
 
 
 class MuestraSolicitud(models.Model):
@@ -870,6 +876,13 @@ class MaquinaSolicitud(models.Model):
             null = True,
             verbose_name = _("Selección de Máquina")
     )
+    def __unicode__(self):
+        return self.maquina.__unicode__()+" "+self.solicitud.__unicode__()
+
+    def as_json(self,id_user):
+        return dict(id_maquina=self.maquina.idSistema,id=self.solicitud.id,encargado=self.solicitud.solicitante.nombre_completo(),
+            start=self.solicitud.fechaInicial.isoformat().replace('+00:00','-05:00'),end=self.solicitud.fechaFinal.isoformat().replace('+00:00','-05:00'),
+            className='envent',editable=True if id_user==self.solicitud.solicitante.user.id else False,overlap=False,paso=self.solicitud.paso.nombre)
 
 
 class Proyecto(models.Model):

@@ -1,7 +1,6 @@
 from django.conf import settings
-from django.conf.urls import url
+from django.conf.urls import url,include
 from django.conf.urls.static import static
-
 from . import views
 
 urlpatterns = [
@@ -19,7 +18,7 @@ urlpatterns = [
     url(r'^maquina/$', views.maquina_list, name = 'maquina-list'),
     url(r'^maquina/solicitar/$', views.maquina_request, name = 'maquina-request'),
     # url(r'^maquina/solicitar/(?P<pk>[\w\-]+)/$', views.maquina_request, name = 'maquina-request'),
-    url(r'^maquina/(?P<pk>[\w\-]+)/$', views.maquina_update, name = 'maquina-detail'),
+    url(r'^maquina/(?P<pk>[\w\-]+)/$', views.maquina_detail, name = 'maquina-detail'),
     url(r'^maquina/update/(?P<pk>[\w\-]+)/$', views.maquina_update, name = 'maquina-update'),
     # Muestras
     # url(r'^muestra/add/$', views.muestra_create, name = 'muestra-add'),
@@ -33,6 +32,11 @@ urlpatterns = [
     url(r'^solicitarMuestra/pasos/$', views.cargar_pasos, name = 's-pasos-list'),
     url(r'^aprobarSolicitudMuestras/listar/$', views.listar_solicitud_muestra, name = 'solicitudes-muestra-list'),
     url(r'^aprobarSolicitudMuestras/aprobar/$', views.aprobar_solicitud_muestra, name = 'solicitud-muestra-aprobar'),
+
+    #Schedule
+
+    url(r'^maquina/events/(?P<pk>[\w\-]+)/$', views.maquina_reservations,name = 'maquina-reservations'),
+
 ]
 
 if settings.DEBUG:
