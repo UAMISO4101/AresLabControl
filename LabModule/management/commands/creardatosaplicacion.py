@@ -320,7 +320,6 @@ def createUsers():
         user=exist_admin,
         contrasena=CONTRASENA,
     )
-
     if new_cientifico or new_jefe :
         return 0
     return 1
