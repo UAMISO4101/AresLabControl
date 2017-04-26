@@ -91,4 +91,3 @@ ENV/
 db.sqlite3
 media/images
 /Variables de entorno.txt
-/LabModule/migrations/
