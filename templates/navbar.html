@@ -1,56 +1,89 @@
 {% load staticfiles %}
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                        aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand " href="{% url 'home' %}"><img class ="navicon" src="{% static '/img/favicon.ico'%}"></a>
-            </div>
-            <div id="navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a  href="{% url 'home' %}">Lab Control</a></li>
-                </ul>
+{% block head_others %}
+    <link href="{% static 'css/navbarCustom.css' %}" rel="stylesheet">
+{% endblock %}
 
-                <ul class="nav navbar-nav navbar-right">
-                    {% if request.user.is_authenticated%}
-                        {% if perms.LabModule.can_viewStorage %}
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Lugares <span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="{% url 'listaLugares' %}">Lista Lugares</a></li>
-                                    {% if perms.LabModule.can_addStorage %}
-                                        <li><a href="{% url 'agregarLugar' %}">Agregar Lugar</a></li>
-                                    {% endif %}
-                                </ul>
-                            </li>
-                        {% endif %}
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand " href="{% url 'home' %}"><img class="navicon" src="{% static '/img/favicon.ico' %}"></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{% url 'home' %}" class="navtext">Lab Control</a></li>
+            </ul>
 
-                        {% if perms.LabModule.can_viewMachine %}
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Maquinas <span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="{% url 'maquinas-listar' %}">Máquinas</a></li>
-                                    {% if perms.LabModule.can_addMachine %}
-                                        <li><a href="{% url 'maquina-add' %}">Agregar Maquina</a></li>
-                                    {% endif %}
-                                </ul>
-                            </li>
-                        {% endif %}
-
-                        {% if perms.LabModule.can_addUser %}
-                            <li><a href="{% url 'registration_register' %}">Registro</a>
-                        {% endif %}
-                        <li><a href="{% url 'auth_logout' %}">Salir</a></li>
+            <ul class="nav navbar-nav navbar-right">
+                {% if request.user.is_authenticated %}
+                    {% if perms.LabModule.can_manageRequest %}
+                        <li class="dropdown navsubmenu">
+                            <a href="#" class="dropdown-toggle navtext" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false" onclick="cambiarColorClick(this)"
+                               onblur="cambiarColorBlur(this)">Solicitudes <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url 'solicitudes-muestra-list' %}" class="navtext">Ver Solicitudes
+                                    Muestra</a></li>
+                            </ul>
+                        </li>
                     {% endif %}
 
-                </ul>
-                {% if not request.user.is_authenticated and not "accounts/login" in request.get_full_path %}
-                <form class = "navbar-form navbar-right" method="POST" action="{% url 'auth_login' %}"> {% csrf_token %}
+                    {% if perms.LabModule.can_viewSample %}
+                        <li class="dropdown navsubmenu">
+                            <a href="#" class="dropdown-toggle navtext" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false" onclick="cambiarColorClick(this)"
+                               onblur="cambiarColorBlur(this)">Muestras <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url 'muestra-list' %}" class="navtext">Listar Muestras</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+
+                    {% if perms.LabModule.can_viewStorage %}
+                        <li class="dropdown navsubmenu">
+                            <a href="#" class="dropdown-toggle navtext" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false" onclick="cambiarColorClick(this)"
+                               onblur="cambiarColorBlur(this)">Lugares <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                {% if perms.LabModule.can_addStorage %}
+                                    <li><a href="{% url 'lugar-add' %}" class="navtext">Agregar Lugar</a></li>
+                                {% endif %}
+                                <li><a href="{% url 'lugar-list' %}" class="navtext">Listar Lugares</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+
+                    {% if perms.LabModule.can_viewMachine %}
+                        <li class="dropdown navsubmenu">
+                            <a href="#" class="dropdown-toggle navtext" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false" onclick="cambiarColorClick(this)"
+                               onblur="cambiarColorBlur(this)">Máquinas <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+
+                                {% if perms.LabModule.can_addMachine %}
+                                    <li><a href="{% url 'maquina-add' %}" class="navtext">Agregar Máquina</a></li>
+                                {% endif %}
+                                <li><a href="{% url 'maquina-list' %}" class="navtext">Listar Máquinas</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+
+                    {% if perms.LabModule.can_addUser %}
+                        <li><a href="{% url 'registration_register' %}" class="navtext"
+                               onmouseover="cambiarColorBlur(this)">Registro</a>
+                    {% endif %}
+                    <li><a href="{% url 'auth_logout' %}" class="navtext">Salir</a></li>
+                {% endif %}
+
+            </ul>
+            {% if not request.user.is_authenticated and not "accounts/login" in request.get_full_path %}
+                <form class="navbar-form navbar-right" method="POST" action="{% url 'auth_login' %}"> {% csrf_token %}
                     <div class="form-group">
                         <input type="text" class="form-control" name="username" placeholder="Username">
                     </div>
@@ -59,7 +92,34 @@
                     </div>
                     <button type="submit" class="btn btn-default">Ingresar</button>
                 </form>
-                {% endif %}
-            </div><!--/.nav-collapse -->
-        </div>
-    </nav>
+            {% endif %}
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+<div class="divide-nav">
+    <div class="container">
+    </div>
+</div>
+
+<nav class="navbar-min subnav" role="navigation">
+    <div class="navbar-inner">
+        <ul class="nav subnavbar-nav subnavbar-right">
+            {% if request.user.is_authenticated %}
+                <li>
+                    <a href="{% url 'home' %}" class="navtext" onmouseover="cambiarColorBlur(this)">Bienvenido a
+                        LabControl: {{ user.get_username }}</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+<script>
+    function cambiarColorClick(element) {
+        element.style.background = "#6269A2";
+    }
+    function cambiarColorBlur(element) {
+        element.style.background = "#464E8E";
+    }
+</script>

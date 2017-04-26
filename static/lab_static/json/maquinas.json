@@ -2,26 +2,29 @@
   {
     "idSistema": 1,
     "nombre": "AGITADOR MECANICO LIGNTHIN LABMASTER",
-    "descripcion": "Esta es la descripción de una máquina",
+    "descripcion": "Los agitadores verticales (o electrónicos) se utilizan generalmente en aplicaciones de laboratorio que requieren una actividad de solubilización, mezclado, suspensión, emulsificación y homogeneización de las muestras.",
     "con_reserva": false,
     "x": 1,
-    "y": 1
+    "y": 1,
+    "imagen": "http://vertassets.blob.core.windows.net/image/910a381c/910a381c-9b65-49ef-998f-8f586daed639/labmaster.jpg"
   },
   {
     "idSistema": 2,
     "nombre": "ANALIZADOR DE TAMAÑO DE PARTÍCULAS (MASTER SIZER)",
-    "descripcion": "Esta es la descripción de una máquina",
+    "descripcion": "El analizador de tamaño de partículas por difracción láser Mastersizer 3000 proporciona distribuciones de tamaño de partículas rápidas y precisas tanto en dispersiones secas como húmedas, con el mínimo de esfuerzo. Este aparato, que mide gamas de tamaños de partículas desde nanométricas a milimétricas, cuenta con un rendimiento excepcional en el tamaño de superficie y proporciona mediciones en las que todos pueden confiar independientemente del operador.",
     "con_reserva": true,
     "x": 2,
-    "y": 1
+    "y": 1,
+    "imagen": "http://rs1.chemie.de/images/14856-76.jpg"
   },
   {
     "idSistema": 3,
     "nombre": "ANALIZADOR OPTICO DE BARRIDO (TURBISCAN)",
-    "descripcion": "Esta es la descripción de una máquina",
+    "descripcion": "El microscopio electrónico de barrido (MEB o SEM, por Scanning Electron Microscope) es una técnica de microscopía electrónica capaz de producir imágenes de alta resolución de la superficie de una muestra utilizando las interacciones electrón-materia. Utiliza un haz de electrones en lugar de un haz de luz para formar una imagen.",
     "con_reserva": true,
     "x": 3,
-    "y": 1
+    "y": 1,
+    "imagen": "http://media.labcompare.com/m/1/product/4864758-400x300.jpg"
   },
   {
     "idSistema": 4,
@@ -29,7 +32,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 4,
-    "y": 1
+    "y": 1,
+    "imagen": "https://alt-model-images.s3-us-west-2.amazonaws.com/full-version-images/AS-10-Agar-Sterilizer-.JPG"
   },
   {
     "idSistema": 5,
@@ -37,7 +41,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 5,
-    "y": 1
+    "y": 1,
+    "imagen": "http://usedsterilizers.com/wp-content/uploads/2013/10/Sanyo-MLS-3781L-MLS-Autoclave-300x244.jpg"
   },
   {
     "idSistema": 6,
@@ -45,7 +50,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 6,
-    "y": 1
+    "y": 1,
+    "imagen": "https://www.ecured.cu/images/thumb/6/66/Balanza_analitica.jpg/260px-Balanza_analitica.jpg"
   },
   {
     "idSistema": 7,
@@ -53,7 +59,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 7,
-    "y": 1
+    "y": 1,
+    "imagen": "http://www.anapesing.es/fotos/analiticas/Balanzas%20para%20JOYERIA%20WTB.jpg"
   },
   {
     "idSistema": 8,
@@ -61,7 +68,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 8,
-    "y": 1
+    "y": 1,
+    "imagen": "http://anayco.net/anayco/wp-content/uploads/2013/08/Balanza-Determinadora-de-Humedad.jpg"
   },
   {
     "idSistema": 9,
@@ -69,7 +77,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 9,
-    "y": 1
+    "y": 1,
+    "imagen": "http://www.sectorelectricidad.com/wp-content/uploads/2016/05/Banco-de-capacitores-con-reactores-en-media-tensi%C3%B3n.jpg?2681d8"
   },
   {
     "idSistema": 10,
@@ -77,7 +86,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 10,
-    "y": 1
+    "y": 1,
+    "imagen": "http://www.instrulab.com.ar/imagenes/banos/DUBNOFF.png"
   },
   {
     "idSistema": 11,
@@ -85,7 +95,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 1,
-    "y": 2
+    "y": 2,
+    "imagen": "http://www.botgal-group.com/sites/default/files/tab2image/00031_8_0.jpg"
   },
   {
     "idSistema": 12,
@@ -93,7 +104,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 2,
-    "y": 2
+    "y": 2,
+    "imagen": "http://www.cientificasenna.com/files/image/Labnet/Digital%20Dry%20Bath(D1200).jpg"
   },
   {
     "idSistema": 13,
@@ -101,7 +113,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 3,
-    "y": 2
+    "y": 2,
+    "imagen": "http://www.wotol.com/images/thumbs/800x800/979314_29b021cb8aa853cf3988f2080b6c9a02.jpg"
   },
   {
     "idSistema": 14,
@@ -109,7 +122,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 4,
-    "y": 2
+    "y": 2,
+    "imagen": "http://www.cab.zju.edu.cn/wescms/sys/filebrowser/file.php?cmd=download&id=20225"
   },
   {
     "idSistema": 15,
@@ -117,7 +131,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 5,
-    "y": 2
+    "y": 2,
+    "imagen": "http://vertassets.blob.core.windows.net/image/2424b036/2424b036-e3dc-4088-9ae3-03e50928f4c2/115bf.jpg"
   },
   {
     "idSistema": 16,
@@ -125,7 +140,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 6,
-    "y": 2
+    "y": 2,
+    "imagen": "http://www.jmsna.net/wp-content/uploads/2014/08/picturesp510-11.jpg"
   },
   {
     "idSistema": 17,
@@ -133,7 +149,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 7,
-    "y": 2
+    "y": 2,
+    "imagen": ""
   },
   {
     "idSistema": 18,
@@ -141,7 +158,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 8,
-    "y": 2
+    "y": 2,
+    "imagen": ""
   },
   {
     "idSistema": 19,
@@ -149,7 +167,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 9,
-    "y": 2
+    "y": 2,
+    "imagen": ""
   },
   {
     "idSistema": 20,
@@ -157,7 +176,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 10,
-    "y": 2
+    "y": 2,
+    "imagen": ""
   },
   {
     "idSistema": 21,
@@ -165,7 +185,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 1,
-    "y": 3
+    "y": 3,
+    "imagen": ""
   },
   {
     "idSistema": 22,
@@ -173,7 +194,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 2,
-    "y": 3
+    "y": 3,
+    "imagen": ""
   },
   {
     "idSistema": 23,
@@ -181,7 +203,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 3,
-    "y": 3
+    "y": 3,
+    "imagen": ""
   },
   {
     "idSistema": 24,
@@ -189,7 +212,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 4,
-    "y": 3
+    "y": 3,
+    "imagen": ""
   },
   {
     "idSistema": 25,
@@ -197,7 +221,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 5,
-    "y": 3
+    "y": 3,
+    "imagen": ""
   },
   {
     "idSistema": 26,
@@ -205,7 +230,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 6,
-    "y": 3
+    "y": 3,
+    "imagen": ""
   },
   {
     "idSistema": 27,
@@ -213,7 +239,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 7,
-    "y": 3
+    "y": 3,
+    "imagen": ""
   },
   {
     "idSistema": 28,
@@ -221,7 +248,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 8,
-    "y": 3
+    "y": 3,
+    "imagen": ""
   },
   {
     "idSistema": 29,
@@ -229,7 +257,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 9,
-    "y": 3
+    "y": 3,
+    "imagen": ""
   },
   {
     "idSistema": 30,
@@ -237,7 +266,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 10,
-    "y": 3
+    "y": 3,
+    "imagen": ""
   },
   {
     "idSistema": 31,
@@ -245,7 +275,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 1,
-    "y": 4
+    "y": 4,
+    "imagen": ""
   },
   {
     "idSistema": 32,
@@ -253,7 +284,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 2,
-    "y": 4
+    "y": 4,
+    "imagen": ""
   },
   {
     "idSistema": 33,
@@ -261,7 +293,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 3,
-    "y": 4
+    "y": 4,
+    "imagen": ""
   },
   {
     "idSistema": 34,
@@ -269,7 +302,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 4,
-    "y": 4
+    "y": 4,
+    "imagen": ""
   },
   {
     "idSistema": 35,
@@ -277,7 +311,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 5,
-    "y": 4
+    "y": 4,
+    "imagen": ""
   },
   {
     "idSistema": 36,
@@ -285,7 +320,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 6,
-    "y": 4
+    "y": 4,
+    "imagen": ""
   },
   {
     "idSistema": 37,
@@ -293,7 +329,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 7,
-    "y": 4
+    "y": 4,
+    "imagen": ""
   },
   {
     "idSistema": 38,
@@ -301,7 +338,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 8,
-    "y": 4
+    "y": 4,
+    "imagen": ""
   },
   {
     "idSistema": 39,
@@ -309,7 +347,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 9,
-    "y": 4
+    "y": 4,
+    "imagen": ""
   },
   {
     "idSistema": 40,
@@ -317,7 +356,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 10,
-    "y": 4
+    "y": 4,
+    "imagen": ""
   },
   {
     "idSistema": 41,
@@ -325,7 +365,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 1,
-    "y": 5
+    "y": 5,
+    "imagen": ""
   },
   {
     "idSistema": 42,
@@ -333,7 +374,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 2,
-    "y": 5
+    "y": 5,
+    "imagen": ""
   },
   {
     "idSistema": 43,
@@ -341,7 +383,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 3,
-    "y": 5
+    "y": 5,
+    "imagen": ""
   },
   {
     "idSistema": 44,
@@ -349,7 +392,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 4,
-    "y": 5
+    "y": 5,
+    "imagen": ""
   },
   {
     "idSistema": 45,
@@ -357,7 +401,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 5,
-    "y": 5
+    "y": 5,
+    "imagen": ""
   },
   {
     "idSistema": 46,
@@ -365,7 +410,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 6,
-    "y": 5
+    "y": 5,
+    "imagen": ""
   },
   {
     "idSistema": 47,
@@ -373,7 +419,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 7,
-    "y": 5
+    "y": 5,
+    "imagen": ""
   },
   {
     "idSistema": 48,
@@ -381,7 +428,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 8,
-    "y": 5
+    "y": 5,
+    "imagen": ""
   },
   {
     "idSistema": 49,
@@ -389,7 +437,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 9,
-    "y": 5
+    "y": 5,
+    "imagen": ""
   },
   {
     "idSistema": 50,
@@ -397,7 +446,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 10,
-    "y": 5
+    "y": 5,
+    "imagen": ""
   },
   {
     "idSistema": 51,
@@ -405,7 +455,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 1,
-    "y": 6
+    "y": 6,
+    "imagen": ""
   },
   {
     "idSistema": 52,
@@ -413,7 +464,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 2,
-    "y": 6
+    "y": 6,
+    "imagen": ""
   },
   {
     "idSistema": 53,
@@ -421,7 +473,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 3,
-    "y": 6
+    "y": 6,
+    "imagen": ""
   },
   {
     "idSistema": 54,
@@ -429,7 +482,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 4,
-    "y": 6
+    "y": 6,
+    "imagen": ""
   },
   {
     "idSistema": 55,
@@ -437,7 +491,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 5,
-    "y": 6
+    "y": 6,
+    "imagen": ""
   },
   {
     "idSistema": 56,
@@ -445,7 +500,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 6,
-    "y": 6
+    "y": 6,
+    "imagen": ""
   },
   {
     "idSistema": 57,
@@ -453,7 +509,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 7,
-    "y": 6
+    "y": 6,
+    "imagen": ""
   },
   {
     "idSistema": 58,
@@ -461,7 +518,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 8,
-    "y": 6
+    "y": 6,
+    "imagen": ""
   },
   {
     "idSistema": 59,
@@ -469,7 +527,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 9,
-    "y": 6
+    "y": 6,
+    "imagen": ""
   },
   {
     "idSistema": 60,
@@ -477,7 +536,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 10,
-    "y": 6
+    "y": 6,
+    "imagen": ""
   },
   {
     "idSistema": 61,
@@ -485,7 +545,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 1,
-    "y": 7
+    "y": 7,
+    "imagen": ""
   },
   {
     "idSistema": 62,
@@ -493,7 +554,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 2,
-    "y": 7
+    "y": 7,
+    "imagen": ""
   },
   {
     "idSistema": 63,
@@ -501,7 +563,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 3,
-    "y": 7
+    "y": 7,
+    "imagen": ""
   },
   {
     "idSistema": 64,
@@ -509,7 +572,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 4,
-    "y": 7
+    "y": 7,
+    "imagen": ""
   },
   {
     "idSistema": 65,
@@ -517,7 +581,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 5,
-    "y": 7
+    "y": 7,
+    "imagen": ""
   },
   {
     "idSistema": 66,
@@ -525,7 +590,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 6,
-    "y": 7
+    "y": 7,
+    "imagen": ""
   },
   {
     "idSistema": 67,
@@ -533,7 +599,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 7,
-    "y": 7
+    "y": 7,
+    "imagen": ""
   },
   {
     "idSistema": 68,
@@ -541,7 +608,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 8,
-    "y": 7
+    "y": 7,
+    "imagen": ""
   },
   {
     "idSistema": 69,
@@ -549,7 +617,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 9,
-    "y": 7
+    "y": 7,
+    "imagen": ""
   },
   {
     "idSistema": 70,
@@ -557,7 +626,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 10,
-    "y": 7
+    "y": 7,
+    "imagen": ""
   },
   {
     "idSistema": 71,
@@ -565,7 +635,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 1,
-    "y": 8
+    "y": 8,
+    "imagen": ""
   },
   {
     "idSistema": 72,
@@ -573,7 +644,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 2,
-    "y": 8
+    "y": 8,
+    "imagen": ""
   },
   {
     "idSistema": 73,
@@ -581,7 +653,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 3,
-    "y": 8
+    "y": 8,
+    "imagen": ""
   },
   {
     "idSistema": 74,
@@ -589,7 +662,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 4,
-    "y": 8
+    "y": 8,
+    "imagen": ""
   },
   {
     "idSistema": 75,
@@ -597,7 +671,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 5,
-    "y": 8
+    "y": 8,
+    "imagen": ""
   },
   {
     "idSistema": 76,
@@ -605,7 +680,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 6,
-    "y": 8
+    "y": 8,
+    "imagen": ""
   },
   {
     "idSistema": 77,
@@ -613,7 +689,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 7,
-    "y": 8
+    "y": 8,
+    "imagen": ""
   },
   {
     "idSistema": 78,
@@ -621,7 +698,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 8,
-    "y": 8
+    "y": 8,
+    "imagen": ""
   },
   {
     "idSistema": 79,
@@ -629,7 +707,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 9,
-    "y": 8
+    "y": 8,
+    "imagen": ""
   },
   {
     "idSistema": 80,
@@ -637,7 +716,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 10,
-    "y": 8
+    "y": 8,
+    "imagen": ""
   },
   {
     "idSistema": 81,
@@ -645,7 +725,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 1,
-    "y": 9
+    "y": 9,
+    "imagen": ""
   },
   {
     "idSistema": 82,
@@ -653,7 +734,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 2,
-    "y": 9
+    "y": 9,
+    "imagen": ""
   },
   {
     "idSistema": 83,
@@ -661,7 +743,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 3,
-    "y": 9
+    "y": 9,
+    "imagen": ""
   },
   {
     "idSistema": 84,
@@ -669,7 +752,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 4,
-    "y": 9
+    "y": 9,
+    "imagen": ""
   },
   {
     "idSistema": 85,
@@ -677,7 +761,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 5,
-    "y": 9
+    "y": 9,
+    "imagen": ""
   },
   {
     "idSistema": 86,
@@ -685,7 +770,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 6,
-    "y": 9
+    "y": 9,
+    "imagen": ""
   },
   {
     "idSistema": 87,
@@ -693,7 +779,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 7,
-    "y": 9
+    "y": 9,
+    "imagen": ""
   },
   {
     "idSistema": 88,
@@ -701,7 +788,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 8,
-    "y": 9
+    "y": 9,
+    "imagen": ""
   },
   {
     "idSistema": 89,
@@ -709,7 +797,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 9,
-    "y": 9
+    "y": 9,
+    "imagen": ""
   },
   {
     "idSistema": 90,
@@ -717,7 +806,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 10,
-    "y": 9
+    "y": 9,
+    "imagen": ""
   },
   {
     "idSistema": 91,
@@ -725,7 +815,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 1,
-    "y": 10
+    "y": 10,
+    "imagen": ""
   },
   {
     "idSistema": 92,
@@ -733,7 +824,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 2,
-    "y": 10
+    "y": 10,
+    "imagen": ""
   },
   {
     "idSistema": 93,
@@ -741,7 +833,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 3,
-    "y": 10
+    "y": 10,
+    "imagen": ""
   },
   {
     "idSistema": 94,
@@ -749,7 +842,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 4,
-    "y": 10
+    "y": 10,
+    "imagen": ""
   },
   {
     "idSistema": 95,
@@ -757,7 +851,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 5,
-    "y": 10
+    "y": 10,
+    "imagen": ""
   },
   {
     "idSistema": 96,
@@ -765,7 +860,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 6,
-    "y": 10
+    "y": 10,
+    "imagen": ""
   },
   {
     "idSistema": 97,
@@ -773,7 +869,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 7,
-    "y": 10
+    "y": 10,
+    "imagen": ""
   },
   {
     "idSistema": 98,
@@ -781,7 +878,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 8,
-    "y": 10
+    "y": 10,
+    "imagen": ""
   },
   {
     "idSistema": 99,
@@ -789,7 +887,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 9,
-    "y": 10
+    "y": 10,
+    "imagen": ""
   },
   {
     "idSistema": 100,
@@ -797,7 +896,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 10,
-    "y": 10
+    "y": 10,
+    "imagen": ""
   },
   {
     "idSistema": 101,
@@ -805,7 +905,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 1,
-    "y": 11
+    "y": 11,
+    "imagen": ""
   },
   {
     "idSistema": 102,
@@ -813,7 +914,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 2,
-    "y": 11
+    "y": 11,
+    "imagen": ""
   },
   {
     "idSistema": 103,
@@ -821,7 +923,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 3,
-    "y": 11
+    "y": 11,
+    "imagen": ""
   },
   {
     "idSistema": 104,
@@ -829,7 +932,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 4,
-    "y": 11
+    "y": 11,
+    "imagen": ""
   },
   {
     "idSistema": 105,
@@ -837,7 +941,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 5,
-    "y": 11
+    "y": 11,
+    "imagen": ""
   },
   {
     "idSistema": 106,
@@ -845,7 +950,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 6,
-    "y": 11
+    "y": 11,
+    "imagen": ""
   },
   {
     "idSistema": 107,
@@ -853,7 +959,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": true,
     "x": 7,
-    "y": 11
+    "y": 11,
+    "imagen": ""
   },
   {
     "idSistema": 108,
@@ -861,7 +968,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 8,
-    "y": 11
+    "y": 11,
+    "imagen": ""
   },
   {
     "idSistema": 109,
@@ -869,7 +977,8 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 9,
-    "y": 11
+    "y": 11,
+    "imagen": ""
   },
   {
     "idSistema": 110,
@@ -877,6 +986,7 @@
     "descripcion": "Esta es la descripción de una máquina",
     "con_reserva": false,
     "x": 10,
-    "y": 11
+    "y": 11,
+    "imagen": ""
   }
 ]
