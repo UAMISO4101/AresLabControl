@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-import datetime
-
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext as _
 
 # Create your models here.
@@ -229,6 +228,9 @@ class Usuario(models.Model):
     def __unicode__(self):
         return self.user.username
 
+    def nombre_completo(self):
+        return self.nombres + " " + self.apellidos
+
 
 class LaboratorioProfile(models.Model):
     """Representación del laboratorio
@@ -339,7 +341,7 @@ class MaquinaProfile(models.Model):
             verbose_name = _("Activa")
     )
 
-    def __str__(self):
+    def __unicode__(self):
         return self.idSistema + " " + self.nombre
 
     def get_absolute_url(self):
@@ -376,7 +378,9 @@ class MaquinaEnLab(models.Model):
             null = False,
             on_delete = models.CASCADE,
             verbose_name = "Máquina",
-            primary_key = True
+            primary_key = True,
+            unique=True,
+            error_messages={'unique':"Ya existe una máquina con este ID"}
     )
     posX = models.PositiveIntegerField(
             verbose_name = "Posición X",
@@ -428,7 +432,7 @@ class LugarAlmacenamiento(models.Model):
             verbose_name = _("Descripción")
     )
 
-    capacidad = models.IntegerField(
+    capacidad = models.PositiveIntegerField(
             verbose_name = _("Capacidad")
     )
     temperatura = models.DecimalField(
@@ -448,6 +452,17 @@ class LugarAlmacenamiento(models.Model):
             default = 'images/image-not-found.jpg'
     )
 
+    id= models.CharField(
+           max_length = 100,
+           default = '',
+           verbose_name = _("Identificación"),
+           null = False,
+           primary_key = True
+    )
+
+    def __unicode__(self):
+        return str(self.pk) + ":" + self.nombre
+
 
 class LugarAlmacenamientoEnLab(models.Model):
     """Relación entre :class:`LugarAlmacenamiento` y :class:`LaboratorioProfile`
@@ -463,8 +478,8 @@ class LugarAlmacenamientoEnLab(models.Model):
      """
 
     class Meta:
-        verbose_name = "Lugar Almacenamiento en Laboratorio"
-        verbose_name_plural = 'Lugar Almacenamiento en Laboratorio'
+        verbose_name = "Lugar de almacenamiento en Laboratorio"
+        verbose_name_plural = 'Lugares de almacenamiento en Laboratorio'
 
     idLaboratorio = models.ForeignKey(
             LaboratorioProfile,
@@ -532,6 +547,9 @@ class Protocolo(models.Model):
             verbose_name = _("Objetivo del Protocolo")
     )
 
+    def __unicode__(self):
+        return self.nombre
+
 
 class Paso(models.Model):
     """Representación de Paso
@@ -573,6 +591,9 @@ class Paso(models.Model):
             verbose_name = "Seleccion de Protocolo"
     )
 
+    def __unicode__(self):
+        return self.nombre
+
 
 class Muestra(models.Model):
     """Representación de Muestra
@@ -600,13 +621,13 @@ class Muestra(models.Model):
         permissions = permissions_sample
 
     nombre = models.CharField(
-            max_length = 50,
+            max_length = 1000,
             blank = False,
             null = True,
             verbose_name = _("Nombre de la Muestra")
     )
     descripcion = models.TextField(
-            max_length = 200,
+            max_length = 1000,
             blank = False,
             null = True,
             verbose_name = _("Descripción de la Muestra")
@@ -641,7 +662,7 @@ class Muestra(models.Model):
     )
 
     def __unicode__(self):
-        return 'Muestra: ' + str(self.nombre)
+        return 'Muestra: ' + self.nombre
 
     def calc_disp(self):
         bandejas = Bandeja.objects.filter(muestra = self)
@@ -663,6 +684,17 @@ class Muestra(models.Model):
             return 'Si'
         else:
             return 'No'
+
+    def calc_posicion(self):
+        '''
+        Retorna -1 cuando la muestra no esta activa o no se encuentra en ningun lugar de almacenimiento
+        '''
+        bandeja = Bandeja.objects.filter(muestra = self).first()
+        if bandeja is not None:
+            lugar = bandeja.lugarAlmacenamiento
+            laboratorio = LugarAlmacenamientoEnLab.objects.filter(idLugar = lugar).first().idLaboratorio
+            return laboratorio.__unicode__()
+        return "No disponible"
 
 
 class Bandeja(models.Model):
@@ -694,6 +726,10 @@ class Bandeja(models.Model):
             null = True,
             verbose_name = _("Selección de Muestra")
     )
+    posicion = models.IntegerField(
+            null = True,
+            verbose_name = "Posicion"
+    )
     lugarAlmacenamiento = models.ForeignKey(
             LugarAlmacenamiento,
             blank = False,
@@ -701,6 +737,16 @@ class Bandeja(models.Model):
             on_delete = models.CASCADE,
             verbose_name = _("Selección de Lugar Almacenamiento")
     )
+
+    posicion = models.PositiveIntegerField(
+            verbose_name = _("Número de bandeja"),
+            null = False,
+            default = 1,
+            blank = False
+    )
+
+    def __unicode__(self):
+        return 'Bandeja: ' + self.lugarAlmacenamiento.__unicode__() + " " + str(self.posicion)
 
 
 class Solicitud(models.Model):
@@ -728,18 +774,18 @@ class Solicitud(models.Model):
             null = True,
             verbose_name = _("Descripción de la Solicitud")
     )
-    fechaInicial = models.DateField(
+    fechaInicial = models.DateTimeField(
             blank = False,
             null = True,
             verbose_name = _("Fecha Inicial"),
-            default = datetime.date.today
+            default = timezone.now
 
     )
-    fechaFinal = models.DateField(
+    fechaFinal = models.DateTimeField(
             blank = False,
             null = True,
             verbose_name = _("Fecha Final"),
-            default = datetime.date.today
+            default = timezone.now
     )
     estado = models.CharField(
             max_length = 30,
@@ -765,7 +811,7 @@ class Solicitud(models.Model):
             blank = False,
             null = True,
             verbose_name = _("Fecha Actual"),
-            default = datetime.date.today
+            default = timezone.now
     )
     paso = models.ForeignKey(
             Paso,
@@ -773,6 +819,9 @@ class Solicitud(models.Model):
             null = True,
             verbose_name = _("Selección de Paso")
     )
+
+    def __unicode__(self):
+        return self.solicitante.__unicode__() + " " + self.estado
 
 
 class MuestraSolicitud(models.Model):
@@ -827,6 +876,18 @@ class MaquinaSolicitud(models.Model):
             null = True,
             verbose_name = _("Selección de Máquina")
     )
+
+    def __unicode__(self):
+        return self.maquina.__unicode__() + " " + self.solicitud.__unicode__()
+
+    def as_json(self, id_user):
+        return dict(id_maquina = self.maquina.idSistema, id = self.solicitud.id,
+                    encargado = self.solicitud.solicitante.nombre_completo(),
+                    start = self.solicitud.fechaInicial.isoformat().replace('+00:00', '-05:00'),
+                    end = self.solicitud.fechaFinal.isoformat().replace('+00:00', '-05:00'), editable = False if id_user == self.solicitud.solicitante.user.id else False,
+                    overlap = False, paso = self.solicitud.paso.nombre,className='aprobada' if id_user == self.solicitud.solicitante.user.id 
+                    and self.solicitud.estado=='aprobada' else 'ocupada' if not id_user == self.solicitud.solicitante.user.id  else 'pendiente'
+                     )
 
 
 class Proyecto(models.Model):
@@ -891,6 +952,9 @@ class Proyecto(models.Model):
             verbose_name = _('Estado de Actividad del Proyecto')
     )
 
+    def __unicode__(self):
+        return self.nombre
+
 
 class Experimento(models.Model):
     """Representación de un experimento.
@@ -946,3 +1010,6 @@ class Experimento(models.Model):
             Protocolo,
             related_name = "experimento"
     )
+
+    def __unicode__(self):
+        return self.nombre

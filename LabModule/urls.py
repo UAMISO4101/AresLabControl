@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.conf import settings
 from django.conf.urls import url
 from django.conf.urls.static import static
@@ -21,11 +19,11 @@ urlpatterns = [
     url(r'^maquina/$', views.maquina_list, name = 'maquina-list'),
     url(r'^maquina/solicitar/$', views.maquina_request, name = 'maquina-request'),
     # url(r'^maquina/solicitar/(?P<pk>[\w\-]+)/$', views.maquina_request, name = 'maquina-request'),
-    url(r'^maquina/(?P<pk>[\w\-]+)/$', views.maquina_update, name = 'maquina-detail'),
+    url(r'^maquina/(?P<pk>[\w\-]+)/$', views.maquina_detail, name = 'maquina-detail'),
     url(r'^maquina/update/(?P<pk>[\w\-]+)/$', views.maquina_update, name = 'maquina-update'),
     # Muestras
     # url(r'^muestra/add/$', views.muestra_create, name = 'muestra-add'),
-    # url(r'^muestra/$', views.muestra_list, name = 'muestra-list'),
+    url(r'^muestra/$', views.muestra_list, name = 'muestra-list'),
     url(r'^muestra/solicitar/$', views.muestra_request, name = 'muestra-request'),
     url(r'^muestra/(?P<pk>[\w\-]+)/$', views.muestra_detail, name = 'muestra-detail'),
     # url(r'^muestra/update/(?P<pk>[\w\-]+)/$', views.muestra_update, name = 'muestra-update'),
@@ -33,6 +31,11 @@ urlpatterns = [
     url(r'^solicitarMuestra/experimentos/$', views.cargar_experimentos, name = 's-experimentos-list'),
     url(r'^solicitarMuestra/protocolos/$', views.cargar_protocolos, name = 's-protocolos-list'),
     url(r'^solicitarMuestra/pasos/$', views.cargar_pasos, name = 's-pasos-list'),
+    # Solicitudes
+    url(r'^aprobarSolicitudMuestras/listar/$', views.listar_solicitud_muestra, name = 'solicitudes-muestra-list'),
+    url(r'^aprobarSolicitudMuestras/aprobar/$', views.aprobar_solicitud_muestra, name = 'solicitud-muestra-aprobar'),
+    # Schedule
+    url(r'^maquina/events/(?P<pk>[\w\-]+)/$', views.maquina_reservations, name = 'maquina-reservations'),
 
 ]
 

@@ -6,8 +6,10 @@ from models import Bandeja
 from models import Experimento
 from models import LaboratorioProfile
 from models import LugarAlmacenamiento
+from models import LugarAlmacenamientoEnLab
 from models import MaquinaEnLab
 from models import MaquinaProfile
+from models import MaquinaSolicitud
 from models import Muestra
 from models import MuestraSolicitud
 from models import Paso
@@ -44,6 +46,8 @@ admin.site.register(Proyecto)
 admin.site.register(Protocolo)
 admin.site.register(Solicitud)
 admin.site.register(Bandeja)
+admin.site.register(LugarAlmacenamientoEnLab)
+admin.site.register(MaquinaSolicitud)
 admin.site.register(LugarAlmacenamiento)
 admin.site.register(TipoDocumento, TipoDocumentoAdmin)
 admin.site.register(Usuario, UsuarioAdmin)

@@ -19,7 +19,6 @@ class RegistroUsuarioForm(forms.ModelForm):
            Se encarga de:
                * Tener una instancia del modelo del usuario.
                * Agregar un usuario a la base de datos.
-
         :param ModelForm: Instancia de Django.forms.
         :type ModelForm: ModelForm.
        """
@@ -54,34 +53,30 @@ class RegistroUsuarioForm(forms.ModelForm):
 
 class LugarAlmacenamientoForm(ModelForm):
     """Formulario  para crear y modificar el lugar almacenamiento.
-
            Se encarga de:
                * Tener una instancia del modelo del lugar almacenamiento en laboraotrio.
                * Agregar un lugar almacenamiento a la base de datos.
                * Modificar un lugar almacenamiento ya existente.
-
         :param ModelForm: Instancia de Django.forms.
         :type ModelForm: ModelForm.
-
        """
 
     class Meta:
-        model = LugarAlmacenamiento
-        fields = ['nombre', 'descripcion', 'capacidad', 'temperatura', 'imagen']
+
+      model = LugarAlmacenamiento
+      fields = ['id', 'nombre', 'descripcion', 'capacidad', 'temperatura', 'imagen']
+      # id=forms.CharField(error_messages={'Este campo es obigatorio,'})
 
 
 class PosicionesAlmacenamientoForm(ModelForm):
     """Formulario  para crear y modificar la ubicación de un lugar almacenamiento.
-
         Se encarga de:
             * Tener una instancia del modelo del lugar almacenamiento en laboratorio.
             * Definir las posición x, la posición y y el laboratorio en el cual se va aguardar el lugar almacenamiento.
             * Agregar un lugar almacenamiento a la base de datos, agregar la relación entre el lugar almacenamiento y el laboratorio en el que está.
             * Modificar la ubicación de un lugar almacenamiento ya existente.
-
      :param ModelForm: Instancia de Django.forms.
      :type ModelForm: ModelForm.
-
     """
 
     class Meta:
@@ -95,15 +90,15 @@ class SolicitudForm(ModelForm):
         model = Solicitud
         fields = ['fechaInicial', 'fechaFinal', 'descripcion', 'estado', 'solicitante', 'fechaActual', 'paso']
         widgets = {
-            'fechaInicial': forms.DateInput(attrs = {'class': 'form-control datepicker'},format= ("%Y-%m-%d")),
-            'fechaFinal'  : forms.DateInput(attrs = {'class': 'form-control datepicker'},format= ("%Y-%m-%d")),
+            'fechaInicial': forms.DateInput(attrs = {'class': 'form-control date '}, format = ("%Y-%m-%d %H:%m")),
+            'fechaFinal'  : forms.DateInput(attrs = {'class': 'form-control date '}, format = ("%Y-%m-%d %H:%m")),
         }
 
     def verificar_fecha(self, maquina_id, fechaIni, fechaFin):
 
         solicitudes = Solicitud.objects.filter(
-                Q(fechaInicial = fechaIni, fechaFinal = fechaFin) | Q(fechaInicial__lte = fechaIni,
-                                                                      fechaFinal__gte = fechaIni) | Q(
+                Q(fechaInicial = fechaIni, fechaFinal = fechaFin) | Q(fechaInicial__lt = fechaIni,
+                                                                      fechaFinal__gt = fechaIni) | Q(
                         fechaInicial__lte = fechaFin, fechaFinal__gte = fechaFin)).exclude(estado = 'rechazada')
         for sol in solicitudes:
             otras_maquinas = MaquinaSolicitud.objects.filter(solicitud = sol.pk, maquina = maquina_id).count()
@@ -116,19 +111,19 @@ class MuestraSolicitudForm(ModelForm):
     class Meta:
         model = MuestraSolicitud
         fields = ['cantidad', 'solicitud', 'muestra', 'tipo']
+        widgets = {
+            'cantidad': forms.TextInput(attrs = {'class': 'form-control'})
+        }
 
 
 class MuestraForm(ModelForm):
     """Formulario  para crear y modificar muestras.
-
            Se encarga de:
                * Tener una instancia del modelo muestra.
                * Agregar una muestra a la base de datos.
                * Modificar una muestra ya existente.
-
         :param ModelForm: Instancia de Django.forms.
         :type ModelForm: ModelForm.
-
        """
 
     class Meta:
@@ -138,23 +133,17 @@ class MuestraForm(ModelForm):
 
 class MaquinaForm(ModelForm):
     """Formulario  para crear y modificar una máquina.
-
           Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
-
           Historia de usuario: `ALF-20 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-20 />`_ :Yo como Jefe de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
-
           Historia de usuario: `ALF-25 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-25 />`_ :Yo como Asistente de Laboratorio quiero poder filtrar las máquinas existentes por nombre para visualizar sólo las que me interesan.
-
               Se encarga de:
                 * Tener una instancia del modelo de la máquina
                 * Seleccionar cuales campos del modelo seran desplegados en el formulario. Nombre, descripción, si esta reservado,activa
                   y la id dada por el sistema.
                 * Agregar una máquina a la base de datos, agregar la relación entre la máquina y el laboratorio en el que está.
                 * Modificar los datos  de una máquina ya existente.
-
            :param ModelForm: Instancia de Django.forms.
            :type ModelForm: ModelForm.
-
     """
 
     class Meta:
@@ -171,10 +160,8 @@ class PosicionesMaquinaForm(ModelForm):
             * Definir las posición x, la posición y y el laboratorio en el cual se va aguardar la máquina.
             * Agregar una máquina a la base de datos, agregar la relación entre la máquina y el laboratorio en el que está.
             * Modificar la ubicación de una máquina ya existente.
-
      :param ModelForm: Instancia de Django.forms.
      :type ModelForm: ModelForm.
-
     """
 
     class Meta:

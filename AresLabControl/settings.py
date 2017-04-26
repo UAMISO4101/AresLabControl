@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import os
+import sys
 import urlparse
 
 from django.utils.translation import gettext_lazy as _
@@ -47,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
 ]
 
 ROOT_URLCONF = 'AresLabControl.urls'
@@ -93,18 +95,26 @@ DATABASES = {
     #     'PASSWORD': ''
     # }
     # 'default': {
-    #     'ENGINE'  : 'django.db.backends.postgresql',
-    #     'NAME'    : 'areslab',
-    #     'HOST'    : 'localhost',
-    #     'PORT'    : '5432',
-    #     'USER'    : 'postgres',
-    #     'PASSWORD': 'admin'
+    #    'ENGINE'  : 'django.db.backends.postgresql',
+    #    'NAME'    : 'labs',
+    #    'HOST'    : 'localhost',
+    #    'PORT'    : '5432',
+    #    'USER'    : 'postgres',
+    #    'PASSWORD': '123456'
     # }
     # 'default': {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME'  : os.path.join(BASE_DIR, 'db.sqlite3'),
     # }
 }
+
+SOUTH_TESTS_MIGRATE = False
+
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME'  : 'test_dblpbhpi2otb4q'
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -135,7 +145,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 LANGUAGE_CODE = 'es-co'
 

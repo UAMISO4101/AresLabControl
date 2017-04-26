@@ -4,6 +4,9 @@
 {% load staticfiles %}
 {% block head_others %}
     <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css"
+rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
 {% endblock %}
 
 
@@ -57,65 +60,66 @@
     </div>
 
 
-<form method="post" action="" name="formSolicitud" id="formSolicitud">{% csrf_token %}
-    <div class="row">
-        <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title text-left">Caracteristicas muestra</h3>
-                </div>
-                <div class="panel-body text-left" style="min-height:160px">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Unidad Base:</strong>
-                        </div>
-                        <div class="col-md-6">
-                            <strong> {{ muestra.unidadBase }} </strong>
-                        </div>
+    <form method="post" action="" name="formSolicitud" id="formSolicitud"
+          onsubmit="return validateForm();">{% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-left">Caracteristicas muestra</h3>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Disponible:</strong>
+                    <div class="panel-body text-left" style="min-height:160px">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Unidad Base:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong> {{ muestra.unidadBase }} </strong>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <strong> {{ muestra.calc_disp }} </strong>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Disponible:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong> {{ muestra.calc_disp }} </strong>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Cantidad disponible:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong id="cantidadActual"> {{ muestra.calc_cuantos_disp }} </strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Controlada:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong> {{ muestra.calc_controled }} </strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Valor unidad:</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong> {{ muestra.valor }} </strong>
+                            </div>
                         </div>
 
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Cantidad disponible:</strong>
-                        </div>
-                        <div class="col-md-6">
-                            <strong id="cantidadActual"> {{ muestra.calc_cuantos_disp }} </strong>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Controlada:</strong>
-                        </div>
-                        <div class="col-md-6">
-                            <strong> {{ muestra.calc_controled }} </strong>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Valor unidad:</strong>
-                        </div>
-                        <div class="col-md-6">
-                            <strong> {{ muestra.valor }} </strong>
-                        </div>
-                    </div>
-
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title text-left">Solicitud</h3>
-                </div>
-                <div class="panel-body text-left" style="min-height:160px">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-left">Solicitud</h3>
+                    </div>
+                    <div class="panel-body text-left" style="min-height:160px">
 
                         <div class="row">
                             <div class="col-md-2">
@@ -162,32 +166,36 @@
                                 <strong>{{ form_muestra.cantidad.label }}</strong>
                             </div>
                             <div class="col-md-4">
-                                {{ form_muestra.cantidad|addcss:"form-control" }}
+                                {{ form_muestra.cantidad }}
                             </div>
                             <div class="col-md-2">
                                 <strong>{{ form.fechaInicial.label }}</strong>
                             </div>
                             <div class="col-md-4">
-                                {{ form.fechaInicial|addcss:"form-control datepicker" }}
+                                {{ form.fechaInicial }}
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row center">
-        <div >
-            {% if muestra.calc_disp != "No" %}
-                <input class='btn  btn-primary'  type="submit" value="Solicitar" id="solicitar"/>
-            {% endif %}
-            <a class="btn btn-default" href="/" id="cancel" name="cancel">Cancelar</a>
+        <div class="row center">
+            <div>
+                {% if muestra.calc_disp != "No" %}
+                    <input class='btn  btn-primary' type="submit" value="Solicitar" id="solicitar"/>
+                {% endif %}
+                <a class="btn btn-default" href="/" id="cancel" name="cancel">Cancelar</a>
+            </div>
         </div>
-    </div>
     </form>
-    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
+<script src="{% static 'js/boot-es.js' %}"></script>
+
     <script>
         $('#project').change(function () {
             project_id = $(this).val();
@@ -321,9 +329,7 @@
         });
 
 
-        $("#formSolicitud").submit(function (e) {
-
-            e.preventDefault();
+        function validateForm() {
 
             validarRequeridos(function (res) {
                 if (res && validarCantidad()) {
@@ -331,17 +337,18 @@
 
                 }
             });
+            return false;
+        };
 
+        $(function () {
+        $('#id_fechaInicial').datetimepicker({
+            locale: 'es',
+            showTodayButton: true,
+            format: 'YYYY-MM-DD HH:mm',
+            stepping: 30,
+            minDate: new Date()
         });
-
-        $(".datepicker").datepicker({
-            changeMonth: true,
-            changeYear: true,
-            yearRange: "2017:2030",
-            dateFormat: 'yy-mm-dd'
-            // You can put more options here.
-
-        });
+    })
         function validarRequeridos(callback) {
             var cont = $(".requerido").length;
             $(".requerido").each(function () {

@@ -11,44 +11,49 @@
 {% load lab_module_extras %}
 {% block content %}
 
+    {% if mensaje != "ok" %}
+        <div class="alert alert-danger col-md-6">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            {{ mensaje }}
+        </div>
+    {% endif %}
     <div class="page-header text-center">
         <h2>{% block title %}{{ section.title }}{% endblock %} </h2>
     </div>
 
 
     <div class="row">
-        <table id="maquinas_table" class="datatable display compact responsive nowrap" cellspacing="0"
+        <table id="solicitudes_table" class="datatable display compact responsive nowrap" cellspacing="0"
                width="100%">
             <thead>
             <tr>
                 <th>Id</th>
-                <th>Nombre</th>
-                <th>Ubicación</th>
-                <th>Acciones</th>
+                <th>Tipo</th>
+                <th>Muestra</th>
+                <th>Cantidad</th>
+                <th>Fecha</th>
+                <th>Solicitante</th>
+                <th>Paso</th>
+                <th>Descripción paso</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
-            {% for maquina, ubicacion in maquinasBien %}
-                <tr class= {{ maquina.con_reserva|yesno:"danger," }}>
-                    <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ maquina.idSistema }}</td>
-                    <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ maquina.nombre }}</td>
-                    <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ ubicacion }}</td>
-                    <td class="{{ maquina.con_reserva|yesno:"danger," }}">
-                        {% if perms.LabModule.can_viewMachine %}
-                            <a href="{% url 'maquina-detail' maquina.idSistema %} "
-                               class="btn btn-primary {{ maquina.con_reserva|yesno:"danger," }}"
-                               role="button">Ver</a>
-                        {% endif %}
-                        {% if perms.LabModule.can_editMachine %}
-                            <a href="{% url 'maquina-update' maquina.idSistema %} "
-                               class="btn btn-primary {{ maquina.con_reserva|yesno:"danger," }}"
-                               role="button">Editar</a>
-                        {% endif %}
-                        {% if perms.LabModule.can_requestMachine %}
-                            <a href="{% url 'maquina-request' %}?id={{ maquina.idSistema }}"
-                               class="btn btn-primary {{ maquina.con_reserva|yesno:"danger," }}"
-                               role="button">Reservar</a>
-                        {% endif %}
+            {% for solicitudMuestra in solicitudes %}
+                <tr>
+                    <td>{{ solicitudMuestra.solicitud.id }}</td>
+                    <td>{{ solicitudMuestra.tipo }}</td>
+                    <td>{{ solicitudMuestra.muestra.nombre }}</td>
+                    <td>{{ solicitudMuestra.cantidad }}</td>
+                    <td>{{ solicitudMuestra.solicitud.fechaActual }}</td>
+                    <td>{{ solicitudMuestra.solicitud.solicitante.nombre_usuario }}</td>
+                    <td>{{ solicitudMuestra.solicitud.paso.nombre }}</td>
+                    <td>{{ solicitudMuestra.solicitud.paso.descripcion }}</td>
+                    <td>
+                        <a href="{% url 'solicitud-muestra-aprobar' %}?pk={{ solicitudMuestra.solicitud.pk }} "
+                           class="btn btn-primary "
+                           role="button">Aprobar</a>
+
                     </td>
                 </tr>
             {% endfor %}
@@ -66,11 +71,12 @@
         <script>
             $(function () {
 
-                if ($.fn.dataTable.isDataTable('#maquinas_table')) {
-                    $('#maquinas_table').DataTable();
+                if ($.fn.dataTable.isDataTable('#solicitudes_table')) {
+                    $('#solicitudes_table').DataTable();
                 }
                 else {
-                    $('#maquinas_table').DataTable({
+
+                    $('#solicitudes_table').DataTable({
                         responsive: true,
                         sPaginationType: "full_numbers",
                         bJQueryUI: true,

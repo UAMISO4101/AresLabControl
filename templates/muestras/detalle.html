@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% load lab_module_extras %}
+{% load staticfiles %}
+{% block head_others %}
+    <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
+
+{% block content %}
+
+    <div class="page-header text-center">
+        <h2>{{ section.title }} {{ muestra.nombre }}</h2>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title text-left">Información básica</h3>
+        </div>
+
+        <div class="panel-body text-left">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-5 col-sm-6">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Id:</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ muestra.id }} </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Nombre:</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ muestra.nombre }} </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Controlada:</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ muestra.controlado }} </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Estado:</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ muestra.activa }} </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Unidad:</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ muestra.unidadBase }} </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Valor:</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ muestra.valor }} </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-sm-6">
+                        <div class="row">
+                            <div>
+                                <strong>Imagen:</strong>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="panel panel-default">
+                                <div class="panel-body text-left" style="text-align:center">
+                                    <a href="{{ muestra.imagen.url }}" target="_blank">
+                                        <img src="{{ muestra.imagen.url }}" alt="Imagen Muestra"
+                                             class="imageIndex" style="width:60%; ">
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title text-left">Descripción</h3>
+        </div>
+        <div class="panel-body text-left" style="height:100px">
+            <div class="row">
+                <p id="items" name="items"> {{ muestra.descripcion }} </p>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
