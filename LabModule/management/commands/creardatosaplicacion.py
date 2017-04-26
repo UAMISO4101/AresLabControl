@@ -365,6 +365,7 @@ def createGroups():
             can_listSample,
             can_viewSample,
             can_requestSample,
+            can_listRequest,
     )
     if created1 or created2 or created3:
         return 0

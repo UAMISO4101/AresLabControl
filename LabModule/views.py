@@ -514,6 +514,7 @@ def muestra_request(request):
                 sampleRequest.cantidad = request.POST['cantidad']
                 sampleRequest.tipo = 'uso'
                 sampleRequest.save()
+                messages.success(request,"La solictud de "+ str(sampleRequest.cantidad)+ " de " +sampleRequest.muestra.nombre +" ha sido procesada exitosamente")
                 return redirect(reverse('muestra-list', kwargs = {}))
 
             else:
@@ -743,10 +744,11 @@ def aprobar_solicitud_muestra(request):
 
                 contexto = {'lugaresConPos'   : lista_lugares_pos, 'section': section,
                             'muestraSolicitud': muestraSolicitud}
+                messages.success(request,'La solicitud fue aprobada exitosamente')
                 return render(request, 'solicitudes/resumenAprobadoMuestra.html', contexto)
             else:
-                contexto = {
-                    'mensaje': 'No es posible aprobar la solicitud porque no hay bandejas disponibles para suplir la demanda'}
+                messages.warning(request,'No es posible aprobar la solicitud porque no hay bandejas disponibles para suplir la demanda')
+                return redirect(reverse('solicitudes-muestra-list'))
         except ObjectDoesNotExist as e:
             contexto = {'mensaje': 'No hay solicitudes con el id solicitado'}
         except MultipleObjectsReturned as e:
