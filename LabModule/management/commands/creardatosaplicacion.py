@@ -96,7 +96,7 @@ def crearLaboratorio():
     print ('.'),
     LaboratorioProfile.objects.get_or_create(nombre="Laboratorio Secundario", id="LAB002")
     print ('.'),
-    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre="Laboratorio Terciario",
+    laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre="Laboratorio Terciario",
                                                                             id="LAB003")
     print ('.'),
     if laboratioExistente:
@@ -194,11 +194,11 @@ def crearMuestra():
     print ('Creando Muestras'),
     with open(".///" + static('lab_static/json/muestras.json')) as data_file:
         data = json.load(data_file)
-        idAct = 0
+
         for row in data:
             nombre = row['nombre']
             descripcion = row['descripcion']
-            Tipo = row['Tipo']
+
             valor = row['valor']
             activa = row['activa']
             controlado = row['controlado']
