@@ -520,9 +520,11 @@ def muestra_request(request):
             contexto = {'form'        : form, 'mensaje': mensaje, 'muestra': muestra, 'proyectos': proyectos,
                         'form_muestra': form_muestra}
         except ObjectDoesNotExist as e:
+            print (e.message)
             contexto = {'mensaje': 'No hay muestras o pasos con el id solicitado'}
 
         except MultipleObjectsReturned as e:
+            print(e.message)
             contexto = {'mensaje': 'Muchas muestras con ese id'}
 
         return render(request, "solicitudes/crear_muestra_solicitud.html", contexto)
