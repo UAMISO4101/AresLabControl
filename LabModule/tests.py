@@ -229,7 +229,7 @@ class AddMaquinasTest(TestCase):
 
         request = self.factory.post('/maquina/add', data = self.maquina4)
         request.user = self.user
-        response = maquina_add(request)
+        maquina_add(request)
         eMaquina = MaquinaProfile.objects.filter(pk = "AUTO_004").exists()
         self.assertEqual(eMaquina, False, "El laboratorio no es valido")
 
