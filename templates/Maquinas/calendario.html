@@ -59,9 +59,20 @@
                 if (event.paso) {
                     element.find('.fc-content').append("<br/>" + event.paso);
                 }
+
+                if(event.start.isBefore(moment()-5 * 3600 * 1000)) {
+                     element.find('.fc-content').append("<br/>" + "No se pueden seleccionar fechas pasadas")
+                      element.css("background", "red");
+                }
                 element.find('.fc-event').className+=event.className;
             },
             select: function (start, end, jsEvent, view) {
+
+                if((start).isBefore(moment()-5 * 3600 * 1000)) {
+                    $('#calendar').fullCalendar('unselect');
+                    return false;
+                }
+
                 if (view.name === "agendaDay" || view.name === "agendaWeek") {
                     id = 1
                     {% if perms.LabModule.can_requestMachine %}

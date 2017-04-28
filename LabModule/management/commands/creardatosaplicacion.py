@@ -356,12 +356,13 @@ def createGroups():
         can_addUser,
     )
     asistentes.permissions.add(
-        can_listMachine,
-        can_viewMachine,
-        can_requestMachine,
-        can_listSample,
-        can_viewSample,
-        can_requestSample,
+            can_listMachine,
+            can_viewMachine,
+            can_requestMachine,
+            can_listSample,
+            can_viewSample,
+            can_requestSample,
+            can_listRequest,
     )
     if created1 or created2 or created3:
         return 0
