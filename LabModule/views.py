@@ -304,7 +304,6 @@ def maquina_update(request, pk, template_name = 'maquinas/agregar.html'):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_editMachine"):
         server = get_object_or_404(MaquinaProfile, pk = pk)
         serverRelacionLab = get_object_or_404(MaquinaEnLab, idMaquina = server)
-        mensaje = ""
         form = MaquinaForm(request.POST or None, request.FILES or None, instance = server)
         formPos = PosicionesMaquinaForm(request.POST or None, request.FILES or None, instance = serverRelacionLab)
         section = {'title': 'Modificar Máquina', 'agregar': False}
@@ -430,8 +429,10 @@ def maquina_request(request):
                         'maquinaEnLab': maquinaEnLab, 'start': request.GET.get('start', ''),
                         'end'         : request.GET.get('end', '')}
         except ObjectDoesNotExist as e:
+            print (e.message)
             contexto = {'mensaje': 'No hay maquinas o pasos con el id solicitado'}
         except MultipleObjectsReturned as e:
+            print(e.message)
             contexto = {'mensaje': 'Muchas maquinas con ese id'}
         return render(request, "solicitudes/crear_maquina_solicitud.html", contexto)
     else:

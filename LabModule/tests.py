@@ -209,7 +209,7 @@ class AddMaquinasTest(TestCase):
         """
         request = self.factory.post('/maquina/add', data = self.maquina2)
         request.user = self.user
-        response = maquina_add(request)
+        maquina_add(request)
         eMaquina = MaquinaProfile.objects.filter(pk = "AUTO_002").exists()
         self.assertEqual(eMaquina, False, "El campo ya esta ocupado")
 
@@ -218,7 +218,7 @@ class AddMaquinasTest(TestCase):
         """
         request = self.factory.post('/maquina/add', data = self.maquina3)
         request.user = self.user
-        response = maquina_add(request)
+        maquina_add(request)
         con = MaquinaProfile.objects.filter(con_reserva = False).count()
         eMaquina = con == 1
         self.assertEqual(eMaquina, True, "Deberia solo haber una maquia pero hay " + str(con))
@@ -605,6 +605,6 @@ class SolicitarMaquinaTest(TestCase):
         request.user = self.user
         request.GET = request.GET.copy()
         request.GET['id'] = 1
-        response = maquina_request(request)
+        maquina_request(request)
         sMaquina = MaquinaSolicitud.objects.filter(maquina = self.maquinaPrueba).exists()
         self.assertEqual(sMaquina, False, "La solicitud no fue creada")

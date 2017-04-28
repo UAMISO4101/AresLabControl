@@ -107,10 +107,10 @@ def crearLaboratorio():
 
 def crearMaquina():
     print ('Creando Maquinas'),
-    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre="Laboratorio principal",
-                                                                            id="LAB001")
     rta = 1
     with open(".///" + static('lab_static/json/maquinas.json')) as data_file:
+        nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre="Laboratorio principal",
+                                                                                id="LAB001")
         data = json.load(data_file)
         for maquina in data:
             nuevaMaquina, maquinaExistente = MaquinaProfile.objects.get_or_create(nombre=maquina['nombre'],
@@ -161,7 +161,7 @@ def crearAlmacenamiento():
             posX = row['posX']
             posY = row['posY']
             idLaboratorio = row['idLaboratorio']
-            nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(id=idLaboratorio)
+            nuevoLab = LaboratorioProfile.objects.get_or_create(id=idLaboratorio)
             img_url = imagen
             img_filename = urlparse(img_url).path.split('/')[-1]
             img_temp = NamedTemporaryFile()
@@ -209,7 +209,7 @@ def crearMuestra():
                                                                        valor=valor, activa=activa,
                                                                        controlado=controlado,
                                                                        unidadBase=unidadBase)
-            nuevoLugar, LugarExistente = LugarAlmacenamiento.objects.get_or_create(id=idAlmacenamiento)
+            nuevoLugar = LugarAlmacenamiento.objects.get_or_create(id=idAlmacenamiento)
             if mustraCreada:
                 print ('.'),
                 rta = 0
@@ -221,7 +221,7 @@ def crearMuestra():
                 nuevaMuestra.imagen.save(img_filename, File(img_temp))
                 cuenta = Bandeja.objects.filter(lugarAlmacenamiento=nuevoLugar).count()
                 posicion = 1 if cuenta == 0 else cuenta + 1
-                nuevaBandeja, bandejaExistenet = Bandeja.objects.get_or_create(muestra=nuevaMuestra,
+                Bandeja.objects.get_or_create(muestra=nuevaMuestra,
                                                                                lugarAlmacenamiento=nuevoLugar,
                                                                                posicion=posicion,
                                                                                libre=False)
