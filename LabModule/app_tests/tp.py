@@ -13,8 +13,7 @@ from django.test import Client
 from django.test import RequestFactory
 from django.test import TestCase
 
-from LabModule.views import muestra_detail
-from LabModule.views import muestra_list
+from LabModule.app_views.Muestra import muestra_detail, muestra_list
 
 c = Client(HTTP_USER_AGENT='Mozilla/5.0')
 CONTRASENA = getattr(settings, "CONTRASENA")
