@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from LabModule.app_models.TipoDocumento import TipoDocumento
 
@@ -41,6 +41,7 @@ class Usuario(models.Model):
     class Meta:
         verbose_name = _('Usuario')
         verbose_name_plural = _('Usuarios')
+        app_label = 'LabModule'
         permissions = permissions_user
 
     nombre_usuario = models.CharField(

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from LabModule.app_models.Usuario import Usuario
 
@@ -35,6 +35,7 @@ class Proyecto(models.Model):
     class Meta:
         verbose_name = _('Proyecto')
         verbose_name_plural = _('Proyectos')
+        app_label = 'LabModule'
         permissions = permissions_project
 
     nombre = models.CharField(

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 permissions_protocol = (
     ('can_addProtocol', 'protocolo||agregar'),
@@ -29,6 +29,7 @@ class Protocolo(models.Model):
     class Meta:
         verbose_name = _('Protocolo')
         verbose_name_plural = _('Protocolos')
+        app_label = 'LabModule'
         permissions = permissions_protocol
 
     nombre = models.CharField(

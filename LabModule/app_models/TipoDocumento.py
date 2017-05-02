@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 
 class TipoDocumento(models.Model):
@@ -16,6 +16,7 @@ class TipoDocumento(models.Model):
     class Meta:
         verbose_name = _('Tipo Identificación')
         verbose_name_plural = _('Tipos de Indentificación')
+        app_label = 'LabModule'
 
     nombre_corto = models.CharField(
             max_length = 5,

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 permissions_sample = (
     ('can_addSample', 'muestra||agregar'),
@@ -34,6 +34,7 @@ class Muestra(models.Model):
     class Meta:
         verbose_name = _('Muestra')
         verbose_name_plural = _('Muestras')
+        app_label = 'LabModule'
         permissions = permissions_sample
 
     nombre = models.CharField(

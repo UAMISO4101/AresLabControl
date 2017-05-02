@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.urls import reverse
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 permissions_machine = (
-    ('can_addMachine', 'Maquina||agregar'),
-    ('can_editMachine', 'Maquina||editar'),
-    ('can_listMachine', 'Maquina||listar'),
-    ('can_viewMachine', 'Maquina||ver'),
-    ('can_requestMachine', 'Maquina||solicitar'),
+    ('can_addMachine', 'maquina||agregar'),
+    ('can_editMachine', 'maquina||editar'),
+    ('can_listMachine', 'maquina||listar'),
+    ('can_viewMachine', 'maquina||ver'),
+    ('can_requestMachine', 'maquina||solicitar'),
 )
 
 
@@ -35,6 +35,7 @@ class Maquina(models.Model):
     class Meta:
         verbose_name = _("Máquina")
         verbose_name_plural = _('Máquinas')
+        app_label = 'LabModule'
         permissions = permissions_machine
 
     nombre = models.CharField(

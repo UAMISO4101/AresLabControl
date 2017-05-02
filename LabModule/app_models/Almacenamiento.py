@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
+
 
 permissions_storage = (
     ('can_addStorage', 'almacenamiento||agregar'),
@@ -33,6 +34,7 @@ class Almacenamiento(models.Model):
     class Meta:
         verbose_name = _('Lugar Almacenamiento')
         verbose_name_plural = _('Lugares de Almacenamiento')
+        app_label = 'LabModule'
         permissions = permissions_storage
 
     nombre = models.CharField(

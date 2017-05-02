@@ -56,10 +56,10 @@ def maquina_detail(request, pk, template_name = 'Maquinas/detalle.html'):
         maquina = get_object_or_404(Maquina, pk = pk)
         maquinaEnLab = get_object_or_404(MaquinaEnLab, idMaquina = maquina)
         mensaje = ""
-        section = {'title': 'Ver detalle ', 'agregar': "ver"}
+        section = {'title': 'Ver Detalle ', 'agregar': "ver"}
         mensajeCalendario = "Este es el horario disponible de la máquina. Seleccione el horario que más le convenga"
         return render(request, template_name,
-                      {'Maquina': maquina, 'maquinaEnLab': maquinaEnLab, 'section': section,
+                      {'maquina': maquina, 'maquinaEnLab': maquinaEnLab, 'section': section,
                        'mensaje': mensaje, 'mensajeCalendario': mensajeCalendario})
     else:
         return HttpResponse('No autorizado', status = 401)
@@ -149,8 +149,6 @@ def maquina_request(request):
     """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_requestMachine"):
         mensaje = 'ok'
-        contexto = {'start': request.GET.get('start', ''), 'end': request.GET.get('end', '')}
-
         try:
 
             maquina = Maquina.objects.get(pk = request.GET.get('id', 0), activa = True)

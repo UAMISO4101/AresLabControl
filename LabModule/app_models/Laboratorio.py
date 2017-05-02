@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 permissions_lab = (
     ('can_addLab', 'laboratorio||agregar'),
@@ -31,6 +31,7 @@ class Laboratorio(models.Model):
     class Meta:
         verbose_name = 'Laboratorio'
         verbose_name_plural = 'Laboratorios'
+        app_label = 'LabModule'
         permissions = permissions_lab
 
     nombre = models.CharField(

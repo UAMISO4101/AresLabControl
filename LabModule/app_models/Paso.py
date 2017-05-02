@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from LabModule.app_models.Protocolo import Protocolo
 
@@ -31,6 +31,7 @@ class Paso(models.Model):
     class Meta:
         verbose_name = _('Paso')
         verbose_name_plural = _('Pasos')
+        app_label = 'LabModule'
         permissions = permissions_step
 
     nombre = models.CharField(

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from LabModule.app_models.Almacenamiento import Almacenamiento
 from LabModule.app_models.Laboratorio import Laboratorio
@@ -23,6 +23,7 @@ class AlmacenamientoEnLab(models.Model):
     class Meta:
         verbose_name = "Lugar de almacenamiento en Laboratorio"
         verbose_name_plural = 'Lugares de almacenamiento en Laboratorio'
+        app_label = 'LabModule'
 
     idLaboratorio = models.ForeignKey(
             Laboratorio,

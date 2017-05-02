@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from LabModule.app_models.Muestra import Muestra
 from LabModule.app_models.Solicitud import Solicitud
@@ -24,6 +24,7 @@ class SolicitudMuestra(models.Model):
     class Meta:
         verbose_name = _('Solicitud de Muestra')
         verbose_name_plural = _('Solicitudes de Muestra')
+        app_label = 'LabModule'
 
     solicitud = models.OneToOneField(Solicitud)
     muestra = models.ForeignKey(

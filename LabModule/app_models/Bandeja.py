@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from LabModule.app_models.Almacenamiento import Almacenamiento
 from LabModule.app_models.Muestra import Muestra
@@ -30,6 +30,7 @@ class Bandeja(models.Model):
     class Meta:
         verbose_name = _('Bandeja')
         verbose_name_plural = _('Bandejas')
+        app_label = 'LabModule'
         permissions = permissions_tray
 
     libre = models.BooleanField(

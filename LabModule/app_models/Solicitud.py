@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from LabModule.app_models.Paso import Paso
 from LabModule.app_models.Usuario import Usuario
@@ -30,6 +30,7 @@ class Solicitud(models.Model):
     class Meta:
         verbose_name = _('Solicitud')
         verbose_name_plural = _('Solicitudes')
+        app_label = 'LabModule'
         permissions = permissions_request
 
     descripcion = models.TextField(
