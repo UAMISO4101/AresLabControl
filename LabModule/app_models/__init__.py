@@ -45,11 +45,11 @@ permissions_lab = (
 )
 
 permissions_machine = (
-    ('can_addMachine', 'Maquina||agregar'),
-    ('can_editMachine', 'Maquina||editar'),
-    ('can_listMachine', 'Maquina||listar'),
-    ('can_viewMachine', 'Maquina||ver'),
-    ('can_requestMachine', 'Maquina||solicitar'),
+    ('can_addMachine', 'maquina||agregar'),
+    ('can_editMachine', 'maquina||editar'),
+    ('can_listMachine', 'maquina||listar'),
+    ('can_viewMachine', 'maquina||ver'),
+    ('can_requestMachine', 'maquina||solicitar'),
 )
 
 permissions_sample = (
