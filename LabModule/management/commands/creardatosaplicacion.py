@@ -133,6 +133,7 @@ def crear_maquinas():
                                                                             )
             print_status_message(status = machine_is_created)
             machine_history = machine_history | machine_is_created
+
             if machine_is_created:
                 if not machine['imagen'] == '':
                     img_url = machine['imagen']
