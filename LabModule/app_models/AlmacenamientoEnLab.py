@@ -41,10 +41,10 @@ class AlmacenamientoEnLab(models.Model):
             primary_key = True
     )
     posX = models.PositiveIntegerField(
-            verbose_name = _("Posición X")
+            verbose_name = _("Fila")
     )
     posY = models.PositiveIntegerField(
-            verbose_name = _("Posición Y")
+            verbose_name = _("Columna")
     )
 
     def __unicode__(self):

@@ -83,9 +83,24 @@ class Muestra(models.Model):
 
     def calc_disp(self):
         from LabModule.app_models.Bandeja import Bandeja
-
         bandejas = Bandeja.objects.filter(muestra = self)
         for bandeja in bandejas:
             if not bandeja.libre:
                 return 'Si'
         return 'No'
+
+    def calc_cuantos_disp(self):
+        from LabModule.app_models.Bandeja import Bandeja
+
+        contador = 0
+        bandejas = Bandeja.objects.filter(muestra = self)
+        for bandeja in bandejas:
+            if not bandeja.libre:
+                contador += 1
+        return contador
+
+    def calc_controled(self):
+        if self.controlado:
+            return 'Si'
+        else:
+            return 'No'

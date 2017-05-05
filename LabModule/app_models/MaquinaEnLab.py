@@ -24,6 +24,7 @@ class MaquinaEnLab(models.Model):
         verbose_name_plural = _('Máquinas en Laboratorio')
         app_label = 'LabModule'
 
+
     idLaboratorio = models.ForeignKey(
             Laboratorio,
             blank = False,
@@ -42,12 +43,12 @@ class MaquinaEnLab(models.Model):
             error_messages = {'unique': "Ya existe una máquina con este ID"}
     )
     posX = models.PositiveIntegerField(
-            verbose_name = "Posición X",
+            verbose_name = "Fila",
             null = False,
             default = 0
     )
     posY = models.PositiveIntegerField(
-            verbose_name = "Posición Y",
+            verbose_name = "Columna",
             null = False,
             default = 0
     )

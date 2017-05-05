@@ -18,7 +18,6 @@ from LabModule.app_models.Proyecto import Proyecto
 from LabModule.app_models.Solicitud import Solicitud
 from LabModule.app_models.SolicitudMaquina import SolicitudMaquina
 from LabModule.app_models.Usuario import Usuario
-from LabModule.app_views.Almacenamiento import lugar_list
 
 
 def maquina_add(request, template_name = 'maquinas/agregar.html'):
@@ -51,7 +50,7 @@ def maquina_add(request, template_name = 'maquinas/agregar.html'):
         return HttpResponse('No autorizado', status = 401)
 
 
-def maquina_detail(request, pk, template_name = 'Maquinas/detalle.html'):
+def maquina_detail(request, pk, template_name = 'maquinas/detalle.html'):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
         maquina = get_object_or_404(Maquina, pk = pk)
         maquinaEnLab = get_object_or_404(MaquinaEnLab, idMaquina = maquina)
@@ -150,7 +149,6 @@ def maquina_request(request):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_requestMachine"):
         mensaje = 'ok'
         try:
-
             maquina = Maquina.objects.get(pk = request.GET.get('id', 0), activa = True)
             profile = Usuario.objects.get(user_id = request.user.id)
             maquinaEnLab = MaquinaEnLab.objects.get(idMaquina = maquina.pk)
@@ -178,44 +176,18 @@ def maquina_request(request):
                 else:
                     mensaje = "Ya existe una solicitud para estas fechas"
 
-            contexto = {'form'        : form, 'mensaje': mensaje, 'Maquina': maquina, 'proyectos': proyectos,
-                        'maquinaEnLab': maquinaEnLab, 'start': request.GET.get('start', ''),
+            contexto = {'form'        : form,
+                        'mensaje'     : mensaje,
+                        'maquina'     : maquina,
+                        'proyectos'   : proyectos,
+                        'maquinaEnLab': maquinaEnLab,
+                        'start'       : request.GET.get('start', ''),
                         'end'         : request.GET.get('end', '')}
-        except ObjectDoesNotExist as e:
-            print (e.message)
+        except ObjectDoesNotExist:
             contexto = {'mensaje': 'No hay maquinas o pasos con el id solicitado'}
-        except MultipleObjectsReturned as e:
-            print(e.message)
+        except MultipleObjectsReturned:
             contexto = {'mensaje': 'Muchas maquinas con ese id'}
         return render(request, "solicitudes/crear_maquina_solicitud.html", contexto)
-    else:
-        return HttpResponse('No autorizado', status = 401)
-
-
-def reservar_maquina(request, pk):
-    """Desplegar y comprobar los valores a consultar.
-                Historia de usuario:     ALF-3 - Yo como Asistente de Laboratorio quiero poder ver la agenda de una
-                máquina para visualizar cuándo podré usarla.
-                Se encarga de:
-                * Reservar una máquina en una fecha determinada.
-            :param request: El HttpRequest que se va a responder.
-            :type request: HttpRequest.
-            :param pk: La llave primaria de la máquina
-            :type pk: String.
-            :returns: HttpResponse -- La respuesta a la petición, con información del calendario para reservar la
-                                      máquina.
-        """
-    if request.user.is_authenticated() and request.user.has_perm('LabModule.can_requestMachine'):
-        lista_maquina = MaquinaEnLab.objects.filter(idMaquina_id = pk)
-        if lista_maquina is None:
-            # cambiar por listado de maquinas
-            return lugar_list(request)
-        else:
-            maquina_en_lab = lista_maquina[0]
-            maquina_profile = maquina_en_lab.idMaquina
-            context = {'maquina_en_lab': maquina_en_lab, 'maquina_profile': maquina_profile}
-
-            return render(request, 'maquinas/agenda.html', context)
     else:
         return HttpResponse('No autorizado', status = 401)
 
