@@ -536,14 +536,14 @@ class SolicitarMaquinaTest(TestCase):
         self.LaboratorioPrueba = Laboratorio.objects.create(nombre = "Laboratorio genetica", id = "LAB_101")
 
         self.maquinaPrueba = {
-            "id"           : "1",
-            "nombre"       : "Autoclave Portátil",
-            "descripcion"  : "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
-            "idSistema"    : "AUTO_010",
-            "con_reserva"  : False,
-            "posX"         : 0,
-            "posY"         : 0,
-            "idLaboratorio": self.LaboratorioPrueba.id
+            "idAlmacenamiento": "1",
+            "nombre"          : "Autoclave Portátil",
+            "descripcion"     : "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
+            "idSistema"       : "AUTO_010",
+            "con_reserva"     : False,
+            "posX"            : 0,
+            "posY"            : 0,
+            "idLaboratorio"   : self.LaboratorioPrueba.id
         }
 
         request = self.factory.post('/Maquina/add', data = self.maquinaPrueba)

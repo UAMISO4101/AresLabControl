@@ -54,4 +54,4 @@ class MaquinaEnLab(models.Model):
     )
 
     def __unicode__(self):
-        return self.idLaboratorio.id + ":" + str(self.posX) + "," + str(self.posY)
+        return self.idLaboratorio.__unicode__() + ":" + str(self.posX) + "," + str(self.posY)

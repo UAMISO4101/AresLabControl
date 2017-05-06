@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from LabModule.app_models.Mueble import Mueble
 
 permissions_storage = (
     ('can_addStorage', 'almacenamiento||agregar'),
@@ -37,44 +39,42 @@ class Almacenamiento(models.Model):
         app_label = 'LabModule'
         permissions = permissions_storage
 
-    nombre = models.CharField(
-            max_length = 100,
-            default = '',
-            verbose_name = _('Nombre')
-    )
-    descripcion = models.TextField(
-            max_length = 1000,
-            default = '',
-            verbose_name = _("Descripción")
+    mueble = models.OneToOneField(
+            Mueble,
+            on_delete = models.CASCADE,
+            related_name = 'mueble'
     )
 
-    capacidad = models.PositiveIntegerField(
-            verbose_name = _("Capacidad")
-    )
     temperatura = models.DecimalField(
             max_digits = 5,
             decimal_places = 2,
             verbose_name = _("Temperatura")
     )
-    estado = models.CharField(
-            max_length = 100,
-            default = '',
-            verbose_name = _('Estado'),
-            null = True
-    )
-    imagen = models.ImageField(
-            upload_to = 'images',
-            verbose_name = _("Imagen"),
-            default = 'images/image-not-found.jpg'
-    )
 
-    id = models.CharField(
-            max_length = 100,
-            default = '',
-            verbose_name = _("Identificación"),
-            null = False,
-            primary_key = True
+    numX = models.PositiveIntegerField(
+            verbose_name = _("Maximo Filas"),
+    )
+    numY = models.PositiveIntegerField(
+            verbose_name = _("Maximo Columnas")
+    )
+    numZ = models.PositiveIntegerField(
+            verbose_name = _("Maximo Bandejas")
     )
 
     def __unicode__(self):
-        return str(self.pk) + ":" + self.nombre
+        return self.mueble.__unicode__()
+
+    def get_id_sistema(self):
+        return self.mueble.get_idSistema()
+
+    def get_nombre(self):
+        return self.mueble.getnombre()
+
+    def get_descripcion(self):
+        return self.mueble.get_descripcion()
+
+    def get_estado(self):
+        return self.mueble.get_estado()
+
+    def get_absolute_url(self):
+        return reverse('author-detail', kwargs = {'pk': self.pk})

@@ -54,7 +54,7 @@ class Muestra(models.Model):
             max_digits = 5,
             decimal_places = 2,
             null = True,
-            verbose_name = _("Valor")
+            verbose_name = _("Costo Unitario")
     )
     activa = models.BooleanField(
             default = True,

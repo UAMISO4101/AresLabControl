@@ -25,7 +25,7 @@ class Experimento(models.Model):
             :nombre (String): Nombre expermento
             :descripción (String): descripción del experimento.
             :objetivo (String): Objetivo del experimento
-            :projecto (Decimal): Seleccion de Proyecto
+            :proyecto (Decimal): Seleccion de Proyecto
             :protocolos (Object): Lista de protocolos
         Permisos:
             :can_addExperiment: Permite agregar experimento
@@ -57,7 +57,7 @@ class Experimento(models.Model):
             null = True,
             verbose_name = _("Objetivo del Experimento")
     )
-    projecto = models.ForeignKey(
+    proyecto = models.ForeignKey(
             Proyecto,
             blank = False,
             null = True,
@@ -71,4 +71,4 @@ class Experimento(models.Model):
     )
 
     def __unicode__(self):
-        return self.nombre
+        return self.nombre.capitalize()

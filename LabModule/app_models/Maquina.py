@@ -3,6 +3,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from LabModule.app_models.Mueble import Mueble
+
 permissions_machine = (
     ('can_addMachine', 'maquina||agregar'),
     ('can_editMachine', 'maquina||editar'),
@@ -38,41 +40,19 @@ class Maquina(models.Model):
         app_label = 'LabModule'
         permissions = permissions_machine
 
-    nombre = models.CharField(
-            max_length = 100,
-            default = '',
-            verbose_name = _("Nombre"),
-            null = False
+    mueble = models.OneToOneField(
+            Mueble,
+            on_delete = models.CASCADE,
+            related_name = 'mueble'
     )
-    descripcion = models.CharField(
-            max_length = 1000,
-            default = '',
-            verbose_name = _("Descripción"),
-            null = True
-    )
-    imagen = models.ImageField(
-            upload_to = 'images',
-            verbose_name = _("Imagen"),
-            default = 'images/image-not-found.jpg'
-    )
-    idSistema = models.CharField(
-            max_length = 20,
-            default = '',
-            verbose_name = _("Identificación"),
-            null = False,
-            primary_key = True
-    )
+
     con_reserva = models.BooleanField(
             default = True,
             verbose_name = _("Reservable")
     )
-    activa = models.BooleanField(
-            default = True,
-            verbose_name = _("Activa")
-    )
 
     def __unicode__(self):
-        return self.idSistema + " " + self.nombre
+        return self.mueble.__unicode__()
 
     def get_absolute_url(self):
         return reverse('author-detail', kwargs = {'pk': self.pk})

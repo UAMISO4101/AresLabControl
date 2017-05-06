@@ -213,6 +213,7 @@ def crear_almacenamientos():
                             posX = x_pos,
                             posY = y_pos)
                     print_status_message(status = storage_loc_is_created)
+                    new_storage_loc.save(commit = False)
                     storage_history = storage_history | storage_loc_is_created
     if storage_history:
         return 0

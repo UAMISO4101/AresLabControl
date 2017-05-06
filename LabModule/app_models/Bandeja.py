@@ -4,7 +4,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from LabModule.app_models.Almacenamiento import Almacenamiento
-from LabModule.app_models.Muestra import Muestra
 
 permissions_tray = (
     ('can_addTray', 'bandeja||agregar'),
@@ -32,20 +31,9 @@ class Bandeja(models.Model):
         verbose_name_plural = _('Bandejas')
         app_label = 'LabModule'
         permissions = permissions_tray
+        unique_together = ('almacenamiento', 'posicion')
 
-    libre = models.BooleanField(
-            blank = False,
-            default = True,
-            verbose_name = _("Libre")
-    )
-    muestra = models.ForeignKey(
-            Muestra,
-            blank = False,
-            null = True,
-            verbose_name = _("Selección de Muestra")
-    )
-
-    lugarAlmacenamiento = models.ForeignKey(
+    almacenamiento = models.ForeignKey(
             Almacenamiento,
             blank = False,
             null = True,
@@ -60,5 +48,6 @@ class Bandeja(models.Model):
             blank = False
     )
 
+
     def __unicode__(self):
-        return 'Bandeja: ' + self.lugarAlmacenamiento.__unicode__() + " " + str(self.posicion)
+        return 'Bandeja: ' + self.almacenamiento.get_id_sistema() + " " + str(self.posicion)

@@ -9,7 +9,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from LabModule.app_forms.Maquina import MaquinaForm
-from LabModule.app_forms.Maquina import PosicionesMaquinaForm
+from LabModule.app_forms.Mueble import PosicionesMuebleForm
 from LabModule.app_forms.Solicitud import SolicitudForm
 from LabModule.app_models.Maquina import Maquina
 from LabModule.app_models.MaquinaEnLab import MaquinaEnLab
@@ -44,7 +44,7 @@ def maquina_add(request, template_name = 'maquinas/agregar.html'):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addMachine"):
         section = {'title': 'Agregar Máquina', 'agregar': True}
         form = MaquinaForm(request.POST or None, request.FILES or None)
-        formPos = PosicionesMaquinaForm(request.POST or None, request.FILES or None)
+        formPos = PosicionesMuebleForm(request.POST or None, request.FILES or None)
         return comprobarPostMaquina(form, formPos, request, template_name, section)
     else:
         return HttpResponse('No autorizado', status = 401)
@@ -149,7 +149,7 @@ def maquina_request(request):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_requestMachine"):
         mensaje = 'ok'
         try:
-            maquina = Maquina.objects.get(pk = request.GET.get('id', 0), activa = True)
+            maquina = Maquina.objects.get(pk = request.GET.get('idAlmacenamiento', 0), activa = True)
             profile = Usuario.objects.get(user_id = request.user.id)
             maquinaEnLab = MaquinaEnLab.objects.get(idMaquina = maquina.pk)
             proyectos = Proyecto.objects.filter(asistentes = profile.id, activo = True)
@@ -172,7 +172,7 @@ def maquina_request(request):
                     maquinaRequest.solicitud = requestObj
                     maquinaRequest.save()
                     messages.success(request, "La máquina se reservo exitosamente")
-                    return redirect(reverse('Maquina-detail', kwargs = {'pk': request.GET.get('id', 0)}))
+                    return redirect(reverse('Maquina-detail', kwargs = {'pk': request.GET.get('idAlmacenamiento', 0)}))
                 else:
                     mensaje = "Ya existe una solicitud para estas fechas"
 

@@ -48,5 +48,17 @@ class Mueble(models.Model):
     def __unicode__(self):
         return self.idSistema + " " + self.nombre
 
+    def get_idSistema(self):
+        return self.idSistema.capitalize()
+
+    def get_nombre(self):
+        return self.nombre.capitalize()
+
+    def get_descripcion(self):
+        return self.descripcion.capitalize()
+
+    def get_estado(self):
+        return self.estado
+
     def get_absolute_url(self):
         return reverse('author-detail', kwargs = {'pk': self.pk})

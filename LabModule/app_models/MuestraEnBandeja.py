@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from LabModule.app_models.Bandeja import Bandeja
 from LabModule.app_models.Muestra import Muestra
 
+
 class MuestraEnBandeja(models.Model):
     class Meta:
         verbose_name = "Muestra en Bandeja"

@@ -18,7 +18,7 @@ class Laboratorio(models.Model):
 
         Atributos:
             :nombre (String): Nombre del laboratorio. Máxima longitud de 100 caractéres. No puede ser nulo
-            :id (String): Id del laboratorio. Identificación del laboratorio, campo único, 
+            :idLaboratorio (String): Id del laboratorio. Identificación del laboratorio, campo único, 
                           máxima longitud de 100 caractéres.
             :numX (Integer): Cantidad de columnas que tiene el laboratorio para almacenar máquinas. Por defecto 10.
             :numY (Integer): Cantidad de filas que tiene el laboratorio para alamacenar máquinas. Por defecto 10.
@@ -34,19 +34,20 @@ class Laboratorio(models.Model):
         app_label = 'LabModule'
         permissions = permissions_lab
 
-    nombre = models.CharField(
-            max_length = 100,
-            default = '',
-            verbose_name = _("Nombre"),
-            null = False
-    )
-    id = models.CharField(
+    idLaboratorio = models.CharField(
             max_length = 100,
             default = '',
             verbose_name = _("Identificación"),
             null = False,
             primary_key = True
     )
+    nombre = models.CharField(
+            max_length = 100,
+            default = '',
+            verbose_name = _("Nombre"),
+            null = False
+    )
+
     numX = models.PositiveIntegerField(
             verbose_name = _("Cantidad de Filas"),
             null = False,
@@ -59,4 +60,4 @@ class Laboratorio(models.Model):
     )
 
     def __unicode__(self):
-        return self.id + " " + self.nombre
+        return self.idLaboratorio.capitalize() + " " + self.nombre.capitalize()

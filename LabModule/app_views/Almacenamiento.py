@@ -5,13 +5,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from LabModule.app_forms.Almacenamiento import LugarAlmacenamientoForm
-from LabModule.app_forms.Almacenamiento import PosicionesAlmacenamientoForm
+from LabModule.app_forms.Almacenamiento import AlmacenamientoForm
+from LabModule.app_forms.Mueble import PosicionesMuebleForm
 from LabModule.app_models.Almacenamiento import Almacenamiento
 from LabModule.app_models.AlmacenamientoEnLab import AlmacenamientoEnLab
 from LabModule.app_models.Bandeja import Bandeja
 from LabModule.app_models.Laboratorio import Laboratorio
-from LabModule.app_models.MaquinaEnLab import MaquinaEnLab
 
 
 def lugar_add(request):
@@ -32,21 +31,15 @@ def lugar_add(request):
     mensaje = ""
     if request.user.is_authenticated():
         if request.method == 'POST':
-            form = LugarAlmacenamientoForm(request.POST or None, request.FILES or None)
-            formPos = PosicionesAlmacenamientoForm(request.POST or None, request.FILES or None)
+            form = AlmacenamientoForm(request.POST or None, request.FILES or None)
+            formPos = PosicionesMuebleForm(request.POST or None, request.FILES or None)
 
             if form.is_valid() and formPos.is_valid():
                 lugar = form.save(commit = False)
                 lugarEnLab = formPos.save(commit = False)
 
-                ocupado = MaquinaEnLab.objects.filter(idLaboratorio = lugarEnLab.idLaboratorio, posX = lugarEnLab.posX,
-                                                      posY = lugarEnLab.posY).exists()
-
-                if ocupado:
-                    formPos.add_error("posX", "La posición x ya esta ocupada")
-                    formPos.add_error("posY", "La posición y ya esta ocupada")
-
-                    mensaje = "El lugar en el que desea guadar ya esta ocupado"
+                if formPos.es_ubicacion_libre():
+                    messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags = "danger")
                 else:
                     mensaje = "La posición [" + str(lugarEnLab.posX) + "," + str(
                             lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio"
@@ -75,8 +68,8 @@ def lugar_add(request):
                             messages.success(request, "El lugar se añadio exitosamente")
                             return HttpResponseRedirect(reverse('lugar-detail', kwargs = {'pk': lugar.pk}))
         else:
-            form = LugarAlmacenamientoForm()
-            formPos = PosicionesAlmacenamientoForm()
+            form = AlmacenamientoForm()
+            formPos = PosicionesMuebleForm()
         context = {'form': form, 'formPos': formPos, 'mensaje': mensaje, 'section': section}
 
         return render(request, 'almacenamientos/agregar.html', context)

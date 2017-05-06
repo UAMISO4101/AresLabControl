@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from LabModule.app_models.Laboratorio import Laboratorio
-from LabModule.app_models.Mueble_Proto import Mueble
+from LabModule.app_models.Mueble import Mueble
 
 
 class MuebleEnLab(models.Model):
@@ -43,4 +43,15 @@ class MuebleEnLab(models.Model):
     )
 
     def __unicode__(self):
-        return self.idLaboratorio.id + ":" + str(self.posX) + "," + str(self.posY)
+        return self.idLaboratorio.__unicode__() + ":" + str(self.posX) + "," + str(self.posY)
+
+    @classmethod
+    def es_ubicacion_rango(cls, id_laboratorio, new_posX, new_posY):
+        tamano_maximo = Laboratorio.objects.get(idLaboratorio__exact = id_laboratorio).get_tamano_maximo()
+        filas = tamano_maximo[0] < new_posX
+        columnas = tamano_maximo[1] < new_posY
+        return filas & columnas
+
+    @classmethod
+    def es_ubicacion_libre(cls, new_posX, new_posY):
+        return not MuebleEnLab.objects.filter(posX__exact = new_posX).filter(posY__exact = new_posY).exists()
