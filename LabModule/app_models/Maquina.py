@@ -43,7 +43,7 @@ class Maquina(models.Model):
     mueble = models.OneToOneField(
             Mueble,
             on_delete = models.CASCADE,
-            related_name = 'mueble'
+            related_name = '%(app_label)s_%(class)s_related'
     )
 
     con_reserva = models.BooleanField(
