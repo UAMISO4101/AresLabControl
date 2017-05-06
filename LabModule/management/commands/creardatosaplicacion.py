@@ -412,7 +412,7 @@ def crear_grupos():
             can_listStorage,
             can_viewStorage,
             can_editStorage,
-            can_addSample,
+            can_addSample,git
             can_editSample,
             can_listSample,
             can_viewSample,
@@ -426,6 +426,7 @@ def crear_grupos():
             can_listSample,
             can_viewSample,
             can_requestSample,
+            can_listRequest,
     )
 
     if group_history:
