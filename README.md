@@ -1,7 +1,7 @@
 # AresLabControl
 ## Proyecto Final MISO 4101
 ## Esta disponible en la siguiente página WEB
-https://areslabcontroldev.herokuapp.com/
+https://areslabcontrol.herokuapp.com/
 
 ## Estado de la Integración
 [ ![Codeship Status for jibernal27/AresLabControl](https://app.codeship.com/projects/1c495cb0-0788-0135-ac81-5eca1b05dde3/status?branch=master)](https://app.codeship.com/projects/214108)
