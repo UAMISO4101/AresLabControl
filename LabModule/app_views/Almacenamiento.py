@@ -12,6 +12,8 @@ from LabModule.app_models.Almacenamiento import Almacenamiento
 from LabModule.app_models.AlmacenamientoEnLab import AlmacenamientoEnLab
 from LabModule.app_models.Bandeja import Bandeja
 from LabModule.app_models.Laboratorio import Laboratorio
+from LabModule.app_models.Mueble import Mueble
+from LabModule.app_models.MuebleEnLab import MuebleEnLab
 
 
 def lugar_add(request, template_name = 'almacenamientos/agregar.html'):
@@ -41,6 +43,7 @@ def lugar_add(request, template_name = 'almacenamientos/agregar.html'):
             if form.is_valid() and formPos.is_valid() and formAlmacenamiento.is_valid():
 
                 mueble = form.save(commit = False)
+                mueble.tipo='almacenamiento'
                 almacenamiento=formAlmacenamiento.save(commit = False)
                 muebleEnLab = formPos.save(commit = False)
 
@@ -88,13 +91,14 @@ def lugar_list(request):
         section['title'] = 'Listar Almacenamientos'
         edita = request.user.has_perm("LabModule.can_editStorage")
         if not edita:
-            lista_almacenamiento = Almacenamiento.objects.all().filter(activa = True).extra(order_by = ['nombre'])
+            lista_almacenamiento = Mueble.objects.all().filter(estado = True,tipo='almacenamiento').extra(order_by = ['nombre'])
         else:
-            lista_almacenamiento = Almacenamiento.objects.all().extra(order_by = ['nombre'])
-
-        id_almacenamiento = [maquina.id for maquina in lista_almacenamiento]
-        lista_Posiciones = AlmacenamientoEnLab.objects.all().filter(idLugar__in = id_almacenamiento)
-        lugaresConUbicacion = zip(lista_almacenamiento, lista_Posiciones)
+            lista_almacenamiento = Mueble.objects.all().filter(tipo='almacenamiento').extra(order_by = ['nombre'])
+        
+        id_almacenamiento = [lugar.id for lugar in lista_almacenamiento]
+        lista_Posiciones = MuebleEnLab.objects.all().filter(idMueble__in = id_almacenamiento)
+        lugares=Almacenamiento.objects.all().filter(mueble__in = id_almacenamiento)
+        lugaresConUbicacion = zip(lista_almacenamiento, lista_Posiciones,lugares)
         context = {'section': section, 'lista_lugares': lugaresConUbicacion}
         return render(request, 'almacenamientos/listar.html', context)
     else:
@@ -113,19 +117,14 @@ def lugar_detail(request, pk):
             :type pk: String.
             :returns: HttpResponse -- La respuesta a la petición, con información de los lugares de almacenamiento existentes.
         """
-    if request.user.is_authenticated():
-        lista_lugar = AlmacenamientoEnLab.objects.filter(idLugar_id = pk)
-        if lista_lugar is None:
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewSample"):
+        lista_lugar = Almacenamiento.objects.filter(idSistema = pk)
+        if lista_lugar.count() ==0:
             return lugar_list(request)
         else:
             lugar = lista_lugar[0]
             bandejasOcupadas = Bandeja.objects.filter(lugarAlmacenamiento_id = pk, libre = False).count()
             bandejasLibres = Bandeja.objects.filter(lugarAlmacenamiento_id = pk, libre = True).count()
-            # tamano = 0
-            # lista = Bandeja.objects.filter(lugarAlmacenamiento_id=pk)
-
-            # for x in lista:
-            # tamano += Decimal(x.tamano)
 
             laboratorio = Laboratorio.objects.get(pk = lugar.idLaboratorio_id).nombre
 

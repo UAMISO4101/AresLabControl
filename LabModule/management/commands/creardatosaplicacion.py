@@ -131,7 +131,8 @@ def crear_maquinas():
         data = json.load(data_file)
         for machine in data:
             new_mueble,mueble_is_created=Mueble.objects.get_or_create(nombre = machine['nombre'],
-                                                                            descripcion = machine['descripcion']
+                                                                            descripcion = machine['descripcion'],
+                                                                            tipo='maquina'
                                                                             )
 
             print_status_message(status = mueble_is_created)
@@ -190,7 +191,7 @@ def crear_almacenamientos():
                 id_storage += 1
                 new_mueble,mueble_is_created=Mueble.objects.get_or_create(nombre = nombre+ " " + str(i),
                                                                             descripcion = descripcion,
-                                                                            estado=estado
+                                                                            estado=estado,tipo="almacenamiento"
                                                                             )
                 if mueble_is_created:
                     new_storage, storage_is_created = Almacenamiento.objects.get_or_create(

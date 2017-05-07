@@ -35,6 +35,13 @@ class Mueble(models.Model):
             default = 'images/image-not-found.jpg'
     )
 
+    tipo= models.CharField(
+            max_length = 1000,
+            default = 'Desconocido',
+            verbose_name = _("Descripción"),
+            null = False
+    )
+
     def __unicode__(self):
         return  self.nombre
 

@@ -30,22 +30,22 @@
 
         <tbody>
 
-        {% for lugar,ubicacion in lista_lugares %}
+        {% for mueble,ubicacion,lugar in lista_lugares %}
             <tr>
-                <td>{{ lugar.id }}</td>
-                <td>{{ lugar.nombre }}</td>
+                <td>{{ lugar.idSistema }}</td>
+                <td>{{ mueble.nombre }}</td>
                 <td>{{ ubicacion }}</td>
                 <td>{{ lugar.temperatura }}ºC</td>
                 <td>
                     {% if perms.LabModule.can_viewStorage %}
-                        <a href="{% url 'lugar-detail' lugar.id %} "
+                        <a href="{% url 'lugar-detail' lugar.idSistema %} "
                            class="btn btn-primary"
-                           role="button">Ver</a>
+                           ><span class="glyphicon glyphicon-search"></span>Ver</a>
                     {% endif %}
                     {% if perms.LabModule.can_editStorage %}
-                        <a href="{% url 'lugar-update' lugar.id %} "
-                           class="btn btn-primary {{ maquina.con_reserva|yesno:"danger," }}"
-                           role="button">Editar</a>
+                        <a href="{% url 'lugar-update' lugar.idSistema %} "
+                           class="btn btn-primary  {{ maquina.con_reserva|yesno:"danger," }}"
+                           ><span class="glyphicon glyphicon-pencil"></span> Editar </a>
                     {% endif %}
 
                 </td>

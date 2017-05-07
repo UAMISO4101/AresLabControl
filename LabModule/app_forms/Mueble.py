@@ -19,7 +19,7 @@ class MuebleForm(ModelForm):
     class Meta:
         model = Mueble
         fields = [ 'nombre', 'descripcion', 'estado', 'imagen']
-
+        exclude=('tipo',)
 
 class PosicionesMuebleForm(ModelForm):
     """Formulario  para crear y modificar la ubicación de un lugar almacenamiento.
