@@ -18,13 +18,15 @@ from LabModule.app_models.Bandeja import Bandeja
 from LabModule.app_models.Experimento import Experimento
 from LabModule.app_models.Laboratorio import Laboratorio
 from LabModule.app_models.Maquina import Maquina
-from LabModule.app_models.MaquinaEnLab import MaquinaEnLab
+from LabModule.app_models.MuebleEnLab import MuebleEnLab
 from LabModule.app_models.Muestra import Muestra
 from LabModule.app_models.Paso import Paso
 from LabModule.app_models.Protocolo import Protocolo
 from LabModule.app_models.Proyecto import Proyecto
 from LabModule.app_models.TipoDocumento import TipoDocumento
 from LabModule.app_models.Usuario import Usuario
+from LabModule.app_models.Mueble import Mueble
+
 
 SUPERUSUARIO = getattr(settings, "SUPERUSUARIO", 'admin')
 CONTRASENA = getattr(settings, "CONTRASENA", '1a2d3m4i5n6')
@@ -101,15 +103,15 @@ def crear_laboratorios():
     lab_history = False
     print ('Creando Laboratorios'),
     new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = "Laboratorio Principal",
-                                                                id = "LAB001")
+                                                                idLaboratorio = "LAB001")
     print_status_message(status = lab_is_created)
     lab_history = lab_history | lab_is_created
     new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = "Laboratorio Secundario",
-                                                                id = "LAB002")
+                                                                idLaboratorio = "LAB002")
     print_status_message(status = lab_is_created)
     lab_history = lab_history | lab_is_created
     new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = "Laboratorio Terciario",
-                                                                id = "LAB003")
+                                                                idLaboratorio = "LAB003")
     print_status_message(status = lab_is_created)
     lab_history = lab_history | lab_is_created
     if lab_history:
@@ -121,30 +123,30 @@ def crear_maquinas():
     machine_history = False
     print ('Creando Maquinas'),
     new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = "Laboratorio Principal",
-                                                                id = "LAB001")
+                                                                idLaboratorio = "LAB001")
     machine_history = machine_history | lab_is_created
     with open(".///" + static('lab_static/json/maquinas.json')) as data_file:
         data = json.load(data_file)
         for machine in data:
-            new_machine, machine_is_created = Maquina.objects.get_or_create(nombre = machine['nombre'],
-                                                                            descripcion = machine['descripcion'],
-                                                                            idSistema = machine['idSistema'],
-                                                                            con_reserva = machine['con_reserva']
+            new_mueble,mueble_is_created=Mueble.objects.get_or_create(nombre = machine['nombre'],
+                                                                            descripcion = machine['descripcion']
                                                                             )
-            print_status_message(status = machine_is_created)
-            machine_history = machine_history | machine_is_created
 
-            if machine_is_created:
+            print_status_message(status = mueble_is_created)
+            machine_history = machine_history | mueble_is_created
+
+            if mueble_is_created:
+                new_machine, machine_is_created = Maquina.objects.get_or_create(mueble=new_mueble,con_reserva=machine['con_reserva'],idSistema = machine['idSistema'])
                 if not machine['imagen'] == '':
                     img_url = machine['imagen']
                     img_filename = urlparse(img_url).path.split('/')[-1]
                     img_temp = NamedTemporaryFile()
                     img_temp.write(urllib2.urlopen(img_url).read())
                     img_temp.flush()
-                    new_machine.imagen.save(img_filename, File(img_temp))
+                    new_mueble.imagen.save(img_filename, File(img_temp))
 
-            new_machine_loc, machine_loc_is_created = MaquinaEnLab.objects.get_or_create(idLaboratorio = new_lab,
-                                                                                         idMaquina = new_machine,
+            new_machine_loc, machine_loc_is_created = MuebleEnLab.objects.get_or_create(idLaboratorio = new_lab,
+                                                                                         idMueble = new_mueble,
                                                                                          posX = machine['x'],
                                                                                          posY = machine['y'])
             print_status_message(status = machine_loc_is_created)
@@ -178,21 +180,24 @@ def crear_almacenamientos():
             pos_x = row['posX']
             pos_y = row['posY']
             id_laboratorio = row['idLaboratorio']
-            new_lab, lab_is_created = Laboratorio.objects.get_or_create(id = id_laboratorio)
+            new_lab, lab_is_created = Laboratorio.objects.get_or_create(idLaboratorio = id_laboratorio)
             print_status_message(status = lab_is_created)
             storage_history = storage_history | lab_is_created
-
-            img_url = imagen
-            img_filename = urlparse(img_url).path.split('/')[-1]
-            img_temp = NamedTemporaryFile()
-            img_temp.write(urllib2.urlopen(img_url).read())
-            img_temp.flush()
-
-            for i in range(1, int(cantidad) + 1):
+            created=False
+            for i in range(1, int(cantidad) + 1):  
+                if not created:
+                    img_url = imagen
+                    img_filename = urlparse(img_url).path.split('/')[-1]
+                    img_temp = NamedTemporaryFile()
+                    img_temp.write(urllib2.urlopen(img_url).read())
+                    img_temp.flush()
+                    created=True
                 id_storage += 1
+                new_mueble,mueble_is_created=Mueble.objects.get_or_create(nombre = nombre+ " " + str(i),
+                                                                            descripcion = descripcion
+                                                                            )
+
                 new_storage, storage_is_created = Almacenamiento.objects.get_or_create(
-                        nombre = nombre + " " + str(i),
-                        descripcion = descripcion,
                         capacidad = capacidad,
                         temperatura = temperatura,
                         estado = estado,
@@ -413,7 +418,7 @@ def crear_grupos():
             can_listStorage,
             can_viewStorage,
             can_editStorage,
-            can_addSample,git
+            can_addSample,
             can_editSample,
             can_listSample,
             can_viewSample,

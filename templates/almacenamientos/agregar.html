@@ -44,7 +44,7 @@
                     <div class="col-md-5 col-sm-6">
                         <div class="row">
 
-                            {% for error in form.id.errors %}
+                            {% for error in formAlmacenamiento.idSistema.errors %}
                             <div class="col-md-12">
                                 <div class="alert alert-danger ">
                                     <strong>{{ error|escape }}</strong>
@@ -52,10 +52,10 @@
                             </div>
                             {% endfor %}
                             <div class="col-md-3">
-                                <strong>{{ form.id.label_tag }}</strong>
+                                <strong>{{ formAlmacenamiento.idSistema.label_tag }}</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                {{ form.id|addcss:"form-control" }}
+                                {{ formAlmacenamiento.idSistema|addcss:"form-control" }}
                             </div>
                         </div>
                         <div class="row">
@@ -133,7 +133,7 @@
                 </div>
                 <div class="panel-body text-left" style="height:140px">
                     <div class="row">
-                        {% for error in form.capacidad.errors %}
+                        {% for error in formAlmacenamiento.numZ.errors %}
                         <div class="col-md-12">
                             <div class="alert alert-danger ">
                                 <strong>{{ error|escape }}</strong>
@@ -141,10 +141,40 @@
                         </div>
                         {% endfor %}
                         <div class="col-md-6">
-                            <strong>{{ form.capacidad.label_tag }}</strong>
+                            <strong>{{ formAlmacenamiento.numZ.label_tag }}</strong>
                         </div>
                         <div class="col-md-6">
-                            {{ form.capacidad|addcss:"form-control" }}
+                            {{ formAlmacenamiento.numZ|addcss:"form-control" }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        {% for error in formAlmacenamiento.numX.errors %}
+                        <div class="col-md-12">
+                            <div class="alert alert-danger ">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="col-md-6">
+                            <strong>{{ formAlmacenamiento.numX.label_tag }}</strong>
+                        </div>
+                        <div class="col-md-6">
+                            {{ formAlmacenamiento.numX|addcss:"form-control" }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        {% for error in formAlmacenamiento.numY.errors %}
+                        <div class="col-md-12">
+                            <div class="alert alert-danger ">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="col-md-6">
+                            <strong>{{ formAlmacenamiento.numY.label_tag }}</strong>
+                        </div>
+                        <div class="col-md-6">
+                            {{ formAlmacenamiento.numY|addcss:"form-control" }}
                         </div>
                     </div>
                 </div>
@@ -158,7 +188,7 @@
                 </div>
                 <div class="panel-body text-left" style="height:140px">
                     <div class="row">
-                        {% for error in form.temperatura.errors %}
+                        {% for error in formAlmacenamiento.temperatura.errors %}
                         <div class="col-md-12">
                             <div class="alert alert-danger ">
                                 <strong>{{ error|escape }}</strong>
@@ -166,10 +196,10 @@
                         </div>
                         {% endfor %}
                         <div class="col-md-4">
-                            <strong>{{ form.temperatura.label_tag }}</strong>
+                            <strong>{{ formAlmacenamiento.temperatura.label_tag }}</strong>
                         </div>
                         <div class="col-md-4">
-                            {{ form.temperatura|addcss:"form-control" }}
+                            {{ formAlmacenamiento.temperatura|addcss:"form-control" }}
                         </div>
                         <div class="col-md-2">
                             <strong>°C</strong>

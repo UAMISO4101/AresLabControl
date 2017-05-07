@@ -17,7 +17,7 @@ class MuebleForm(ModelForm):
 
     class Meta:
         model = Mueble
-        fields = ["idSistema", 'nombre', 'descripcion', 'estado', 'imagen']
+        fields = [ 'nombre', 'descripcion', 'estado', 'imagen']
 
 
 class PosicionesMuebleForm(ModelForm):

@@ -46,6 +46,15 @@ class Maquina(models.Model):
             related_name = '%(app_label)s_%(class)s_related'
     )
 
+    idSistema = models.CharField(
+            max_length = 20,
+            default = '',
+            verbose_name = _("Identificación"),
+            null = False,
+            primary_key = True
+    )
+
+
     con_reserva = models.BooleanField(
             default = True,
             verbose_name = _("Reservable")

@@ -48,17 +48,29 @@ class Almacenamiento(models.Model):
     temperatura = models.DecimalField(
             max_digits = 5,
             decimal_places = 2,
-            verbose_name = _("Temperatura")
+            verbose_name = _("Temperatura"),
+            default=25,
+    )
+
+    idSistema = models.CharField(
+            max_length = 20,
+            default = '',
+            verbose_name = _("Identificación"),
+            null = False,
+            primary_key = True
     )
 
     numX = models.PositiveIntegerField(
             verbose_name = _("Maximo Filas"),
+            default=1,
     )
     numY = models.PositiveIntegerField(
-            verbose_name = _("Maximo Columnas")
+            verbose_name = _("Maximo Columnas"),
+            default=1,
     )
     numZ = models.PositiveIntegerField(
-            verbose_name = _("Maximo Bandejas")
+            verbose_name = _("Maximo Bandejas"),
+            default=1,
     )
 
     def __unicode__(self):

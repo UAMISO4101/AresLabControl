@@ -18,6 +18,8 @@ from LabModule.app_models.SolicitudMaquina import SolicitudMaquina
 from LabModule.app_models.SolicitudMuestra import SolicitudMuestra
 from LabModule.app_models.TipoDocumento import TipoDocumento
 from LabModule.app_models.Usuario import Usuario
+from LabModule.app_models.Mueble import Mueble
+from LabModule.app_models.MuebleEnLab import MuebleEnLab
 
 
 class TipoDocumentoAdmin(admin.ModelAdmin):
@@ -49,5 +51,7 @@ admin.site.register(Proyecto)
 admin.site.register(Solicitud)
 admin.site.register(SolicitudMaquina)
 admin.site.register(SolicitudMuestra)
+admin.site.register(MuebleEnLab)
+admin.site.register(Mueble)
 admin.site.register(TipoDocumento, TipoDocumentoAdmin)
 admin.site.register(Usuario, UsuarioAdmin)

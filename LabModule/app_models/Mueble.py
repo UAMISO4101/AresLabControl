@@ -10,14 +10,6 @@ class Mueble(models.Model):
         verbose_name_plural = _('Muebles')
         app_label = 'LabModule'
 
-    idSistema = models.CharField(
-            max_length = 20,
-            default = '',
-            verbose_name = _("Identificación"),
-            null = False,
-            primary_key = True
-    )
-
     nombre = models.CharField(
             max_length = 100,
             default = '',
@@ -46,10 +38,7 @@ class Mueble(models.Model):
     )
 
     def __unicode__(self):
-        return self.idSistema + " " + self.nombre
-
-    def get_idSistema(self):
-        return self.idSistema.capitalize()
+        return  self.nombre
 
     def get_nombre(self):
         return self.nombre.capitalize()
@@ -59,6 +48,3 @@ class Mueble(models.Model):
 
     def get_estado(self):
         return self.estado
-
-    def get_absolute_url(self):
-        return reverse('author-detail', kwargs = {'pk': self.pk})

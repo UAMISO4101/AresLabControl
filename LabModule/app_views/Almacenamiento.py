@@ -6,12 +6,11 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from LabModule.app_forms.Almacenamiento import AlmacenamientoForm
-from LabModule.app_forms.Mueble import PosicionesMuebleForm
+from LabModule.app_forms.Mueble import PosicionesMuebleForm,MuebleForm
 from LabModule.app_models.Almacenamiento import Almacenamiento
 from LabModule.app_models.AlmacenamientoEnLab import AlmacenamientoEnLab
 from LabModule.app_models.Bandeja import Bandeja
 from LabModule.app_models.Laboratorio import Laboratorio
-
 
 def lugar_add(request):
     """Desplegar y comprobar los valores a insertar.
@@ -31,12 +30,14 @@ def lugar_add(request):
     mensaje = ""
     if request.user.is_authenticated():
         if request.method == 'POST':
-            form = AlmacenamientoForm(request.POST or None, request.FILES or None)
+            form = MuebleForm(request.POST or None, request.FILES or None)
+            formAlmacenamiento=AlmacenamientoForm(request.POST or None, request.FILES or None)
             formPos = PosicionesMuebleForm(request.POST or None, request.FILES or None)
-
-            if form.is_valid() and formPos.is_valid():
-                lugar = form.save(commit = False)
-                lugarEnLab = formPos.save(commit = False)
+             
+            if form.is_valid() and formPos.is_valid() and formAlmacenamiento.is_valid():
+                mueble = form.save(commit = False)
+                almacenamiento=formAlmacenamiento.save(commit = False)
+                muebleEnLab = formPos.save(commit = False)
 
                 if formPos.es_ubicacion_libre():
                     messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags = "danger")
@@ -68,9 +69,10 @@ def lugar_add(request):
                             messages.success(request, "El lugar se añadio exitosamente")
                             return HttpResponseRedirect(reverse('lugar-detail', kwargs = {'pk': lugar.pk}))
         else:
-            form = AlmacenamientoForm()
+            form = MuebleForm()
+            formAlmacenamiento=AlmacenamientoForm()
             formPos = PosicionesMuebleForm()
-        context = {'form': form, 'formPos': formPos, 'mensaje': mensaje, 'section': section}
+        context = {'form': form, 'formAlmacenamiento':formAlmacenamiento,'formPos': formPos, 'mensaje': mensaje, 'section': section}
 
         return render(request, 'almacenamientos/agregar.html', context)
     else:
