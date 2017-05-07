@@ -26,9 +26,7 @@ def notificacion_solicitud_muestra(request, muestra_nombre, solicitud_id):
                Historia de usuario: ALF-80:Yo como Asistente de Laboratorio quiero ser notificado vía correo
                electrónico si se aprobó o rechazo mi solicitud de muestra para saber si puedo hacer uso de la muestra
                Se encarga de:
-                   * Comprobar si hay un usuario logueado
-                   * Comprobar si el usuario tiene permisos para realizar la solicitud de muestras
-                   * Realizar la solicitud de muestras
+                   * Realiza la notificación de la solicitud de muestras
             :param request: El HttpRequest que se va a responder.
             :type request: HttpRequest.
             :param muestra_nombre: Muesra a solicitar
@@ -48,9 +46,6 @@ def notificacion_solicitud_muestra(request, muestra_nombre, solicitud_id):
     enviar_correo(asunto, EMAIL_HOST_USER, to, template_path, '', context)
     # Enviar correo a los jefes
     if jefes_lab.exists():
-        context = {'asistente': usuario.nombre_completo(),
-                   'muestra_nombre': muestra_nombre,
-                   'solicitud_id': solicitud_id}
         template_path = os.path.join(BASE_DIR, 'templates', 'correos', 'solicitud_muestra_jefe.txt')
         to = []
         for jefe in jefes_lab:

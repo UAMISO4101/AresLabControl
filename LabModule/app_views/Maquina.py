@@ -8,6 +8,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from AresLabControl.settings import BASE_DIR, EMAIL_HOST_USER
 from LabModule.app_forms.Maquina import MaquinaForm
 from LabModule.app_forms.Maquina import PosicionesMaquinaForm
 from LabModule.app_forms.Solicitud import SolicitudForm
@@ -19,6 +20,9 @@ from LabModule.app_models.Solicitud import Solicitud
 from LabModule.app_models.SolicitudMaquina import SolicitudMaquina
 from LabModule.app_models.Usuario import Usuario
 from LabModule.app_views.Almacenamiento import lugar_list
+from LabModule.app_utils.notificaciones import enviar_correo
+from django.contrib.auth.models import User
+import os
 
 
 def maquina_add(request, template_name = 'maquinas/agregar.html'):
@@ -135,6 +139,38 @@ def maquina_list(request):
         return HttpResponse('No autorizado', status = 401)
 
 
+def notificacion_solicitud_maquina(request, maquina_nombre, solicitud_id):
+    """Realiza la notificación de solicitud de máquinas para el usuario que la necesita
+               Historia de usuario: ALF-33:Yo como Jefe de Laboratorio quiero ser notificado vía correo electrónico
+                    si se hizo una solicitud para poderla gestionar cuanto antes.
+               Se encarga de:
+                   * Realiza la notificación de la solicitud de máquinas
+            :param request: El HttpRequest que se va a responder.
+            :type request: HttpRequest.
+            :param maquina_nombre: Máquina a solicitar
+            :type maquina: Máquina.
+            :param solicitud_id: Id de la solicitud de la máquina.
+            :type id: Identificador.
+       """
+    jefes_lab = User.objects.filter(groups__name='Jefe de Laboratorio')
+    asunto = 'Envío de solicitud de máquina'
+    usuario = Usuario.objects.get(nombre_usuario=request.user.username)
+    to = [request.user.email]
+    context = {'asistente': usuario.nombre_completo(),
+               'maquina_nombre': maquina_nombre,
+               'solicitud_id': solicitud_id}
+    template_path = os.path.join(BASE_DIR, 'templates', 'correos', 'solicitud_maquina_asistente.txt')
+    # Enviar correo al asistente
+    enviar_correo(asunto, EMAIL_HOST_USER, to, template_path, '', context)
+    # Enviar correo a los jefes
+    if jefes_lab.exists():
+        template_path = os.path.join(BASE_DIR, 'templates', 'correos', 'solicitud_maquina_jefe.txt')
+        to = []
+        for jefe in jefes_lab:
+            to.append(jefe.email)
+        enviar_correo(asunto, EMAIL_HOST_USER, to, template_path, '', context)
+
+
 def maquina_request(request):
     """Realiza la solicitud de máquinas por el usuario que la necesita
         Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una Maquina normal en una
@@ -174,7 +210,11 @@ def maquina_request(request):
                     maquinaRequest.solicitud = requestObj
                     maquinaRequest.save()
                     messages.success(request, "La máquina se reservo exitosamente")
-                    return redirect(reverse('Maquina-detail', kwargs = {'pk': request.GET.get('id', 0)}))
+
+                    # Envío de notificación
+                    notificacion_solicitud_maquina(request, maquina.nombre, maquinaRequest.id)
+
+                    return redirect(reverse('maquina-detail', kwargs = {'pk': request.GET.get('id', 0)}))
                 else:
                     mensaje = "Ya existe una solicitud para estas fechas"
 
