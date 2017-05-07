@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from AresLabControl.settings import BASE_DIR, EMAIL_HOST_USER
 from LabModule.app_forms.Muestra import MuestraForm
 from LabModule.app_forms.Muestra import MuestraSolicitudForm
 from LabModule.app_forms.Solicitud import SolicitudForm
@@ -15,6 +16,46 @@ from LabModule.app_models.Proyecto import Proyecto
 from LabModule.app_models.Solicitud import Solicitud
 from LabModule.app_models.SolicitudMuestra import SolicitudMuestra
 from LabModule.app_models.Usuario import Usuario
+from LabModule.app_utils.notificaciones import enviar_correo
+from django.contrib.auth.models import User
+import os
+
+
+def notificacion_solicitud_muestra(request, muestra_nombre, solicitud_id):
+    """Realiza la notificación de solicitud de muestras para el usuario que la necesita
+               Historia de usuario: ALF-80:Yo como Asistente de Laboratorio quiero ser notificado vía correo
+               electrónico si se aprobó o rechazo mi solicitud de muestra para saber si puedo hacer uso de la muestra
+               Se encarga de:
+                   * Comprobar si hay un usuario logueado
+                   * Comprobar si el usuario tiene permisos para realizar la solicitud de muestras
+                   * Realizar la solicitud de muestras
+            :param request: El HttpRequest que se va a responder.
+            :type request: HttpRequest.
+            :param muestra_nombre: Muesra a solicitar
+            :type muestra: Muestra.
+            :param solicitud_id: Id de la solicitud de la muestra.
+            :type id: Identificador.
+       """
+    jefes_lab = User.objects.filter(groups__name='Jefe de Laboratorio')
+    asunto = 'Envío de solicitud de muestra'
+    usuario = Usuario.objects.get(nombre_usuario=request.user.username)
+    to = [request.user.email]
+    context = {'asistente': usuario.nombre_completo(),
+               'muestra_nombre': muestra_nombre,
+               'solicitud_id': solicitud_id}
+    template_path = os.path.join(BASE_DIR, 'templates', 'correos', 'solicitud_muestra_asistente.txt')
+    # Enviar correo al asistente
+    enviar_correo(asunto, EMAIL_HOST_USER, to, template_path, '', context)
+    # Enviar correo a los jefes
+    if jefes_lab.exists():
+        context = {'asistente': usuario.nombre_completo(),
+                   'muestra_nombre': muestra_nombre,
+                   'solicitud_id': solicitud_id}
+        template_path = os.path.join(BASE_DIR, 'templates', 'correos', 'solicitud_muestra_jefe.txt')
+        to = []
+        for jefe in jefes_lab:
+            to.append(jefe.email)
+        enviar_correo(asunto, EMAIL_HOST_USER, to, template_path, '', context)
 
 
 def muestra_request(request):
@@ -35,9 +76,9 @@ def muestra_request(request):
         contexto = {}
         try:
 
-            muestra = Muestra.objects.get(id = request.GET.get('id', 0), activa = True)
-            profile = Usuario.objects.get(user_id = request.user.id)
-            proyectos = Proyecto.objects.filter(asistentes = profile.id, activo = True);
+            muestra = Muestra.objects.get(id=request.GET.get('id', 0), activa=True)
+            profile = Usuario.objects.get(user_id=request.user.id)
+            proyectos = Proyecto.objects.filter(asistentes=profile.id, activo=True);
 
             if request.method == 'POST':
 
@@ -46,7 +87,7 @@ def muestra_request(request):
                 requestObj.fechaInicial = request.POST['fechaInicial']
                 requestObj.estado = 'creada'
                 requestObj.solicitante = profile
-                requestObj.paso = Paso.objects.get(id = request.POST['step'])
+                requestObj.paso = Paso.objects.get(id=request.POST['step'])
                 requestObj.save()
                 sampleRequest = SolicitudMuestra()
                 sampleRequest.solicitud = requestObj
@@ -54,12 +95,14 @@ def muestra_request(request):
                 sampleRequest.cantidad = request.POST['cantidad']
                 sampleRequest.tipo = 'uso'
                 sampleRequest.save()
-                return redirect(reverse('muestra-list', kwargs = {}))
+                # Envío de notificación
+                notificacion_solicitud_muestra(request, muestra.nombre, sampleRequest.id)
+                return redirect(reverse('muestra-list', kwargs={}))
 
             else:
                 form = SolicitudForm()
                 form_muestra = MuestraSolicitudForm()
-            contexto = {'form'        : form, 'mensaje': mensaje, 'muestra': muestra, 'proyectos': proyectos,
+            contexto = {'form': form, 'mensaje': mensaje, 'muestra': muestra, 'proyectos': proyectos,
                         'form_muestra': form_muestra}
         except ObjectDoesNotExist as e:
             print(e.message)
@@ -71,7 +114,7 @@ def muestra_request(request):
 
         return render(request, "solicitudes/crear_muestra_solicitud.html", contexto)
     else:
-        return HttpResponse('No autorizado', status = 401)
+        return HttpResponse('No autorizado', status=401)
 
 
 def muestra_detail(request, pk):
@@ -89,7 +132,7 @@ def muestra_detail(request, pk):
     if request.user.is_authenticated():
         section = {}
         section['title'] = 'Detalles '
-        lista_muestra = Muestra.objects.filter(id = pk)
+        lista_muestra = Muestra.objects.filter(id=pk)
         if lista_muestra is None:
             return muestra_list(request)
         else:
@@ -98,7 +141,7 @@ def muestra_detail(request, pk):
 
             return render(request, 'muestras/detalle.html', context)
     else:
-        return HttpResponse('No autorizado', status = 401)
+        return HttpResponse('No autorizado', status=401)
 
 
 def reservar_muestra(request):
@@ -127,7 +170,7 @@ def reservar_muestra(request):
 
         return render(request, 'muestra/detalle.html', {'form': form, 'mensaje': mensaje})
     else:
-        return HttpResponse('No autorizado', status = 401)
+        return HttpResponse('No autorizado', status=401)
 
 
 def muestra_list(request):
@@ -145,11 +188,11 @@ def muestra_list(request):
         section['title'] = 'Listar Muestras'
         edita = request.user.has_perm("LabModule.can_editSample")
         if not edita:
-            lista_muetras = Muestra.objects.all().filter(activa = True).extra(order_by = ['nombre'])
+            lista_muetras = Muestra.objects.all().filter(activa=True).extra(order_by=['nombre'])
         else:
-            lista_muetras = Muestra.objects.all().extra(order_by = ['nombre'])
+            lista_muetras = Muestra.objects.all().extra(order_by=['nombre'])
 
         context = {'lista_muetras': lista_muetras, 'section': section}
         return render(request, 'muestras/listar.html', context)
     else:
-        return HttpResponse('No autorizado', status = 401)
+        return HttpResponse('No autorizado', status=401)

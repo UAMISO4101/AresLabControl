@@ -412,7 +412,7 @@ def crear_grupos():
             can_listStorage,
             can_viewStorage,
             can_editStorage,
-            can_addSample,git
+            can_addSample,
             can_editSample,
             can_listSample,
             can_viewSample,
