@@ -49,7 +49,7 @@ class Almacenamiento(models.Model):
             max_digits = 5,
             decimal_places = 2,
             verbose_name = _("Temperatura"),
-            default=25,
+            default = 25,
     )
 
     idSistema = models.CharField(
@@ -80,7 +80,7 @@ class Almacenamiento(models.Model):
         return self.idSistema
 
     def get_nombre(self):
-        return self.mueble.getnombre()
+        return self.mueble.get_nombre()
 
     def get_descripcion(self):
         return self.mueble.get_descripcion()
