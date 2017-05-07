@@ -29,51 +29,42 @@ def lugar_add(request):
     section = {'title': 'Agregar Lugar de Almacenamiento'}
     mensaje = ""
     if request.user.is_authenticated():
+        form = MuebleForm()
+        formAlmacenamiento=AlmacenamientoForm()
+        formPos = PosicionesMuebleForm()
         if request.method == 'POST':
             form = MuebleForm(request.POST or None, request.FILES or None)
             formAlmacenamiento=AlmacenamientoForm(request.POST or None, request.FILES or None)
             formPos = PosicionesMuebleForm(request.POST or None, request.FILES or None)
-             
             if form.is_valid() and formPos.is_valid() and formAlmacenamiento.is_valid():
+
                 mueble = form.save(commit = False)
                 almacenamiento=formAlmacenamiento.save(commit = False)
                 muebleEnLab = formPos.save(commit = False)
 
-                if formPos.es_ubicacion_libre():
+                if not formPos.es_ubicacion_libre():
+                    print("erros")
                     messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags = "danger")
+                elif not formPos.es_ubicacion_rango():
+                    mensaje = "La posición [" + str(muebleEnLab.posX) + "," + str(
+                            muebleEnLab.posY) + "] no se encuentra en el rango del laboratorio"
+                    messages.error(request,mensaje, extra_tags = "danger")
                 else:
-                    mensaje = "La posición [" + str(lugarEnLab.posX) + "," + str(
-                            lugarEnLab.posY) + "] no se encuentra en el rango del laboratorio"
-                    lab = lugarEnLab.idLaboratorio
-                    masX = lab.numX >= lugarEnLab.posX
-                    masY = lab.numY >= lugarEnLab.posY
-                    posible = masX and masY
-                    if not posible:
-                        if not masX:
-                            formPos.add_error("posX", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
-                        if not masY:
-                            formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
-                    else:
-                        if lugar.capacidad <= 0:
-                            form.add_error("capacidad", "La capacidad debe ser mayor a cero")
-                            mensaje = "La capacidad del lugar de almacenamiento debe ser mayor a cero"
-                        else:
-                            lugar.save()
-                            lugarEnLab.idLugar = lugar
-                            lugarEnLab.save()
-
-                            for cantidad in range(lugar.capacidad):
-                                bandeja = Bandeja(lugarAlmacenamiento = lugar,
-                                                  libre = True, posicion = cantidad)
-                                bandeja.save()
-                            messages.success(request, "El lugar se añadio exitosamente")
-                            return HttpResponseRedirect(reverse('lugar-detail', kwargs = {'pk': lugar.pk}))
-        else:
-            form = MuebleForm()
-            formAlmacenamiento=AlmacenamientoForm()
-            formPos = PosicionesMuebleForm()
+                    mueble.save()
+                    almacenamiento.mueble=mueble
+                    almacenamiento.save()
+                    muebleEnLab.idMueble=mueble
+                    muebleEnLab.save()
+                    pos=1
+                    for cantidad in range(almacenamiento.numZ):
+                        bandeja = Bandeja(almacenamiento = almacenamiento,posicion = pos)
+                        bandeja.save()
+                        pos+=1
+                    messages.success(request, "El lugar se añadio exitosamente")
+                    return HttpResponseRedirect(reverse('lugar-detail', kwargs = {'pk': almacenamiento.pk}))
+        
         context = {'form': form, 'formAlmacenamiento':formAlmacenamiento,'formPos': formPos, 'mensaje': mensaje, 'section': section}
-
+        print(form.errors,formAlmacenamiento.errors,formPos.errors)
         return render(request, 'almacenamientos/agregar.html', context)
     else:
         return HttpResponse('No autorizado', status = 401)

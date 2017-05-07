@@ -9,20 +9,6 @@
 
 {% block content %}
 
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
-{% if mensaje != "" %}
-<div class="alert alert-danger ">
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-    {{ mensaje }}
-</div>
-{% endif %}
 
 
 

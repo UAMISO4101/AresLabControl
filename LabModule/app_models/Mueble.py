@@ -24,11 +24,10 @@ class Mueble(models.Model):
             null = True
     )
 
-    estado = models.CharField(
-            max_length = 100,
-            default = '',
+    estado = models.BooleanField(
+            default = True,
             verbose_name = _('Estado'),
-            null = True
+            null=False
     )
 
     imagen = models.ImageField(

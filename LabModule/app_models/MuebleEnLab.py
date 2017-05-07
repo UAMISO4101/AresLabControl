@@ -11,8 +11,6 @@ class MuebleEnLab(models.Model):
     class Meta:
         verbose_name = _("Mueble en Laboratorio")
         verbose_name_plural = _('Muebles en Laboratorio')
-        app_label = 'LabModule'
-        unique_together = ('idLaboratorio', 'posX', 'posY')
 
     idLaboratorio = models.ForeignKey(
             Laboratorio,
@@ -45,13 +43,7 @@ class MuebleEnLab(models.Model):
     def __unicode__(self):
         return self.idLaboratorio.__unicode__() + ":" + str(self.posX) + "," + str(self.posY)
 
-    @classmethod
-    def es_ubicacion_rango(cls, id_laboratorio, new_posX, new_posY):
-        tamano_maximo = Laboratorio.objects.get(idLaboratorio__exact = id_laboratorio).get_tamano_maximo()
-        filas = tamano_maximo[0] < new_posX
-        columnas = tamano_maximo[1] < new_posY
-        return filas & columnas
 
     @classmethod
-    def es_ubicacion_libre(cls, new_posX, new_posY):
-        return not MuebleEnLab.objects.filter(posX__exact = new_posX).filter(posY__exact = new_posY).exists()
+    def es_ubicacion_libre(cls,id_lab, new_posX, new_posY):
+        return not MuebleEnLab.objects.filter(idLaboratorio=id_lab,posX = new_posX,posY = new_posY).exists()

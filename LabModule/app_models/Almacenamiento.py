@@ -61,15 +61,15 @@ class Almacenamiento(models.Model):
     )
 
     numX = models.PositiveIntegerField(
-            verbose_name = _("Maximo Filas"),
+            verbose_name = _("Máximo Filas"),
             default=1,
     )
     numY = models.PositiveIntegerField(
-            verbose_name = _("Maximo Columnas"),
+            verbose_name = _("Máximo Columnas"),
             default=1,
     )
     numZ = models.PositiveIntegerField(
-            verbose_name = _("Maximo Bandejas"),
+            verbose_name = _("Máximo Bandejas"),
             default=1,
     )
 

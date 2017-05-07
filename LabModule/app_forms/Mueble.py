@@ -3,6 +3,7 @@ from django.forms import ModelForm
 
 from LabModule.app_models.Mueble import Mueble
 from LabModule.app_models.MuebleEnLab import MuebleEnLab
+from LabModule.app_models.Laboratorio import Laboratorio
 
 
 class MuebleForm(ModelForm):
@@ -37,15 +38,23 @@ class PosicionesMuebleForm(ModelForm):
         exclude = ('idMueble',)
 
     def es_ubicacion_libre(self):
-        if MuebleEnLab.es_ubicacion_libre(self.cleaned_data['posX'], self.cleaned_data['posY']):
+        if MuebleEnLab.es_ubicacion_libre(self.cleaned_data['idLaboratorio'],self.cleaned_data['posX'], self.cleaned_data['posY']):
             return True
         else:
-            self.add_error('posX', "La posición x ya esta ocupada")
-            self.add_error('posY', "La posición y ya esta ocupada")
+            self.add_error('posX', "La columna  ya esta ocupada")
+            self.add_error('posY', "La fila ya esta ocupada")
 
         return False
 
     def es_ubicacion_rango(self):
-
-        return MuebleEnLab.es_ubicacion_rango(self.cleaned_data['idLaboratorio'], self.cleaned_data['posX'],
-                                              self.cleaned_data['posY'])
+        lab = self.cleaned_data['idLaboratorio']
+        masX = lab.numX >= self.cleaned_data['posX']
+        masY = lab.numY >= self.cleaned_data['posY']
+        posible = masX and masY
+        if not posible:
+            if not masX:
+                self.add_error("posX", "La columna sobrepasa el valor máximo de " + str(lab.numX))
+            if not masY:
+                self.add_error("posY", "La fila y sobrepasa el valor máximo de " + str(lab.numY))
+            return False
+        return True
