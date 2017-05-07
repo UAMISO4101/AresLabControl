@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -48,3 +47,6 @@ class Mueble(models.Model):
 
     def get_estado(self):
         return self.estado
+
+    def get_imagen(self):
+        return self.imagen

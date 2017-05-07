@@ -54,7 +54,6 @@ class Maquina(models.Model):
             primary_key = True
     )
 
-
     con_reserva = models.BooleanField(
             default = True,
             verbose_name = _("Reservable")
@@ -62,6 +61,18 @@ class Maquina(models.Model):
 
     def __unicode__(self):
         return self.mueble.__unicode__()
+
+    def get_nombre(self):
+        return self.mueble.get_nombre()
+
+    def get_descripcion(self):
+        return self.mueble.get_descripcion()
+
+    def get_estado(self):
+        return self.mueble.get_estado()
+
+    def get_imagen(self):
+        return self.mueble.imagen
 
     def get_absolute_url(self):
         return reverse('author-detail', kwargs = {'pk': self.pk})

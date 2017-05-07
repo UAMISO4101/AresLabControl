@@ -8,24 +8,7 @@
 {% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
 
 {% block content %}
-    {% if mensaje != "" %}
-        <div class="alert alert-danger ">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            {{ mensaje }}
-        </div>
-    {% endif %}
 
-    {% for error in form.errors %}
-        <div class="alert alert-danger">
-            Campo: <strong>{{ error|escape }}</strong>
-        </div>
-    {% endfor %}
-
-    {% for error in formPos.errors %}
-        <div class="alert alert-danger">
-            Campo: <strong>{{ error|escape }}</strong>
-        </div>
-    {% endfor %}
 
     {% for error in formPos.non_field_errors %}
         <div class="alert alert-danger">
@@ -56,7 +39,31 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-5 col-sm-6">
+
                     <div class="row">
+                        {% for error in formMaquina.idSistema.errors %}
+                            <div class="col-md-12">
+                                <div class="alert alert-danger ">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="col-md-3">
+                            <strong>{{ formMaquina.idSistema.label_tag }}</strong>
+                        </div>
+                        <div class="col-md-7 col-sm-4">
+                            {{ formMaquina.idSistema|addcss:"form-control" }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        {% for error in form.nombre.errors %}
+                            <div class="col-md-12">
+                                <div class="alert alert-danger ">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            </div>
+                        {% endfor %}
                         <div class="col-md-3">
                             <strong>{{ form.nombre.label_tag }}</strong>
                         </div>
@@ -64,15 +71,15 @@
                             {{ form.nombre|addcss:"form-control" }}
                         </div>
                     </div>
+
                     <div class="row">
-                        <div class="col-md-3">
-                            <strong>{{ form.idSistema.label_tag }}</strong>
-                        </div>
-                        <div class="col-md-7 col-sm-4">
-                            {{ form.idSistema|addcss:"form-control" }}
-                        </div>
-                    </div>
-                    <div class="row">
+                        {% for error in form.descripcion.errors %}
+                            <div class="col-md-12">
+                                <div class="alert alert-danger ">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            </div>
+                        {% endfor %}
                         <div class="col-md-3">
                             <strong>{{ form.descripcion.label_tag }}</strong>
                         </div>
@@ -81,7 +88,15 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-md-5 col-sm-6">
+                    {% for error in form.imagen.errors %}
+                        <div class="col-md-12">
+                            <div class="alert alert-danger ">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        </div>
+                    {% endfor %}
                     <div class="row">
                         <div>
                             <strong>{{ form.imagen.label_tag }}</strong>
@@ -116,6 +131,13 @@
             </div>
             <div class="panel-body text-left" style="height:140px">
                 <div class="row">
+                    {% for error in formPos.idLaboratorio.errors %}
+                        <div class="col-md-12">
+                            <div class="alert alert-danger ">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        </div>
+                    {% endfor %}
                     <div class="col-md-6">
                         <strong>{{ formPos.idLaboratorio.label_tag }}</strong>
                     </div>
@@ -129,9 +151,23 @@
                     </div>
                 </div>
                 <div class="row">
+                    {% for error in formPos.posX.errors %}
+                        <div class="col-md-12">
+                            <div class="alert alert-danger ">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        </div>
+                    {% endfor %}
                     <div class="col-md-6">
                         <strong>{{ formPos.posX.label_tag }}</strong>
                     </div>
+                    {% for error in formPos.posY.errors %}
+                        <div class="col-md-12">
+                            <div class="alert alert-danger ">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        </div>
+                    {% endfor %}
                     <div class="col-md-6">
                         {{ formPos.posX|addcss:"form-control" }}
                     </div>
@@ -155,19 +191,19 @@
             <div class="panel-body text-left" style="height:140px">
                 <div class="row">
                     <div class="col-md-6">
-                        <strong>{{ form.con_reserva.label_tag }}</strong>
+                        <strong>{{ formMaquina.con_reserva.label_tag }}</strong>
                     </div>
                     <div class="col-md-6">
-                        {{ form.con_reserva|addcss:"form-control" }}
+                        {{ formMaquina.con_reserva|addcss:"form-control" }}
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6">
-                        <strong>{{ form.activa.label_tag }}</strong>
+                        <strong>{{ form.estado.label_tag }}</strong>
                     </div>
                     <div class="col-md-6">
-                        {{ form.activa|addcss:"form-control" }}
+                        {{ form.estado|addcss:"form-control" }}
                     </div>
                 </div>
             </div>
