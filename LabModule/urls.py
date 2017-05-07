@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^$', LabModule.app_views.Home.home, name = 'home'),
     # Lugar de almacenamiento
     url(r'^almacenamiento/add/$', LabModule.app_views.Almacenamiento.lugar_add, name = 'lugar-add'),
-    url(r'^almacenamiento/update/(?P<pk>[\w\-]+)/$', LabModule.app_views.Almacenamiento.lugar_detail,
+    url(r'^almacenamiento/update/(?P<pk>[\w\-]+)/$', LabModule.app_views.Almacenamiento.lugar_edit,
         name = 'lugar-update'),
     url(r'^almacenamiento/(?P<pk>[\w\-]+)/$', LabModule.app_views.Almacenamiento.lugar_detail, name = 'lugar-detail'),
     url(r'^almacenamiento/$', LabModule.app_views.Almacenamiento.lugar_list, name = 'lugar-list'),

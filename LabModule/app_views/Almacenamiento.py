@@ -4,19 +4,20 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.shortcuts import get_object_or_404
 
 from LabModule.app_forms.Almacenamiento import AlmacenamientoForm
 from LabModule.app_forms.Mueble import MuebleForm
 from LabModule.app_forms.Mueble import PosicionesMuebleForm
 from LabModule.app_models.Almacenamiento import Almacenamiento
-from LabModule.app_models.AlmacenamientoEnLab import AlmacenamientoEnLab
 from LabModule.app_models.Bandeja import Bandeja
 from LabModule.app_models.Laboratorio import Laboratorio
 from LabModule.app_models.Mueble import Mueble
 from LabModule.app_models.MuebleEnLab import MuebleEnLab
+from LabModule.app_models.MuestraEnBandeja import MuestraEnBandeja
 
 
-def lugar_add(request, template_name = 'almacenamientos/agregar.html'):
+def lugar_add(request, template_name = 'almacenamientos/agregar.html',pk=None):
     """Desplegar y comprobar los valores a insertar.
            Historia de usuario: ALF-37 - Yo como Jefe de Laboratorio quiero poder agregar nuevos lugares de
            almacenamiento para poder utilizarlos en el sistema.
@@ -32,10 +33,10 @@ def lugar_add(request, template_name = 'almacenamientos/agregar.html'):
        """
     section = {'title': 'Agregar Lugar de Almacenamiento'}
     mensaje = ""
-    if request.user.is_authenticated():
-        form = MuebleForm()
-        formAlmacenamiento=AlmacenamientoForm()
-        formPos = PosicionesMuebleForm()
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addStorage"):
+        form = MuebleForm(request.POST or None, request.FILES or None)
+        formAlmacenamiento=AlmacenamientoForm(request.POST or None, request.FILES or None)
+        formPos = PosicionesMuebleForm(request.POST or None, request.FILES or None)
         if request.method == 'POST':
             form = MuebleForm(request.POST or None, request.FILES or None)
             formAlmacenamiento=AlmacenamientoForm(request.POST or None, request.FILES or None)
@@ -118,65 +119,54 @@ def lugar_detail(request, pk):
             :returns: HttpResponse -- La respuesta a la petición, con información de los lugares de almacenamiento existentes.
         """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewSample"):
-        lista_lugar = Almacenamiento.objects.filter(idSistema = pk)
-        if lista_lugar.count() ==0:
-            return lugar_list(request)
-        else:
-            lugar = lista_lugar[0]
-            bandejasOcupadas = Bandeja.objects.filter(lugarAlmacenamiento_id = pk, libre = False).count()
-            bandejasLibres = Bandeja.objects.filter(lugarAlmacenamiento_id = pk, libre = True).count()
-
-            laboratorio = Laboratorio.objects.get(pk = lugar.idLaboratorio_id).nombre
-
-            context = {'lugar'      : lugar, 'bandejasOcupadas': bandejasOcupadas, 'bandejasLibres': bandejasLibres,
-                       'laboratorio': laboratorio}
-            return render(request, 'almacenamientos/detalle.html', context)
+        lugar=get_object_or_404(Almacenamiento, pk=pk)
+        mueble=lugar.mueble    
+        bandejas=[bandeja.id for bandeja in Bandeja.objects.filter(almacenamiento=lugar)]
+        espaciosOcupados= len([m for m in MuestraEnBandeja.objects.filter(idBandeja__in=bandejas)])
+        espacioslibres=lugar.get_max_capacidad()-espaciosOcupados
+        laboratorio = MuebleEnLab.get_laboratorio(mueble)
+        pos=MuebleEnLab.objects.get(idLaboratorio=laboratorio,idMueble=mueble)
+        context = {'lugar'      : lugar, 'espaciosOcupados': espaciosOcupados, 'espacioslibres': espacioslibres,
+                   'laboratorio': laboratorio,'mueble':mueble,'pos':pos}
+        return render(request, 'almacenamientos/detalle.html', context)
     else:
         return HttpResponse('No autorizado', status = 401)
-
-
-def comprobarPostAlmacenamiento(form, formAlmacenamiento, formPos, request, template_name, section):
-    if form.is_valid() and formPos.is_valid() and formAlmacenamiento.is_valid():
+def lugar_edit(request, pk):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addStorage"):
+        section = {'title': 'Editar lugar de almacenamiento'}
+        alamacenamiento=get_object_or_404(Almacenamiento, pk=pk)
+        mueble=alamacenamiento.mueble
+        muebleEnLab=MuebleEnLab.objects.get(idLaboratorio=MuebleEnLab.get_laboratorio(mueble),idMueble=mueble)
+        form = MuebleForm(instance=mueble)
+        formAlmacenamiento=AlmacenamientoForm(instance=alamacenamiento)
+        formPos = PosicionesMuebleForm(instance=muebleEnLab)
         mueble = form.save(commit = False)
-        almacenamiento = formAlmacenamiento.save(commit = False)
+        mueble.tipo='almacenamiento'
+        almacenamiento=formAlmacenamiento.save(commit = False)
         muebleEnLab = formPos.save(commit = False)
-
-        if formPos.es_ubicacion_libre():
+        
+        if not formPos.es_ubicacion_libre() and not  formPos.es_el_mismo_mueble(mueble.id):
+            print("erros")
             messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags = "danger")
+        elif not formPos.es_ubicacion_rango():
+            mensaje = "La posición [" + str(muebleEnLab.posX) + "," + str(
+                    muebleEnLab.posY) + "] no se encuentra en el rango del laboratorio"
+            messages.error(request,mensaje, extra_tags = "danger")
         else:
-            lab = muebleEnLab.idLaboratorio
-            masX = lab.numX >= muebleEnLab.posX
-            masY = lab.numY >= muebleEnLab.posY
-            posible = masX and masY
-            if not posible:
-                if not masX:
-                    formPos.add_error("posX", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
-                if not masY:
-                    formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
-            else:
-                if almacenamiento.numZ <= 0:
-                    form.add_error("capacidad", "La capacidad debe ser mayor a cero")
-                    messages.error(request, "La capacidad del lugar de almacenamiento debe ser mayor a cero",
-                                   extra_tags = "danger")
-                else:
-                    mueble.save()
-                    almacenamiento.mueble_id = mueble
-                    almacenamiento.save()
-                    muebleEnLab.idMueble = mueble
-                    muebleEnLab.save()
+            pinrt("llega")
+            mueble.save()
+            almacenamiento.mueble=mueble
+            almacenamiento.save()
+            muebleEnLab.idMueble=mueble
+            muebleEnLab.save()
+            pos=1
+            for cantidad in range(almacenamiento.numZ):
+                bandeja = Bandeja(almacenamiento = almacenamiento,posicion = pos)
+                bandeja.save()
+                pos+=1
+            messages.success(request, "El lugar se modifico exitosamente")
+            return HttpResponseRedirect(reverse('lugar-detail', kwargs = {'pk': almacenamiento.pk}))
 
-                    for idBandeja in range(almacenamiento.numZ):
-                        bandeja = Bandeja(lugarAlmacenamiento = mueble,
-                                          posicion = idBandeja)
-                        bandeja.save()
-                    messages.success(request, "El lugar se añadio exitosamente")
-                    return HttpResponseRedirect(reverse('lugar-detail', kwargs = {'pk': mueble.pk}))
-    else:
-        form = MuebleForm()
-        formAlmacenamiento = AlmacenamientoForm()
-        formPos = PosicionesMuebleForm()
-    context = {'form'              : form,
-               'formAlmacenamiento': formAlmacenamiento,
-               'formPos'           : formPos,
-               'section'           : section}
+    context = {'form': form, 'formAlmacenamiento':formAlmacenamiento,'formPos': formPos, 'section': section}
+    print(form.errors,formAlmacenamiento.errors,formPos.errors)
     return render(request, 'almacenamientos/agregar.html', context)

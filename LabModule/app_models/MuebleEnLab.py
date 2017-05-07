@@ -47,3 +47,6 @@ class MuebleEnLab(models.Model):
     @classmethod
     def es_ubicacion_libre(cls,id_lab, new_posX, new_posY):
         return not MuebleEnLab.objects.filter(idLaboratorio=id_lab,posX = new_posX,posY = new_posY).exists()
+    @classmethod
+    def get_laboratorio(cls,mueble):
+        return  MuebleEnLab.objects.get(idMueble=mueble).idLaboratorio

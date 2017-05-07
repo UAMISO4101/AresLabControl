@@ -25,7 +25,7 @@ class Mueble(models.Model):
 
     estado = models.BooleanField(
             default = True,
-            verbose_name = _('Estado'),
+            verbose_name = _('Activa'),
             null=False
     )
 

@@ -76,6 +76,24 @@
                                 {{ form.descripcion|addcss:"form-control" }}
                             </div>
                         </div>
+
+                        <div class="row">
+
+                            {% for error in form.estado.errors %}
+                            <div class="col-md-12">
+                                <div class="alert alert-danger ">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            <div class="col-md-3">
+                                <strong>{{ form.estado.label_tag }}</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                            {{ form.estado|addcss:"checkbox form-control" }}
+                            </div>
+                        </div>
+
                     </div>
                     <div class="col-md-5 col-sm-6">
                         {% for error in form.imagen.errors %}

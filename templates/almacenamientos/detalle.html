@@ -13,18 +13,11 @@
 <div class="page-header text-center">
     <h2>{{ section.title }} {{ lugar.idLugar.nombre }}</h2>
 </div>
-{% if messages %}
-    {% for message in messages %}
-    <div{% if message.tags %} class="alert alert-{{ message.tags }} fade in alert-dismissable"{% endif %}>
-    <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
-    {{ message }}
-    </div>
-    {% endfor %}
-{% endif %}
+
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title text-left">Información básica ID {{ lugar.idLugar.id }}</h3>
+        <h3 class="panel-title text-left">Información básica ID {{ lugar.idSistema }}</h3>
     </div>
 
     <div class="panel-body text-left">
@@ -36,7 +29,7 @@
                             <strong>Nombre:</strong>
                         </div>
                         <div class="col-md-7 col-sm-4">
-                            <p id="items" name="items"> {{ lugar.idLugar.nombre }} </p>
+                            <p id="items" name="items"> {{ mueble.nombre }} </p>
                         </div>
                     </div>
                     <div class="row">
@@ -44,7 +37,7 @@
                             <strong>Descripción:</strong>
                         </div>
                         <div class="col-md-7 col-sm-4">
-                            <p id="items" name="items"> {{ lugar.idLugar.descripcion }} </p>
+                            <p id="items" name="items"> {{ mueble.descripcion }} </p>
                         </div>
                     </div>
                 </div>
@@ -58,8 +51,8 @@
 
                         <div class="panel panel-default">
                             <div class="panel-body text-left" style="text-align:center">
-                                <a href="{{ lugar.idLugar.imagen.url }}" target="_blank">
-                                    <img src="{{ lugar.idLugar.imagen.url }}" alt="Imagen Lugar Almacenamiento"
+                                <a href="{{ mueble.imagen.url }}" target="_blank">
+                                    <img src="{{ mueble.imagen.url }}" alt="Imagen Lugar Almacenamiento"
                                     class="imageIndex" style="width:60%; ">
                                 </a>
                             </div>
@@ -78,7 +71,7 @@
     <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title text-left">Bandejas</h3>
+                <h3 class="panel-title text-left">Espacios</h3>
             </div>
             <div class="panel-body text-left" style="height:140px">
                 <div class="row">
@@ -86,7 +79,7 @@
                         <strong>Usadas:</strong>
                     </div>
                     <div class="col-md-6">
-                        <strong> {{ bandejasOcupadas }} </strong>
+                        <strong> {{ espaciosOcupados }} </strong>
                     </div>
                 </div>
                 <div class="row">
@@ -94,7 +87,7 @@
                         <strong>Libres:</strong>
                     </div>
                     <div class="col-md-6">
-                        <strong> {{ bandejasLibres }} </strong>
+                        <strong> {{ espacioslibres }} </strong>
                     </div>
                 </div>
                 <div class="row">
@@ -102,7 +95,7 @@
                         <strong>Capacidad:</strong>
                     </div>
                     <div class="col-md-6">
-                        <strong> {{ lugar.idLugar.capacidad }} </strong>
+                        <strong> {{ lugar.get_max_capacidad }} </strong>
                     </div>
                 </div>
             </div>
@@ -120,10 +113,7 @@
                         <strong>Temperatura:</strong>
                     </div>
                     <div class="col-md-4">
-                        <strong> {{ lugar.idLugar.temperatura }} </strong>
-                    </div>
-                    <div class="col-md-2">
-                        <strong>°C</strong>
+                        <strong> {{ lugar.temperatura }} °C</strong>
                     </div>
                 </div>
             </div>
@@ -141,7 +131,7 @@
                         <strong>Laboratorio:</strong>
                     </div>
                     <div class="col-md-6">
-                        <strong> {{ laboratorio }} </strong>
+                        <strong> {{ laboratorio.nombre }} </strong>
                     </div>
                 </div>
                 <div class="row">
@@ -149,8 +139,8 @@
                         <strong>Localización:</strong>
                     </div>
                     <div class="col-md-6">
-                        <strong>{{ lugar.posX }} </strong>
-                        <strong>{{ lugar.posY }} </strong>
+                        <strong>{{ pos.posX }} </strong>
+                        <strong>{{ pos.posY }} </strong>
                     </div>
                 </div>
 

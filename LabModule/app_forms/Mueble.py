@@ -45,6 +45,8 @@ class PosicionesMuebleForm(ModelForm):
             self.add_error('posY', "La fila ya esta ocupada")
 
         return False
+    def es_el_mismo_mueble(self,id):
+        return id==MuebleEnLab.objects.get(idLaboratorio=self.cleaned_data['idLaboratorio'],posX=self.cleaned_data['posX'],posY=self.cleaned_data['posY']).id
 
     def es_ubicacion_rango(self):
         lab = self.cleaned_data['idLaboratorio']

@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from LabModule.app_models.Mueble import Mueble
 
+
 permissions_storage = (
     ('can_addStorage', 'almacenamiento||agregar'),
     ('can_editStorage', 'almacenamiento||editar'),
@@ -87,6 +88,7 @@ class Almacenamiento(models.Model):
 
     def get_estado(self):
         return self.mueble.get_estado()
-
+    def get_max_capacidad(self):
+        return self.numZ*self.numY*self.numX
     def get_absolute_url(self):
         return reverse('author-detail', kwargs = {'pk': self.pk})
