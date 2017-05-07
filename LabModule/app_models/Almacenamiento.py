@@ -77,7 +77,7 @@ class Almacenamiento(models.Model):
         return self.mueble.__unicode__()
 
     def get_id_sistema(self):
-        return self.mueble.get_idSistema()
+        return self.idSistema
 
     def get_nombre(self):
         return self.mueble.getnombre()
