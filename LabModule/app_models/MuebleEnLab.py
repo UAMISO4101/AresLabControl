@@ -7,7 +7,6 @@ from LabModule.app_models.Mueble import Mueble
 
 
 class MuebleEnLab(models.Model):
-
     class Meta:
         verbose_name = _("Mueble en Laboratorio")
         verbose_name_plural = _('Muebles en Laboratorio')
@@ -30,12 +29,12 @@ class MuebleEnLab(models.Model):
             error_messages = {'unique': "Ya existe un mueble con este ID"}
     )
     posX = models.PositiveIntegerField(
-            verbose_name = "Columna",
+            verbose_name = "Fila",
             null = False,
             default = 0
     )
     posY = models.PositiveIntegerField(
-            verbose_name = "Fila",
+            verbose_name = "Columna",
             null = False,
             default = 0
     )
@@ -43,10 +42,10 @@ class MuebleEnLab(models.Model):
     def __unicode__(self):
         return self.idLaboratorio.__unicode__() + ":" + str(self.posX) + "," + str(self.posY)
 
+    @classmethod
+    def es_ubicacion_libre(cls, id_lab, new_posX, new_posY):
+        return not MuebleEnLab.objects.filter(idLaboratorio = id_lab, posX = new_posX, posY = new_posY).exists()
 
     @classmethod
-    def es_ubicacion_libre(cls,id_lab, new_posX, new_posY):
-        return not MuebleEnLab.objects.filter(idLaboratorio=id_lab,posX = new_posX,posY = new_posY).exists()
-    @classmethod
-    def get_laboratorio(cls,mueble):
-        return  MuebleEnLab.objects.get(idMueble=mueble).idLaboratorio
+    def get_laboratorio(cls, mueble):
+        return MuebleEnLab.objects.get(idMueble = mueble).idLaboratorio

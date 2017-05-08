@@ -5,20 +5,12 @@
 {% block head_others %}
     <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
 {% endblock %}
-{% block head_title %}{{ block.super }}{{ section.title }} {{ maquina.nombre }}{% endblock %}
+{% block head_title %}{{ block.super }}{{ section.title }} {{ mueble.nombre }}{% endblock %}
 
 {% block content %}
-    {% if mensaje != "" %}
-        <div class="alert alert-danger ">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            {{ mensaje }}
-        </div>
-    {% endif %}
-
-
 
     <div class="page-header text-center">
-        <h2>{{ section.title }} {{ maquina.nombre }}</h2>
+        <h2>{{ section.title }} {{ mueble.nombre }}</h2>
     </div>
 
 
@@ -31,31 +23,36 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-5 col-sm-6">
+
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Nombre</strong>
-                            </div>
-                            <div class="col-md-7 col-sm-4">
-                                {{ maquina.nombre }}
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Id sistema</strong>
+                                <strong>Id Sistema</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
                                 {{ maquina.idSistema }}
                             </div>
                         </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Nombre</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ mueble.nombre }} </p>
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col-md-3">
                                 <strong>Descripción</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                {{ maquina.descripcion }}
+                                {{ mueble.descripcion }}
                             </div>
                         </div>
+
                     </div>
+
                     <div class="col-md-5 col-sm-6">
                         <div class="row">
                             <div>
@@ -63,65 +60,27 @@
                             </div>
                         </div>
                         <div class="row">
-
                             <div class="panel panel-default">
                                 <div class="panel-body text-left" style="text-align:center">
-                                    <a href="{{ maquina.imagen.url }}" target="_blank">
-                                        <img src="{{ maquina.imagen.url }} " alt="Imagen Máquina"
+                                    <a href="{{ mueble.imagen.url }}" target="_blank">
+                                        <img src="{{ mueble.imagen.url }} " alt="Imagen Máquina"
                                              class="imageIndex" style="width:60%" ;>
                                     </a>
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
+
                 </div>
             </div>
         </div>
+
     </div>
 
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title text-left">Ubicación</h3>
-                </div>
-                <div class="panel-body text-left" style="height:140px">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Laboratorio</strong>
-                        </div>
-                        <div class="col-md-6">
-                            {{ maquinaEnLab.idLaboratorio }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Localización:</strong>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Posición X</strong>
-                        </div>
-                        <div class="col-md-6">
-                            {{ maquinaEnLab.posX }}
-                        </div>
 
-                        <div class="col-md-6">
-                            <strong>Posicion Y</strong>
-                        </div>
-                        <div class="col-md-6">
-                            {{ maquinaEnLab.posY }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title text-left">Estado</h3>
                 </div>
@@ -140,16 +99,59 @@
                             <strong>¿Esta activa?</strong>
                         </div>
                         <div class="col-md-6">
-                            {{ maquina.activa|yesno:"Si,No" }}
+                            {{ mueble.estado|yesno:"Si,No" }}
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-default">
+
+                <div class="panel-heading">
+                    <h3 class="panel-title text-left">Ubicación</h3>
+                </div>
+
+                <div class="panel-body text-left" style="height:140px">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Laboratorio</strong>
+                        </div>
+                        <div class="col-md-6">
+                            {{ laboratorio.nombre }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Localización en Lab.</strong>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Fila</strong>
+                        </div>
+                        <div class="col-md-6">
+                            {{ pos.posX }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <strong>Columna</strong>
+                        </div>
+                        <div class="col-md-6">
+                            {{ pos.posY }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
-
     {% include 'maquinas/calendario.html' %}
-
 
 {% endblock %}

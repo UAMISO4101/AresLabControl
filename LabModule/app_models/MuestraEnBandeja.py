@@ -12,7 +12,7 @@ class MuestraEnBandeja(models.Model):
         verbose_name = "Muestra en Bandeja"
         verbose_name_plural = "Muestras en Bandeja"
         app_label = "LabModule"
-        unique_together = ('idBandeja','posX','posY')
+        unique_together = ('idBandeja', 'posX', 'posY')
 
     idBandeja = models.ForeignKey(
             Bandeja,
@@ -30,12 +30,12 @@ class MuestraEnBandeja(models.Model):
     )
     posX = models.PositiveIntegerField(
             verbose_name = _("Fila"),
-            default=1,
+            default = 1,
     )
     posY = models.PositiveIntegerField(
             verbose_name = _("Columna"),
-            default=1,
+            default = 1,
     )
 
     def __unicode__(self):
-        return str(self.posX)+":"+str(self.posY)
+        return str(self.posX) + ":" + str(self.posY)

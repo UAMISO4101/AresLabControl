@@ -13,7 +13,6 @@ from LabModule.app_forms.Mueble import MuebleForm
 from LabModule.app_forms.Mueble import PosicionesMuebleForm
 from LabModule.app_forms.Solicitud import SolicitudForm
 from LabModule.app_models.Maquina import Maquina
-from LabModule.app_models.MaquinaEnLab import MaquinaEnLab
 from LabModule.app_models.Mueble import Mueble
 from LabModule.app_models.MuebleEnLab import MuebleEnLab
 from LabModule.app_models.Paso import Paso
@@ -44,26 +43,44 @@ def maquina_add(request, template_name = 'maquinas/agregar.html'):
                                máquina. Sino redirecciona al mismo formulario mostrando los errores.
                                Si no esta autorizado se envia un código 401
     """
-    section = {'title': 'Agregar Máquina', 'agregar': True}
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addMachine"):
+        section = {'title': 'Agregar Máquina', 'agregar': True}
+        mensaje = ""
         form = MuebleForm(request.POST or None, request.FILES or None)
         formMaquina = MaquinaForm(request.POST or None, request.FILES or None)
         formPos = PosicionesMuebleForm(request.POST or None, request.FILES or None)
-        return comprobarPostMaquina(form, formMaquina, formPos, request, template_name, section)
+        if request.method == 'POST':
+            return comprobarPostMaquina(form, formMaquina, formPos, request, template_name, section)
+        context = {'form'       : form,
+                   'formMaquina': formMaquina,
+                   'formPos'    : formPos,
+                   'mensaje'    : mensaje,
+                   'section'    : section}
+        return render(request, 'maquinas/agregar.html', context)
     else:
         return HttpResponse('No autorizado', status = 401)
 
 
 def maquina_detail(request, pk, template_name = 'maquinas/detalle.html'):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
-        maquina = get_object_or_404(Maquina, pk = pk)
-        maquinaEnLab = get_object_or_404(MaquinaEnLab, idMaquina = maquina)
-        mensaje = ""
         section = {'title': 'Ver Detalle ', 'agregar': "ver"}
+
+        maquina = get_object_or_404(Maquina, pk = pk)
+        mueble = maquina.mueble
+        laboratorio = MuebleEnLab.get_laboratorio(mueble)
+
+        pos = MuebleEnLab.objects.get(idLaboratorio = laboratorio,
+                                      idMueble = mueble)
+
         mensajeCalendario = "Este es el horario disponible de la máquina. Seleccione el horario que más le convenga"
-        return render(request, template_name,
-                      {'maquina': maquina, 'maquinaEnLab': maquinaEnLab, 'section': section,
-                       'mensaje': mensaje, 'mensajeCalendario': mensajeCalendario})
+
+        context = {'maquina'          : maquina,
+                   'laboratorio'      : laboratorio,
+                   'mueble'           : mueble,
+                   'pos'              : pos,
+                   'section'          : section,
+                   'mensajeCalendario': mensajeCalendario}
+        return render(request, template_name, context)
     else:
         return HttpResponse('No autorizado', status = 401)
 
@@ -91,12 +108,12 @@ def maquina_update(request, pk, template_name = 'maquinas/agregar.html'):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_editMachine"):
         section = {'title': 'Modificar Máquina', 'agregar': False}
 
-        inst_mueble = get_object_or_404(Mueble, pk = pk)
-        ints_maquina = get_object_or_404(Maquina, pk = pk)
-        inst_ubicacion = get_object_or_404(MuebleEnLab, idMaquina = inst_mueble)
+        inst_maquina = get_object_or_404(Maquina, pk = pk)
+        inst_mueble = inst_maquina.mueble
+        inst_ubicacion = get_object_or_404(MuebleEnLab, idMueble = inst_mueble)
 
         form = MuebleForm(request.POST or None, request.FILES or None, instance = inst_mueble)
-        formMaquina = MaquinaForm(request.POST or None, request.FILES or None, instance = ints_maquina)
+        formMaquina = MaquinaForm(request.POST or None, request.FILES or None, instance = inst_maquina)
         formPos = PosicionesMuebleForm(request.POST or None, request.FILES or None, instance = inst_ubicacion)
 
         return comprobarPostMaquina(form, formMaquina, formPos, request, template_name, section)
@@ -130,14 +147,15 @@ def maquina_list(request):
         section['title'] = 'Listar Máquinas'
         edita = request.user.has_perm("LabModule.can_editMachine")
         if not edita:
-            lista_maquinas = Maquina.objects.all().filter(activa = True).extra(order_by = ['nombre'])
+            lista_maquinas = Mueble.objects.all().filter(estado = True, tipo = 'maquina').extra(order_by = ['nombre'])
         else:
-            lista_maquinas = Maquina.objects.all().extra(order_by = ['nombre'])
+            lista_maquinas = Mueble.objects.all().filter(tipo = 'maquina').extra(order_by = ['nombre'])
 
-        id_maquina = [maquina.idSistema for maquina in lista_maquinas]
-        lista_Posiciones = MaquinaEnLab.objects.all().filter(idMaquina__in = id_maquina)
-        maquinasConUbicacion = zip(lista_maquinas, lista_Posiciones)
-        context = {'section': section, 'maquinasBien': maquinasConUbicacion}
+        id_maquina = [maquina.id for maquina in lista_maquinas]
+        lista_Posiciones = MuebleEnLab.objects.all().filter(idMueble__in = id_maquina)
+        maquinas = Maquina.objects.all().filter(mueble__in = id_maquina)
+        maquinasConUbicacion = zip(lista_maquinas, lista_Posiciones, maquinas)
+        context = {'section': section, 'lista_maquinas': maquinasConUbicacion}
         return render(request, 'maquinas/listar.html', context)
     else:
         return HttpResponse('No autorizado', status = 401)
@@ -160,7 +178,7 @@ def maquina_request(request):
         try:
             maquina = Maquina.objects.get(pk = request.GET.get('idAlmacenamiento', 0), activa = True)
             profile = Usuario.objects.get(user_id = request.user.id)
-            maquinaEnLab = MaquinaEnLab.objects.get(idMaquina = maquina.pk)
+            maquinaEnLab = MuebleEnLab.objects.get(idMaquina = maquina.pk)
             proyectos = Proyecto.objects.filter(asistentes = profile.id, activo = True)
             form = SolicitudForm()
             if request.method == 'POST':
@@ -223,39 +241,48 @@ def comprobarPostMaquina(form, formMaquina, formPos, request, template_name, sec
      :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la
       modificación de la nueva máquina. Sino redirecciona al mismo formulario mostrand los errores.
     """
-
+    mensaje = ""
     if form.is_valid() and formPos.is_valid() and formMaquina.is_valid():
-        mueble = form.save(commit = False)
-        maquina = formMaquina.save(commit = False)
-        muebleEnLab = formPos.save(commit = False)
 
-        if formPos.es_ubicacion_libre():
-            messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags = "danger")
+        new_furniture = form.save(commit = False)
+        new_furniture.tipo = 'maquina'
+        new_machine = formMaquina.save(commit = False)
+        new_machine_loc = formPos.save(commit = False)
+
+        idLaboratorio = formPos.cleaned_data['idLaboratorio']
+        posX = formPos.cleaned_data['posX']
+        posY = formPos.cleaned_data['posY']
+
+        if section['agregar']:
+            if not formPos.es_ubicacion_libre():
+                messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags = "danger")
+        elif not formPos.es_el_mismo_mueble(new_furniture.id,
+                                            idLaboratorio,
+                                            posX,
+                                            posY):
+            if not formPos.es_ubicacion_libre():
+                messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags = "danger")
+        if not formPos.es_ubicacion_rango():
+            mensaje = "La posición [" +\
+                      str(new_machine_loc.posX) + "," +\
+                      str(new_machine_loc.posY) + "] no se encuentra en el rango del laboratorio"
+            messages.error(request, mensaje, extra_tags = "danger")
         else:
-            lab = muebleEnLab.idLaboratorio
-            masX = lab.numX >= muebleEnLab.posX
-            masY = lab.numY >= muebleEnLab.posY
-            posible = masX and masY
-            if not posible:
-                if not masX:
-                    formPos.add_error("posX", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
-                if not masY:
-                    formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
-            else:
-                mueble.save()
-                maquina.mueble_id = mueble
-                maquina.save()
-                muebleEnLab.idMueble = mueble
-                muebleEnLab.save()
-                messages.success(request, "La máquina se añadio exitosamente")
-                return redirect(reverse('maquina-update', kwargs = {'pk': maquina.pk}))
-    else:
-        form = MuebleForm()
-        formMaquina = MaquinaForm()
-        formPos = PosicionesMuebleForm()
+            new_furniture.save()
+            new_machine.mueble = new_furniture
+            new_machine.save()
+            new_machine_loc.idMueble = new_furniture
+            new_machine_loc.save()
+
+        if section['agregar']:
+            messages.success(request, "La máquina se añadió exitosamente")
+        else:
+            messages.success(request, "La máquina se actualizó correctamente")
+        return redirect(reverse('maquina-detail', kwargs = {'pk': new_machine.pk}))
     context = {'form'       : form,
                'formMaquina': formMaquina,
                'formPos'    : formPos,
+               'mensaje'    : mensaje,
                'section'    : section,
                }
     return render(request, template_name, context)

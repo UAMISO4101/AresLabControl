@@ -6,15 +6,6 @@ from LabModule.app_models.Muestra import Muestra
 from LabModule.app_models.SolicitudMuestra import SolicitudMuestra
 
 
-class MuestraSolicitudForm(ModelForm):
-    class Meta:
-        model = SolicitudMuestra
-        fields = ['cantidad', 'solicitud', 'muestra', 'tipo']
-        widgets = {
-            'cantidad': forms.TextInput(attrs = {'class': 'form-control'})
-        }
-
-
 class MuestraForm(ModelForm):
     """Formulario  para crear y modificar muestras.
            Se encarga de:
@@ -28,3 +19,12 @@ class MuestraForm(ModelForm):
     class Meta:
         model = Muestra
         fields = ['nombre', 'descripcion', 'imagen']
+
+
+class MuestraSolicitudForm(ModelForm):
+    class Meta:
+        model = SolicitudMuestra
+        fields = ['cantidad', 'solicitud', 'muestra', 'tipo']
+        widgets = {
+            'cantidad': forms.TextInput(attrs = {'class': 'form-control'})
+        }

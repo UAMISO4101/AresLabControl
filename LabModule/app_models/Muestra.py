@@ -83,6 +83,7 @@ class Muestra(models.Model):
 
     def calc_disp(self):
         from LabModule.app_models.Bandeja import Bandeja
+
         bandejas = Bandeja.objects.filter(muestra = self)
         for bandeja in bandejas:
             if not bandeja.libre:

@@ -19,7 +19,6 @@ from LabModule.app_models.Bandeja import Bandeja
 from LabModule.app_models.Experimento import Experimento
 from LabModule.app_models.Laboratorio import Laboratorio
 from LabModule.app_models.Maquina import Maquina
-from LabModule.app_models.MaquinaEnLab import MaquinaEnLab
 from LabModule.app_models.Muestra import Muestra
 from LabModule.app_models.Paso import Paso
 from LabModule.app_models.Protocolo import Protocolo

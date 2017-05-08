@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 
 from LabModule.app_models.Mueble import Mueble
 
-
 permissions_storage = (
     ('can_addStorage', 'almacenamiento||agregar'),
     ('can_editStorage', 'almacenamiento||editar'),
@@ -40,6 +39,14 @@ class Almacenamiento(models.Model):
         app_label = 'LabModule'
         permissions = permissions_storage
 
+    idSistema = models.CharField(
+            max_length = 20,
+            default = '',
+            verbose_name = _("Identificación"),
+            null = False,
+            primary_key = True
+    )
+
     mueble = models.OneToOneField(
             Mueble,
             on_delete = models.CASCADE,
@@ -53,25 +60,17 @@ class Almacenamiento(models.Model):
             default = 25,
     )
 
-    idSistema = models.CharField(
-            max_length = 20,
-            default = '',
-            verbose_name = _("Identificación"),
-            null = False,
-            primary_key = True
-    )
-
     numX = models.PositiveIntegerField(
             verbose_name = _("Máximo Filas"),
-            default=1,
+            default = 1,
     )
     numY = models.PositiveIntegerField(
             verbose_name = _("Máximo Columnas"),
-            default=1,
+            default = 1,
     )
     numZ = models.PositiveIntegerField(
             verbose_name = _("Máximo Bandejas"),
-            default=1,
+            default = 1,
     )
 
     def __unicode__(self):
@@ -88,7 +87,9 @@ class Almacenamiento(models.Model):
 
     def get_estado(self):
         return self.mueble.get_estado()
+
     def get_max_capacidad(self):
-        return self.numZ*self.numY*self.numX
+        return self.numZ * self.numY * self.numX
+
     def get_absolute_url(self):
         return reverse('author-detail', kwargs = {'pk': self.pk})

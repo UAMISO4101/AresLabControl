@@ -40,18 +40,18 @@ class Maquina(models.Model):
         app_label = 'LabModule'
         permissions = permissions_machine
 
-    mueble = models.OneToOneField(
-            Mueble,
-            on_delete = models.CASCADE,
-            related_name = '%(app_label)s_%(class)s_related'
-    )
-
     idSistema = models.CharField(
             max_length = 20,
             default = '',
             verbose_name = _("Identificación"),
             null = False,
             primary_key = True
+    )
+
+    mueble = models.OneToOneField(
+            Mueble,
+            on_delete = models.CASCADE,
+            related_name = '%(app_label)s_%(class)s_related'
     )
 
     con_reserva = models.BooleanField(

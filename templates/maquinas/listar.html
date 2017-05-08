@@ -28,21 +28,21 @@
             </tr>
             </thead>
             <tbody>
-            {% for maquina, ubicacion in maquinasBien %}
+            {% for mueble, ubicacion, maquina in lista_maquinas %}
                 <tr class= {{ maquina.con_reserva|yesno:"danger," }}>
                     <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ maquina.idSistema }}</td>
-                    <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ maquina.nombre }}</td>
+                    <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ mueble.nombre }}</td>
                     <td class="{{ maquina.con_reserva|yesno:"danger," }}">{{ ubicacion }}</td>
                     <td class="{{ maquina.con_reserva|yesno:"danger," }}">
                         {% if perms.LabModule.can_viewMachine %}
                             <a href="{% url 'maquina-detail' maquina.idSistema %} "
                                class="btn btn-primary {{ maquina.con_reserva|yesno:"danger," }}"
-                               role="button">Ver</a>
+                               role="button"><span class="glyphicon glyphicon-search"></span>Ver</a>
                         {% endif %}
                         {% if perms.LabModule.can_editMachine %}
                             <a href="{% url 'maquina-update' maquina.idSistema %} "
                                class="btn btn-primary {{ maquina.con_reserva|yesno:"danger," }}"
-                               role="button">Editar</a>
+                               role="button"><span class="glyphicon glyphicon-pencil"></span> Editar </a>
                         {% endif %}
                         {% if perms.LabModule.can_requestMachine %}
                             <a href="{% url 'maquina-request' %}?id={{ maquina.idSistema }}"

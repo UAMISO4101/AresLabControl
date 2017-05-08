@@ -27,7 +27,6 @@
             <th>Acciones</th>
         </tr>
         </thead>
-
         <tbody>
 
         {% for mueble,ubicacion,lugar in lista_lugares %}
@@ -38,19 +37,19 @@
                 <td>{{ lugar.temperatura }}ºC</td>
                 <td>
                     {% if perms.LabModule.can_viewStorage %}
-                        <a href="{% url 'lugar-detail' lugar.idSistema %} "
-                           class="btn btn-primary"
-                           ><span class="glyphicon glyphicon-search"></span>Ver</a>
+                        <a href="{% url 'lugar-detail' lugar.idSistema %}"
+                           class="btn btn-primary">
+                            <span class="glyphicon glyphicon-search"></span>Ver</a>
                     {% endif %}
                     {% if perms.LabModule.can_editStorage %}
-                        <a href="{% url 'lugar-update' lugar.idSistema %} "
-                           class="btn btn-primary  {{ maquina.con_reserva|yesno:"danger," }}"
-                           ><span class="glyphicon glyphicon-pencil"></span> Editar </a>
+                        <a href="{% url 'lugar-update' lugar.idSistema %}"
+                           class="btn btn-primary">
+                            <span class="glyphicon glyphicon-pencil"></span> Editar </a>
                     {% endif %}
-
                 </td>
             </tr>
         {% endfor %}
+
         </tbody>
     </table>
 {% endblock %}
