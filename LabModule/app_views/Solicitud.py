@@ -120,3 +120,19 @@ def maquina_reservations(request, pk):
         return HttpResponse(json.dumps(results), content_type="application/json")
     else:
         return HttpResponse()
+
+
+def listar_solicitud_maquina(request):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_manageRequest"):
+        section = {}
+        section['title'] = 'Listar Solicitudes de Máquinas'
+
+        lista_solicitudes = Solicitud.objects.all().exclude(estado='aprobada')
+
+        idSolicitudes = [solicitud.id for solicitud in lista_solicitudes]
+        lista_MaquinaSol = SolicitudMaquina.objects.all().filter(solicitud__in=idSolicitudes)
+
+        context = {'section': section, 'solicitudes': lista_MaquinaSol, 'mensaje': 'ok'}
+        return render(request, 'solicitudes/aprobarMaquinas.html', context)
+    else:
+        return HttpResponse('No autorizado', status=401)
