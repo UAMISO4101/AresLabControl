@@ -46,9 +46,11 @@ def maquina_add(request, template_name = 'maquinas/agregar.html'):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addMachine"):
         section = {'title': 'Agregar Máquina', 'agregar': True}
         mensaje = ""
+
         form = MuebleForm(request.POST or None, request.FILES or None)
         formMaquina = MaquinaForm(request.POST or None, request.FILES or None)
         formPos = PosicionesMuebleForm(request.POST or None, request.FILES or None)
+
         if request.method == 'POST':
             return comprobarPostMaquina(form, formMaquina, formPos, request, template_name, section)
         context = {'form'       : form,
@@ -143,8 +145,7 @@ def maquina_list(request, template_name = 'maquinas/listar.html'):
          con la búsqueda. Si no esta autorizado se envia un código 401
     """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_listMachine"):
-        section = {}
-        section['title'] = 'Listar Máquinas'
+        section = {'title': 'Listar Máquinas'}
         can_editMachine = request.user.has_perm("LabModule.can_editMachine")
         if not can_editMachine:
             lista_maquinas = Mueble.objects.all().filter(estado = True,
@@ -153,10 +154,10 @@ def maquina_list(request, template_name = 'maquinas/listar.html'):
             lista_maquinas = Mueble.objects.all().filter(tipo = 'maquina')
 
         id_maquina = [maquina.id for maquina in lista_maquinas]
-        lista_Posiciones = MuebleEnLab.objects.all().filter(idMueble__in = id_maquina)
+        lista__posiciones = MuebleEnLab.objects.all().filter(idMueble__in = id_maquina)
         maquinas = Maquina.objects.all().filter(mueble_id__in = id_maquina)
 
-        maquinasConUbicacion = zip(lista_maquinas, lista_Posiciones, maquinas)
+        maquinasConUbicacion = zip(lista_maquinas, lista__posiciones, maquinas)
 
         context = {'section'       : section,
                    'lista_maquinas': maquinasConUbicacion}
@@ -165,7 +166,7 @@ def maquina_list(request, template_name = 'maquinas/listar.html'):
         return HttpResponse('No autorizado', status = 401)
 
 
-def maquina_request(request, pk, template_name = 'solicitudes/crear_maquina_solicitud.html'):
+def maquina_request(request, pk, template_name = 'maquinas/solicitar.html'):
     """Realiza la solicitud de máquinas por el usuario que la necesita
         Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una Maquina normal en una
         franja de tiempo especifica para hacer uso de ella
@@ -179,8 +180,7 @@ def maquina_request(request, pk, template_name = 'solicitudes/crear_maquina_soli
     """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_requestMachine"):
         mensaje = 'ok'
-        section = {}
-        section['title'] = 'Solicitar Máquina'
+        section = {'title': 'Solicitar Máquina'}
         try:
             inst_maquina = get_object_or_404(Maquina, pk = pk)
             inst_mueble = inst_maquina.mueble

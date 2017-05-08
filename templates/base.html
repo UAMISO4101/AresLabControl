@@ -22,15 +22,16 @@
 {% include 'javascripts.html' %}
 <div class="container">
     <div class='row'>
-{% if messages %}
-    {% for message in messages %}
-    <div{% if message.tags %} class="alert alert-{{ message.tags }} fade in alert-dismissable"{% endif %}>
-    <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
-    {{ message }}
+        {% if messages %}
+            {% for message in messages %}
+                <div{% if message.tags %} class="alert alert-{{ message.tags }} fade in alert-dismissable"{% endif %}>
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
-    {% endfor %}
-{% endif %}
-
+    <div class='row'>
         {% block content %}
 
         {% endblock %}

@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load lab_module_extras %}
-{% load widget_tweaks %}
 {% load humanize %}
 {% block head_others %}
     <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
@@ -19,7 +18,7 @@
     </div>
 
     <div class="panel panel-default">
-        <div class="panel-heading">
+        <div class="panel-heading ">
             <h3 class="panel-title text-left">Información Básica</h3>
         </div>
 
@@ -30,10 +29,10 @@
 
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Id Muestra</strong>
+                                <strong>Id Sistema</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                {{ muestra.id }}
+                                {{ inst_maquina.idSistema }}
                             </div>
                         </div>
 
@@ -42,7 +41,7 @@
                                 <strong>Nombre</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                {{ muestra.nombre }}
+                                <p id="items" name="items"> {{ inst_mueble.nombre }} </p>
                             </div>
                         </div>
 
@@ -51,9 +50,10 @@
                                 <strong>Descripción</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                {{ muestra.descripcion }}
+                                {{ inst_mueble.descripcion }}
                             </div>
                         </div>
+
                     </div>
 
                     <div class="col-md-5 col-sm-6">
@@ -65,9 +65,9 @@
                         <div class="row">
                             <div class="panel panel-default">
                                 <div class="panel-body text-left" style="text-align:center">
-                                    <a href="{{ muestra.imagen.url }}" target="_blank">
-                                        <img src="{{ muestra.imagen.url }}" alt="Imágen Muestra"
-                                             class="imageIndex" style="width:60%; ">
+                                    <a href="{{ inst_mueble.imagen.url }}" target="_blank">
+                                        <img src="{{ inst_mueble.imagen.url }} " alt="Imagen Máquina"
+                                             class="imageIndex" style="width:60%" ;>
                                     </a>
                                 </div>
                             </div>
@@ -87,58 +87,40 @@
                 <div class="panel panel-default">
 
                     <div class="panel-heading">
-                        <h3 class="panel-title text-left">Características Muestra</h3>
+                        <h3 class="panel-title text-left">Ubicación</h3>
                     </div>
 
-                    <div class="panel-body text-left" style="min-height:160px">
-
+                    <div class="panel-body text-left" style="min-height:140px">
                         <div class="row">
                             <div class="col-md-6">
-                                <strong>Controlada</strong>
+                                <strong>Laboratorio</strong>
                             </div>
                             <div class="col-md-6">
-                                {{ muestra.controlado|yesno:"Si,No" }}
+                                {{ inst_ubicacion.idLaboratorio }}
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6">
-                                <strong>Activa</strong>
-                            </div>
-                            <div class="col-md-6">
-                                {{ muestra.activa|yesno:"Si,No" }}
+                                <strong>Localización:</strong>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6">
-                                <strong>Unidad de Medida</strong>
+                                <strong>Fila</strong>
                             </div>
                             <div class="col-md-6">
-                                {{ muestra.unidadBase }}
+                                {{ inst_ubicacion.posX }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Columna</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{ inst_ubicacion.posY }}
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>Valor Unidad</strong>
-                            </div>
-                            <div class="col-md-6">
-                                {{ muestra.valor | currency }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>Cantidad Disponible</strong>
-                            </div>
-                            <div class="col-md-6">
-                                <strong id="cantidadActual"> {{ cant_muestras }} </strong>
-                            </div>
-                        </div>
-
                     </div>
-
                 </div>
             </div>
 
@@ -148,7 +130,7 @@
                         <h3 class="panel-title text-left">Solicitud</h3>
                     </div>
 
-                    <div class="panel-body text-left" style="min-height:160px">
+                    <div class="panel-body text-left" style="min-height:140px">
                         <div class="row">
                             <div class="col-md-2">
                                 <strong>Proyectos:</strong>
@@ -156,7 +138,7 @@
                             <div class="col-md-4">
                                 <select class="form-control requerido" name="project" id="project">
                                     <option value="">----------</option>
-                                    {% for proyecto in proyectos %}
+                                    {% for proyecto in list_proyectos %}
                                         <option value="{{ proyecto.id }}">{{ proyecto.nombre }}</option>
                                     {% endfor %}
                                 </select>
@@ -194,16 +176,16 @@
 
                         <div class="row">
                             <div class="col-md-2">
-                                <strong>{{ form_muestra.cantidad.label }}</strong>
-                            </div>
-                            <div class="col-md-4">
-                                {{ form_muestra.cantidad |append_attr:"id=id_cantidad" }}
-                            </div>
-                            <div class="col-md-2">
                                 <strong>{{ form.fechaInicial.label }}</strong>
                             </div>
-                            <div class="col-md-4">
+                            <div class='col-md-4'>
                                 {{ form.fechaInicial }}
+                            </div>
+                            <div class="col-md-2">
+                                <strong>{{ form.fechaFinal.label }}</strong>
+                            </div>
+                            <div class='col-md-4'>
+                                {{ form.fechaFinal }}
                             </div>
                         </div>
                     </div>
@@ -213,13 +195,10 @@
 
         <div class="row center">
             <div>
-                {% if cantidades <= 0 %}
-                    <input class='btn  btn-primary' type="submit" value="Solicitar" id="solicitar"/>
-                {% endif %}
-                <a class="btn btn-default" href="/" id="cancel" name="cancel">Cancelar</a>
+                <input class='btn  btn-primary' type="submit" value="Solicitar" id="solicitar"/>
+                <a class="btn btn-default" href="{% url 'maquina-list' %}" id="cancel" name="cancel">Cancelar</a>
             </div>
         </div>
-
     </form>
 {% endblock %}
 {% block scripts_others %}
@@ -230,7 +209,7 @@
     <script>
         $('#project').change(function () {
             project_id = $(this).val();
-            request_url = '/solicitarMuestra/experimentos/?project_id=' + project_id;
+            request_url = "{% url 's-experimentos-list' %}" + '?project_id=' + project_id;
             $('#experiment')
                 .find('option')
                 .remove()
@@ -276,7 +255,7 @@
         });
         $('#experiment').change(function () {
             experiment_id = $(this).val();
-            request_url = '/solicitarMuestra/protocolos/?experiment_id=' + experiment_id;
+            request_url = "{% url 's-protocolos-list' %}" + '?experiment_id=' + experiment_id;
             $('#protocol')
                 .find('option')
                 .remove()
@@ -316,7 +295,7 @@
         });
         $('#protocol').change(function () {
             protocol_id = $(this).val();
-            request_url = '/solicitarMuestra/pasos/?protocol_id=' + protocol_id;
+            request_url = "{% url 's-pasos-list' %}" + '?protocol_id=' + protocol_id;
             $('#step')
                 .find('option')
                 .remove()
@@ -350,21 +329,34 @@
         });
         function validateForm() {
             validarRequeridos(function (res) {
-                if (res && validarCantidad()) {
+                if (res && validarFechas()) {
                     $("#formSolicitud").submit();
                 }
             });
             return false;
-        };
+        }
         $(function () {
+            $('#id_fechaFinal').datetimepicker({
+                locale: 'es',
+                showTodayButton: true,
+                format: 'YYYY-MM-DD HH:mm',
+                stepping: 30,
+                minDate: new Date()
+                {% if end.strip %}
+                    ,defaultDate: new Date({{end}}+5 * 3600 * 1000)
+                {% endif %}
+            });
             $('#id_fechaInicial').datetimepicker({
                 locale: 'es',
                 showTodayButton: true,
                 format: 'YYYY-MM-DD HH:mm',
                 stepping: 30,
                 minDate: new Date()
+                {% if start.strip  %}
+                    ,defaultDate: new Date({{start}}+5 * 3600 * 1000)
+                {% endif %}
             });
-        })
+        });
         function validarRequeridos(callback) {
             var cont = $(".requerido").length;
             $(".requerido").each(function () {
@@ -380,18 +372,19 @@
                 }
             });
         }
-        function validarCantidad() {
-            if ($("#id_cantidad").val() > parseInt($("#cantidadActual").text())) {
+        function validarFechas() {
+            if (new Date($("#id_fechaInicial").val()) >= new Date($("#id_fechaFinal").val())) {
                 $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
-                    'La cantidad solicitada no puede ser mayor que la disponible</div>');
-                return false;
-            }
-            if ($("#id_cantidad").val() <= 0) {
-                $("#mensajes-error").append('<div class="alert alert-danger col-md-6"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' +
-                    'La cantidad solicitada debe ser mayor que cero</div>');
+                    'La fecha inicial debe ser menor que la fecha final</div>');
                 return false;
             }
             return true;
         }
+        {% if start != "" %}
+            $(document).ready(function () {
+                $('#id_fechaInicial').data("DateTimePicker").options({minDate: new Date(({{start}}+5 * 3600 * 1000))});
+                $('#id_fechaFinal').data("DateTimePicker").options({minDate: new Date(({{end}}+5 * 3600 * 1000))});
+            });
+        {% endif %}
     </script>
 {% endblock %}

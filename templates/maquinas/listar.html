@@ -10,16 +10,16 @@
 
 {% block head_title %}{{ block.super }}{{ section.title }} {% endblock %}
 
-
 {% block content %}
 
     <div class="page-header text-center">
         <h2>{% block title %}{{ section.title }}{% endblock %} </h2>
     </div>
 
-
     <div class="row">
-        <table id="maquinas_table" class="datatable display compact responsive nowrap" cellspacing="0"
+        <table id="maquinas_table"
+               class="datatable display compact responsive nowrap"
+               cellspacing="0"
                width="100%">
             <thead>
             <tr>
@@ -57,33 +57,28 @@
             </tbody>
         </table>
     </div>
-
-    {% block scripts_others %}
-
-        <script src="//code.jquery.com/jquery-1.12.4.js"></script>
-        <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
-        <script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
-
-        <script>
-            $(function () {
-
-                if ($.fn.dataTable.isDataTable('#maquinas_table')) {
-                    $('#maquinas_table').DataTable();
-                }
-                else {
-                    $('#maquinas_table').DataTable({
-                        responsive: true,
-                        sPaginationType: "full_numbers",
-                        bJQueryUI: true,
-                        language: {
-                            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
-                        }
-                    });
-                }
-
-
-            });
-        </script>
-    {% endblock %}
+{% endblock %}
+{% block scripts_others %}
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
+    <script>
+        $(function () {
+            if ($.fn.dataTable.isDataTable('#maquinas_table')) {
+                $('#maquinas_table').DataTable();
+            }
+            else {
+                $('#maquinas_table').DataTable({
+                    responsive: true,
+                    sPaginationType: "full_numbers",
+                    bJQueryUI: true,
+                    order: [[1, "asc"]],
+                    language: {
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                    }
+                });
+            }
+        });
+    </script>
 {% endblock %}

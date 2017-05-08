@@ -152,5 +152,10 @@
     </div>
 
     {% include 'maquinas/calendario.html' %}
+    <div class="row center">
+        <div>
+            <a class="btn btn-default" href="{% url 'maquina-list' %}" id="cancel" name="cancel">Cancelar</a>
+        </div>
+    </div>
 
 {% endblock %}

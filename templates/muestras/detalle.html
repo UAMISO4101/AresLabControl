@@ -1,113 +1,144 @@
 {% extends 'base.html' %}
-
-{% load lab_module_extras %}
 {% load staticfiles %}
+{% load lab_module_extras %}
+{% load humanize %}
 {% block head_others %}
     <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
 {% endblock %}
-
 {% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
 
 {% block content %}
 
     <div class="page-header text-center">
-        <h2>{{ section.title }} {{ muestra.nombre }}</h2>
+        <h2>{{ section.title }}</h2>
     </div>
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title text-left">Información básica</h3>
+            <h3 class="panel-title text-left">Información Básica</h3>
         </div>
 
         <div class="panel-body text-left">
             <div class="container">
                 <div class="row">
                     <div class="col-md-5 col-sm-6">
+
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Id:</strong>
+                                <strong>Id Muestra</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestra.id }} </p>
+                                {{ muestra.id }}
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Nombre:</strong>
+                                <strong>Nombre</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestra.nombre }} </p>
+                                {{ muestra.nombre }}
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Controlada:</strong>
+                                <strong>Descripción</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestra.controlado }} </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Estado:</strong>
-                            </div>
-                            <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestra.activa }} </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Unidad:</strong>
-                            </div>
-                            <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestra.unidadBase }} </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Valor:</strong>
-                            </div>
-                            <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestra.valor }} </p>
+                                {{ muestra.descripcion }}
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-5 col-sm-6">
                         <div class="row">
                             <div>
-                                <strong>Imagen:</strong>
+                                <strong>Imágen</strong>
                             </div>
                         </div>
                         <div class="row">
-
                             <div class="panel panel-default">
                                 <div class="panel-body text-left" style="text-align:center">
                                     <a href="{{ muestra.imagen.url }}" target="_blank">
-                                        <img src="{{ muestra.imagen.url }}" alt="Imagen Muestra"
+                                        <img src="{{ muestra.imagen.url }}" alt="Imágen Muestra"
                                              class="imageIndex" style="width:60%; ">
                                     </a>
                                 </div>
                             </div>
-
                         </div>
-
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-
     <div class="panel panel-default">
+
         <div class="panel-heading">
-            <h3 class="panel-title text-left">Descripción</h3>
+            <h3 class="panel-title text-left">Características Muestra</h3>
         </div>
-        <div class="panel-body text-left" style="height:100px">
-            <div class="row">
-                <p id="items" name="items"> {{ muestra.descripcion }} </p>
+
+        <div class="panel-body text-left">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-5 col-sm-6">
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Controlada</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ muestra.controlado|yesno:"Si,No" }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Activa</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ muestra.activa|yesno:"Si,No" }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Unidad de Medida</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ muestra.unidadBase }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Valor Unidad</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ muestra.valor | currency }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Cantidad Disponible</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ cant_muestras }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
 
+    <div class="row center">
+        <div>
+            <a class="btn btn-default" href="{% url 'muestra-list' %}" id="cancel" name="cancel">Cancelar</a>
+        </div>
+    </div>
 {% endblock %}

@@ -23,17 +23,17 @@ urlpatterns = [
         LabModule.app_views.Almacenamiento.lugar_add,
         name = 'lugar-add'),
 
-    url(r'^almacenamiento/update/(?P<pk>[\w\-]+)/$',
-        LabModule.app_views.Almacenamiento.lugar_update,
-        name = 'lugar-update'),
+    url(r'^almacenamiento/$',
+        LabModule.app_views.Almacenamiento.lugar_list,
+        name = 'lugar-list'),
 
     url(r'^almacenamiento/(?P<pk>[\w\-]+)/$',
         LabModule.app_views.Almacenamiento.lugar_detail,
         name = 'lugar-detail'),
 
-    url(r'^almacenamiento/$',
-        LabModule.app_views.Almacenamiento.lugar_list,
-        name = 'lugar-list'),
+    url(r'^almacenamiento/update/(?P<pk>[\w\-]+)/$',
+        LabModule.app_views.Almacenamiento.lugar_update,
+        name = 'lugar-update'),
 
     # Usuarios
     url(r'accounts/register/$',
@@ -62,11 +62,15 @@ urlpatterns = [
         name = 'maquina-update'),
 
     # Muestras
+    # url(r'^muestra/add/$',
+    #     LabModule.app_views.Muestra.muestra_add,
+    #     name = 'muestra-add'),
+
     url(r'^muestra/$',
         LabModule.app_views.Muestra.muestra_list,
         name = 'muestra-list'),
 
-    url(r'^muestra/solicitar/$',
+    url(r'^muestra/solicitar/(?P<pk>[\w\-]+)/$',
         LabModule.app_views.Muestra.muestra_request,
         name = 'muestra-request'),
 
@@ -74,33 +78,43 @@ urlpatterns = [
         LabModule.app_views.Muestra.muestra_detail,
         name = 'muestra-detail'),
 
-    # Servicios
+    # url(r'^muestra/update/(?P<pk>[\w\-]+)/$',
+    #     LabModule.app_views.Muestra.muestra_update,
+    #     name = 'muestra-update'),
 
+    # Servicios
     url(r'^maquina/events/(?P<pk>[\w\-]+)/$',
         LabModule.app_views.Solicitud.maquina_reservations,
         name = 's-maquina-reservations'),
 
-    url(r'^solicitarMuestra/experimentos/$',
+    url(r'^solicitudes/experimentos/$',
         LabModule.app_views.Experimento.cargar_experimentos,
         name = 's-experimentos-list'),
 
-    url(r'^solicitarMuestra/protocolos/$',
+    url(r'^solicitudes/protocolos/$',
         LabModule.app_views.Protocolo.cargar_protocolos,
         name = 's-protocolos-list'),
 
-    url(r'^solicitarMuestra/pasos/$',
+    url(r'^solicitudes/pasos/$',
         LabModule.app_views.Paso.cargar_pasos,
         name = 's-pasos-list'),
 
-    # Solicitudes
-    url(r'^aprobarSolicitudMuestras/listar/$',
-        LabModule.app_views.Solicitud.listar_solicitud_muestra,
-        name = 'solicitudes-muestra-list'),
+    # Solicitudes Muestras
+    url(r'^solicitudes/muestras/$',
+        LabModule.app_views.Solicitud.solicitud_muestra_list,
+        name = 'solicitud-muestra-list'),
 
-    url(r'^aprobarSolicitudMuestras/aprobar/$',
-        LabModule.app_views.Solicitud.aprobar_solicitud_muestra,
+    url(r'^solicitudes/muestras/aprobar/(?P<pk>[\w\-]+)/$',
+        LabModule.app_views.Solicitud.solicitud_muestra_aprobar,
         name = 'solicitud-muestra-aprobar'),
 
+    url(r'^solicitudes/muestras/negar/(?P<pk>[\w\-]+)/$',
+        LabModule.app_views.Solicitud.solicitud_muestra_negar,
+        name = 'solicitud-muestra-negar'),
+
+    url(r'^solicitudes/muestras/(?P<pk>[\w\-]+)/$',
+        LabModule.app_views.Solicitud.solicitud_muestra_detail,
+        name = 'solicitud-muestra-detail'),
 ]
 
 if settings.DEBUG:

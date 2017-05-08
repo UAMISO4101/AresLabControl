@@ -4,11 +4,13 @@ from django.contrib import admin
 
 from LabModule.app_models.Almacenamiento import Almacenamiento
 from LabModule.app_models.Bandeja import Bandeja
-from LabModule.app_models.MuestraEnBandeja import MuestraEnBandeja
 from LabModule.app_models.Experimento import Experimento
 from LabModule.app_models.Laboratorio import Laboratorio
 from LabModule.app_models.Maquina import Maquina
+from LabModule.app_models.Mueble import Mueble
+from LabModule.app_models.MuebleEnLab import MuebleEnLab
 from LabModule.app_models.Muestra import Muestra
+from LabModule.app_models.MuestraEnBandeja import MuestraEnBandeja
 from LabModule.app_models.Paso import Paso
 from LabModule.app_models.Protocolo import Protocolo
 from LabModule.app_models.Proyecto import Proyecto
@@ -17,8 +19,6 @@ from LabModule.app_models.SolicitudMaquina import SolicitudMaquina
 from LabModule.app_models.SolicitudMuestra import SolicitudMuestra
 from LabModule.app_models.TipoDocumento import TipoDocumento
 from LabModule.app_models.Usuario import Usuario
-from LabModule.app_models.Mueble import Mueble
-from LabModule.app_models.MuebleEnLab import MuebleEnLab
 
 
 class TipoDocumentoAdmin(admin.ModelAdmin):

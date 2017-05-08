@@ -123,8 +123,7 @@ def lugar_list(request, template_name = 'almacenamientos/listar.html'):
            almacenamiento existentes.
           """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_listStorage"):
-        section = {}
-        section['title'] = 'Listar Almacenamientos'
+        section = {'title': 'Listar Almacenamientos'}
         can_editStorage = request.user.has_perm("LabModule.can_editStorage")
         if not can_editStorage:
             lista_almacenamiento = Mueble.objects.all().filter(estado = True,

@@ -30,7 +30,7 @@ from LabModule.app_models.TipoDocumento import TipoDocumento
 from LabModule.app_models.Usuario import Usuario
 from LabModule.app_views.Almacenamiento import lugar_add
 from LabModule.app_views.Maquina import maquina_add, maquina_list, maquina_request, maquina_update
-from LabModule.app_views.Solicitud import aprobar_solicitud_muestra, listar_solicitud_muestra
+from LabModule.app_views.Solicitud import solicitud_muestra_aprobar, solicitud_muestra_list
 
 c = Client(HTTP_USER_AGENT = 'Mozilla/5.0')
 CONTRASENA = getattr(settings, "CONTRASENA")
@@ -454,22 +454,22 @@ class AprobarSolMuestraTest(TestCase):
         """
         request = self.factory.get('aprobarSolicitudMuestras/listar/', follow = True)
         request.user = AnonymousUser()
-        response = listar_solicitud_muestra(request)
+        response = solicitud_muestra_list(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
 
         request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow = True)
         request.user = AnonymousUser()
-        response = aprobar_solicitud_muestra(request)
+        response = solicitud_muestra_aprobar(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
 
         request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow = True)
         request.user = self.userSinPermisos
-        response = listar_solicitud_muestra(request)
+        response = solicitud_muestra_list(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
 
         request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow = True)
         request.user = self.userSinPermisos
-        response = aprobar_solicitud_muestra(request)
+        response = solicitud_muestra_aprobar(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
 
     def test_listar_solicitudes(self):
@@ -493,7 +493,7 @@ class AprobarSolMuestraTest(TestCase):
         request.GET = request.GET.copy()
         request.GET['pk'] = self.solicitud.pk
         request.user = self.user
-        aprobar_solicitud_muestra(request)
+        solicitud_muestra_aprobar(request)
         bandejasLibres = Bandeja.objects.all().filter(lugarAlmacenamiento = self.lugarAlmacenamiento, libre = True)
         self.assertEqual(len(bandejasLibres), 2, 'Deberian haber bandejas libres')
         muestraSol = SolicitudMuestra.objects.get(id = 1)

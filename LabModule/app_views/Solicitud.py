@@ -1,11 +1,10 @@
 import json
 
-from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from LabModule.app_models.Bandeja import Bandeja
 from LabModule.app_models.Maquina import Maquina
 from LabModule.app_models.Solicitud import Solicitud
 from LabModule.app_models.SolicitudMaquina import SolicitudMaquina
@@ -13,60 +12,51 @@ from LabModule.app_models.SolicitudMuestra import SolicitudMuestra
 from LabModule.app_models.Usuario import Usuario
 
 
-def listar_solicitud_muestra(request):
-    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_manageRequest"):
-        section = {}
-        section['title'] = 'Listar Solicitudes de Muestras'
+def solicitud_muestra_list(request, template_name = 'solicitudes/muestras/listar.html'):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_listRequest"):
+        section = {'title': 'Listar Solicitudes de Muestras'}
 
         lista_solicitudes = Solicitud.objects.all().exclude(estado = 'aprobada')
 
-        idSolicitudes = [solicitud.id for solicitud in lista_solicitudes]
-        lista_MuestraSol = SolicitudMuestra.objects.all().filter(solicitud__in = idSolicitudes)
+        id_solicitudes = [solicitud.id for solicitud in lista_solicitudes]
+        lista__muestra_sol = SolicitudMuestra.objects.all().filter(solicitud__in = id_solicitudes)
 
-        context = {'section': section, 'solicitudes': lista_MuestraSol, 'mensaje': 'ok'}
-        return render(request, 'solicitudes/aprobarMuestras.html', context)
+        context = {'section'    : section,
+                   'solicitudes': lista__muestra_sol}
+        return render(request, template_name, context)
     else:
         return HttpResponse('No autorizado', status = 401)
 
 
-def aprobar_solicitud_muestra(request):
-    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_manageRequest"):
-        section = {}
-        section['title'] = 'Detalle Solicitud de Muestras'
-        try:
-            lista_lugares_pos = {}
-            solicitud = Solicitud.objects.get(id = request.GET.get('pk', 0))
-            muestraSolicitud = SolicitudMuestra.objects.get(solicitud = solicitud)
-            usuario = Usuario.objects.get(user = request.user)
-            contador = muestraSolicitud.cantidad
-            muestra = muestraSolicitud.muestra
-            if muestra.calc_disp() == 'Si':
-                bandejas = Bandeja.objects.all().filter(muestra = muestra).extra(order_by = ['lugarAlmacenamiento'])
-                for bandeja in bandejas:
-                    if contador > 0 and bandeja.libre == False:
-                        lugar = bandeja.lugarAlmacenamiento.nombre
-                        if lugar in lista_lugares_pos:
-                            lista_lugares_pos[lugar] += ',' + str(bandeja.posicion)
-                        else:
-                            lista_lugares_pos[lugar] = str(bandeja.posicion)
-                        bandeja.libre = True
-                        bandeja.save()
-                        contador = contador - 1
-                muestraSolicitud.solicitud.aprobador = usuario
-                muestraSolicitud.solicitud.estado = 'aprobada'
-                muestraSolicitud.solicitud.save()
+def solicitud_muestra_aprobar(request, pk, template_name = 'solicitudes/muestras/detalle.html'):
+    section = {'title': 'Aprobar Solicitud de Muestras', 'aprobar': True}
+    return solicitud_muestra_detail(request, pk, template_name, section)
 
-                contexto = {'lugaresConPos'   : lista_lugares_pos, 'section': section,
-                            'muestraSolicitud': muestraSolicitud}
-                return render(request, 'solicitudes/resumenAprobadoMuestra.html', contexto)
-            else:
-                contexto = {
-                    'mensaje': 'No es posible aprobar la solicitud porque no hay bandejas disponibles para suplir la demanda'}
-        except ObjectDoesNotExist as e:
-            contexto = {'mensaje': 'No hay solicitudes con el id solicitado'}
-        except MultipleObjectsReturned as e:
-            contexto = {'mensaje': 'Muchas solicitudes con ese id'}
-        return render(request, 'solicitudes/aprobarMuestras.html', contexto)
+
+def solicitud_muestra_negar(request, pk, template_name = 'solicitudes/muestras/detalle.html'):
+    section = {'title': 'Negar Solicitud de Muestras', 'aprobar': False}
+    return solicitud_muestra_detail(request, pk, template_name, section)
+
+
+def solicitud_muestra_detail(request, pk, template_name = 'solicitudes/muestras/detalle.html', section = None):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_manageRequest"):
+        if section is None:
+            mysection = {'title': 'Detalle Solicitud de Muestras', 'aprobar': None}
+        else:
+            mysection = section
+
+        solicitud = Solicitud.objects.filter(id = pk)
+        solicitud_muestra = SolicitudMuestra.objects.get(solicitud = solicitud)
+        approver_user = Usuario.objects.get(user = request.user)
+
+        solicitud_muestra.solicitud.aprobador = approver_user
+
+        if request.method == 'POST':
+            return comprobar_post_solicitud(solicitud_muestra, mysection)
+
+        contexto = {'section'          : mysection,
+                    'solicitud_muestra': solicitud_muestra}
+        return render(request, template_name, contexto)
     else:
         return HttpResponse('No autorizado', status = 401)
 
@@ -80,3 +70,12 @@ def maquina_reservations(request, pk):
         return HttpResponse(json.dumps(results), content_type = "application/json")
     else:
         return HttpResponse()
+
+
+def comprobar_post_solicitud(solicitud_muestra, section):
+    if section.get('aprobar'):
+        solicitud_muestra.solicitud.estado = 'aprobada'
+    else:
+        solicitud_muestra.solicitud.estado = 'rechazada'
+    solicitud_muestra.save()
+    return redirect('solicitud-muestra-detail')

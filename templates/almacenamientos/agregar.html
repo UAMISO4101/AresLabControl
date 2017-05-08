@@ -9,6 +9,7 @@
 {% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
 
 {% block content %}
+
     <div class="page-header text-center">
         <h2>{{ section.title }}</h2>
     </div>
@@ -283,7 +284,7 @@
         <div class="row center">
             <div>
                 <input class="btn btn-primary" type="submit" value="Guardar"/>
-                <a class="btn btn-default" href="/" id="cancel" name="cancel">Cancelar</a>
+                <a class="btn btn-default" href="{% url 'lugar-list' %}" id="cancel" name="cancel">Cancelar</a>
             </div>
         </div>
     </form>

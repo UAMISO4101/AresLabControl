@@ -44,7 +44,7 @@
                     {% if perms.LabModule.can_editStorage %}
                         <a href="{% url 'lugar-update' lugar.idSistema %}"
                            class="btn btn-primary">
-                            <span class="glyphicon glyphicon-pencil"></span> Editar </a>
+                            <span class="glyphicon glyphicon-pencil"></span>Editar</a>
                     {% endif %}
                 </td>
             </tr>
@@ -54,7 +54,6 @@
     </table>
 {% endblock %}
 {% block scripts_others %}
-
     <script src="//code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
@@ -70,6 +69,7 @@
                     responsive: true,
                     sPaginationType: "full_numbers",
                     bJQueryUI: true,
+                    order: [[1, "asc"]],
                     language: {
                         "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
                     }
@@ -77,4 +77,4 @@
             }
         });
     </script>
-{% endblock %}v
+{% endblock %}

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-
-{% load lab_module_extras %}
 {% load staticfiles %}
+{% load lab_module_extras %}
+{% load humanize %}
 {% block head_others %}
     <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css"
@@ -73,11 +73,9 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
-
     </div>
 
     <form method="post" action="" name="formSolicitud" id="formSolicitud"
@@ -201,8 +199,9 @@
                 <a class="btn btn-default" href="/" id="cancel" name="cancel">Cancelar</a>
             </div>
         </div>
-
     </form>
+{% endblock %}
+{% block scripts_others %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>

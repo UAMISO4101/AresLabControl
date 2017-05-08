@@ -216,7 +216,7 @@
                 {% if cantidades <= 0 %}
                     <input class='btn  btn-primary' type="submit" value="Solicitar" id="solicitar"/>
                 {% endif %}
-                <a class="btn btn-default" href="/" id="cancel" name="cancel">Cancelar</a>
+                <a class="btn btn-default" href="{% url 'muestra-list' %}" id="cancel" name="cancel">Cancelar</a>
             </div>
         </div>
 
@@ -230,7 +230,7 @@
     <script>
         $('#project').change(function () {
             project_id = $(this).val();
-            request_url = '/solicitarMuestra/experimentos/?project_id=' + project_id;
+            request_url = "{% url 's-experimentos-list' %}" + '?project_id=' + project_id;
             $('#experiment')
                 .find('option')
                 .remove()
@@ -276,7 +276,7 @@
         });
         $('#experiment').change(function () {
             experiment_id = $(this).val();
-            request_url = '/solicitarMuestra/protocolos/?experiment_id=' + experiment_id;
+            request_url = "{% url 's-protocolos-list' %}" + '?experiment_id=' + experiment_id;
             $('#protocol')
                 .find('option')
                 .remove()
@@ -316,7 +316,7 @@
         });
         $('#protocol').change(function () {
             protocol_id = $(this).val();
-            request_url = '/solicitarMuestra/pasos/?protocol_id=' + protocol_id;
+            request_url = "{% url 's-pasos-list' %}" + '?protocol_id=' + protocol_id;
             $('#step')
                 .find('option')
                 .remove()
