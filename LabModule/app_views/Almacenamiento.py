@@ -111,7 +111,7 @@ def lugar_update(request, pk, template_name = 'almacenamientos/agregar.html'):
         return HttpResponse('No autorizado', status = 401)
 
 
-def lugar_list(request):
+def lugar_list(request, template_name = 'almacenamientos/listar.html'):
     """Desplegar y comprobar los valores a consultar.
               Historia de usuario: ALF-39 - Yo como Jefe de Laboratorio quiero poder filtrar los lugares de
               almacenamiento existentes por nombre para visualizar sólo los que me interesan.
@@ -122,22 +122,25 @@ def lugar_list(request):
            :returns: HttpResponse -- La respuesta a la petición, con información de los lugares de
            almacenamiento existentes.
           """
-    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewStorage"):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_listStorage"):
         section = {}
         section['title'] = 'Listar Almacenamientos'
-        edita = request.user.has_perm("LabModule.can_editStorage")
-        if not edita:
-            lista_almacenamiento = Mueble.objects.all().filter(estado = True, tipo = 'almacenamiento').extra(
-                    order_by = ['nombre'])
+        can_editStorage = request.user.has_perm("LabModule.can_editStorage")
+        if not can_editStorage:
+            lista_almacenamiento = Mueble.objects.all().filter(estado = True,
+                                                               tipo = 'almacenamiento')
         else:
-            lista_almacenamiento = Mueble.objects.all().filter(tipo = 'almacenamiento').extra(order_by = ['nombre'])
+            lista_almacenamiento = Mueble.objects.all().filter(tipo = 'almacenamiento')
 
         id_almacenamiento = [lugar.id for lugar in lista_almacenamiento]
         lista_Posiciones = MuebleEnLab.objects.all().filter(idMueble__in = id_almacenamiento)
-        lugares = Almacenamiento.objects.all().filter(mueble__in = id_almacenamiento)
+        lugares = Almacenamiento.objects.all().filter(mueble_id__in = id_almacenamiento)
+
         lugaresConUbicacion = zip(lista_almacenamiento, lista_Posiciones, lugares)
-        context = {'section': section, 'lista_lugares': lugaresConUbicacion}
-        return render(request, 'almacenamientos/listar.html', context)
+
+        context = {'section'      : section,
+                   'lista_lugares': lugaresConUbicacion}
+        return render(request, template_name, context)
     else:
         return HttpResponse('No autorizado', status = 401)
 

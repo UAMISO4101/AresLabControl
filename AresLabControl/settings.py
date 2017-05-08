@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'registration',
     'storages',
+    'widget_tweaks',
     # Our Apps
     'LabModule',
 ]

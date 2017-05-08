@@ -121,7 +121,7 @@ def maquina_update(request, pk, template_name = 'maquinas/agregar.html'):
         return HttpResponse('No autorizado', status = 401)
 
 
-def maquina_list(request):
+def maquina_list(request, template_name = 'maquinas/listar.html'):
     """Comprobar si el usario puede ver las máquinas y mostraselas filtrando por una búsqueda.
            Historia de usuario: ALF-20:Yo como Jefe de Laboratorio quiero poder filtrar las máquinas existentes por
            nombre para visualizar sólo las que me interesan.
@@ -142,21 +142,25 @@ def maquina_list(request):
         :returns: HttpResponse -- La respuesta a la petición. Retorna páginada la lista de las máquias que cumplen
          con la búsqueda. Si no esta autorizado se envia un código 401
     """
-    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_listMachine"):
         section = {}
         section['title'] = 'Listar Máquinas'
-        edita = request.user.has_perm("LabModule.can_editMachine")
-        if not edita:
-            lista_maquinas = Mueble.objects.all().filter(estado = True, tipo = 'maquina').extra(order_by = ['nombre'])
+        can_editMachine = request.user.has_perm("LabModule.can_editMachine")
+        if not can_editMachine:
+            lista_maquinas = Mueble.objects.all().filter(estado = True,
+                                                         tipo = 'maquina')
         else:
-            lista_maquinas = Mueble.objects.all().filter(tipo = 'maquina').extra(order_by = ['nombre'])
+            lista_maquinas = Mueble.objects.all().filter(tipo = 'maquina')
 
         id_maquina = [maquina.id for maquina in lista_maquinas]
         lista_Posiciones = MuebleEnLab.objects.all().filter(idMueble__in = id_maquina)
-        maquinas = Maquina.objects.all().filter(mueble__in = id_maquina)
+        maquinas = Maquina.objects.all().filter(mueble_id__in = id_maquina)
+
         maquinasConUbicacion = zip(lista_maquinas, lista_Posiciones, maquinas)
-        context = {'section': section, 'lista_maquinas': maquinasConUbicacion}
-        return render(request, 'maquinas/listar.html', context)
+
+        context = {'section'       : section,
+                   'lista_maquinas': maquinasConUbicacion}
+        return render(request, template_name, context)
     else:
         return HttpResponse('No autorizado', status = 401)
 

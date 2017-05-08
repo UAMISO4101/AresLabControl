@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load lab_module_extras %}
+{% load widget_tweaks %}
 {% load staticfiles %}
 {% block head_others %}
     <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
@@ -11,16 +12,19 @@
     <div class="page-header text-center">
         <h2>{{ section.title }}</h2>
     </div>
+
     <form id="formMaquina" name="formMaquina" enctype="multipart/form-data" method="post">
         {% csrf_token %}
         <div class="panel panel-default">
             <div class="panel-heading ">
                 <h3 class="panel-title text-left">Información Básica</h3>
             </div>
+
             <div class="panel-body text-left">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-5 col-sm-6">
+
                             <div class="row">
                                 {% for error in formMaquina.idSistema.errors %}
                                     <div class="col-md-12">
@@ -33,9 +37,14 @@
                                     <strong>{{ formMaquina.idSistema.label_tag }}</strong>
                                 </div>
                                 <div class="col-md-7 col-sm-4">
-                                    {{ formMaquina.idSistema|addcss:"form-control" }}
+                                    {% if not section.agregar %}
+                                        {{ formMaquina.idSistema|add_class:"form-control"|append_attr:"readonly" }}
+                                    {% else %}
+                                        {{ formMaquina.idSistema|add_class:"form-control" }}
+                                    {% endif %}
                                 </div>
                             </div>
+
                             <div class="row">
                                 {% for error in form.nombre.errors %}
                                     <div class="col-md-12">
@@ -51,6 +60,7 @@
                                     {{ form.nombre|addcss:"form-control" }}
                                 </div>
                             </div>
+
                             <div class="row">
                                 {% for error in form.descripcion.errors %}
                                     <div class="col-md-12">
@@ -67,6 +77,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-md-5 col-sm-6">
                             {% for error in form.imagen.errors %}
                                 <div class="col-md-12">
@@ -80,6 +91,7 @@
                                     <strong>{{ form.imagen.label_tag }}</strong>
                                 </div>
                             </div>
+
                             <div class="row">
                                 {% if not section.agregar %}
                                     <div class="panel panel-default">
@@ -92,6 +104,7 @@
                                     </div>
                                 {% endif %}
                             </div>
+
                             <div class=" row">
                                 {{ form.imagen }}
                             </div>
@@ -100,6 +113,7 @@
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="panel panel-default">
@@ -107,6 +121,7 @@
                         <h3 class="panel-title text-left">Estado</h3>
                     </div>
                     <div class="panel-body text-left" style="height:140px">
+
                         <div class="row">
                             <div class="col-md-6">
                                 <strong>{{ formMaquina.con_reserva.label_tag }}</strong>
@@ -115,6 +130,7 @@
                                 {{ formMaquina.con_reserva|addcss:"form-control" }}
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-6">
                                 <strong>{{ form.estado.label_tag }}</strong>
@@ -126,12 +142,14 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title text-left">Ubicación</h3>
                     </div>
                     <div class="panel-body text-left" style="height:140px">
+
                         <div class="row">
                             {% for error in formPos.idLaboratorio.errors %}
                                 <div class="col-md-12">
@@ -147,11 +165,13 @@
                                 {{ formPos.idLaboratorio|addcss:"form-control" }}
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-6">
                                 <strong>Localización:</strong>
                             </div>
                         </div>
+
                         <div class="row">
                             {% for error in formPos.posX.errors %}
                                 <div class="col-md-12">
@@ -185,6 +205,7 @@
                 </div>
             </div>
         </div>
+
         <div class="row center">
             <div>
                 <input class="btn btn-primary" type="submit" value="Guardar"/>
