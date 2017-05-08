@@ -45,3 +45,21 @@ class SolicitudMuestra(models.Model):
             null = True,
             verbose_name = _("Tipo Solicitud")
     )
+
+    def getMuestra(self):
+        return self.muestra.nombre
+
+    def getSolicitante(self):
+        return self.solicitud.solicitante.nombre_usuario
+
+    def getPaso(self):
+        return self.solicitud.paso.nombre
+
+    def getDescPaso(self):
+        return self.solicitud.paso.descripcion
+
+    def getId(self):
+        return self.solicitud.id
+
+    def getFecha(self):
+        return self.solicitud.fechaActual

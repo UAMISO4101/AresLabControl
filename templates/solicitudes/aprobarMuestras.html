@@ -41,14 +41,14 @@
             <tbody>
             {% for solicitudMuestra in solicitudes %}
                 <tr>
-                    <td>{{ solicitudMuestra.solicitud.id }}</td>
+                    <td>{{ solicitudMuestra.getId }}</td>
                     <td>{{ solicitudMuestra.tipo }}</td>
-                    <td>{{ solicitudMuestra.muestra.nombre }}</td>
+                    <td>{{ solicitudMuestra.getMuestra }}</td>
                     <td>{{ solicitudMuestra.cantidad }}</td>
-                    <td>{{ solicitudMuestra.solicitud.fechaActual }}</td>
-                    <td>{{ solicitudMuestra.solicitud.solicitante.nombre_usuario }}</td>
-                    <td>{{ solicitudMuestra.solicitud.paso.nombre }}</td>
-                    <td>{{ solicitudMuestra.solicitud.paso.descripcion }}</td>
+                    <td>{{ solicitudMuestra.getFecha }}</td>
+                    <td>{{ solicitudMuestra.getSolicitante }}</td>
+                    <td>{{ solicitudMuestra.getPaso }}</td>
+                    <td>{{ solicitudMuestra.getDescPaso }}</td>
                     <td>
                         <a href="{% url 'solicitud-muestra-aprobar' %}?pk={{ solicitudMuestra.solicitud.pk }} "
                            class="btn btn-primary "

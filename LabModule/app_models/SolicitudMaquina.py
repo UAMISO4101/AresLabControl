@@ -34,3 +34,20 @@ class SolicitudMaquina(models.Model):
                     className = 'aprobada' if id_user == self.solicitud.solicitante.user.id
                                               and self.solicitud.estado == 'aprobada' else 'ocupada' if not id_user == self.solicitud.solicitante.user.id  else 'pendiente'
                     )
+    def getMaquina(self):
+        return self.maquina.nombre
+
+    def getSolicitante(self):
+        return self.solicitud.solicitante.nombre_usuario
+
+    def getPaso(self):
+        return self.solicitud.paso.nombre
+
+    def getDescPaso(self):
+        return self.solicitud.paso.descripcion
+
+    def getId(self):
+        return self.solicitud.id
+
+    def getFecha(self):
+        return self.solicitud.fechaActual
