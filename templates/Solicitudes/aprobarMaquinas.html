@@ -39,12 +39,13 @@
             <tbody>
             {% for solicitudMaquina in solicitudes %}
                 <tr>
-                    <td>{{ solicitudMaquina.solicitud.id }}</td>
-                    <td>{{ solicitudMaquina.maquina.nombre }}</td>
-                    <td>{{ solicitudMaquina.solicitud.fechaActual }}</td>
-                    <td>{{ solicitudMaquina.solicitud.solicitante.nombre_usuario }}</td>
-                    <td>{{ solicitudMaquina.solicitud.paso.nombre }}</td>
-                    <td>{{ solicitudMaquina.solicitud.paso.descripcion }}</td>
+                    <td>{{ solicitudMaquina.getId }}</td>
+                    <td>{{ solicitudMaquina.getMaquina }}</td>
+                    <td>{{ solicitudMaquina.getFecha }}</td>
+                    <td>{{ solicitudMaquina.getSolicitante }}</td>
+                    <td>{{ solicitudMaquina.getPaso }}</td>
+                    <td>{{ solicitudMaquina.getDescPaso }}</td>
+
                     <td>
                         <a href="{% url 'solicitud-maquina-aprobar' %}?pk={{ solicitudMaquina.solicitud.pk }} "
                            class="btn btn-primary "
