@@ -47,9 +47,9 @@
                                role="button"><span class="glyphicon glyphicon-pencil"></span> Editar </a>
                         {% endif %}
                         {% if perms.LabModule.can_requestMachine %}
-                            <a href="{% url 'maquina-request' %}?id={{ maquina.idSistema }}"
+                            <a href="{% url 'maquina-request' maquina.idSistema %} "
                                class="btn btn-primary {{ maquina.con_reserva|yesno:"danger," }}"
-                               role="button">Reservar</a>
+                               role="button"><span class="glyphicon glyphicon-asterisk"></span>Reservar</a>
                         {% endif %}
                     </td>
                 </tr>

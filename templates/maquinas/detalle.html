@@ -5,14 +5,13 @@
 {% block head_others %}
     <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
 {% endblock %}
-{% block head_title %}{{ block.super }}{{ section.title }} {{ mueble.nombre }}{% endblock %}
+{% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
 
 {% block content %}
 
     <div class="page-header text-center">
-        <h2>{{ section.title }} {{ mueble.nombre }}</h2>
+        <h2>{{ section.title }}</h2>
     </div>
-
 
     <div class="panel panel-default">
         <div class="panel-heading ">

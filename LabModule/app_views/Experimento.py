@@ -19,7 +19,7 @@ def cargar_experimentos(request):
                 :returns: HttpResponse -- La información de experimentos existentes por identificador del proyecto
             """
     if request.GET['project_id'] != "":
-        experiments = Experimento.objects.filter(projecto = request.GET['project_id'])
+        experiments = Experimento.objects.filter(proyecto = request.GET['project_id'])
         experiments_dict = dict([(c.id, c.nombre) for c in experiments])
         return HttpResponse(json.dumps(experiments_dict))
     else:

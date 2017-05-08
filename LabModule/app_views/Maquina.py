@@ -165,7 +165,7 @@ def maquina_list(request, template_name = 'maquinas/listar.html'):
         return HttpResponse('No autorizado', status = 401)
 
 
-def maquina_request(request):
+def maquina_request(request, pk, template_name = 'solicitudes/crear_maquina_solicitud.html'):
     """Realiza la solicitud de máquinas por el usuario que la necesita
         Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una Maquina normal en una
         franja de tiempo especifica para hacer uso de ella
@@ -179,46 +179,65 @@ def maquina_request(request):
     """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_requestMachine"):
         mensaje = 'ok'
+        section = {}
+        section['title'] = 'Solicitar Máquina'
         try:
-            maquina = Maquina.objects.get(pk = request.GET.get('idAlmacenamiento', 0), activa = True)
-            profile = Usuario.objects.get(user_id = request.user.id)
-            maquinaEnLab = MuebleEnLab.objects.get(idMaquina = maquina.pk)
-            proyectos = Proyecto.objects.filter(asistentes = profile.id, activo = True)
+            inst_maquina = get_object_or_404(Maquina, pk = pk)
+            inst_mueble = inst_maquina.mueble
+            inst_ubicacion = get_object_or_404(MuebleEnLab, idMueble = inst_mueble)
+            inst_profile = Usuario.objects.get(user_id = request.user.id)
+
+            list_proyectos = Proyecto.objects.filter(asistentes = inst_profile.id,
+                                                     activo = True)
+
             form = SolicitudForm()
+
             if request.method == 'POST':
-                if form.verificar_fecha(maquina.pk, request.POST['fechaInicial'], request.POST['fechaFinal']) == True:
+                if form.verificar_fecha(inst_maquina.pk,
+                                        request.POST['fechaInicial'],
+                                        request.POST['fechaFinal']) == True:
+
                     requestObj = Solicitud()
                     requestObj.descripcion = 'Solicitud de Maquina'
                     requestObj.fechaInicial = request.POST['fechaInicial']
                     requestObj.fechaFinal = request.POST['fechaFinal']
-                    if maquina.con_reserva == True:
+
+                    if inst_maquina.con_reserva == True:
                         requestObj.estado = 'creada'
                     else:
                         requestObj.estado = 'aprobada'
-                    requestObj.solicitante = profile
+
+                    requestObj.solicitante = inst_profile
                     requestObj.paso = Paso.objects.get(id = request.POST['step'])
                     requestObj.save()
+
                     maquinaRequest = SolicitudMaquina()
-                    maquinaRequest.maquina = maquina
+                    maquinaRequest.maquina = inst_maquina
                     maquinaRequest.solicitud = requestObj
                     maquinaRequest.save()
-                    messages.success(request, "La máquina se reservo exitosamente")
-                    return redirect(reverse('Maquina-detail', kwargs = {'pk': request.GET.get('idAlmacenamiento', 0)}))
+
+                    messages.success(request, "La máquina se reservó exitosamente")
+
+                    return redirect(reverse('maquina-detail', kwargs = {'pk': pk}))
                 else:
                     mensaje = "Ya existe una solicitud para estas fechas"
 
-            contexto = {'form'        : form,
-                        'mensaje'     : mensaje,
-                        'maquina'     : maquina,
-                        'proyectos'   : proyectos,
-                        'maquinaEnLab': maquinaEnLab,
-                        'start'       : request.GET.get('start', ''),
-                        'end'         : request.GET.get('end', '')}
+            contexto = {'section'       : section,
+                        'form'          : form,
+                        'mensaje'       : mensaje,
+                        'inst_maquina'  : inst_maquina,
+                        'inst_mueble'   : inst_mueble,
+                        'list_proyectos': list_proyectos,
+                        'inst_ubicacion': inst_ubicacion,
+                        'start'         : request.GET.get('start', ''),
+                        'end'           : request.GET.get('end', '')}
+
         except ObjectDoesNotExist:
-            contexto = {'mensaje': 'No hay maquinas o pasos con el id solicitado'}
+            contexto = {'mensaje': 'No hay máquinas o pasos con el id solicitado'}
         except MultipleObjectsReturned:
-            contexto = {'mensaje': 'Muchas maquinas con ese id'}
-        return render(request, "solicitudes/crear_maquina_solicitud.html", contexto)
+            contexto = {'mensaje': 'Muchas máquinas con ese id'}
+
+        return render(request, template_name, contexto)
     else:
         return HttpResponse('No autorizado', status = 401)
 
