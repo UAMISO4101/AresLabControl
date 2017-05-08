@@ -49,7 +49,7 @@ urlpatterns = [
     url(r'^aprobarSolicitudMuestras/aprobar/$', LabModule.app_views.Solicitud.aprobar_solicitud_muestra,
         name = 'solicitud-muestra-aprobar'),
     url(r'^aprobarSolicitudMaquinas/listar/$', LabModule.app_views.Solicitud.listar_solicitud_maquina,
-        name='solicitudes-maquia-list'),
+        name='solicitudes-maquina-list'),
     url(r'^aprobarSolicitudMaquinas/aprobar/$', LabModule.app_views.Solicitud.aprobar_solicitud_muestra,
         name = 'solicitud-maquina-aprobar'),
 ]
