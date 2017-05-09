@@ -57,7 +57,7 @@
                             <span class="glyphicon glyphicon-menu-up"></span>Aprobar</a>
                     {% endif %}
                     {% if perms.LabModule.can_manageRequest %}
-                        <a href="{% url 'solicitud-muestra-negar' solicitudMuestra.solicitud.pk %}"
+                        <a href="{% url 'solicitud-muestra-rechazar' solicitudMuestra.solicitud.pk %}"
                            class="btn btn-primary "
                            role="button">
                             <span class="glyphicon glyphicon-menu-down"></span>Rechazar</a>

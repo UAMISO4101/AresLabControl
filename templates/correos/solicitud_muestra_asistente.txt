@@ -1,0 +1,9 @@
+Solicitud de muestras
+
+{{ asistente }}, ha realizado la solicitud para la muestra {{ muestra_nombre }} con número de identificador: {{ solicitud_id }}.
+
+Por favor esperar a qué alguno de los jefes de laboratorio apruebe o rechace la solicitud.
+
+Muchas Gracias.
+
+-Equipo|LABControl

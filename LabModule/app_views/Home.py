@@ -2,7 +2,7 @@
 from django.shortcuts import render
 
 
-def home(request):
+def home(request, template_name = "home.html"):
     """Metodo inicial de la aplicación
                Se encarga de:
                    * Mostrar el inicio de la aplicación
@@ -11,4 +11,4 @@ def home(request):
             :returns: HttpResponse -- La respuesta redirigiendo a la página home inicial de la aplicación
         """
     context = {}
-    return render(request, "home.html", context)
+    return render(request, template_name, context)

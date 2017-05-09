@@ -16,7 +16,8 @@ class MuebleEnLab(models.Model):
             blank = False,
             null = True,
             on_delete = models.CASCADE,
-            verbose_name = "Laboratorio"
+            verbose_name = "Laboratorio",
+            related_name = '%(app_label)s_%(class)s_related'
     )
     idMueble = models.OneToOneField(
             Mueble,
@@ -24,6 +25,7 @@ class MuebleEnLab(models.Model):
             null = False,
             on_delete = models.CASCADE,
             verbose_name = "Mueble",
+            related_name = '%(app_label)s_%(class)s_related',
             primary_key = True,
             unique = True,
             error_messages = {'unique': "Ya existe un mueble con este ID"}

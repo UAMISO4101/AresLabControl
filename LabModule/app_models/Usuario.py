@@ -99,7 +99,8 @@ class Usuario(models.Model):
             blank = False,
             null = False,
             on_delete = models.CASCADE,
-            verbose_name = _('Tipo Identificación')
+            verbose_name = _('Tipo Identificación'),
+            related_name = '%(app_label)s_%(class)s_related'
     )
     userNatIdNum = models.CharField(
             max_length = 15,
@@ -109,14 +110,14 @@ class Usuario(models.Model):
     grupo = models.ForeignKey(
             Group,
             on_delete = models.CASCADE,
-            related_name = 'profile',
+            related_name = '%(app_label)s_%(class)s_related',
             verbose_name = 'Grupo',
-            null = False
+            null = False,
     )
     user = models.OneToOneField(
             User,
             on_delete = models.CASCADE,
-            related_name = 'profile'
+            related_name = '%(app_label)s_%(class)s_related'
     )
     contrasena = models.CharField(
             max_length = 15,

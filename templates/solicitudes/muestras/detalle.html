@@ -153,16 +153,17 @@
             </div>
         </div>
     </div>
-
+    <form enctype="multipart/form-data" method="post">
+        {% csrf_token %}
     <div class="row center">
         <div>
             {% if not section|lookup:'aprobar' is None %}
-                <a class="btn btn-primary" type="submit" id="continuar" name="continuar">Continuar</a>
+                <input class="btn btn-primary" type="submit" value="Continuar"/>
             {% endif %}
             <a class="btn btn-default" href="{% url 'solicitud-muestra-list' %}" id="cancel" name="cancel">Cancelar</a>
         </div>
     </div>
-
+    </form>
 {% endblock %}
 {% block scripts_others %}
     <script src="//code.jquery.com/jquery-1.12.4.js"></script>

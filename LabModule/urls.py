@@ -82,6 +82,10 @@ urlpatterns = [
     #     LabModule.app_views.Muestra.muestra_update,
     #     name = 'muestra-update'),
 
+    # url(r'^muestra/store/(?P<pk>[\w\-]+)/$',
+    #     LabModule.app_views.Muestra.muestra_store,
+    #     name = 'muestra_store'),
+
     # Servicios
     url(r'^maquina/events/(?P<pk>[\w\-]+)/$',
         LabModule.app_views.Solicitud.maquina_reservations,
@@ -108,13 +112,30 @@ urlpatterns = [
         LabModule.app_views.Solicitud.solicitud_muestra_aprobar,
         name = 'solicitud-muestra-aprobar'),
 
-    url(r'^solicitudes/muestras/negar/(?P<pk>[\w\-]+)/$',
-        LabModule.app_views.Solicitud.solicitud_muestra_negar,
-        name = 'solicitud-muestra-negar'),
+    url(r'^solicitudes/muestras/rechazar/(?P<pk>[\w\-]+)/$',
+        LabModule.app_views.Solicitud.solicitud_muestra_rechazar,
+        name = 'solicitud-muestra-rechazar'),
 
     url(r'^solicitudes/muestras/(?P<pk>[\w\-]+)/$',
         LabModule.app_views.Solicitud.solicitud_muestra_detail,
         name = 'solicitud-muestra-detail'),
+
+    # Solicitudes Maquinas
+    url(r'^solicitudes/maquinas/$',
+        LabModule.app_views.Solicitud.solicitud_maquina_list,
+        name = 'solicitud-maquina-list'),
+
+    url(r'^solicitudes/maquinas/aprobar/(?P<pk>[\w\-]+)/$',
+        LabModule.app_views.Solicitud.solicitud_muestra_aprobar,
+        name = 'solicitud-maquina-aprobar'),
+
+    url(r'^solicitudes/maquinas/rechazar/(?P<pk>[\w\-]+)/$',
+        LabModule.app_views.Solicitud.solicitud_muestra_rechazar,
+        name = 'solicitud-maquina-rechazar'),
+
+    url(r'^solicitudes/maquinas/(?P<pk>[\w\-]+)/$',
+        LabModule.app_views.Solicitud.solicitud_muestra_detail,
+        name = 'solicitud-maquina-detail'),
 ]
 
 if settings.DEBUG:

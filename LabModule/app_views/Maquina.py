@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+import os
+
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
@@ -8,6 +11,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from AresLabControl.settings import BASE_DIR, EMAIL_HOST_USER
 from LabModule.app_forms.Maquina import MaquinaForm
 from LabModule.app_forms.Mueble import MuebleForm
 from LabModule.app_forms.Mueble import PosicionesMuebleForm
@@ -20,6 +24,7 @@ from LabModule.app_models.Proyecto import Proyecto
 from LabModule.app_models.Solicitud import Solicitud
 from LabModule.app_models.SolicitudMaquina import SolicitudMaquina
 from LabModule.app_models.Usuario import Usuario
+from LabModule.app_utils.notificaciones import enviar_correo
 
 
 def maquina_add(request, template_name = 'maquinas/agregar.html'):
@@ -58,7 +63,7 @@ def maquina_add(request, template_name = 'maquinas/agregar.html'):
                    'formPos'    : formPos,
                    'mensaje'    : mensaje,
                    'section'    : section}
-        return render(request, 'maquinas/agregar.html', context)
+        return render(request, template_name, context)
     else:
         return HttpResponse('No autorizado', status = 401)
 
@@ -114,9 +119,15 @@ def maquina_update(request, pk, template_name = 'maquinas/agregar.html'):
         inst_mueble = inst_maquina.mueble
         inst_ubicacion = get_object_or_404(MuebleEnLab, idMueble = inst_mueble)
 
-        form = MuebleForm(request.POST or None, request.FILES or None, instance = inst_mueble)
-        formMaquina = MaquinaForm(request.POST or None, request.FILES or None, instance = inst_maquina)
-        formPos = PosicionesMuebleForm(request.POST or None, request.FILES or None, instance = inst_ubicacion)
+        form = MuebleForm(request.POST or None,
+                          request.FILES or None,
+                          instance = inst_mueble)
+        formMaquina = MaquinaForm(request.POST or None,
+                                  request.FILES or None,
+                                  instance = inst_maquina)
+        formPos = PosicionesMuebleForm(request.POST or None,
+                                       request.FILES or None,
+                                       instance = inst_ubicacion)
 
         return comprobarPostMaquina(form, formMaquina, formPos, request, template_name, section)
     else:
@@ -164,6 +175,38 @@ def maquina_list(request, template_name = 'maquinas/listar.html'):
         return render(request, template_name, context)
     else:
         return HttpResponse('No autorizado', status = 401)
+
+
+def notificacion_solicitud_maquina(request, maquina_nombre, solicitud_id):
+    """Realiza la notificación de solicitud de máquinas para el usuario que la necesita
+               Historia de usuario: ALF-33:Yo como Jefe de Laboratorio quiero ser notificado vía correo electrónico
+                    si se hizo una solicitud para poderla gestionar cuanto antes.
+               Se encarga de:
+                   * Realiza la notificación de la solicitud de máquinas
+            :param request: El HttpRequest que se va a responder.
+            :type request: HttpRequest.
+            :param maquina_nombre: Máquina a solicitar
+            :type maquina: Máquina.
+            :param solicitud_id: Id de la solicitud de la máquina.
+            :type id: Identificador.
+       """
+    jefes_lab = User.objects.filter(groups__name = 'Jefe de Laboratorio')
+    asunto = 'Envío de solicitud de máquina'
+    usuario = Usuario.objects.get(nombre_usuario = request.user.username)
+    to = [request.user.email]
+    context = {'asistente'     : usuario.nombre_completo(),
+               'maquina_nombre': maquina_nombre,
+               'solicitud_id'  : solicitud_id}
+    template_path = os.path.join(BASE_DIR, 'templates', 'correos', 'solicitud_maquina_asistente.txt')
+    # Enviar correo al asistente
+    enviar_correo(asunto, EMAIL_HOST_USER, to, template_path, '', context)
+    # Enviar correo a los jefes
+    if jefes_lab.exists():
+        template_path = os.path.join(BASE_DIR, 'templates', 'correos', 'solicitud_maquina_jefe.txt')
+        to = []
+        for jefe in jefes_lab:
+            to.append(jefe.email)
+        enviar_correo(asunto, EMAIL_HOST_USER, to, template_path, '', context)
 
 
 def maquina_request(request, pk, template_name = 'maquinas/solicitar.html'):
@@ -217,6 +260,9 @@ def maquina_request(request, pk, template_name = 'maquinas/solicitar.html'):
                     maquinaRequest.save()
 
                     messages.success(request, "La máquina se reservó exitosamente")
+
+                    # Envío de notificación
+                    notificacion_solicitud_maquina(request, inst_mueble.nombre, maquinaRequest.id)
 
                     return redirect(reverse('maquina-detail', kwargs = {'pk': pk}))
                 else:

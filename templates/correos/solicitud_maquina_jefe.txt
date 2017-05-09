@@ -1,0 +1,9 @@
+Solicitud de máquinas
+
+El asistente de laboratorio {{ asistente }}, ha realizado una solicitud para la máquina {{ muestra_nombre }} con número de identificador: {{ solicitud_id }}.
+
+El asistente de laboratorio está pendiente de su aprobación o rechazo. Ingresar al sistema para realizar la acción debida.
+
+Muchas Gracias.
+
+-Equipo|LABControl

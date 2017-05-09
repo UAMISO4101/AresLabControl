@@ -13,7 +13,7 @@
 
 {% block content %}
     <div class="page-header text-center">
-        <h2>{{ section.title }}</h2>
+        <h2>{% block title %}{{ section.title }}{% endblock %} </h2>
     </div>
 
     <table id="solicitudes_table" class="datatable display compact responsive nowrap" cellspacing="0"
@@ -21,9 +21,7 @@
         <thead>
         <tr>
             <th>Id</th>
-            <th>Tipo</th>
-            <th>Muestra</th>
-            <th>Cantidad</th>
+            <th>Máquina</th>
             <th>Fecha</th>
             <th>Solicitante</th>
             <th>Paso</th>
@@ -33,31 +31,29 @@
         </thead>
         <tbody>
 
-        {% for solicitudMuestra in solicitudes %}
+        {% for solicitudMaquina in solicitudes %}
             <tr>
-                <td>{{ solicitudMuestra.solicitud.id }}</td>
-                <td>{{ solicitudMuestra.tipo }}</td>
-                <td>{{ solicitudMuestra.muestra.nombre }}</td>
-                <td>{{ solicitudMuestra.cantidad }}</td>
-                <td>{{ solicitudMuestra.solicitud.fechaActual }}</td>
-                <td>{{ solicitudMuestra.solicitud.solicitante.nombre_usuario }}</td>
-                <td>{{ solicitudMuestra.solicitud.paso.nombre }}</td>
-                <td>{{ solicitudMuestra.solicitud.paso.descripcion }}</td>
+                <td>{{ solicitudMaquina.getId }}</td>
+                <td>{{ solicitudMaquina.getMaquina }}</td>
+                <td>{{ solicitudMaquina.getFecha }}</td>
+                <td>{{ solicitudMaquina.getSolicitante }}</td>
+                <td>{{ solicitudMaquina.getPaso }}</td>
+                <td>{{ solicitudMaquina.getDescPaso }}</td>
                 <td>
                     {% if perms.LabModule.can_viewRequest %}
-                        <a href=" "
+                        <a href="{% url 'solicitud-maquina-detail' solicitudMaquina.getId %}"
                            class="btn btn-primary "
                            role="button">
                             <span class="glyphicon glyphicon-search"></span>Ver</a>
                     {% endif %}
                     {% if perms.LabModule.can_manageRequest %}
-                        <a href="{% url 'solicitud-muestra-aprobar' solicitudMuestra.solicitud.pk %} "
+                        <a href="{% url 'solicitud-maquina-aprobar' solicitudMaquina.getId %}"
                            class="btn btn-primary "
                            role="button">
                             <span class="glyphicon glyphicon-menu-up"></span>Aprobar</a>
                     {% endif %}
                     {% if perms.LabModule.can_manageRequest %}
-                        <a href=""
+                        <a href="{% url 'solicitud-maquina-rechazar' solicitudMaquina.getId %}"
                            class="btn btn-primary "
                            role="button">
                             <span class="glyphicon glyphicon-menu-down"></span>Rechazar</a>

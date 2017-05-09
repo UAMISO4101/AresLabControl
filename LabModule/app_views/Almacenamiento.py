@@ -50,7 +50,7 @@ def lugar_add(request, template_name = 'almacenamientos/agregar.html'):
                    'formPos'           : formPos,
                    'mensaje'           : mensaje,
                    'section'           : section}
-        return render(request, 'almacenamientos/agregar.html', context)
+        return render(request, template_name, context)
     else:
         return HttpResponse('No autorizado', status = 401)
 
@@ -94,17 +94,22 @@ def lugar_detail(request, pk, template_name = 'almacenamientos/detalle.html'):
 
 
 def lugar_update(request, pk, template_name = 'almacenamientos/agregar.html'):
-    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addStorage"):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_editStorage"):
         section = {'title': 'Modificar Lugar de Almacenamiento', 'agregar': False}
 
         inst_almacenamiento = get_object_or_404(Almacenamiento, pk = pk)
         inst_mueble = inst_almacenamiento.mueble
         inst_ubicacion = get_object_or_404(MuebleEnLab, idMueble = inst_mueble)
 
-        form = MuebleForm(request.POST or None, request.FILES or None, instance = inst_mueble)
-        formAlmacenamiento = AlmacenamientoForm(request.POST or None, request.FILES or None,
+        form = MuebleForm(request.POST or None,
+                          request.FILES or None,
+                          instance = inst_mueble)
+        formAlmacenamiento = AlmacenamientoForm(request.POST or None,
+                                                request.FILES or None,
                                                 instance = inst_almacenamiento)
-        formPos = PosicionesMuebleForm(request.POST or None, request.FILES or None, instance = inst_ubicacion)
+        formPos = PosicionesMuebleForm(request.POST or None,
+                                       request.FILES or None,
+                                       instance = inst_ubicacion)
 
         return comprobarPostLugar(form, formAlmacenamiento, formPos, request, template_name, section)
     else:

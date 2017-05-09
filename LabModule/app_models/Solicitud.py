@@ -44,7 +44,6 @@ class Solicitud(models.Model):
             null = True,
             verbose_name = _("Fecha Inicial"),
             default = timezone.now
-
     )
     fechaFinal = models.DateTimeField(
             blank = False,
@@ -63,14 +62,14 @@ class Solicitud(models.Model):
             blank = False,
             null = True,
             verbose_name = _("Solicitante"),
-            related_name = "solicitudesHechas"
+            related_name = 'so_%(app_label)s_%(class)s_related'
     )
     aprobador = models.ForeignKey(
             Usuario,
             blank = False,
             null = True,
             verbose_name = _("Aprobador"),
-            related_name = "solicitudesAprobadas"
+            related_name = 'ap_%(app_label)s_%(class)s_related'
     )
     fechaActual = models.DateField(
             blank = False,
@@ -82,7 +81,8 @@ class Solicitud(models.Model):
             Paso,
             blank = False,
             null = True,
-            verbose_name = _("Selección de Paso")
+            verbose_name = _("Selección de Paso"),
+            related_name = '%(app_label)s_%(class)s_related'
     )
 
     def __unicode__(self):

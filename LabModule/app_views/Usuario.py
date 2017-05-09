@@ -53,7 +53,7 @@ def registrar_usuario(request):
                 nuevo_usuario.save()
                 return HttpResponseRedirect(reverse('home'))
             except:
-                form.add_error("userCode", _("Un usuario con este idAlmacenamiento ya existe"))
+                form.add_error("userCode", _("Un usuario con este id ya existe"))
         context = {'form': form, 'section': section}
         return render(request, 'registration/registration_form.html', context)
     return HttpResponse(_('No autorizado'), status = 401)

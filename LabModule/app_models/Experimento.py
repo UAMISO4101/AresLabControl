@@ -63,11 +63,12 @@ class Experimento(models.Model):
             null = True,
             on_delete = models.CASCADE,
             verbose_name = _("Proyecto"),
-            related_name = "proyecto"
+            related_name = '%(app_label)s_%(class)s_related'
     )
     protocolos = models.ManyToManyField(
             Protocolo,
-            related_name = "experimento"
+            verbose_name = "Protocolos",
+            related_name = '%(app_label)s_%(class)s_related'
     )
 
     def __unicode__(self):

@@ -20,13 +20,15 @@ class MuestraEnBandeja(models.Model):
             null = True,
             on_delete = models.CASCADE,
             verbose_name = _("Bandeja"),
+            related_name = '%(app_label)s_%(class)s_related'
     )
     idMuestra = models.ForeignKey(
             Muestra,
             blank = False,
             null = False,
             on_delete = models.CASCADE,
-            verbose_name = _("Muestra")
+            verbose_name = _("Muestra"),
+            related_name = '%(app_label)s_%(class)s_related'
     )
     posX = models.PositiveIntegerField(
             verbose_name = _("Fila"),

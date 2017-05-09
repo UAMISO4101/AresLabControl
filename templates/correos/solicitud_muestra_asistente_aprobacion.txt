@@ -1,0 +1,7 @@
+Aprobación de la solicitud de la muestra
+
+{{ asistente }}, el jefe de laboratorio {{ jefe }}, ha aprobado la solicitud de la muestra {{ muestra_nombre }}, con número de identificador de la solicitud: {{ solicitud_id }}.
+
+Muchas Gracias.
+
+-Equipo|LABControl
