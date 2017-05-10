@@ -9,42 +9,54 @@
     <link href="{% static 'css/datatablesCustom.css' %}" rel="stylesheet">
 {% endblock %}
 
-{% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
+{% block head_title %}{{ block.super }}{{ section.title }} {% endblock %}
 
 {% block content %}
     <div class="page-header text-center">
         <h2>{% block title %}{{ section.title }}{% endblock %} </h2>
     </div>
 
-    <table id="lugares_table" class="datatable display compact responsive nowrap" cellspacing="0"
+    <table id="solicitudes_table" class="datatable display compact responsive nowrap" cellspacing="0"
            width="100%">
         <thead>
         <tr>
             <th>Id</th>
-            <th>Nombre</th>
-            <th>Ubicación</th>
-            <th>Temp(Grados)</th>
-            <th>Acciones</th>
+            <th>Máquina</th>
+            <th>Fecha</th>
+            <th>Solicitante</th>
+            <th>Paso</th>
+            <th>Descripción paso</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
 
-        {% for mueble,ubicacion,lugar in lista_lugares %}
+        {% for solicitudMaquina in solicitudes %}
             <tr>
-                <td>{{ lugar.idSistema }}</td>
-                <td>{{ mueble.nombre }}</td>
-                <td>{{ ubicacion }}</td>
-                <td>{{ lugar.temperatura }}ºC</td>
+                <td>{{ solicitudMaquina.getId }}</td>
+                <td>{{ solicitudMaquina.getMaquina }}</td>
+                <td>{{ solicitudMaquina.getFecha }}</td>
+                <td>{{ solicitudMaquina.getSolicitante }}</td>
+                <td>{{ solicitudMaquina.getPaso }}</td>
+                <td>{{ solicitudMaquina.getDescPaso }}</td>
                 <td>
-                    {% if perms.LabModule.can_viewStorage %}
-                        <a href="{% url 'lugar-detail' lugar.idSistema %}"
-                           class="btn btn-primary">
+                    {% if perms.LabModule.can_viewRequest %}
+                        <a href="{% url 'solicitud-maquina-detail' solicitudMaquina.getId %}"
+                           class="btn btn-primary "
+                           role="button">
                             <span class="glyphicon glyphicon-search"></span>Ver</a>
                     {% endif %}
-                    {% if perms.LabModule.can_editStorage %}
-                        <a href="{% url 'lugar-update' lugar.idSistema %}"
-                           class="btn btn-primary">
-                            <span class="glyphicon glyphicon-pencil"></span>Editar</a>
+                    {% if perms.LabModule.can_manageRequest %}
+                        <a href="{% url 'solicitud-maquina-aprobar' solicitudMaquina.getId %}"
+                           class="btn btn-primary "
+                           role="button">
+                            <span class="glyphicon glyphicon-menu-up"></span>Aprobar</a>
+                    {% endif %}
+                    {% if perms.LabModule.can_manageRequest %}
+                        <a href="{% url 'solicitud-maquina-rechazar' solicitudMaquina.getId %}"
+                           class="btn btn-primary "
+                           role="button">
+                            <span class="glyphicon glyphicon-menu-down"></span>Rechazar</a>
                     {% endif %}
                 </td>
             </tr>
@@ -60,11 +72,11 @@
     <script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
     <script>
         $(function () {
-            if ($.fn.dataTable.isDataTable('#lugares_table')) {
-                $('#lugares_table').DataTable();
+            if ($.fn.dataTable.isDataTable('#solicitudes_table')) {
+                $('#solicitudes_table').DataTable();
             }
             else {
-                $('#lugares_table').DataTable({
+                $('#solicitudes_table').DataTable({
                     responsive: true,
                     sPaginationType: "full_numbers",
                     bJQueryUI: true,

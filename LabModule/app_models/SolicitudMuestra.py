@@ -26,12 +26,15 @@ class SolicitudMuestra(models.Model):
         verbose_name_plural = _('Solicitudes de Muestra')
         app_label = 'LabModule'
 
-    solicitud = models.OneToOneField(Solicitud)
+    solicitud = models.OneToOneField(
+            Solicitud,
+            related_name = '%(app_label)s_%(class)s_related')
     muestra = models.ForeignKey(
             Muestra,
             blank = False,
             null = True,
-            verbose_name = _("Selección de Muestra")
+            verbose_name = _("Selección de Muestra"),
+            related_name = '%(app_label)s_%(class)s_related'
     )
     cantidad = models.IntegerField(
             blank = False,

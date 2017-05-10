@@ -12,12 +12,15 @@ class SolicitudMaquina(models.Model):
         verbose_name_plural = _('Solicitudes de Máquina')
         app_label = 'LabModule'
 
-    solicitud = models.OneToOneField(Solicitud)
+    solicitud = models.OneToOneField(
+            Solicitud,
+            related_name = '%(app_label)s_%(class)s_related')
     maquina = models.ForeignKey(
             Maquina,
             blank = False,
             null = True,
-            verbose_name = _("Selección de Máquina")
+            verbose_name = _("Selección de Máquina"),
+            related_name = '%(app_label)s_%(class)s_related'
     )
 
     def __unicode__(self):
@@ -30,12 +33,15 @@ class SolicitudMaquina(models.Model):
                     start = self.solicitud.fechaInicial.isoformat().replace('+00:00', '-05:00'),
                     end = self.solicitud.fechaFinal.isoformat().replace('+00:00', '-05:00'),
                     editable = False if id_user == self.solicitud.solicitante.user.id else False,
-                    overlap = False, paso = self.solicitud.paso.nombre,
-                    className = 'aprobada' if id_user == self.solicitud.solicitante.user.id
-                                              and self.solicitud.estado == 'aprobada' else 'ocupada' if not id_user == self.solicitud.solicitante.user.id  else 'pendiente'
+                    overlap = False,
+                    paso = self.solicitud.paso.nombre,
+                    className = 'aprobada' if id_user == self.solicitud.solicitante.user.id and self.solicitud.estado == 'aprobada' else
+                    'ocupada' if not id_user == self.solicitud.solicitante.user.id else
+                    'pendiente'
                     )
+
     def getMaquina(self):
-        return self.maquina.nombre
+        return self.maquina.mueble.nombre
 
     def getSolicitante(self):
         return self.solicitud.solicitante.nombre_usuario

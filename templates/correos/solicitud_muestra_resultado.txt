@@ -1,0 +1,7 @@
+Resultado de la solicitud de la muestra
+
+{{ asistente }}, la solicitud de la muestra {{ objeto_nombre }} ha sido {{ resultado }} por el jefe de laboratorio {{ jefe }}, con número de identificador de la solicitud: {{ solicitud_id }}.
+
+Muchas Gracias.
+
+-Equipo|LABControl

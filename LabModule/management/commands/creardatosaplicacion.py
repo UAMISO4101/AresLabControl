@@ -13,13 +13,14 @@ from django.core.management.base import BaseCommand
 from django.templatetags.static import static
 
 from LabModule.app_models.Almacenamiento import Almacenamiento
-from LabModule.app_models.AlmacenamientoEnLab import AlmacenamientoEnLab
 from LabModule.app_models.Bandeja import Bandeja
 from LabModule.app_models.Experimento import Experimento
 from LabModule.app_models.Laboratorio import Laboratorio
 from LabModule.app_models.Maquina import Maquina
-from LabModule.app_models.MaquinaEnLab import MaquinaEnLab
+from LabModule.app_models.Mueble import Mueble
+from LabModule.app_models.MuebleEnLab import MuebleEnLab
 from LabModule.app_models.Muestra import Muestra
+from LabModule.app_models.MuestraEnBandeja import MuestraEnBandeja
 from LabModule.app_models.Paso import Paso
 from LabModule.app_models.Protocolo import Protocolo
 from LabModule.app_models.Proyecto import Proyecto
@@ -86,14 +87,16 @@ def print_status_message(status):
 
 
 def crear_tipos_documento():
+    doc_type_history = False
     print ('Creando Tipos de Documento'),
-    new_doc_type, doc_type_is_created = TipoDocumento.objects.get_or_create(nombre_corto = 'CC')
-    if doc_type_is_created:
-        new_doc_type.descripcion = 'Cédula de Ciudadanía'
-        new_doc_type.save()
-        print ('.'),
+    new_doc_type, doc_type_is_created = TipoDocumento.objects.get_or_create(nombre_corto = 'CC',
+                                                                            descripcion = 'Cédula de Ciudadanía')
+    print_status_message(status = doc_type_is_created)
+    doc_type_history = doc_type_history | doc_type_is_created
+    new_doc_type.save()
+
+    if doc_type_history:
         return 0
-    print ('...'),
     return 1
 
 
@@ -101,17 +104,20 @@ def crear_laboratorios():
     lab_history = False
     print ('Creando Laboratorios'),
     new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = "Laboratorio Principal",
-                                                                id = "LAB001")
+                                                                idLaboratorio = "LAB001")
     print_status_message(status = lab_is_created)
     lab_history = lab_history | lab_is_created
+    new_lab.save()
     new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = "Laboratorio Secundario",
-                                                                id = "LAB002")
+                                                                idLaboratorio = "LAB002")
     print_status_message(status = lab_is_created)
     lab_history = lab_history | lab_is_created
+    new_lab.save()
     new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = "Laboratorio Terciario",
-                                                                id = "LAB003")
+                                                                idLaboratorio = "LAB003")
     print_status_message(status = lab_is_created)
     lab_history = lab_history | lab_is_created
+    new_lab.save()
     if lab_history:
         return 0
     return 1
@@ -121,34 +127,44 @@ def crear_maquinas():
     machine_history = False
     print ('Creando Maquinas'),
     new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = "Laboratorio Principal",
-                                                                id = "LAB001")
+                                                                idLaboratorio = "LAB001")
+    print_status_message(status = lab_is_created)
     machine_history = machine_history | lab_is_created
+    new_lab.save()
     with open(".///" + static('lab_static/json/maquinas.json')) as data_file:
         data = json.load(data_file)
         for machine in data:
-            new_machine, machine_is_created = Maquina.objects.get_or_create(nombre = machine['nombre'],
-                                                                            descripcion = machine['descripcion'],
-                                                                            idSistema = machine['idSistema'],
-                                                                            con_reserva = machine['con_reserva']
-                                                                            )
-            print_status_message(status = machine_is_created)
-            machine_history = machine_history | machine_is_created
+            new_mueble, mueble_is_created = Mueble.objects.get_or_create(nombre = machine['nombre'],
+                                                                         descripcion = machine['descripcion'],
+                                                                         tipo = 'maquina'
+                                                                         )
 
-            if machine_is_created:
+            print_status_message(status = mueble_is_created)
+            machine_history = machine_history | mueble_is_created
+            new_mueble.save()
+
+            if mueble_is_created:
+                new_machine, machine_is_created = Maquina.objects.get_or_create(mueble = new_mueble,
+                                                                                con_reserva = machine['con_reserva'],
+                                                                                idSistema = machine['idSistema'])
+                print_status_message(status = machine_is_created)
+                machine_history = machine_history | machine_is_created
+                new_machine.save()
                 if not machine['imagen'] == '':
                     img_url = machine['imagen']
                     img_filename = urlparse(img_url).path.split('/')[-1]
                     img_temp = NamedTemporaryFile()
                     img_temp.write(urllib2.urlopen(img_url).read())
                     img_temp.flush()
-                    new_machine.imagen.save(img_filename, File(img_temp))
+                    new_mueble.imagen.save(img_filename, File(img_temp))
 
-            new_machine_loc, machine_loc_is_created = MaquinaEnLab.objects.get_or_create(idLaboratorio = new_lab,
-                                                                                         idMaquina = new_machine,
-                                                                                         posX = machine['x'],
-                                                                                         posY = machine['y'])
+            new_machine_loc, machine_loc_is_created = MuebleEnLab.objects.get_or_create(idLaboratorio = new_lab,
+                                                                                        idMueble = new_mueble,
+                                                                                        posX = machine['x'],
+                                                                                        posY = machine['y'])
             print_status_message(status = machine_loc_is_created)
             machine_history = machine_history | machine_loc_is_created
+            new_machine_loc.save()
     if machine_history:
         return 0
     return 1
@@ -178,42 +194,51 @@ def crear_almacenamientos():
             pos_x = row['posX']
             pos_y = row['posY']
             id_laboratorio = row['idLaboratorio']
-            new_lab, lab_is_created = Laboratorio.objects.get_or_create(id = id_laboratorio)
+            new_lab, lab_is_created = Laboratorio.objects.get_or_create(idLaboratorio = id_laboratorio)
             print_status_message(status = lab_is_created)
             storage_history = storage_history | lab_is_created
-
-            img_url = imagen
-            img_filename = urlparse(img_url).path.split('/')[-1]
-            img_temp = NamedTemporaryFile()
-            img_temp.write(urllib2.urlopen(img_url).read())
-            img_temp.flush()
-
+            new_lab.save()
+            created = False
             for i in range(1, int(cantidad) + 1):
                 id_storage += 1
-                new_storage, storage_is_created = Almacenamiento.objects.get_or_create(
-                        nombre = nombre + " " + str(i),
-                        descripcion = descripcion,
-                        capacidad = capacidad,
-                        temperatura = temperatura,
-                        estado = estado,
-                        id = id_storage)
-                print_status_message(status = storage_is_created)
-                storage_history = storage_history | storage_is_created
-                new_storage.imagen.save(img_filename, File(img_temp))
-                print ('.'),
-                if storage_is_created:
-                    x_pos = int(pos_x) + (i - 1)
-                    y_pos = int(pos_y)
-                    if x_pos > 10:
-                        x_pos = x_pos - 10
-                        y_pos = y_pos + 1
-                    new_storage_loc, storage_loc_is_created = AlmacenamientoEnLab.objects.get_or_create(
-                            idLaboratorio = new_lab,
-                            idLugar = new_storage,
-                            posX = x_pos,
-                            posY = y_pos)
-                    print_status_message(status = storage_loc_is_created)
-                    storage_history = storage_history | storage_loc_is_created
+                new_mueble, mueble_is_created = Mueble.objects.get_or_create(nombre = nombre + " " + str(i),
+                                                                             descripcion = descripcion,
+                                                                             estado = estado, tipo = "almacenamiento"
+                                                                             )
+                print_status_message(status = mueble_is_created)
+                storage_history = storage_history | mueble_is_created
+                new_mueble.save()
+                if mueble_is_created:
+                    new_storage, storage_is_created = Almacenamiento.objects.get_or_create(mueble = new_mueble,
+                                                                                           temperatura = temperatura,
+                                                                                           numZ = capacidad,
+                                                                                           idSistema = id_storage)
+                    print_status_message(status = storage_is_created)
+                    storage_history = storage_history | storage_is_created
+                    new_storage.save()
+                    if not created:
+                        img_url = imagen
+                        img_filename = urlparse(img_url).path.split('/')[-1]
+                        img_temp = NamedTemporaryFile()
+                        img_temp.write(urllib2.urlopen(img_url).read())
+                        img_temp.flush()
+                        new_mueble.imagen.save(img_filename, File(img_temp))
+                        created = True
+                    if storage_is_created:
+                        x_pos = int(pos_x) + (i - 1)
+                        y_pos = int(pos_y)
+                        if x_pos > 10:
+                            x_pos = x_pos - 10
+                            y_pos = y_pos + 1
+
+                        new_storage_loc, storage_loc_is_created = MuebleEnLab.objects.get_or_create(
+                                idLaboratorio = new_lab,
+                                idMueble = new_mueble,
+                                posX = x_pos,
+                                posY = y_pos)
+                        print_status_message(status = storage_loc_is_created)
+                        storage_history = storage_history | storage_loc_is_created
+                        new_storage_loc.save()
     if storage_history:
         return 0
     return 1
@@ -234,14 +259,20 @@ def crear_muestras():
             imagen = row['imagen']
             unidad_base = row['unidadBase']
             id_almacenamiento = row['idAlmacenamiento']
-            new_sample, sample_is_created = Muestra.objects.get_or_create(nombre = nombre, descripcion = descripcion,
-                                                                          valor = valor, activa = activa,
+            new_sample, sample_is_created = Muestra.objects.get_or_create(nombre = nombre,
+                                                                          descripcion = descripcion,
+                                                                          valor = valor,
+                                                                          activa = activa,
                                                                           controlado = controlado,
                                                                           unidadBase = unidad_base)
             print_status_message(status = sample_is_created)
             sample_history = sample_history | sample_is_created
-            new_storage, exist_storage = Almacenamiento.objects.get_or_create(id = id_almacenamiento)
+            new_sample.save()
+
+            new_storage, exist_storage = Almacenamiento.objects.get_or_create(idSistema = id_almacenamiento)
+            print_status_message(status = exist_storage)
             sample_history = sample_history | exist_storage
+            new_storage.save()
 
             if sample_is_created:
                 img_url = imagen
@@ -250,14 +281,22 @@ def crear_muestras():
                 img_temp.write(urllib2.urlopen(img_url).read())
                 img_temp.flush()
                 new_sample.imagen.save(img_filename, File(img_temp))
-                cuenta = Bandeja.objects.filter(lugarAlmacenamiento = new_storage).count()
+                cuenta = Bandeja.objects.filter(almacenamiento = new_storage).count()
                 posicion = 1 if cuenta == 0 else cuenta + 1
-                new_tray, tray_is_created = Bandeja.objects.get_or_create(muestra = new_sample,
-                                                                          lugarAlmacenamiento = new_storage,
-                                                                          posicion = posicion,
-                                                                          libre = False)
+                new_tray, tray_is_created = Bandeja.objects.get_or_create(almacenamiento = new_storage,
+                                                                          posicion = posicion)
                 print_status_message(status = tray_is_created)
-                sample_history = sample_history | tray_is_created
+                sample_history = sample_history | exist_storage
+                new_tray.save()
+
+                new_muestra_bandeja, muestra_bandeja_is_created = MuestraEnBandeja.objects.get_or_create(
+                        idBandeja = new_tray,
+                        idMuestra = new_sample,
+                        posX = 1,
+                        posY = 1)
+                print_status_message(status = muestra_bandeja_is_created)
+                sample_history = sample_history | muestra_bandeja_is_created
+                new_muestra_bandeja.save()
     if sample_history:
         return 0
     return 1

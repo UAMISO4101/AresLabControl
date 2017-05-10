@@ -1,9 +1,9 @@
 from django.core.mail import EmailMultiAlternatives
-from django.template.loader import get_template
 from django.template import Context
+from django.template.loader import get_template
 
 
-def enviar_correo(asunto, correo_from, correo_to, template_txt, template_html='', contexto=''):
+def enviar_correo(asunto, correo_from, correo_to, template_txt, template_html = '', contexto = ''):
     try:
         plaintext = get_template(template_txt)
 

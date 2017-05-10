@@ -25,7 +25,7 @@ class Experimento(models.Model):
             :nombre (String): Nombre expermento
             :descripción (String): descripción del experimento.
             :objetivo (String): Objetivo del experimento
-            :projecto (Decimal): Seleccion de Proyecto
+            :proyecto (Decimal): Seleccion de Proyecto
             :protocolos (Object): Lista de protocolos
         Permisos:
             :can_addExperiment: Permite agregar experimento
@@ -57,18 +57,19 @@ class Experimento(models.Model):
             null = True,
             verbose_name = _("Objetivo del Experimento")
     )
-    projecto = models.ForeignKey(
+    proyecto = models.ForeignKey(
             Proyecto,
             blank = False,
             null = True,
             on_delete = models.CASCADE,
             verbose_name = _("Proyecto"),
-            related_name = "proyecto"
+            related_name = '%(app_label)s_%(class)s_related'
     )
     protocolos = models.ManyToManyField(
             Protocolo,
-            related_name = "experimento"
+            verbose_name = "Protocolos",
+            related_name = '%(app_label)s_%(class)s_related'
     )
 
     def __unicode__(self):
-        return self.nombre
+        return self.nombre.capitalize()

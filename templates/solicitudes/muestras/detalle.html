@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% load lab_module_extras %}
+{% load staticfiles %}
+{% block head_others %}
+    <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block head_title %}{{ block.super }}{{ section.title }} {% endblock %}
+
+{% block content %}
+
+    <div class="page-header text-center">
+        <h2>{{ section.title }}</h2>
+    </div>
+
+    <div class="panel panel-default">
+
+        <div class="panel-heading">
+            <h3 class="panel-title text-left">Información Solicitud </h3>
+        </div>
+
+        <div class="panel-body text-left">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-5 col-sm-6">
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Solicitante</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items"
+                                   name="items"> {{ solicitud_muestra.solicitud.solicitante.nombre_usuario.upper }} </p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Aprobador</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items"
+                                   name="items"> {{ solicitud_muestra.solicitud.aprobador.nombre_usuario.upper }} </p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Tipo</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ solicitud_muestra.tipo.capitalize }} </p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Muestra</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ solicitud_muestra.muestra.nombre }} </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5 col-sm-6">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Fecha</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ solicitud_muestra.solicitud.fechaActual }} </p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Cantidad</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ solicitud_muestra.cantidad }} </p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Paso</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ solicitud_muestra.solicitud.paso.nombre }} </p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Descripción Paso</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ solicitud_muestra.solicitud.paso.descripcion }} </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-left">Bandejas</h3>
+                </div>
+
+                <div class="panel-body text-left">
+
+                    <div class="row">
+                        <table id="almacenamientos_table"
+                               class="datatable display compact responsive nowrap"
+                               cellspacing="0"
+                               width="100%">
+                            <thead>
+                            <tr>
+                                <th>Id Laboratorio</th>
+                                <th>Id Almacenamiento</th>
+                                <th>Nombre Almacenamiento</th>
+                                <th>Fila Lab</th>
+                                <th>Columna Lab</th>
+                                <th>Bandeja</th>
+                                <th>Fila Gradilla</th>
+                                <th>Columna Gradilla</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for mueble,ubicacion,almacenamiento,muestra_bandeja in muestras_con_cantidad %}
+                                <tr>
+                                    <td>{{ ubicacion.getidlaboratorio }}</td>
+                                    <td>{{ almacenamiento.idSistema }}</td>
+                                    <td>{{ mueble.nombre }}</td>
+                                    <td>{{ ubicacion.getfila }}</td>
+                                    <td>{{ ubicacion.getcolumna }}</td>
+                                    <td>{{ muestra_bandeja.getidbandeja }}</td>
+                                    <td>{{ muestra_bandeja.getfilabandeja }}</td>
+                                    <td>{{ muestra_bandeja.getcolumnabandeja }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <form enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <div class="row center">
+            <div>
+                {% if not section|lookup:'aprobar' is None %}
+                    <input class="btn btn-primary" type="submit" value="Continuar"/>
+                {% endif %}
+                <a class="btn btn-default" href="{% url 'solicitud-muestra-list' %}" id="cancel"
+                   name="cancel">Cancelar</a>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block scripts_others %}
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
+    <script>
+        $(function () {
+            if ($.fn.dataTable.isDataTable('#almacenamientos_table')) {
+                $('#almacenamientos_table').DataTable({});
+            }
+            else {
+                $('#almacenamientos_table').DataTable({
+                    searching: false,
+                    lengthChange: false,
+                    pageLength: 20,
+                    responsive: true,
+                    sPaginationType: "full_numbers",
+                    bJQueryUI: true,
+                    order: [[1, "asc"]],
+                    language: {
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

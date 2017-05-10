@@ -61,12 +61,12 @@ class Proyecto(models.Model):
             blank = False,
             null = True,
             verbose_name = _("Líder"),
-            related_name = "lider"
+            related_name = 'li_%(app_label)s_%(class)s_related'
     )
     asistentes = models.ManyToManyField(
             Usuario,
             verbose_name = _("Asistentes"),
-            related_name = "asistentes"
+            related_name = 'as_%(app_label)s_%(class)s_related'
     )
     activo = models.BooleanField(
             blank = False,

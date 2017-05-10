@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.humanize',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
@@ -35,6 +36,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'registration',
     'storages',
+    'widget_tweaks',
     # Our Apps
     'LabModule',
 ]
@@ -86,7 +88,7 @@ DATABASES = {
         'HOST'    : url.hostname,
         'PORT'    : url.port,
     }
-    # 'default': {
+    # # 'default': {
     #     'ENGINE'  : 'django.db.backends.postgresql',
     #     'NAME'    : 'lab',
     #     'HOST'    : '127.0.0.1',

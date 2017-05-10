@@ -19,7 +19,7 @@ def cargar_protocolos(request):
                   :returns: HttpResponse -- La información de protocolos existentes por identificador del experimento
               """
     if request.GET['experiment_id'] != "":
-        protocols = Protocolo.objects.filter(experimento = request.GET['experiment_id'])
+        protocols = Protocolo.objects.filter(labmodule_experimento_related = request.GET['experiment_id'])
         protocols_dict = dict([(c.id, c.nombre) for c in protocols])
         return HttpResponse(json.dumps(protocols_dict))
     else:

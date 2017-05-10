@@ -19,7 +19,6 @@ from LabModule.app_models.Bandeja import Bandeja
 from LabModule.app_models.Experimento import Experimento
 from LabModule.app_models.Laboratorio import Laboratorio
 from LabModule.app_models.Maquina import Maquina
-from LabModule.app_models.MaquinaEnLab import MaquinaEnLab
 from LabModule.app_models.Muestra import Muestra
 from LabModule.app_models.Paso import Paso
 from LabModule.app_models.Protocolo import Protocolo
@@ -31,7 +30,7 @@ from LabModule.app_models.TipoDocumento import TipoDocumento
 from LabModule.app_models.Usuario import Usuario
 from LabModule.app_views.Almacenamiento import lugar_add
 from LabModule.app_views.Maquina import maquina_add, maquina_list, maquina_request, maquina_update
-from LabModule.app_views.Solicitud import aprobar_solicitud_muestra, listar_solicitud_muestra
+from LabModule.app_views.Solicitud import solicitud_muestra_aprobar, solicitud_muestra_list
 
 c = Client(HTTP_USER_AGENT = 'Mozilla/5.0')
 CONTRASENA = getattr(settings, "CONTRASENA")
@@ -455,22 +454,22 @@ class AprobarSolMuestraTest(TestCase):
         """
         request = self.factory.get('aprobarSolicitudMuestras/listar/', follow = True)
         request.user = AnonymousUser()
-        response = listar_solicitud_muestra(request)
+        response = solicitud_muestra_list(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
 
         request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow = True)
         request.user = AnonymousUser()
-        response = aprobar_solicitud_muestra(request)
+        response = solicitud_muestra_aprobar(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
 
         request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow = True)
         request.user = self.userSinPermisos
-        response = listar_solicitud_muestra(request)
+        response = solicitud_muestra_list(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
 
         request = self.factory.get('aprobarSolicitudMuestras/aprobar/', follow = True)
         request.user = self.userSinPermisos
-        response = aprobar_solicitud_muestra(request)
+        response = solicitud_muestra_aprobar(request)
         self.assertEqual(response.status_code, 401, "No debe estar autorizado")
 
     def test_listar_solicitudes(self):
@@ -494,7 +493,7 @@ class AprobarSolMuestraTest(TestCase):
         request.GET = request.GET.copy()
         request.GET['pk'] = self.solicitud.pk
         request.user = self.user
-        aprobar_solicitud_muestra(request)
+        solicitud_muestra_aprobar(request)
         bandejasLibres = Bandeja.objects.all().filter(lugarAlmacenamiento = self.lugarAlmacenamiento, libre = True)
         self.assertEqual(len(bandejasLibres), 2, 'Deberian haber bandejas libres')
         muestraSol = SolicitudMuestra.objects.get(id = 1)
@@ -536,14 +535,14 @@ class SolicitarMaquinaTest(TestCase):
         self.LaboratorioPrueba = Laboratorio.objects.create(nombre = "Laboratorio genetica", id = "LAB_101")
 
         self.maquinaPrueba = {
-            "id"           : "1",
-            "nombre"       : "Autoclave Portátil",
-            "descripcion"  : "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
-            "idSistema"    : "AUTO_010",
-            "con_reserva"  : False,
-            "posX"         : 0,
-            "posY"         : 0,
-            "idLaboratorio": self.LaboratorioPrueba.id
+            "idAlmacenamiento": "1",
+            "nombre"          : "Autoclave Portátil",
+            "descripcion"     : "Un autoclave es un recipiente de presión metálico de paredes gruesas con un cierre hermético que permite trabajar a alta presión para realizar una reacción industrial, una cocción o una esterilización con vapor de agua",
+            "idSistema"       : "AUTO_010",
+            "con_reserva"     : False,
+            "posX"            : 0,
+            "posY"            : 0,
+            "idLaboratorio"   : self.LaboratorioPrueba.id
         }
 
         request = self.factory.post('/Maquina/add', data = self.maquinaPrueba)

@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load lab_module_extras %}
+{% load humanize %}
+{% block head_others %}
+    <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css"
+          rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css"
+          rel="stylesheet">
+{% endblock %}
+{% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
+
+{% block content %}
+
+    <div class="page-header text-center">
+        <h2>{{ section.title }}</h2>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading ">
+            <h3 class="panel-title text-left">Información Básica</h3>
+        </div>
+
+        <div class="panel-body text-left">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-5 col-sm-6">
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Id Sistema</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ maquina.idSistema }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Nombre</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ mueble.nombre }} </p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Descripción</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ mueble.descripcion }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-5 col-sm-6">
+                        <div class="row">
+                            <div>
+                                <strong>Imágen</strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="panel panel-default">
+                                <div class="panel-body text-left" style="text-align:center">
+                                    <a href="{{ mueble.imagen.url }}" target="_blank">
+                                        <img src="{{ mueble.imagen.url }} " alt="Imagen Máquina"
+                                             class="imageIndex" style="width:60%" ;>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" action="" name="formSolicitud" id="formSolicitud"
+          onsubmit="return validateForm();">
+        {% csrf_token %}
+        <div class="row">
+
+            <div class="col-md-6">
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-left">Ubicación</h3>
+                    </div>
+
+                    <div class="panel-body text-left" style="min-height:140px">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Laboratorio</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{ inst_ubicacion.idLaboratorio }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Localización:</strong>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Fila</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{ inst_ubicacion.posX }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Columna</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{ inst_ubicacion.posY }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-left">Solicitud</h3>
+                    </div>
+
+                    <div class="panel-body text-left" style="min-height:140px">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <strong>Proyectos:</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control requerido" name="project" id="project">
+                                    <option value="">----------</option>
+                                    {% for proyecto in list_proyectos %}
+                                        <option value="{{ proyecto.id }}">{{ proyecto.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <strong>Experimentos:</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control requerido" name="experiment" id="experiment">
+                                    <option value="">----------</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-2">
+                                <strong>Protocolos:</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control requerido" name="protocol" id="protocol">
+                                    <option value="">----------</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <strong>Pasos:</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control requerido" name="step" id="step">
+                                    <option value="">----------</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-2">
+                                <strong>{{ form.fechaInicial.label }}</strong>
+                            </div>
+                            <div class='col-md-4'>
+                                {{ form.fechaInicial }}
+                            </div>
+                            <div class="col-md-2">
+                                <strong>{{ form.fechaFinal.label }}</strong>
+                            </div>
+                            <div class='col-md-4'>
+                                {{ form.fechaFinal }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include 'maquinas/calendario.html' %}
+        <div class="row center">
+            <div>
+                <input class='btn  btn-primary' type="submit" value="Solicitar" id="solicitar"/>
+                <a class="btn btn-default" href="{% url 'maquina-list' %}" id="cancel" name="cancel">Cancelar</a>
+            </div>
+        </div>
+    </form>
+    {% include 'solicitudes/crear_solicitudes_common.html' %}
+{% endblock %}
+{% block scripts_others %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="{% static 'js/boot-es.js' %}"></script>
+    <script src="{% static 'js/crear_solicitudes_maquina.js' %}"></script>
+    <script>
+        var defaultDateEnd = {};
+        var defaultDateStart = {};
+        var minDateStart = null;
+        var minDateEnd = null;
+
+        {% if end.strip %}
+            defaultDateEnd = new Date({{end}}+5 * 3600 * 1000);
+        {% endif %}
+        {% if start.strip  %}
+            defaultDateStart = new Date({{start}}+5 * 3600 * 1000);
+        {% endif %}
+        {% if start != "" %}
+            minDateStart = new Date(({{start}}+5 * 3600 * 1000));
+            minDateEnd = new Date(({{end}}+5 * 3600 * 1000));
+        {% endif %}
+        iniciarFechas(defaultDateEnd, defaultDateStart, minDateEnd, minDateStart);
+    </script>
+{% endblock %}

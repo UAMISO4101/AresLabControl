@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+import os
+
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
@@ -10,19 +13,18 @@ from django.urls import reverse
 
 from AresLabControl.settings import BASE_DIR, EMAIL_HOST_USER
 from LabModule.app_forms.Maquina import MaquinaForm
-from LabModule.app_forms.Maquina import PosicionesMaquinaForm
+from LabModule.app_forms.Mueble import MuebleForm
+from LabModule.app_forms.Mueble import PosicionesMuebleForm
 from LabModule.app_forms.Solicitud import SolicitudForm
 from LabModule.app_models.Maquina import Maquina
-from LabModule.app_models.MaquinaEnLab import MaquinaEnLab
+from LabModule.app_models.Mueble import Mueble
+from LabModule.app_models.MuebleEnLab import MuebleEnLab
 from LabModule.app_models.Paso import Paso
 from LabModule.app_models.Proyecto import Proyecto
 from LabModule.app_models.Solicitud import Solicitud
 from LabModule.app_models.SolicitudMaquina import SolicitudMaquina
 from LabModule.app_models.Usuario import Usuario
-from LabModule.app_views.Almacenamiento import lugar_list
 from LabModule.app_utils.notificaciones import enviar_correo
-from django.contrib.auth.models import User
-import os
 
 
 def maquina_add(request, template_name = 'maquinas/agregar.html'):
@@ -48,23 +50,44 @@ def maquina_add(request, template_name = 'maquinas/agregar.html'):
     """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addMachine"):
         section = {'title': 'Agregar Máquina', 'agregar': True}
-        form = MaquinaForm(request.POST or None, request.FILES or None)
-        formPos = PosicionesMaquinaForm(request.POST or None, request.FILES or None)
-        return comprobarPostMaquina(form, formPos, request, template_name, section)
+        mensaje = ""
+
+        form = MuebleForm(request.POST or None, request.FILES or None)
+        formMaquina = MaquinaForm(request.POST or None, request.FILES or None)
+        formPos = PosicionesMuebleForm(request.POST or None, request.FILES or None)
+
+        if request.method == 'POST':
+            return comprobarPostMaquina(form, formMaquina, formPos, request, template_name, section)
+        context = {'form'       : form,
+                   'formMaquina': formMaquina,
+                   'formPos'    : formPos,
+                   'mensaje'    : mensaje,
+                   'section'    : section}
+        return render(request, template_name, context)
     else:
         return HttpResponse('No autorizado', status = 401)
 
 
-def maquina_detail(request, pk, template_name = 'Maquinas/detalle.html'):
+def maquina_detail(request, pk, template_name = 'maquinas/detalle.html'):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
-        maquina = get_object_or_404(Maquina, pk = pk)
-        maquinaEnLab = get_object_or_404(MaquinaEnLab, idMaquina = maquina)
-        mensaje = ""
         section = {'title': 'Ver Detalle ', 'agregar': "ver"}
+
+        maquina = get_object_or_404(Maquina, pk = pk)
+        mueble = maquina.mueble
+        laboratorio = MuebleEnLab.get_laboratorio(mueble)
+
+        pos = MuebleEnLab.objects.get(idLaboratorio = laboratorio,
+                                      idMueble = mueble)
+
         mensajeCalendario = "Este es el horario disponible de la máquina. Seleccione el horario que más le convenga"
-        return render(request, template_name,
-                      {'maquina': maquina, 'maquinaEnLab': maquinaEnLab, 'section': section,
-                       'mensaje': mensaje, 'mensajeCalendario': mensajeCalendario})
+
+        context = {'maquina'          : maquina,
+                   'laboratorio'      : laboratorio,
+                   'mueble'           : mueble,
+                   'pos'              : pos,
+                   'section'          : section,
+                   'mensajeCalendario': mensajeCalendario}
+        return render(request, template_name, context)
     else:
         return HttpResponse('No autorizado', status = 401)
 
@@ -90,17 +113,28 @@ def maquina_update(request, pk, template_name = 'maquinas/agregar.html'):
     """
 
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_editMachine"):
-        server = get_object_or_404(Maquina, pk = pk)
-        serverRelacionLab = get_object_or_404(MaquinaEnLab, idMaquina = server)
-        form = MaquinaForm(request.POST or None, request.FILES or None, instance = server)
-        formPos = PosicionesMaquinaForm(request.POST or None, request.FILES or None, instance = serverRelacionLab)
         section = {'title': 'Modificar Máquina', 'agregar': False}
-        return comprobarPostMaquina(form, formPos, request, template_name, section)
+
+        inst_maquina = get_object_or_404(Maquina, pk = pk)
+        inst_mueble = inst_maquina.mueble
+        inst_ubicacion = get_object_or_404(MuebleEnLab, idMueble = inst_mueble)
+
+        form = MuebleForm(request.POST or None,
+                          request.FILES or None,
+                          instance = inst_mueble)
+        formMaquina = MaquinaForm(request.POST or None,
+                                  request.FILES or None,
+                                  instance = inst_maquina)
+        formPos = PosicionesMuebleForm(request.POST or None,
+                                       request.FILES or None,
+                                       instance = inst_ubicacion)
+
+        return comprobarPostMaquina(form, formMaquina, formPos, request, template_name, section)
     else:
         return HttpResponse('No autorizado', status = 401)
 
 
-def maquina_list(request):
+def maquina_list(request, template_name = 'maquinas/listar.html'):
     """Comprobar si el usario puede ver las máquinas y mostraselas filtrando por una búsqueda.
            Historia de usuario: ALF-20:Yo como Jefe de Laboratorio quiero poder filtrar las máquinas existentes por
            nombre para visualizar sólo las que me interesan.
@@ -121,20 +155,24 @@ def maquina_list(request):
         :returns: HttpResponse -- La respuesta a la petición. Retorna páginada la lista de las máquias que cumplen
          con la búsqueda. Si no esta autorizado se envia un código 401
     """
-    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewMachine"):
-        section = {}
-        section['title'] = 'Listar Máquinas'
-        edita = request.user.has_perm("LabModule.can_editMachine")
-        if not edita:
-            lista_maquinas = Maquina.objects.all().filter(activa = True).extra(order_by = ['nombre'])
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_listMachine"):
+        section = {'title': 'Listar Máquinas'}
+        can_editMachine = request.user.has_perm("LabModule.can_editMachine")
+        if not can_editMachine:
+            lista_maquinas = Mueble.objects.all().filter(estado = True,
+                                                         tipo = 'maquina')
         else:
-            lista_maquinas = Maquina.objects.all().extra(order_by = ['nombre'])
+            lista_maquinas = Mueble.objects.all().filter(tipo = 'maquina')
 
-        id_maquina = [maquina.idSistema for maquina in lista_maquinas]
-        lista_Posiciones = MaquinaEnLab.objects.all().filter(idMaquina__in = id_maquina)
-        maquinasConUbicacion = zip(lista_maquinas, lista_Posiciones)
-        context = {'section': section, 'maquinasBien': maquinasConUbicacion}
-        return render(request, 'maquinas/listar.html', context)
+        id_maquina = [maquina.id for maquina in lista_maquinas]
+        lista__posiciones = MuebleEnLab.objects.all().filter(idMueble__in = id_maquina)
+        maquinas = Maquina.objects.all().filter(mueble_id__in = id_maquina)
+
+        maquinasConUbicacion = zip(lista_maquinas, lista__posiciones, maquinas)
+
+        context = {'section'       : section,
+                   'lista_maquinas': maquinasConUbicacion}
+        return render(request, template_name, context)
     else:
         return HttpResponse('No autorizado', status = 401)
 
@@ -152,13 +190,13 @@ def notificacion_solicitud_maquina(request, maquina_nombre, solicitud_id):
             :param solicitud_id: Id de la solicitud de la máquina.
             :type id: Identificador.
        """
-    jefes_lab = User.objects.filter(groups__name='Jefe de Laboratorio')
+    jefes_lab = User.objects.filter(groups__name = 'Jefe de Laboratorio')
     asunto = 'Envío de solicitud de máquina'
-    usuario = Usuario.objects.get(nombre_usuario=request.user.username)
+    usuario = Usuario.objects.get(nombre_usuario = request.user.username)
     to = [request.user.email]
-    context = {'asistente': usuario.nombre_completo(),
+    context = {'asistente'     : usuario.nombre_completo(),
                'maquina_nombre': maquina_nombre,
-               'solicitud_id': solicitud_id}
+               'solicitud_id'  : solicitud_id}
     template_path = os.path.join(BASE_DIR, 'templates', 'correos', 'solicitud_maquina_asistente.txt')
     # Enviar correo al asistente
     enviar_correo(asunto, EMAIL_HOST_USER, to, template_path, '', context)
@@ -171,7 +209,7 @@ def notificacion_solicitud_maquina(request, maquina_nombre, solicitud_id):
         enviar_correo(asunto, EMAIL_HOST_USER, to, template_path, '', context)
 
 
-def maquina_request(request):
+def maquina_request(request, pk, template_name = 'maquinas/solicitar.html'):
     """Realiza la solicitud de máquinas por el usuario que la necesita
         Historia de usuario: ALF-4:Yo como Asistente de Laboratorio quiero solicitar una Maquina normal en una
         franja de tiempo especifica para hacer uso de ella
@@ -185,82 +223,72 @@ def maquina_request(request):
     """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_requestMachine"):
         mensaje = 'ok'
+        section = {'title': 'Solicitar Máquina'}
         try:
+            inst_maquina = get_object_or_404(Maquina, pk = pk)
+            inst_mueble = inst_maquina.mueble
+            inst_ubicacion = get_object_or_404(MuebleEnLab, idMueble = inst_mueble)
+            inst_profile = Usuario.objects.get(user_id = request.user.id)
 
-            maquina = Maquina.objects.get(pk = request.GET.get('id', 0), activa = True)
-            profile = Usuario.objects.get(user_id = request.user.id)
-            maquinaEnLab = MaquinaEnLab.objects.get(idMaquina = maquina.pk)
-            proyectos = Proyecto.objects.filter(asistentes = profile.id, activo = True)
+            list_proyectos = Proyecto.objects.filter(asistentes = inst_profile.id,
+                                                     activo = True)
+
             form = SolicitudForm()
+
             if request.method == 'POST':
-                if form.verificar_fecha(maquina.pk, request.POST['fechaInicial'], request.POST['fechaFinal']) == True:
+                if form.verificar_fecha(inst_maquina.pk,
+                                        request.POST['fechaInicial'],
+                                        request.POST['fechaFinal']) == True:
+
                     requestObj = Solicitud()
                     requestObj.descripcion = 'Solicitud de Maquina'
                     requestObj.fechaInicial = request.POST['fechaInicial']
                     requestObj.fechaFinal = request.POST['fechaFinal']
-                    if maquina.con_reserva == True:
+
+                    if inst_maquina.con_reserva == True:
                         requestObj.estado = 'creada'
                     else:
                         requestObj.estado = 'aprobada'
-                    requestObj.solicitante = profile
+
+                    requestObj.solicitante = inst_profile
                     requestObj.paso = Paso.objects.get(id = request.POST['step'])
                     requestObj.save()
+
                     maquinaRequest = SolicitudMaquina()
-                    maquinaRequest.maquina = maquina
+                    maquinaRequest.maquina = inst_maquina
                     maquinaRequest.solicitud = requestObj
                     maquinaRequest.save()
-                    messages.success(request, "La máquina se reservo exitosamente")
+
+                    messages.success(request, "La máquina se reservó exitosamente")
 
                     # Envío de notificación
-                    notificacion_solicitud_maquina(request, maquina.nombre, maquinaRequest.id)
+                    notificacion_solicitud_maquina(request, inst_mueble.nombre, maquinaRequest.id)
 
-                    return redirect(reverse('maquina-detail', kwargs = {'pk': request.GET.get('id', 0)}))
+                    return redirect(reverse('maquina-detail', kwargs = {'pk': pk}))
                 else:
                     mensaje = "Ya existe una solicitud para estas fechas"
 
-            contexto = {'form'        : form, 'mensaje': mensaje, 'Maquina': maquina, 'proyectos': proyectos,
-                        'maquinaEnLab': maquinaEnLab, 'start': request.GET.get('start', ''),
-                        'end'         : request.GET.get('end', '')}
-        except ObjectDoesNotExist as e:
-            print (e.message)
-            contexto = {'mensaje': 'No hay maquinas o pasos con el id solicitado'}
-        except MultipleObjectsReturned as e:
-            print(e.message)
-            contexto = {'mensaje': 'Muchas maquinas con ese id'}
-        return render(request, "solicitudes/crear_maquina_solicitud.html", contexto)
+            contexto = {'section'       : section,
+                        'form'          : form,
+                        'mensaje'       : mensaje,
+                        'maquina'       : inst_maquina,
+                        'mueble'        : inst_mueble,
+                        'list_proyectos': list_proyectos,
+                        'inst_ubicacion': inst_ubicacion,
+                        'start'         : request.GET.get('start', ''),
+                        'end'           : request.GET.get('end', '')}
+
+        except ObjectDoesNotExist:
+            contexto = {'mensaje': 'No hay máquinas o pasos con el id solicitado'}
+        except MultipleObjectsReturned:
+            contexto = {'mensaje': 'Muchas máquinas con ese id'}
+
+        return render(request, template_name, contexto)
     else:
         return HttpResponse('No autorizado', status = 401)
 
 
-def reservar_maquina(request, pk):
-    """Desplegar y comprobar los valores a consultar.
-                Historia de usuario:     ALF-3 - Yo como Asistente de Laboratorio quiero poder ver la agenda de una
-                máquina para visualizar cuándo podré usarla.
-                Se encarga de:
-                * Reservar una máquina en una fecha determinada.
-            :param request: El HttpRequest que se va a responder.
-            :type request: HttpRequest.
-            :param pk: La llave primaria de la máquina
-            :type pk: String.
-            :returns: HttpResponse -- La respuesta a la petición, con información del calendario para reservar la
-                                      máquina.
-        """
-    if request.user.is_authenticated() and request.user.has_perm('LabModule.can_requestMachine'):
-        lista_maquina = MaquinaEnLab.objects.filter(idMaquina_id = pk)
-        if lista_maquina is None:
-            # cambiar por listado de maquinas
-            return lugar_list(request)
-        else:
-            maquina_en_lab = lista_maquina[0]
-            maquina_profile = maquina_en_lab.idMaquina
-            context = {'maquina_en_lab': maquina_en_lab, 'maquina_profile': maquina_profile}
-
-            return render(request, 'maquinas/agenda.html', context)
-    else:
-        return HttpResponse('No autorizado', status = 401)
-
-
-def comprobarPostMaquina(form, formPos, request, template_name, section):
+def comprobarPostMaquina(form, formMaquina, formPos, request, template_name, section):
     """Desplegar y comprobar los valores a insertar.
         Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :
         Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
@@ -282,43 +310,48 @@ def comprobarPostMaquina(form, formPos, request, template_name, section):
      :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la
       modificación de la nueva máquina. Sino redirecciona al mismo formulario mostrand los errores.
     """
-
     mensaje = ""
+    if form.is_valid() and formPos.is_valid() and formMaquina.is_valid():
 
-    if form.is_valid() and formPos.is_valid():
-        new_maquina = form.save(commit = False)
-        new_maquinaEnLab = formPos.save(commit = False)
-        posX = new_maquinaEnLab.posX
-        posY = new_maquinaEnLab.posY
-        ocupadoX = MaquinaEnLab.objects.filter(idLaboratorio = new_maquinaEnLab.idLaboratorio, posX = posX).exists()
-        ocupadoY = MaquinaEnLab.objects.filter(idLaboratorio = new_maquinaEnLab.idLaboratorio, posY = posY).exists()
-        lamisma = MaquinaEnLab.objects.filter(pk = new_maquinaEnLab.pk).exists()
-        if (ocupadoX and ocupadoY) and not lamisma:
-            if (ocupadoX):
-                formPos.add_error("posX", "La posición x ya esta ocupada")
-            if (ocupadoY):
-                formPos.add_error("posY", "La posición y ya esta ocupada")
-            mensaje = "El lugar en el que desea guadar ya esta ocupado"
+        new_furniture = form.save(commit = False)
+        new_furniture.tipo = 'maquina'
+        new_machine = formMaquina.save(commit = False)
+        new_machine_loc = formPos.save(commit = False)
+
+        idLaboratorio = formPos.cleaned_data['idLaboratorio']
+        posX = formPos.cleaned_data['posX']
+        posY = formPos.cleaned_data['posY']
+
+        if section['agregar']:
+            if not formPos.es_ubicacion_libre():
+                messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags = "danger")
+        elif not formPos.es_el_mismo_mueble(new_furniture.id,
+                                            idLaboratorio,
+                                            posX,
+                                            posY):
+            if not formPos.es_ubicacion_libre():
+                messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags = "danger")
+        if not formPos.es_ubicacion_rango():
+            mensaje = "La posición [" +\
+                      str(new_machine_loc.posX) + "," +\
+                      str(new_machine_loc.posY) + "] no se encuentra en el rango del laboratorio"
+            messages.error(request, mensaje, extra_tags = "danger")
         else:
-            mensaje = "La posición [" + str(posX) + "," + str(posY) + "] no se encuentra en el rango del labortorio"
-            lab = new_maquinaEnLab.idLaboratorio
-            masX = lab.numX >= posX
-            masY = lab.numY >= posY
-            posible = masX and masY
-            if not posible:
-                if not masX:
-                    formPos.add_error("posX", "La posición x sobrepasa el valor máximo de " + str(lab.numX))
-                if not masY:
-                    formPos.add_error("posY", "La posición y sobrepasa el valor máximo de " + str(lab.numY))
-            else:
-                new_maquina.save()
-                new_maquinaEnLab.idMaquina = new_maquina
-                new_maquinaEnLab.save()
-                if section['agregar']:
-                    messages.success(request, "La máquina se añadio exitosamente")
-                else:
-                    messages.success(request, "La máquina se actualizo correctamente")
-                return redirect(reverse('Maquina-update', kwargs = {'pk': new_maquina.pk}))
+            new_furniture.save()
+            new_machine.mueble = new_furniture
+            new_machine.save()
+            new_machine_loc.idMueble = new_furniture
+            new_machine_loc.save()
 
-    return render(request, template_name,
-                  {'form': form, 'formPos': formPos, 'section': section, 'mensaje': mensaje})
+        if section['agregar']:
+            messages.success(request, "La máquina se añadió exitosamente")
+        else:
+            messages.success(request, "La máquina se actualizó correctamente")
+        return redirect(reverse('maquina-detail', kwargs = {'pk': new_machine.pk}))
+    context = {'form'       : form,
+               'formMaquina': formMaquina,
+               'formPos'    : formPos,
+               'mensaje'    : mensaje,
+               'section'    : section,
+               }
+    return render(request, template_name, context)

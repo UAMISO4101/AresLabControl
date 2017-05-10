@@ -54,7 +54,7 @@ class Muestra(models.Model):
             max_digits = 5,
             decimal_places = 2,
             null = True,
-            verbose_name = _("Valor")
+            verbose_name = _("Costo Unitario")
     )
     activa = models.BooleanField(
             default = True,
@@ -80,12 +80,3 @@ class Muestra(models.Model):
 
     def __unicode__(self):
         return 'Muestra: ' + self.nombre
-
-    def calc_disp(self):
-        from LabModule.app_models.Bandeja import Bandeja
-
-        bandejas = Bandeja.objects.filter(muestra = self)
-        for bandeja in bandejas:
-            if not bandeja.libre:
-                return 'Si'
-        return 'No'

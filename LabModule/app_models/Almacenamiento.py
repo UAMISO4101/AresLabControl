@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from LabModule.app_models.Mueble import Mueble
 
 permissions_storage = (
     ('can_addStorage', 'almacenamiento||agregar'),
@@ -37,44 +39,57 @@ class Almacenamiento(models.Model):
         app_label = 'LabModule'
         permissions = permissions_storage
 
-    nombre = models.CharField(
-            max_length = 100,
-            default = '',
-            verbose_name = _('Nombre')
-    )
-    descripcion = models.TextField(
-            max_length = 1000,
-            default = '',
-            verbose_name = _("Descripción")
-    )
-
-    capacidad = models.PositiveIntegerField(
-            verbose_name = _("Capacidad")
-    )
-    temperatura = models.DecimalField(
-            max_digits = 5,
-            decimal_places = 2,
-            verbose_name = _("Temperatura")
-    )
-    estado = models.CharField(
-            max_length = 100,
-            default = '',
-            verbose_name = _('Estado'),
-            null = True
-    )
-    imagen = models.ImageField(
-            upload_to = 'images',
-            verbose_name = _("Imagen"),
-            default = 'images/image-not-found.jpg'
-    )
-
-    id = models.CharField(
-            max_length = 100,
+    idSistema = models.CharField(
+            max_length = 20,
             default = '',
             verbose_name = _("Identificación"),
             null = False,
             primary_key = True
     )
 
+    mueble = models.OneToOneField(
+            Mueble,
+            on_delete = models.CASCADE,
+            related_name = '%(app_label)s_%(class)s_related'
+    )
+
+    temperatura = models.DecimalField(
+            max_digits = 5,
+            decimal_places = 2,
+            verbose_name = _("Temperatura"),
+            default = 25,
+    )
+
+    numX = models.PositiveIntegerField(
+            verbose_name = _("Máximo Filas"),
+            default = 1,
+    )
+    numY = models.PositiveIntegerField(
+            verbose_name = _("Máximo Columnas"),
+            default = 1,
+    )
+    numZ = models.PositiveIntegerField(
+            verbose_name = _("Máximo Bandejas"),
+            default = 1,
+    )
+
     def __unicode__(self):
-        return str(self.pk) + ":" + self.nombre
+        return self.mueble.__unicode__()
+
+    def get_id_sistema(self):
+        return self.idSistema
+
+    def get_nombre(self):
+        return self.mueble.get_nombre()
+
+    def get_descripcion(self):
+        return self.mueble.get_descripcion()
+
+    def get_estado(self):
+        return self.mueble.get_estado()
+
+    def get_max_capacidad(self):
+        return self.numZ * self.numY * self.numX
+
+    def get_absolute_url(self):
+        return reverse('author-detail', kwargs = {'pk': self.pk})

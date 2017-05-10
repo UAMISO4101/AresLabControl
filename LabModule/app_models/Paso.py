@@ -2,6 +2,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from LabModule.app_models.Muestra import Muestra
 from LabModule.app_models.Protocolo import Protocolo
 
 permissions_step = (
@@ -38,19 +39,24 @@ class Paso(models.Model):
             max_length = 50,
             blank = False,
             null = True,
-            verbose_name = "Nombre paso"
+            verbose_name = "Nombre de Paso"
     )
     descripcion = models.TextField(
             max_length = 200,
             blank = False,
             null = True,
-            verbose_name = "descripción del paso"
+            verbose_name = "Descripción del Paso"
     )
     protocolo = models.ForeignKey(
             Protocolo,
             blank = False,
             null = True,
-            verbose_name = "Seleccion de Protocolo"
+            verbose_name = "Selección de Protocolo",
+            related_name = '%(app_label)s_%(class)s_related'
+    )
+    muestras = models.ManyToManyField(
+            Muestra,
+            related_name = '%(app_label)s_%(class)s_related'
     )
 
     def __unicode__(self):

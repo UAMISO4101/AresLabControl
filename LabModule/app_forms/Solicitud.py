@@ -19,9 +19,9 @@ class SolicitudForm(ModelForm):
     def verificar_fecha(self, maquina_id, fechaIni, fechaFin):
 
         solicitudes = Solicitud.objects.filter(
-                Q(fechaInicial = fechaIni, fechaFinal = fechaFin) | Q(fechaInicial__lt = fechaIni,
-                                                                      fechaFinal__gt = fechaIni) | Q(
-                        fechaInicial__lte = fechaFin, fechaFinal__gte = fechaFin)).exclude(estado = 'rechazada')
+                Q(fechaInicial = fechaIni, fechaFinal = fechaFin) |
+                Q(fechaInicial__lt = fechaIni, fechaFinal__gt = fechaIni) |
+                Q(fechaInicial__lte = fechaFin, fechaFinal__gte = fechaFin)).exclude(estado = 'rechazada')
         for sol in solicitudes:
             otras_maquinas = SolicitudMaquina.objects.filter(solicitud = sol.pk, maquina = maquina_id).count()
             if otras_maquinas > 0:
