@@ -13,7 +13,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '=c2c#@97z8t(8q_=ahcxqydkj(6%ckc6jzmuq87pha5bd@cnh%'
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -76,11 +76,38 @@ WSGI_APPLICATION = 'AresLabControl.wsgi.application'
 # Database configuration
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+urlparse.uses_netloc.append("postgres")
+url = urlparse.urlparse(os.environ["DATABASE_URL"])
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME'  : os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE'  : 'django.db.backends.postgresql',
+        'NAME'    : url.path[1:],
+        'USER'    : url.username,
+        'PASSWORD': url.password,
+        'HOST'    : url.hostname,
+        'PORT'    : url.port,
     }
+    # # 'default': {
+    #     'ENGINE'  : 'django.db.backends.postgresql',
+    #     'NAME'    : 'lab',
+    #     'HOST'    : '127.0.0.1',
+    #     'PORT'    : '5432',
+    #     'USER'    : 'postgres',
+    #     'PASSWORD': ''
+    # }
+    # 'default': {
+    #    'ENGINE'  : 'django.db.backends.postgresql',
+    #    'NAME'    : 'labs',
+    #    'HOST'    : 'localhost',
+    #    'PORT'    : '5432',
+    #    'USER'    : 'postgres',
+    #    'PASSWORD': '123456'
+    # }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME'  : os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
 }
 
 SOUTH_TESTS_MIGRATE = False
@@ -165,7 +192,7 @@ LOGOUT_REDIRECT_URL = '/'
 # Email Configuration Settings
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'cuentatestares@gmail.com'
-EMAIL_HOST_PASSWORD = '123456789E'
+EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -175,8 +202,8 @@ GRAPH_MODELS = {
 }
 
 # Atributos por defecto para creacion de superusuario
-SUPERUSUARIO = 'admin'
-CONTRASENA = '1a2d3m4i5n6'
+SUPERUSUARIO = os.environ["SUPERUSUARIO"]
+CONTRASENA = os.environ["CONTRASENA"]
 
 # Atributos para conectarse al S3 de amazon
 AWS_STORAGE_BUCKET_NAME = 'maquinasymuestras'
@@ -188,5 +215,5 @@ MEDIAFILES_LOCATION = 'media'
 MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIAFILES_LOCATION)
 DEFAULT_FILE_STORAGE = 'custom_storages.MediaStorage'
 
-AWS_ACCESS_KEY_ID = 'AKIAJWOKWCK44OHCI6XA'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
+AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]

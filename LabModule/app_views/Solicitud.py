@@ -20,7 +20,7 @@ def solicitud_muestra_list(request, template_name = 'solicitudes/muestras/listar
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_listRequest"):
         section = {'title': 'Listar Solicitudes de Muestras'}
 
-        lista_solicitudes = Solicitud.objects.all().exclude(estado = 'aprobada')
+        lista_solicitudes = Solicitud.objects.all().exclude(estado = 'aprobada').exclude(estado = 'rechazada')
 
         id_solicitudes = [solicitud.id for solicitud in lista_solicitudes]
         lista__muestra_sol = SolicitudMuestra.objects.all().filter(solicitud__in = id_solicitudes)
@@ -45,9 +45,9 @@ def solicitud_muestra_rechazar(request, pk, template_name = 'solicitudes/muestra
 def solicitud_muestra_detail(request, pk, template_name = 'solicitudes/muestras/detalle.html', section = None):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_manageRequest"):
         if section is None:
-            mysection = {'title': 'Detalle Solicitud de Muestras', 'aprobar': None}
+            my_section = {'title': 'Detalle Solicitud de Muestras', 'aprobar': None}
         else:
-            mysection = section
+            my_section = section
 
         solicitud = Solicitud.objects.filter(id = pk)
         solicitud_muestra = SolicitudMuestra.objects.get(solicitud = solicitud)
@@ -56,9 +56,9 @@ def solicitud_muestra_detail(request, pk, template_name = 'solicitudes/muestras/
         solicitud_muestra.solicitud.aprobador = approver_user
 
         if request.method == 'POST':
-            return post_solicitud_muestra(solicitud_muestra, mysection)
+            return post_solicitud_muestra(solicitud_muestra, my_section)
 
-        contexto = {'section'          : mysection,
+        contexto = {'section'          : my_section,
                     'solicitud_muestra': solicitud_muestra}
         return render(request, template_name, contexto)
     else:
@@ -81,16 +81,21 @@ def post_solicitud_muestra(solicitud_muestra, section):
     solicitud_id = solicitud_muestra.solicitud.id
     jefe = solicitud_muestra.solicitud.aprobador.nombre_completo()
 
-    solicitud_muestra_notificacion(jefe,
-                                   solicitante_nombre,
-                                   solicitante_email,
-                                   muestra_nombre,
-                                   solicitud_id)
+    context = {'asunto'       : 'muestra',
+               'destinatario' : solicitante_email,
+               'resultado'    : solicitud_muestra.solicitud.estado,
+               'asistente'    : solicitante_nombre,
+               'jefe'         : jefe,
+               'objeto_nombre': muestra_nombre,
+               'solicitud_id' : solicitud_id
+               }
+
+    solicitud_notificacion(context)
 
     return redirect('solicitud-muestra-list')
 
 
-def solicitud_muestra_notificacion(jefe, solicitante_nombre, solicitante_email, muestra_nombre, solicitud_id):
+def solicitud_notificacion(context):
     """Realiza la notificación de solicitud de muestras para el usuario que la necesita
                Historia de usuario: ALF-80:Yo como Asistente de Laboratorio quiero ser notificado vía correo
                electrónico si se aprobó o rechazo mi solicitud de muestra para saber si puedo hacer uso de la muestra
@@ -103,13 +108,10 @@ def solicitud_muestra_notificacion(jefe, solicitante_nombre, solicitante_email, 
             :param solicitud_id: Id de la solicitud de la muestra.
             :type id: Identificador.
        """
-    asunto = 'Aprobación de la solicitud de la muestra'
-    to = [solicitante_email]
-    context = {'asistente'     : solicitante_nombre,
-               'jefe'          : jefe,
-               'muestra_nombre': muestra_nombre,
-               'solicitud_id'  : solicitud_id}
-    template_path = os.path.join(BASE_DIR, 'templates', 'correos', 'solicitud_muestra_asistente_aprobacion.txt')
+    asunto = 'Resultado de la solicitud de la ' + context.get('asunto')
+    to = [context.get('destinatario')]
+
+    template_path = os.path.join(BASE_DIR, 'templates', 'correos', 'solicitud_muestra_resultado.txt')
     # Enviar correo al asistente
     enviar_correo(asunto, EMAIL_HOST_USER, to, template_path, '', context)
 
@@ -129,10 +131,10 @@ def solicitud_maquina_list(request, template_name = 'solicitudes/maquinas/listar
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_manageRequest"):
         section = {'title': 'Listar Solicitudes de Máquinas'}
 
-        lista_solicitudes = Solicitud.objects.all().exclude(estado = 'aprobada')
+        lista_solicitudes = Solicitud.objects.all().exclude(estado = 'aprobada').exclude(estado = 'rechazada')
 
-        idSolicitudes = [solicitud.id for solicitud in lista_solicitudes]
-        lista_MaquinaSol = SolicitudMaquina.objects.all().filter(solicitud__in = idSolicitudes)
+        id_solicitudes = [solicitud.id for solicitud in lista_solicitudes]
+        lista_MaquinaSol = SolicitudMaquina.objects.all().filter(solicitud__in = id_solicitudes)
 
         context = {'section'    : section,
                    'solicitudes': lista_MaquinaSol,
@@ -155,9 +157,9 @@ def solicitud_maquina_rechazar(request, pk, template_name = 'solicitudes/maquina
 def solicitud_maquina_detail(request, pk, template_name = 'solicitudes/maquinas/detalle.html', section = None):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_manageRequest"):
         if section is None:
-            mysection = {'title': 'Detalle Solicitud de Máquinas', 'aprobar': None}
+            my_section = {'title': 'Detalle Solicitud de Máquinas', 'aprobar': None}
         else:
-            mysection = section
+            my_section = section
 
         solicitud = Solicitud.objects.filter(id = pk)
         solicitud_maquina = SolicitudMaquina.objects.get(solicitud = solicitud)
@@ -166,9 +168,9 @@ def solicitud_maquina_detail(request, pk, template_name = 'solicitudes/maquinas/
         solicitud_maquina.solicitud.aprobador = approver_user
 
         if request.method == 'POST':
-            return post_solicitud_maquina(solicitud_maquina, mysection)
+            return post_solicitud_maquina(solicitud_maquina, my_section)
 
-        contexto = {'section'          : mysection,
+        contexto = {'section'          : my_section,
                     'solicitud_maquina': solicitud_maquina}
         return render(request, template_name, contexto)
     else:
@@ -188,13 +190,18 @@ def post_solicitud_maquina(solicitud_maquina, section):
     solicitante_nombre = solicitud_maquina.solicitud.solicitante.nombre_completo()
     solicitante_email = solicitud_maquina.solicitud.solicitante.correo_electronico
     muestra_nombre = solicitud_maquina.maquina.mueble.nombre
-    solicitud_id = solicitud_maquina.solicitud.solicitud_id
+    solicitud_id = solicitud_maquina.solicitud.id
     jefe = solicitud_maquina.solicitud.aprobador.nombre_completo()
 
-    solicitud_muestra_notificacion(jefe,
-                                   solicitante_nombre,
-                                   solicitante_email,
-                                   muestra_nombre,
-                                   solicitud_id)
+    context = {'asunto'       : 'máquina',
+               'destinatario' : solicitante_email,
+               'resultado'    : solicitud_maquina.solicitud.estado,
+               'asistente'    : solicitante_nombre,
+               'jefe'         : jefe,
+               'objeto_nombre': muestra_nombre,
+               'solicitud_id' : solicitud_id
+               }
 
-    return redirect('solicitud-muestra-detail')
+    solicitud_notificacion(context)
+
+    return redirect('solicitud-maquina-list')

@@ -32,7 +32,7 @@
                                 <strong>Id Sistema</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                {{ inst_maquina.idSistema }}
+                                {{ maquina.idSistema }}
                             </div>
                         </div>
 
@@ -41,7 +41,7 @@
                                 <strong>Nombre</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ inst_mueble.nombre }} </p>
+                                <p id="items" name="items"> {{ mueble.nombre }} </p>
                             </div>
                         </div>
 
@@ -50,7 +50,7 @@
                                 <strong>Descripción</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                {{ inst_mueble.descripcion }}
+                                {{ mueble.descripcion }}
                             </div>
                         </div>
 
@@ -65,8 +65,8 @@
                         <div class="row">
                             <div class="panel panel-default">
                                 <div class="panel-body text-left" style="text-align:center">
-                                    <a href="{{ inst_mueble.imagen.url }}" target="_blank">
-                                        <img src="{{ inst_mueble.imagen.url }} " alt="Imagen Máquina"
+                                    <a href="{{ mueble.imagen.url }}" target="_blank">
+                                        <img src="{{ mueble.imagen.url }} " alt="Imagen Máquina"
                                              class="imageIndex" style="width:60%" ;>
                                     </a>
                                 </div>
@@ -192,7 +192,7 @@
                 </div>
             </div>
         </div>
-
+        {% include 'maquinas/calendario.html' %}
         <div class="row center">
             <div>
                 <input class='btn  btn-primary' type="submit" value="Solicitar" id="solicitar"/>

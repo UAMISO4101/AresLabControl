@@ -155,14 +155,15 @@
     </div>
     <form enctype="multipart/form-data" method="post">
         {% csrf_token %}
-    <div class="row center">
-        <div>
-            {% if not section|lookup:'aprobar' is None %}
-                <input class="btn btn-primary" type="submit" value="Continuar"/>
-            {% endif %}
-            <a class="btn btn-default" href="{% url 'solicitud-muestra-list' %}" id="cancel" name="cancel">Cancelar</a>
+        <div class="row center">
+            <div>
+                {% if not section|lookup:'aprobar' is None %}
+                    <input class="btn btn-primary" type="submit" value="Continuar"/>
+                {% endif %}
+                <a class="btn btn-default" href="{% url 'solicitud-muestra-list' %}" id="cancel"
+                   name="cancel">Cancelar</a>
+            </div>
         </div>
-    </div>
     </form>
 {% endblock %}
 {% block scripts_others %}

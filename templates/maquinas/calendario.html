@@ -71,9 +71,9 @@
                 }
 
                 if (view.name === "agendaDay" || view.name === "agendaWeek") {
-                    id = 1
+                    id = 1;
                     {% if perms.LabModule.can_requestMachine %}
-                        window.location.href = "/maquina/solicitar/?id={{maquina.idSistema}}&start=" + start + "&end=" + end;
+                        window.location.href = "/maquina/solicitar/{{maquina.idSistema}}/?start=" + start + "&end=" + end;
                         var title = null;
                     {% endif %}
                     $('#calendar').fullCalendar('unselect');

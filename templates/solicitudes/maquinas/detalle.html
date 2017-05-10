@@ -11,84 +11,75 @@
 {% block content %}
 
     <div class="page-header text-center">
-        <h2>{{ section.title }} {{ muestraSolicitud.solicitud.id }}</h2>
+        <h2>{{ section.title }}</h2>
     </div>
 
     <div class="panel panel-default">
+
         <div class="panel-heading">
-            <h3 class="panel-title text-left">Información solicitud </h3>
+            <h3 class="panel-title text-left">Información Solicitud </h3>
         </div>
 
         <div class="panel-body text-left">
             <div class="container">
                 <div class="row">
                     <div class="col-md-5 col-sm-6">
+
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Solicitante:</strong>
+                                <strong>Solicitante</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
                                 <p id="items"
-                                   name="items"> {{ muestraSolicitud.solicitud.solicitante.nombre_usuario }} </p>
+                                   name="items"> {{ solicitud_maquina.solicitud.solicitante.nombre_usuario.upper }} </p>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Aprobador:</strong>
+                                <strong>Aprobador</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
                                 <p id="items"
-                                   name="items"> {{ muestraSolicitud.solicitud.aprobador.nombre_usuario }} </p>
+                                   name="items"> {{ solicitud_maquina.solicitud.aprobador.nombre_usuario.upper }} </p>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Tipo:</strong>
+                                <strong>Máquina</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestraSolicitud.tipo }} </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Muestra:</strong>
-                            </div>
-                            <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestraSolicitud.muestra.nombre }} </p>
+                                <p id="items" name="items"> {{ solicitud_maquina.maquina.mueble.nombre }} </p>
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-5 col-sm-6">
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Fecha:</strong>
+                                <strong>Fecha</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestraSolicitud.solicitud.fechaActual }} </p>
+                                <p id="items" name="items"> {{ solicitud_maquina.solicitud.fechaActual }} </p>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Cantidad:</strong>
+                                <strong>Paso</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestraSolicitud.cantidad }} </p>
+                                <p id="items" name="items"> {{ solicitud_maquina.solicitud.paso.nombre }} </p>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Paso:</strong>
+                                <strong>Descripción Paso</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestraSolicitud.solicitud.paso.nombre }} </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Descripción Paso:</strong>
-                            </div>
-                            <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestraSolicitud.solicitud.paso.descripcion }} </p>
+                                <p id="items" name="items"> {{ solicitud_maquina.solicitud.paso.descripcion }} </p>
                             </div>
                         </div>
                     </div>
@@ -97,38 +88,16 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title text-left">Bandejas</h3>
-                </div>
-                <div class="panel-body text-left">
-                    {% for lugar,posiciones in lugaresConPos.items %}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>Lugar:</strong>
-                            </div>
-                            <div class="col-md-6">
-                                <strong> {{ lugar }} </strong>
-                            </div>
-                            <div class="col-md-6">
-                                <strong>Posiciones:</strong>
-                            </div>
-                            <div class="col-md-6">
-                                <strong> {{ posiciones }} </strong>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
 
-
-    </div>
+    <form enctype="multipart/form-data" method="post">
+        {% csrf_token %}
     <div class="row center">
         <div>
-            <a class="btn btn-default" href="{% url 'solicitud-muestra-list' %}" id="cancel" name="cancel">Continuar</a>
+            {% if not section|lookup:'aprobar' is None %}
+                <input class="btn btn-primary" type="submit" value="Continuar"/>
+            {% endif %}
+            <a class="btn btn-default" href="{% url 'solicitud-maquina-list' %}" id="cancel" name="cancel">Cancelar</a>
         </div>
     </div>
+    </form>
 {% endblock %}

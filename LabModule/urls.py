@@ -126,15 +126,15 @@ urlpatterns = [
         name = 'solicitud-maquina-list'),
 
     url(r'^solicitudes/maquinas/aprobar/(?P<pk>[\w\-]+)/$',
-        LabModule.app_views.Solicitud.solicitud_muestra_aprobar,
+        LabModule.app_views.Solicitud.solicitud_maquina_aprobar,
         name = 'solicitud-maquina-aprobar'),
 
     url(r'^solicitudes/maquinas/rechazar/(?P<pk>[\w\-]+)/$',
-        LabModule.app_views.Solicitud.solicitud_muestra_rechazar,
+        LabModule.app_views.Solicitud.solicitud_maquina_rechazar,
         name = 'solicitud-maquina-rechazar'),
 
     url(r'^solicitudes/maquinas/(?P<pk>[\w\-]+)/$',
-        LabModule.app_views.Solicitud.solicitud_muestra_detail,
+        LabModule.app_views.Solicitud.solicitud_maquina_detail,
         name = 'solicitud-maquina-detail'),
 ]
 
