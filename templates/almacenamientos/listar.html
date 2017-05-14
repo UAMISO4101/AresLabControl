@@ -24,17 +24,39 @@
             <th>Nombre</th>
             <th>Ubicación</th>
             <th>Temp(Grados)</th>
+            <th>Protocolo</th>
+            <th>Bandeja</th>
+            <th>Muestra</th>
             <th>Acciones</th>
         </tr>
         </thead>
         <tbody>
 
-        {% for mueble,ubicacion,lugar in lista_lugares %}
+        {% for lugar in lista_lugares %}
             <tr>
                 <td>{{ lugar.idSistema }}</td>
-                <td>{{ mueble.nombre }}</td>
-                <td>{{ ubicacion }}</td>
+                <td>{{ lugar.nombre }}</td>
+                <td>{{ lugar.ubicacion }}</td>
                 <td>{{ lugar.temperatura }}ºC</td>
+
+                {% if lugar.protocolo is None %}
+                    <td>Ninguno</td>
+                {% else %}
+                    <td>{{ lugar.protocolo }}</td>
+                {% endif %}
+
+                {% if lugar.bandeja is None %}
+                    <td>Ninguno</td>
+                {% else %}
+                    <td>{{ lugar.bandeja }}</td>
+                {% endif %}
+
+                {% if lugar.muestra is None %}
+                    <td>Ninguno</td>
+                {% else %}
+                    <td>{{ lugar.muestra }}</td>
+                {% endif %}
+
                 <td>
                     {% if perms.LabModule.can_viewStorage %}
                         <a href="{% url 'lugar-detail' lugar.idSistema %}"
