@@ -14,7 +14,7 @@
         <h2>{{ section.title }}</h2>
     </div>
 
-    <form action="{% url 'lugar-add' %}" enctype="multipart/form-data" method="post">
+    <form id="formLugar" name="formLugar" enctype="multipart/form-data" method="post">
         {% csrf_token %}
         <div class="panel panel-default">
             <div class="panel-heading ">
