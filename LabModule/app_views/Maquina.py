@@ -322,32 +322,43 @@ def comprobarPostMaquina(form, formMaquina, formPos, request, template_name, sec
         posX = formPos.cleaned_data['posX']
         posY = formPos.cleaned_data['posY']
 
-        if section['agregar']:
-            if not formPos.es_ubicacion_libre():
-                messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags = "danger")
-        elif not formPos.es_el_mismo_mueble(new_furniture.id,
-                                            idLaboratorio,
-                                            posX,
-                                            posY):
-            if not formPos.es_ubicacion_libre():
-                messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags = "danger")
-        if not formPos.es_ubicacion_rango():
-            mensaje = "La posición [" +\
-                      str(new_machine_loc.posX) + "," +\
-                      str(new_machine_loc.posY) + "] no se encuentra en el rango del laboratorio"
-            messages.error(request, mensaje, extra_tags = "danger")
-        else:
-            new_furniture.save()
-            new_machine.mueble = new_furniture
-            new_machine.save()
-            new_machine_loc.idMueble = new_furniture
-            new_machine_loc.save()
+        es_ubicacion_libre = formPos.es_ubicacion_libre()
 
-        if section['agregar']:
-            messages.success(request, "La máquina se añadió exitosamente")
+        if section['agregar'] and not es_ubicacion_libre:
+           messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags = "danger")
         else:
-            messages.success(request, "La máquina se actualizó correctamente")
-        return redirect(reverse('maquina-detail', kwargs = {'pk': new_machine.pk}))
+            if not section['agregar'] and not formPos.es_el_mismo_mueble(new_furniture.id,
+                                                                         idLaboratorio,
+                                                                         posX,
+                                                                         posY) \
+                    and not es_ubicacion_libre:
+                messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags="danger")
+            else:
+                if not formPos.es_ubicacion_rango(posX, posY):
+                    if 'posX' in formPos.errors and formPos.errors['posX'] is not None \
+                            and formPos.errors['posX'][0] == 'La columna ya esta ocupada':
+                        del formPos.errors['posX'][0]
+
+                    if 'posY' in formPos.errors and formPos.errors['posY'] is not None \
+                            and formPos.errors['posY'][0] == 'La fila ya esta ocupada':
+                        del formPos.errors['posY'][0]
+
+                    mensaje = "La posición [" + \
+                              str(new_machine_loc.posX) + "," + \
+                              str(new_machine_loc.posY) + "] no se encuentra en el rango del laboratorio"
+                    messages.error(request, mensaje, extra_tags="danger")
+                else:
+                    new_furniture.save()
+                    new_machine.mueble = new_furniture
+                    new_machine.save()
+                    new_machine_loc.idMueble = new_furniture
+                    new_machine_loc.save()
+
+                    if section['agregar']:
+                        messages.success(request, "La máquina se añadió exitosamente")
+                    else:
+                        messages.success(request, "La máquina se actualizó correctamente")
+                    return redirect(reverse('maquina-detail', kwargs={'pk': new_machine.pk}))
     context = {'form'       : form,
                'formMaquina': formMaquina,
                'formPos'    : formPos,

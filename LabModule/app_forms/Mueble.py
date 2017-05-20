@@ -24,7 +24,7 @@ class PosicionesMuebleForm(ModelForm):
                                           self.cleaned_data['posY']):
             return True
         else:
-            self.add_error('posX', "La columna  ya esta ocupada")
+            self.add_error('posX', "La columna ya esta ocupada")
             self.add_error('posY', "La fila ya esta ocupada")
         return False
 
@@ -40,15 +40,15 @@ class PosicionesMuebleForm(ModelForm):
         else:
             return mueble_id == old_mueble.idMueble.id
 
-    def es_ubicacion_rango(self):
+    def es_ubicacion_rango(self, posX, posY):
         lab = self.cleaned_data['idLaboratorio']
-        masX = lab.numX >= self.cleaned_data['posX']
-        masY = lab.numY >= self.cleaned_data['posY']
+        masX = lab.numX >= posX
+        masY = lab.numY >= posY
         posible = masX and masY
         if not posible:
             if not masX:
                 self.add_error("posX", "La columna sobrepasa el valor máximo de " + str(lab.numX))
             if not masY:
-                self.add_error("posY", "La fila y sobrepasa el valor máximo de " + str(lab.numY))
+                self.add_error("posY", "La fila sobrepasa el valor máximo de " + str(lab.numY))
             return False
         return True

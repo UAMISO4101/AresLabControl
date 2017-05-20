@@ -31,12 +31,12 @@ class MuebleEnLab(models.Model):
             error_messages = {'unique': "Ya existe un mueble con este ID"}
     )
     posX = models.PositiveIntegerField(
-            verbose_name = "Fila",
+            verbose_name = "Columna",
             null = False,
             default = 0
     )
     posY = models.PositiveIntegerField(
-            verbose_name = "Columna",
+            verbose_name = "Fila",
             null = False,
             default = 0
     )

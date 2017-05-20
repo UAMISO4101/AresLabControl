@@ -140,6 +140,27 @@ def lugar_list(request, template_name='almacenamientos/listar.html'):
 
 
 def comprobarPostLugar(form, formAlmacenamiento, formPos, request, template_name, section):
+    """Desplegar y comprobar los valores a insertar.
+            Historia de usuario: `ALF-18 <http://miso4101-2.virtual.uniandes.edu.co:8080/browse/ALF-18 />`_ :
+            Yo como Jefe de Laboratorio quiero poder agregar nuevas máquinas en el sistema para que puedan ser usadas por los asistentes.
+            Se encarga de:
+                * Mostar el formulario para agregar una máquina.
+                * Mostar el formulario para editar una máquina ya existente.
+                * Agregar una máquina a la base de datos, agregar la relación entre la máquina y el
+                laboratorio en el que está.
+         :param form: La información relevante de la máquina.
+         :type form: MaquinaForm.
+         :param formPos: La posición y el laboratorio en el que se va a guardar la máquina.
+         :type formPos: PosicionesMaquinaForm.
+         :param request: El HttpRequest que se va a responder.
+         :type request: HttpRequest.
+         :param template_name: La template sobre la cual se va a renderizar.
+         :type template_name: html.
+         :param section: Objeto que permite diferenciar entre la modificación de una máquina y la adición de esta.
+         :type section: {‘title’:,’agregar’}.
+         :returns: HttpResponse -- La respuesta a la petición, en caso de que todo salga bien redirecciona a la
+          modificación de la nueva máquina. Sino redirecciona al mismo formulario mostrand los errores.
+        """
     mensaje = ""
     if form.is_valid() and formPos.is_valid() and formAlmacenamiento.is_valid():
 
@@ -152,32 +173,43 @@ def comprobarPostLugar(form, formAlmacenamiento, formPos, request, template_name
         posX = formPos.cleaned_data['posX']
         posY = formPos.cleaned_data['posY']
 
-        if section['agregar']:
-            if not formPos.es_ubicacion_libre():
-                messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags="danger")
-        elif not formPos.es_el_mismo_mueble(new_furniture.id,
-                                            idLaboratorio,
-                                            posX,
-                                            posY):
-            if not formPos.es_ubicacion_libre():
-                messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags="danger")
-        if not formPos.es_ubicacion_rango():
-            mensaje = "La posición [" + \
-                      str(new_storage_loc.posX) + "," + \
-                      str(new_storage_loc.posY) + "] no se encuentra en el rango del laboratorio"
-            messages.error(request, mensaje, extra_tags="danger")
-        else:
-            new_furniture.save()
-            new_storage.mueble = new_furniture
-            new_storage.save()
-            new_storage_loc.idMueble = new_furniture
-            new_storage_loc.save()
+        es_ubicacion_libre = formPos.es_ubicacion_libre()
 
-        if section['agregar']:
-            messages.success(request, "El lugar de almacenamiento se añadió exitosamente")
+        if section['agregar'] and not es_ubicacion_libre:
+            messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags="danger")
         else:
-            messages.success(request, "El lugar de almacenamiento se actualizó correctamente")
-        return redirect(reverse('lugar-detail', kwargs={'pk': new_storage.pk}))
+            if not section['agregar'] and not formPos.es_el_mismo_mueble(new_furniture.id,
+                                                                         idLaboratorio,
+                                                                         posX,
+                                                                         posY) \
+                    and not es_ubicacion_libre:
+                messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags="danger")
+            else:
+                if not formPos.es_ubicacion_rango(posX, posY):
+                    if 'posX' in formPos.errors and formPos.errors['posX'] is not None \
+                            and formPos.errors['posX'][0] == 'La columna ya esta ocupada':
+                        del formPos.errors['posX'][0]
+
+                    if 'posY' in formPos.errors and formPos.errors['posY'] is not None \
+                            and formPos.errors['posY'][0] == 'La fila ya esta ocupada':
+                        del formPos.errors['posY'][0]
+
+                    mensaje = "La posición [" + \
+                              str(new_storage_loc.posX) + "," + \
+                              str(new_storage_loc.posY) + "] no se encuentra en el rango del laboratorio"
+                    messages.error(request, mensaje, extra_tags="danger")
+                else:
+                    new_furniture.save()
+                    new_storage.mueble = new_furniture
+                    new_storage.save()
+                    new_storage_loc.idMueble = new_furniture
+                    new_storage_loc.save()
+
+                    if section['agregar']:
+                        messages.success(request, "El lugar de almacenamiento se añadió exitosamente")
+                    else:
+                        messages.success(request, "El lugar de almacenamiento se actualizó correctamente")
+                    return redirect(reverse('lugar-detail', kwargs={'pk': new_storage.pk}))
     context = {'form': form,
                'formAlmacenamiento': formAlmacenamiento,
                'formPos': formPos,
