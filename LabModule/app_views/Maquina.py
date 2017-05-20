@@ -159,14 +159,13 @@ def maquina_list(request, template_name = 'maquinas/listar.html'):
         section = {'title': 'Listar Máquinas'}
         can_editMachine = request.user.has_perm("LabModule.can_editMachine")
         if not can_editMachine:
-            lista_maquinas = Mueble.objects.all().filter(estado = True,
-                                                         tipo = 'maquina')
+            lista_maquinas = Mueble.objects.all().filter(estado = True, tipo = 'maquina').order_by('id')
         else:
-            lista_maquinas = Mueble.objects.all().filter(tipo = 'maquina')
+            lista_maquinas = Mueble.objects.all().filter(tipo = 'maquina').order_by('id')
 
         id_maquina = [maquina.id for maquina in lista_maquinas]
-        lista__posiciones = MuebleEnLab.objects.all().filter(idMueble__in = id_maquina)
-        maquinas = Maquina.objects.all().filter(mueble_id__in = id_maquina)
+        lista__posiciones = MuebleEnLab.objects.all().filter(idMueble__in = id_maquina).order_by('idMueble_id')
+        maquinas = Maquina.objects.all().filter(mueble_id__in = id_maquina).order_by('mueble_id')
 
         maquinasConUbicacion = zip(lista_maquinas, lista__posiciones, maquinas)
 
