@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
+import datetime
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
@@ -62,7 +63,10 @@ def maquina_add(request, template_name = 'maquinas/agregar.html'):
                    'formMaquina': formMaquina,
                    'formPos'    : formPos,
                    'mensaje'    : mensaje,
-                   'section'    : section}
+                   'section'    : section,
+                   'start': request.GET.get('start', ''),
+                   'end': request.GET.get('end', '')
+                   }
         return render(request, template_name, context)
     else:
         return HttpResponse('No autorizado', status = 401)
@@ -118,7 +122,8 @@ def maquina_update(request, pk, template_name = 'maquinas/agregar.html'):
         inst_maquina = get_object_or_404(Maquina, pk = pk)
         inst_mueble = inst_maquina.mueble
         inst_ubicacion = get_object_or_404(MuebleEnLab, idMueble = inst_mueble)
-
+        inst_maquina.fechaInicialDisp=inst_maquina.fechaInicialDisp.strftime("%Y-%m-%d %H:%M")
+        inst_maquina.fechaFinalDisp = inst_maquina.fechaFinalDisp.strftime("%Y-%m-%d %H:%M")
         form = MuebleForm(request.POST or None,
                           request.FILES or None,
                           instance = inst_mueble)
@@ -310,6 +315,7 @@ def comprobarPostMaquina(form, formMaquina, formPos, request, template_name, sec
       modificación de la nueva máquina. Sino redirecciona al mismo formulario mostrand los errores.
     """
     mensaje = ""
+
     if form.is_valid() and formPos.is_valid() and formMaquina.is_valid():
 
         new_furniture = form.save(commit = False)
@@ -363,5 +369,7 @@ def comprobarPostMaquina(form, formMaquina, formPos, request, template_name, sec
                'formPos'    : formPos,
                'mensaje'    : mensaje,
                'section'    : section,
+               'start': request.GET.get('start', ''),
+               'end': request.GET.get('end', '')
                }
     return render(request, template_name, context)

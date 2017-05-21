@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.forms import ModelForm
+from django import forms
 
 from LabModule.app_models.Maquina import Maquina
 
@@ -18,7 +19,14 @@ class MaquinaForm(ModelForm):
            :param ModelForm: Instancia de Django.forms.
            :type ModelForm: ModelForm.
     """
-
+    fechaInicialDisp = forms.DateTimeField(input_formats=["%Y-%m-%d %H:%M"
+                                                      ] )
+    fechaFinalDisp = forms.DateTimeField(input_formats=["%Y-%m-%d %H:%M"])
     class Meta:
         model = Maquina
         exclude = ['mueble']
+
+        #widgets = {
+        #    'fechaInicialDisp': forms.DateInput(attrs={'class': 'form-control date '}),
+        #    'fechaFinalDisp': forms.DateInput(attrs={'class': 'form-control date '})
+        #}

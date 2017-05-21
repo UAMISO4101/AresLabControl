@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from django.utils import timezone
+
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -48,8 +50,21 @@ class Maquina(models.Model):
             primary_key = True
     )
 
+    fechaInicialDisp = models.DateTimeField(
+        blank=False,
+        null=True,
+        verbose_name=_("Fecha Inicial")
+    )
+
+    fechaFinalDisp = models.DateTimeField(
+        blank=False,
+        null=True,
+        verbose_name=_("Fecha Final")
+    )
+
     mueble = models.OneToOneField(
             Mueble,
+            null=True,
             on_delete = models.CASCADE,
             related_name = '%(app_label)s_%(class)s_related'
     )

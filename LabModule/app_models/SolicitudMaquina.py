@@ -23,9 +23,6 @@ class SolicitudMaquina(models.Model):
             related_name = '%(app_label)s_%(class)s_related'
     )
 
-    def __unicode__(self):
-        return self.maquina.__unicode__() + " " + self.solicitud.__unicode__()
-
     def as_json(self, id_user):
         return dict(id_maquina = self.maquina.idSistema,
                     id = self.solicitud.id,

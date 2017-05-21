@@ -336,7 +336,7 @@ def crear_experimentos():
     protocolos = Protocolo.objects.all()
     protocolos = list(protocolos)
     new_experiment.protocolos.add(*protocolos)
-    new_experiment.proyecto = Proyecto.objects.get(nombre = "Colombia Viva")
+    new_experiment.projecto = Proyecto.objects.get(nombre = "Colombia Viva")
     new_experiment.save()
 
     if experiment_history:
