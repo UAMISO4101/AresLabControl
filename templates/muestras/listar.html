@@ -33,13 +33,13 @@
             </tr>
             </thead>
             <tbody>
-            {% for muestra,cantidades in muestras_con_cantidad %}
+            {% for muestra in detalle_completo %}
                 <tr class={{ muestra.controlado|yesno:"danger," }}>
                     <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.id }}</td>
                     <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.nombre }}</td>
                     <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.valor | currency }}</td>
                     <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.unidadBase }}</td>
-                    <td class={{ muestra.controlado|yesno:"danger," }}>{{ cantidades.cant_muestras }}</td>
+                    <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.cant_muestras }}</td>
                     <td class={{ muestra.controlado|yesno:"danger," }}>
                         {% if perms.LabModule.can_viewSample %}
                             <a href="{% url 'muestra-detail' muestra.id %} "
