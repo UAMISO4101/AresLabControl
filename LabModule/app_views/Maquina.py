@@ -238,37 +238,42 @@ def maquina_request(request, pk, template_name = 'maquinas/solicitar.html'):
                                                      activo = True)
 
             form = SolicitudForm()
-
+            start = inst_maquina.fechaInicialDisp.strftime("%Y-%m-%d")
+            end = inst_maquina.fechaFinalDisp.strftime("%Y-%m-%d")
             if request.method == 'POST':
                 if form.verificar_fecha(inst_maquina.pk,
                                         request.POST['fechaInicial'],
                                         request.POST['fechaFinal']) == True:
+                    if form.verificarDisponibilidad(start,end,request.POST['fechaInicial'],request.POST['fechaFinal'])==True:
+                        requestObj = Solicitud()
+                        requestObj.descripcion = 'Solicitud de Maquina'
+                        requestObj.fechaInicial = request.POST['fechaInicial']
+                        requestObj.fechaFinal = request.POST['fechaFinal']
 
-                    requestObj = Solicitud()
-                    requestObj.descripcion = 'Solicitud de Maquina'
-                    requestObj.fechaInicial = request.POST['fechaInicial']
-                    requestObj.fechaFinal = request.POST['fechaFinal']
 
-                    if inst_maquina.con_reserva == True:
-                        requestObj.estado = 'creada'
+
+                        if inst_maquina.con_reserva == True:
+                            requestObj.estado = 'creada'
+                        else:
+                            requestObj.estado = 'aprobada'
+
+                        requestObj.solicitante = inst_profile
+                        requestObj.paso = Paso.objects.get(id = request.POST['step'])
+                        requestObj.save()
+
+                        maquinaRequest = SolicitudMaquina()
+                        maquinaRequest.maquina = inst_maquina
+                        maquinaRequest.solicitud = requestObj
+                        maquinaRequest.save()
+
+                        messages.success(request, "La máquina se reservó exitosamente")
+
+                        # Envío de notificación
+                        notificacion_solicitud_maquina(request, inst_mueble.nombre, maquinaRequest.id)
+
+                        return redirect(reverse('maquina-detail', kwargs = {'pk': pk}))
                     else:
-                        requestObj.estado = 'aprobada'
-
-                    requestObj.solicitante = inst_profile
-                    requestObj.paso = Paso.objects.get(id = request.POST['step'])
-                    requestObj.save()
-
-                    maquinaRequest = SolicitudMaquina()
-                    maquinaRequest.maquina = inst_maquina
-                    maquinaRequest.solicitud = requestObj
-                    maquinaRequest.save()
-
-                    messages.success(request, "La máquina se reservó exitosamente")
-
-                    # Envío de notificación
-                    notificacion_solicitud_maquina(request, inst_mueble.nombre, maquinaRequest.id)
-
-                    return redirect(reverse('maquina-detail', kwargs = {'pk': pk}))
+                        mensaje="Las fechas de solicitud estan por fuera de las fechas de disponibilidad"
                 else:
                     mensaje = "Ya existe una solicitud para estas fechas"
 
