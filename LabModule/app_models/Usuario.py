@@ -62,7 +62,7 @@ class Usuario(models.Model):
                 RegexValidator(
                         regex = USERMAIL_REGEX,
                         message = _(
-                                'El correo eletrónico debe ser alfanúmerico o contener los siguientes: ". @ + - _" '),
+                                'El correo electrónico debe ser alfanúmerico o contener los siguientes: ". @ + - _" '),
                         code = 'invalid_email'
                 )],
             unique = True,
