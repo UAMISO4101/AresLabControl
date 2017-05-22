@@ -84,7 +84,7 @@ def post_solicitud_muestra(solicitud_muestra, section):
     solicitud_muestra.solicitud.save()
     solicitud_muestra.save()
 
-    # Enviar notificaciÃ³n a asistente de laboratorio
+    # Enviar notificación a asistente de laboratorio
     solicitante_nombre = solicitud_muestra.solicitud.solicitante.nombre_completo()
     solicitante_email = solicitud_muestra.solicitud.solicitante.correo_electronico
     muestra_nombre = solicitud_muestra.muestra.nombre
@@ -106,11 +106,11 @@ def post_solicitud_muestra(solicitud_muestra, section):
 
 
 def solicitud_notificacion(context):
-    """Realiza la notificaciÃ³n de solicitud de muestras para el usuario que la necesita
+    """Realiza la notificación de solicitud de muestras para el usuario que la necesita
                Historia de usuario: ALF-80:Yo como Asistente de Laboratorio quiero ser notificado vÃ­a correo
                electrÃ³nico si se aprobÃ³ o rechazo mi solicitud de muestra para saber si puedo hacer uso de la muestra
                Se encarga de:
-                   * Realiza la notificaciÃ³n de la solicitud de muestras
+                   * Realiza la notificación de la solicitud de muestras
             :param request: El HttpRequest que se va a responder.
             :type request: HttpRequest.
             :param muestra_nombre: Muesra a solicitar
@@ -191,19 +191,21 @@ def post_solicitud_maquina(solicitud_maquina, section):
     if section.get('aprobar'):
         solicitud_maquina.solicitud.estado = 'aprobada'
     else:
+        solicitud_maquina.solicitud.fechaInicial = None
+        solicitud_maquina.solicitud.fechaFinal = None
         solicitud_maquina.solicitud.estado = 'rechazada'
 
     solicitud_maquina.solicitud.save()
     solicitud_maquina.save()
 
-    # Enviar notificaciÃ³n a asistente de laboratorio
+    # Enviar notificación a asistente de laboratorio
     solicitante_nombre = solicitud_maquina.solicitud.solicitante.nombre_completo()
     solicitante_email = solicitud_maquina.solicitud.solicitante.correo_electronico
     muestra_nombre = solicitud_maquina.maquina.mueble.nombre
     solicitud_id = solicitud_maquina.solicitud.id
     jefe = solicitud_maquina.solicitud.aprobador.nombre_completo()
 
-    context = {'asunto'       : 'mÃ¡quina',
+    context = {'asunto'       : 'máquina',
                'destinatario' : solicitante_email,
                'resultado'    : solicitud_maquina.solicitud.estado,
                'asistente'    : solicitante_nombre,
@@ -228,7 +230,7 @@ def obtenerListaSolicitudes():
 def obtenerDetalleSolicitudes(solicitudId):
     "Obtiene la lista que va a poblar la grilla de presentacion del resumen de la solicitud"
 
-    query = queryDetalleSolicitudes + solicitudId
+    query = queryDetalleSolicitudes + 'WHERE s.id =' + solicitudId
     with connection.cursor() as cursor:
         cursor.execute(query)
         rows = dictfetchall(cursor)
