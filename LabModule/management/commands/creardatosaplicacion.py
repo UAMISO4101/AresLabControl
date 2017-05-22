@@ -27,9 +27,9 @@ from LabModule.app_models.Proyecto import Proyecto
 from LabModule.app_models.TipoDocumento import TipoDocumento
 from LabModule.app_models.Usuario import Usuario
 
-SUPERUSUARIO = getattr(settings, "SUPERUSUARIO", 'admin')
-CONTRASENA = getattr(settings, "CONTRASENA", '1a2d3m4i5n6')
-EMAIL_HOST_USER = getattr(settings, "EMAIL_HOST_USER", 'admin@admin.com')
+SUPERUSUARIO = getattr(settings, 'SUPERUSUARIO', 'admin')
+CONTRASENA = getattr(settings, 'CONTRASENA', '1a2d3m4i5n6')
+EMAIL_HOST_USER = getattr(settings, 'EMAIL_HOST_USER', 'admin@admin.com')
 
 can_addProject = Permission.objects.get(name = 'proyecto||agregar')
 can_editProject = Permission.objects.get(name = 'proyecto||editar')
@@ -103,18 +103,24 @@ def crear_tipos_documento():
 def crear_laboratorios():
     lab_history = False
     print ('Creando Laboratorios'),
-    new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = "Laboratorio Principal",
-                                                                idLaboratorio = "LAB001")
+    new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = 'Laboratorio Principal',
+                                                                idLaboratorio = 'LAB001',
+                                                                numX = 20,
+                                                                numY = 20)
     print_status_message(status = lab_is_created)
     lab_history = lab_history | lab_is_created
     new_lab.save()
-    new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = "Laboratorio Secundario",
-                                                                idLaboratorio = "LAB002")
+    new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = 'Laboratorio Secundario',
+                                                                idLaboratorio = 'LAB002',
+                                                                numX = 20,
+                                                                numY = 20)
     print_status_message(status = lab_is_created)
     lab_history = lab_history | lab_is_created
     new_lab.save()
-    new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = "Laboratorio Terciario",
-                                                                idLaboratorio = "LAB003")
+    new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = 'Laboratorio Terciario',
+                                                                idLaboratorio = 'LAB003',
+                                                                numX = 20,
+                                                                numY = 20)
     print_status_message(status = lab_is_created)
     lab_history = lab_history | lab_is_created
     new_lab.save()
@@ -126,12 +132,14 @@ def crear_laboratorios():
 def crear_maquinas():
     machine_history = False
     print ('Creando Maquinas'),
-    new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = "Laboratorio Principal",
-                                                                idLaboratorio = "LAB001")
+    new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = 'Laboratorio Principal',
+                                                                idLaboratorio = 'LAB001',
+                                                                numX = 20,
+                                                                numY = 20)
     print_status_message(status = lab_is_created)
     machine_history = machine_history | lab_is_created
     new_lab.save()
-    with open(".///" + static('lab_static/json/maquinas.json')) as data_file:
+    with open('.///' + static('lab_static/json/maquinas.json')) as data_file:
         data = json.load(data_file)
         for machine in data:
             new_mueble, mueble_is_created = Mueble.objects.get_or_create(nombre = machine['nombre'],
@@ -180,7 +188,7 @@ def crear_almacenamientos():
     storage_history = False
     print('Creando Lugares de Almacenamiento'),
 
-    with open(".///" + static('lab_static/json/lugares.json')) as data_file:
+    with open('.///' + static('lab_static/json/lugares.json')) as data_file:
         data = json.load(data_file)
         id_storage = 0
         for row in data:
@@ -201,9 +209,10 @@ def crear_almacenamientos():
             created = False
             for i in range(1, int(cantidad) + 1):
                 id_storage += 1
-                new_mueble, mueble_is_created = Mueble.objects.get_or_create(nombre = nombre + " " + str(i),
+                new_mueble, mueble_is_created = Mueble.objects.get_or_create(nombre = nombre + ' ' + str(i),
                                                                              descripcion = descripcion,
-                                                                             estado = estado, tipo = "almacenamiento"
+                                                                             estado = estado,
+                                                                             tipo = 'almacenamiento'
                                                                              )
                 print_status_message(status = mueble_is_created)
                 storage_history = storage_history | mueble_is_created
@@ -247,7 +256,7 @@ def crear_almacenamientos():
 def crear_muestras():
     sample_history = False
     print ('Creando Muestras'),
-    with open(".///" + static('lab_static/json/muestras.json')) as data_file:
+    with open('.///' + static('lab_static/json/muestras.json')) as data_file:
         data = json.load(data_file)
 
         for row in data:
@@ -337,11 +346,11 @@ def crear_muestras():
 def crear_proyectos():
     project_history = False
     print ('Crear Proyectos'),
-    new_project, project_is_created = Proyecto.objects.get_or_create(nombre = "Colombia Viva")
+    new_project, project_is_created = Proyecto.objects.get_or_create(nombre = 'Colombia Viva')
     project_history = project_history | project_is_created
 
-    new_project.descripcion = "Proyecto para sintetizar una droga que reduzca el cansancio."
-    new_project.objetivo = "Crear NZT"
+    new_project.descripcion = 'Proyecto para sintetizar una droga que reduzca el cansancio.'
+    new_project.objetivo = 'Crear NZT'
     new_project.lider = Usuario.objects.get(nombre_usuario = 'acastro')
     asistentes = Usuario.objects.all().filter(nombre_usuario__startswith = 'mgalindo')
     asistentes = list(asistentes)
@@ -359,16 +368,16 @@ def crear_experimentos():
     experiment_history = False
     print('Crear Experimento'),
 
-    new_experiment, experiment_is_created = Experimento.objects.get_or_create(nombre = "Experimento Colombia Viva")
+    new_experiment, experiment_is_created = Experimento.objects.get_or_create(nombre = 'Experimento Colombia Viva')
     print_status_message(status = experiment_is_created)
     experiment_history = experiment_history | experiment_is_created
 
-    new_experiment.descripcion = "Experimento que hace parte de Colombia Viva"
-    new_experiment.objetivo = "Crear"
+    new_experiment.descripcion = 'Experimento que hace parte de Colombia Viva'
+    new_experiment.objetivo = 'Crear'
     protocolos = Protocolo.objects.all()
     protocolos = list(protocolos)
     new_experiment.protocolos.add(*protocolos)
-    new_experiment.proyecto = Proyecto.objects.get(nombre = "Colombia Viva")
+    new_experiment.proyecto = Proyecto.objects.get(nombre = 'Colombia Viva')
     new_experiment.save()
 
     if experiment_history:
@@ -380,12 +389,12 @@ def crear_protocolos():
     protocol_history = False
     print('Crear Protocolos'),
 
-    new_protocol, protocol_is_created = Protocolo.objects.get_or_create(nombre = "Protocolo Colombia Viva")
+    new_protocol, protocol_is_created = Protocolo.objects.get_or_create(nombre = 'Protocolo Colombia Viva')
     print_status_message(status = protocol_is_created)
     protocol_history = protocol_history | protocol_is_created
 
-    new_protocol.descripcion = "Protocolo que hace parte de Colombia Viva"
-    new_protocol.objetivo = "Crear"
+    new_protocol.descripcion = 'Protocolo que hace parte de Colombia Viva'
+    new_protocol.objetivo = 'Crear'
     new_protocol.save()
 
     if protocol_history:
@@ -397,12 +406,12 @@ def crear_pasos():
     step_history = False
     print ('Crear Pasos'),
 
-    new_step, step_is_created = Paso.objects.get_or_create(nombre = "Paso Colombia Viva")
+    new_step, step_is_created = Paso.objects.get_or_create(nombre = 'Paso Colombia Viva')
     print_status_message(status = step_is_created)
     step_history = step_history | step_is_created
 
-    new_step.descripcion = "Paso que hace parte de Colombia Viva"
-    new_step.objetivo = "Crear"
+    new_step.descripcion = 'Paso que hace parte de Colombia Viva'
+    new_step.objetivo = 'Crear'
     protocolo = Protocolo.objects.get(nombre = 'Protocolo Colombia Viva')
     new_step.protocolo = protocolo
     new_step.save()

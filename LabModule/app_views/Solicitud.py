@@ -139,7 +139,7 @@ def maquina_reservations(request, pk):
 
 def solicitud_maquina_list(request, template_name = 'solicitudes/maquinas/listar.html'):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_manageRequest"):
-        section = {'title': 'Listar Solicitudes de MÃ¡quinas'}
+        section = {'title': 'Listar Solicitudes de Máquinas'}
 
         lista_solicitudes = Solicitud.objects.all().exclude(estado = 'aprobada').exclude(estado = 'rechazada')
 
@@ -155,19 +155,19 @@ def solicitud_maquina_list(request, template_name = 'solicitudes/maquinas/listar
 
 
 def solicitud_maquina_aprobar(request, pk, template_name = 'solicitudes/maquinas/detalle.html'):
-    section = {'title': 'Aprobar Solicitud de MÃ¡quinas', 'aprobar': True}
+    section = {'title': 'Aprobar Solicitud de Máquinas', 'aprobar': True}
     return solicitud_maquina_detail(request, pk, template_name, section)
 
 
 def solicitud_maquina_rechazar(request, pk, template_name = 'solicitudes/maquinas/detalle.html'):
-    section = {'title': 'Rechazar Solicitud de MÃ¡quinas', 'aprobar': False}
+    section = {'title': 'Rechazar Solicitud de Máquinas', 'aprobar': False}
     return solicitud_maquina_detail(request, pk, template_name, section)
 
 
 def solicitud_maquina_detail(request, pk, template_name = 'solicitudes/maquinas/detalle.html', section = None):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_manageRequest"):
         if section is None:
-            my_section = {'title': 'Detalle Solicitud de MÃ¡quinas', 'aprobar': None}
+            my_section = {'title': 'Detalle Solicitud de Máquinas', 'aprobar': None}
         else:
             my_section = section
 
