@@ -228,7 +228,7 @@ def obtener_lugares(cannot_editStorage):
     query = queryListaLugares
 
     if cannot_editStorage:
-        query += ''' AND mue.estado = true '''
+        query += ''' AND m.estado = true '''
 
     query += ''' ORDER BY 2'''
 
