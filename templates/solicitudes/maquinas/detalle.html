@@ -56,14 +56,6 @@
                     </div>
 
                     <div class="col-md-5 col-sm-6">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Fecha</strong>
-                            </div>
-                            <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ solicitud_maquina.solicitud.fechaActual }} </p>
-                            </div>
-                        </div>
 
                         <div class="row">
                             <div class="col-md-3">
@@ -82,12 +74,29 @@
                                 <p id="items" name="items"> {{ solicitud_maquina.solicitud.paso.descripcion }} </p>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Fecha Inicial</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ solicitud_maquina.solicitud.fechaInicial }} </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Fecha Final</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ solicitud_maquina.solicitud.fechaFinal }} </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    {% include 'solicitudes/maquinas/vercalendario.html' %}
 
     <form enctype="multipart/form-data" method="post">
         {% csrf_token %}

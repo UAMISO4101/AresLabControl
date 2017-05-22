@@ -297,6 +297,38 @@ def crear_muestras():
                 print_status_message(status = muestra_bandeja_is_created)
                 sample_history = sample_history | muestra_bandeja_is_created
                 new_muestra_bandeja.save()
+                new_muestra_bandeja, muestra_bandeja_is_created = MuestraEnBandeja.objects.get_or_create(
+                        idBandeja = new_tray,
+                        idMuestra = new_sample,
+                        posX = 1,
+                        posY = 2)
+                print_status_message(status = muestra_bandeja_is_created)
+                sample_history = sample_history | muestra_bandeja_is_created
+                new_muestra_bandeja.save()
+                new_muestra_bandeja, muestra_bandeja_is_created = MuestraEnBandeja.objects.get_or_create(
+                        idBandeja = new_tray,
+                        idMuestra = new_sample,
+                        posX = 1,
+                        posY = 3)
+                print_status_message(status = muestra_bandeja_is_created)
+                sample_history = sample_history | muestra_bandeja_is_created
+                new_muestra_bandeja.save()
+                new_muestra_bandeja, muestra_bandeja_is_created = MuestraEnBandeja.objects.get_or_create(
+                        idBandeja = new_tray,
+                        idMuestra = new_sample,
+                        posX = 1,
+                        posY = 4)
+                print_status_message(status = muestra_bandeja_is_created)
+                sample_history = sample_history | muestra_bandeja_is_created
+                new_muestra_bandeja.save()
+                new_muestra_bandeja, muestra_bandeja_is_created = MuestraEnBandeja.objects.get_or_create(
+                        idBandeja = new_tray,
+                        idMuestra = new_sample,
+                        posX = 1,
+                        posY = 5)
+                print_status_message(status = muestra_bandeja_is_created)
+                sample_history = sample_history | muestra_bandeja_is_created
+                new_muestra_bandeja.save()
     if sample_history:
         return 0
     return 1

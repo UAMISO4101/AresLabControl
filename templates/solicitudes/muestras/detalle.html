@@ -133,16 +133,16 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for mueble,ubicacion,almacenamiento,muestra_bandeja in muestras_con_cantidad %}
+                            {% for muestras in detalle_completo %}
                                 <tr>
-                                    <td>{{ ubicacion.getidlaboratorio }}</td>
-                                    <td>{{ almacenamiento.idSistema }}</td>
-                                    <td>{{ mueble.nombre }}</td>
-                                    <td>{{ ubicacion.getfila }}</td>
-                                    <td>{{ ubicacion.getcolumna }}</td>
-                                    <td>{{ muestra_bandeja.getidbandeja }}</td>
-                                    <td>{{ muestra_bandeja.getfilabandeja }}</td>
-                                    <td>{{ muestra_bandeja.getcolumnabandeja }}</td>
+                                    <td>{{ muestras.idLaboratorio_id }}</td>
+                                    <td>{{ muestras.idSistema }}</td>
+                                    <td>{{ muestras.nombre }}</td>
+                                    <td>{{ muestras.posX }}</td>
+                                    <td>{{ muestras.posY }}</td>
+                                    <td>{{ muestras.posicion }}</td>
+                                    <td>{{ muestras.posXMuestra }}</td>
+                                    <td>{{ muestras.posYMuestra }}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>
