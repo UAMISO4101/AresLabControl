@@ -236,7 +236,7 @@ def obtener_lugares(cannot_editStorage):
     """
     query = '''SELECT DISTINCT "idSistema"
                        ,mue.nombre
-                       ,initcap(lab."idLaboratorio") || ' ' || initcap(lab.nombre) || ':'
+                       ,lab."idLaboratorio" || ' ' || lab.nombre || ':'
                        || muela."posX" || ',' || muela."posY" AS ubicacion
                        ,temperatura
                        ,pro.nombre AS protocolo

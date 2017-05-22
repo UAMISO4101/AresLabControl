@@ -4,7 +4,7 @@ import os
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Count
+from django.db import connection
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -14,12 +14,12 @@ from AresLabControl.settings import BASE_DIR, EMAIL_HOST_USER
 from LabModule.app_forms.Muestra import MuestraSolicitudForm
 from LabModule.app_forms.Solicitud import SolicitudForm
 from LabModule.app_models.Muestra import Muestra
-from LabModule.app_models.MuestraEnBandeja import MuestraEnBandeja
 from LabModule.app_models.Paso import Paso
 from LabModule.app_models.Proyecto import Proyecto
 from LabModule.app_models.Solicitud import Solicitud
 from LabModule.app_models.SolicitudMuestra import SolicitudMuestra
 from LabModule.app_models.Usuario import Usuario
+from LabModule.app_utils.cursores import *
 from LabModule.app_utils.notificaciones import enviar_correo
 
 
@@ -72,7 +72,7 @@ def muestra_request(request, pk, template_name = 'muestras/solicitar.html'):
         section = {'title': 'Solicitar Muestra'}
         try:
 
-            inst_muestra = Muestra.objects.filter(id = pk)
+            inst_muestra = Muestra.objects.get(id = pk)
             inst_profile = Usuario.objects.get(user_id = request.user.id)
 
             list_proyectos = Proyecto.objects.filter(asistentes = inst_profile.id,
@@ -80,16 +80,11 @@ def muestra_request(request, pk, template_name = 'muestras/solicitar.html'):
             if inst_muestra is None:
                 return muestra_list(request)
             else:
-                muestra = inst_muestra[0]
+                muestra = inst_muestra
+                detalle_completo = obtenerBandejasMuestras(str(muestra.id))
 
             form = SolicitudForm()
             form_muestra = MuestraSolicitudForm()
-
-            cant_muestras = MuestraEnBandeja.objects\
-                .defer('id_bandeja', 'posX', 'posY').all()\
-                .values('idMuestra')\
-                .filter(idMuestra = muestra)\
-                .annotate(cant_muestras = Count('idMuestra'))
 
             if request.method == 'POST':
 
@@ -113,12 +108,12 @@ def muestra_request(request, pk, template_name = 'muestras/solicitar.html'):
 
                 return redirect(reverse('muestra-detail', kwargs = {'pk': pk}))
 
-            contexto = {'section'      : section,
-                        'form'         : form,
-                        'form_muestra' : form_muestra,
-                        'muestra'      : muestra,
-                        'cant_muestras': cant_muestras[0]['cant_muestras'],
-                        'proyectos'    : list_proyectos
+            contexto = {'section'         : section,
+                        'form'            : form,
+                        'form_muestra'    : form_muestra,
+                        'muestra'         : muestra,
+                        'detalle_completo': detalle_completo,
+                        'proyectos'       : list_proyectos
                         }
         except ObjectDoesNotExist as e:
             print(e.message)
@@ -148,22 +143,17 @@ def muestra_detail(request, pk, template_name = 'muestras/detalle.html'):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_viewSample"):
         section = {'title': 'Ver Detalle'}
 
-        inst_muestra = Muestra.objects.filter(id = pk)
+        inst_muestra = Muestra.objects.get(id = pk)
 
         if inst_muestra is None:
             return muestra_list(request)
         else:
-            muestra = inst_muestra[0]
+            muestra = inst_muestra
+            detalle_completo = obtenerBandejasMuestras(str(muestra.id))
 
-            cant_muestras = MuestraEnBandeja.objects\
-                .defer('id_bandeja', 'posX', 'posY').all()\
-                .values('idMuestra')\
-                .filter(idMuestra = muestra)\
-                .annotate(cant_muestras = Count('idMuestra'))
-
-        context = {'section'      : section,
-                   'muestra'      : muestra,
-                   'cant_muestras': cant_muestras[0]['cant_muestras']}
+        context = {'section'         : section,
+                   'muestra'         : muestra,
+                   'detalle_completo': detalle_completo}
 
         return render(request, template_name, context)
     else:
@@ -183,23 +173,32 @@ def muestra_list(request, template_name = 'muestras/listar.html'):
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_listSample"):
         section = {'title': 'Listar Muestras'}
         can_editSample = request.user.has_perm("LabModule.can_editSample")
-        if not can_editSample:
-            lista_muestras = Muestra.objects.all().filter(activa = True)
-        else:
-            lista_muestras = Muestra.objects.all()
+        detalle_completo = obtenerListadoMuestras(can_editSample)
 
-        id_muestra = [muestra.id for muestra in lista_muestras]
-
-        cant_muestras = MuestraEnBandeja.objects\
-            .defer('id_bandeja', 'posX', 'posY').all()\
-            .values('idMuestra')\
-            .filter(idMuestra__in = id_muestra)\
-            .annotate(cant_muestras = Count('idMuestra'))
-
-        muestras_con_cantidad = zip(lista_muestras, cant_muestras)
-
-        context = {'section'              : section,
-                   'muestras_con_cantidad': muestras_con_cantidad}
+        context = {'section'         : section,
+                   'detalle_completo': detalle_completo}
         return render(request, template_name, context)
     else:
         return HttpResponse('No autorizado', status = 401)
+
+
+def obtenerBandejasMuestras(muestraId):
+    "Obtiene la lista que va a poblar la grilla de presentacion del resumen de la solicitud"
+
+    query = queryBandejasMuestras + muestraId
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        rows = dictfetchall(cursor)
+    return rows
+
+
+def obtenerListadoMuestras(can_editSample):
+    if not can_editSample:
+        query = queryListaMuestrasAll
+    else:
+        query = queryListaMuestras
+
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        rows = dictfetchall(cursor)
+    return rows

@@ -33,7 +33,7 @@
             },
             minTime: "06:00:00",
             maxTime: "20:00:00",
-            selectable: true,
+            selectable: false,
             selectOverlap: false,
             selectHelper: true,
             dayClick: function (date, jsEvent, view) {
@@ -43,53 +43,22 @@
                     $('#calendar').fullCalendar('changeView', 'agendaDay');
                 }
             },
-            defaultView: 'agendaWeek',
+            defaultView: 'month',
             firstDay: 1,
             eventRender: function (event, element, view) {
 
                 if (event.encargado) {
                     element.find('.fc-content').append("<br/>" + event.encargado);
                 }
-                else {
-                    element.find('.fc-content').append("<br/>" + "Reservar");
-                }
                 if (event.paso) {
                     element.find('.fc-content').append("<br/>" + event.paso);
                 }
-
-                if (event.start.isBefore(moment() - 5 * 3600 * 1000)) {
-                    element.find('.fc-content').append("<br/>" + "No se pueden seleccionar fechas pasadas")
-                    element.css("background", "red");
-                }
                 element.find('.fc-event').className += event.className;
             },
-            select: function (start, end, jsEvent, view) {
 
-                if ((start).isBefore(moment() - 5 * 3600 * 1000)) {
-                    $('#calendar').fullCalendar('unselect');
-                    return false;
-                }
-
-                if (view.name === "agendaDay" || view.name === "agendaWeek") {
-                    id = 1;
-                    {% if perms.LabModule.can_requestMachine %}
-                        window.location.href = "/maquina/solicitar/{{maquina.idSistema}}/?start=" + start + "&end=" + end;
-                        var title = null;
-                    {% endif %}
-                    $('#calendar').fullCalendar('unselect');
-                }
-            },
-            editable: true,
-            events: '{%url 's-maquina-reservations' maquina.idSistema %}'
+            editable: false,
+            events: '{%url 's-maquina-reservations' solicitud_maquina.maquina.idSistema %}'
         });
-
         $('#calendar').fullCalendar('render');
     });
-    {% if perms.LabModule.can_editMachine %}
-        $("#formMaquina").submit(function (e) {
-            e.preventDefault();
-            console.log($('#calendar').fullCalendar('clientEvents'))
-        });
-    {% endif %}
 </script>
-
