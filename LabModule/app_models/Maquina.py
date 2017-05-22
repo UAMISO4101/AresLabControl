@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from django.utils import timezone
+from datetime import datetime, timedelta
+
 
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from LabModule.app_models.Mueble import Mueble
@@ -53,13 +55,15 @@ class Maquina(models.Model):
     fechaInicialDisp = models.DateTimeField(
         blank=False,
         null=True,
-        verbose_name=_("Fecha Inicial")
+        verbose_name=_("Fecha Inicial"),
+        default=timezone.now
     )
 
     fechaFinalDisp = models.DateTimeField(
         blank=False,
         null=True,
-        verbose_name=_("Fecha Final")
+        verbose_name=_("Fecha Final"),
+        default=datetime.now()+timedelta(days=30)
     )
 
     mueble = models.OneToOneField(
