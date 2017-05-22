@@ -14,6 +14,7 @@ from LabModule.app_models.Almacenamiento import Almacenamiento
 from LabModule.app_models.Bandeja import Bandeja
 from LabModule.app_models.MuebleEnLab import MuebleEnLab
 from LabModule.app_models.MuestraEnBandeja import MuestraEnBandeja
+from LabModule.app_utils.cursores import *
 
 
 def lugar_add(request, template_name='almacenamientos/agregar.html'):
@@ -218,42 +219,13 @@ def comprobarPostLugar(form, formAlmacenamiento, formPos, request, template_name
                }
     return render(request, template_name, context)
 
-
-def dictfetchall(cursor):
-    """Return all rows from a cursor as a dict"""
-    columns = [col[0] for col in cursor.description]
-    return [
-        dict(zip(columns, row))
-        for row in cursor.fetchall()
-        ]
-
-
 def obtener_lugares(cannot_editStorage):
     """
     Obtiene los lugares de almacenamiento para filtrarlos por protocolo
     :param cannot_editStorage: Indica si puede o no editar los registros de almacanamiento
     :return: listado de lugares de almacenamiento
     """
-    query = '''SELECT DISTINCT "idSistema"
-                       ,mue.nombre
-                       ,lab."idLaboratorio" || ' ' || lab.nombre || ':'
-                       || muela."posX" || ',' || muela."posY" AS ubicacion
-                       ,temperatura
-                       ,pro.nombre AS protocolo
-                       ,ba.posicion AS bandeja
-                       ,mu.id AS id_muestra
-	                   ,mu.nombre AS muestra
-                   FROM "LabModule_almacenamiento" AS alm
-                   LEFT JOIN "LabModule_bandeja" AS ba ON ba.almacenamiento_id = alm."idSistema"
-                   LEFT JOIN "LabModule_muestraenbandeja" AS meb ON meb."idBandeja_id" = ba.id
-                   LEFT JOIN "LabModule_muestra" AS mu ON mu.id = meb."idMuestra_id"
-                   LEFT JOIN "LabModule_paso_muestras" AS pam ON pam."muestra_id" = mu.id
-                   LEFT JOIN "LabModule_paso" AS pa ON pa.id = pam."paso_id"
-                   LEFT JOIN "LabModule_protocolo" AS pro ON pro.id = pa."protocolo_id"
-                   LEFT JOIN "LabModule_mueble" AS mue ON mue.id = alm."mueble_id"
-                   LEFT JOIN "LabModule_muebleenlab" AS muela ON muela."idMueble_id" = mue."id"
-                   LEFT JOIN "LabModule_laboratorio" AS lab ON lab."idLaboratorio" = muela."idLaboratorio_id"
-                   WHERE mue.tipo = 'almacenamiento' '''
+    query = queryListaLugares
 
     if cannot_editStorage:
         query += ''' AND mue.estado = true '''

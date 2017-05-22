@@ -24,8 +24,8 @@ class PosicionesMuebleForm(ModelForm):
                                           self.cleaned_data['posY']):
             return True
         else:
-            self.add_error('posX', "La columna ya esta ocupada")
-            self.add_error('posY', "La fila ya esta ocupada")
+            self.add_error('posX', "La fila ya esta ocupada")
+            self.add_error('posY', "La columna ya esta ocupada")
         return False
 
     def es_el_mismo_mueble(self, mueble_id, idLaboratorio, posX, posY):
@@ -47,8 +47,8 @@ class PosicionesMuebleForm(ModelForm):
         posible = masX and masY
         if not posible:
             if not masX:
-                self.add_error("posX", "La columna sobrepasa el valor máximo de " + str(lab.numX))
+                self.add_error("posX", "La fila sobrepasa el valor máximo de " + str(lab.numX))
             if not masY:
-                self.add_error("posY", "La fila sobrepasa el valor máximo de " + str(lab.numY))
+                self.add_error("posY", "La columna sobrepasa el valor máximo de " + str(lab.numY))
             return False
         return True
