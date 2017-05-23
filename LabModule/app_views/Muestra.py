@@ -185,7 +185,7 @@ def muestra_list(request, template_name = 'muestras/listar.html'):
 def obtenerBandejasMuestras(muestraId):
     "Obtiene la lista que va a poblar la grilla de presentacion del resumen de la solicitud"
 
-    query = queryBandejasMuestras + muestraId
+    query = queryBandejasMuestras + 'WHERE mb."idMuestra_id" = ' + muestraId
     with connection.cursor() as cursor:
         cursor.execute(query)
         rows = dictfetchall(cursor)
