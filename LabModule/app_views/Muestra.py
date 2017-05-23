@@ -134,7 +134,7 @@ def muestra_detail(request, pk, template_name = 'muestras/detalle.html'):
                 muestra para conocer sus características.
                 Se encarga de:
                 * Mostar el formulario para consultar las muestras.
-            :param request: El HttpRequest que se va a responder.
+            :param request: El HttpRequest que se va a responder.cls
             :type request: HttpRequest.
             :param pk: La llave primaria de la muestra
             :type pk: String.
