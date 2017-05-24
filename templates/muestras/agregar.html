@@ -9,81 +9,93 @@
 {% block content %}
 
 <div class="page-header text-center">
-        <h2>{{ section.title }}</h2>
-    </div>
-
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title text-left">Información Básica</h3>
-        </div>
-
-        <div class="panel-body text-left">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-5 col-sm-6">
-
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Id Muestra</strong>
-                            </div>
-                            <div class="col-md-7 col-sm-4">
-                                {{ muestra.id }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Nombre</strong>
-                            </div>
-                            <div class="col-md-7 col-sm-4">
-                                {{ muestra.nombre }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Descripción</strong>
-                            </div>
-                            <div class="col-md-7 col-sm-4">
-                                {{ muestra.descripcion }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-5 col-sm-6">
-                        <div class="row">
-                            <div>
-                                <strong>Imágen</strong>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="panel panel-default">
-                                <div class="panel-body text-left" style="text-align:center">
-                                    <a href="{{ muestra.imagen.url }}" target="_blank">
-                                        <img src="{{ muestra.imagen.url }}" alt="Imágen Muestra"
-                                             class="imageIndex" style="width:60%; ">
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+	<h2>{{ section.title }}: {{ muestra.nombre }}</h2>
+</div>
 
 
 
-<form method="post" id="fromAddMuestra" name="fromAddMuestra" >
-	{% csrf_token %}
-	{{ form }}
-        <div class="row center">
-            <div>
-                <input class="btn btn-primary" type="submit" value="Guardar"/>
-                <a class="btn btn-default" href="{% url 'muestra-list' %}" id="cancel" name="cancel">Cancelar</a>
-            </div>
-        </div>
-</form>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title text-left">Información Básica</h3>
+	</div>
+
+	<div class="panel-body text-left">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-5 col-sm-6">
+
+					<div class="row">
+						<div class="col-md-3">
+							<strong>Id Muestra</strong>
+						</div>
+						<div class="col-md-7 col-sm-4">
+							{{ muestra.id }}
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-3">
+							<strong>Nombre</strong>
+						</div>
+						<div class="col-md-7 col-sm-4">
+							{{ muestra.nombre }}
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-3">
+							<strong>Descripción</strong>
+						</div>
+						<div class="col-md-7 col-sm-4">
+							{{ muestra.descripcion }}
+						</div>
+					</div>
+
+
+
+				</div>
+
+				<div class="col-md-5 col-sm-6">
+					<div class="row">
+						<div>
+							<strong>Imágen</strong>
+						</div>
+					</div>
+					<div class="row">
+						<div class="panel panel-default">
+							<div class="panel-body text-left" style="text-align:center">
+								<a href="{{ muestra.imagen.url }}" target="_blank">
+									<img src="{{ muestra.imagen.url }}" alt="Imágen Muestra"
+									class="imageIndex" style="width:60%; ">
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title text-left">Localización</h3>
+	</div>
+	<div class="row center">
+		<form method="post" id="fromAddMuestra" name="fromAddMuestra" >
+			{% csrf_token %}
+			{{ form }}
+			<div class="row center">
+				<div>
+					<input class="btn btn-primary" type="submit" value="Buscar"/>
+					<a class="btn btn-default" href="{% url 'muestra-list' %}" id="cancel" name="cancel">Cancelar</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
 
 
 {% endblock %}

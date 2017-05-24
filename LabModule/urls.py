@@ -80,8 +80,11 @@ urlpatterns = [
         LabModule.app_views.Muestra.muestra_detail,
         name = 'muestra-detail'),
 
-    url(r'^muestraLugar/(?P<pk>[\w\-]+)/$',
+    url(r'^muestra/lugar/(?P<pk>[\w\-]+)/$',
         LabModule.app_views.Muestra.muestra_position,
+        name = 'muestra-check-to-position'),
+    url(r'^muestra/guardar/(?P<pk>[\w\-]+)/$',
+        LabModule.app_views.Muestra.muestra_save,
         name = 'muestra-add-to-position'),
     # url(r'^muestra/update/(?P<pk>[\w\-]+)/$',
     #     LabModule.app_views.Muestra.muestra_update,

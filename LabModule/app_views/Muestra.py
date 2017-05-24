@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import json
-
+import copy
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
@@ -11,6 +11,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.contrib import messages
 
 from AresLabControl.settings import BASE_DIR, EMAIL_HOST_USER
 from LabModule.app_forms.Muestra import MuestraSolicitudForm
@@ -26,6 +27,7 @@ from LabModule.app_models.Usuario import Usuario
 from LabModule.app_models.Bandeja import Bandeja
 from LabModule.app_models.Almacenamiento import Almacenamiento
 from LabModule.app_models.MuestraEnBandeja import MuestraEnBandeja
+from LabModule.app_models.MuebleEnLab import MuebleEnLab
 
 
 from LabModule.app_utils.cursores import *
@@ -199,10 +201,46 @@ def muestra_position(request,pk,template_name='muestras/agregar.html'):
         if request.POST and form.is_valid():
             cantidad=form.cleaned_data['cantidad']
             rta,total=agregar_cantidad(muestra,cantidad)
-            return HttpResponse(json.dumps(rta))
+            section="Confirmar ubicación "
+            context = {'section': section,'muestra':muestra,'detalle_completo':rta}
+            seriali=[]
+            for bdg in rta:
+                ag={}
+                ag['bandeja']=bdg['bandeja'].id
+                ag['posX']=bdg['posX']
+                ag['posY']=bdg['posY']
+                seriali.append(ag)
+            request.session['a_aprobar'] = seriali
+            return render(request,'muestras/detalle_guardado.html',context)
         context = {'section': section,'form':form,'muestra':muestra}
         return render(request, template_name, context)
     return HttpResponse('No autorizado', status = 401)
+
+def muestra_save(request,pk):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addSample"):
+        a_aprobar = request.session.get('a_aprobar')
+        creadas=copy.copy(a_aprobar)
+        muestra2=Muestra.objects.get(id=pk)
+        for muestra in a_aprobar:
+            try:
+                bandeja=Bandeja.objects.get(id=muestra['bandeja'])
+                x=muestra['posX']
+                y=muestra['posY']
+                creada,existia=MuestraEnBandeja.objects.get_or_create(idMuestra=muestra2,idBandeja=bandeja,posX=x,posY=y)
+                if existia:
+                    creadas.remove(muestra)
+                else:
+                    print(creada)
+            except Exception as e:
+                 print(str(e))
+        if not len(creadas)==0:
+            messages.error(request, 'Algunas de las muestras no pudieron ser guardadas'+str(len(creadas)),extra_tags='alert-danger')
+        else:
+            messages.success(request,'Las muestras se han agregado exitosamente')
+        return redirect(reverse('muestra-detail', kwargs = {'pk': pk}))
+       
+            
+
 
 def disponibilidad_muestra(muestra):
     almacenamiento=muestra.alamacenamientos.all()
@@ -222,9 +260,7 @@ def agregar_cantidad(muestra,cantidad):
     for alm in almacenamiento:
         bandejas =Bandeja.getBandejas(alm)
         maximo=alm.numX*alm.numY
-        almacenamientodic={}
-        almacenamientodic['id']=alm.idSistema
-        bandejasar=[]
+        muebleEnLab=MuebleEnLab.objects.get(idMueble=alm.mueble)
         for bandeja in bandejas:
             gradillasOcupadas=MuestraEnBandeja.getPosiciones(bandeja)
             cant=maximo-gradillasOcupadas.count()
@@ -232,22 +268,21 @@ def agregar_cantidad(muestra,cantidad):
                 matriz=[[0 for x in range(alm.numX)] for y in range(alm.numY)]
                 for gradilla in gradillasOcupadas:
                     matriz[gradilla.posY-1][gradilla.posX-1]=1
-                bandejaDic={}
-                bandejaDic['bandejaId']=bandeja.posicion
-                bandejaDic['posiciones']=[]
                 for  y in range(alm.numY):
                     for x in range(alm.numX):
                         if matriz[y][x]==0 and total<cantidad:
-                            bandejaDic['posiciones'].append({'posX':x+1,'posY':y+1})
-                            m=MuestraEnBandeja(idBandeja=bandeja,idMuestra=muestra,posX=x+1,posY=y+1)
-                            m.save()
+                            detalle={}
+                            detalle['muebleEnLab']=muebleEnLab
+                            detalle['alma']=alm
+                            detalle['bandeja']=bandeja
+                            detalle['posX']=x+1
+                            detalle['posY']=y+1
+                            alamcenamientosArr.append(detalle)
                             total+=1
-            bandejasar.append(bandejaDic)
             if total==cantidad:
                 break
         
-        almacenamientodic['bandejas']=bandejasar
-        alamcenamientosArr.append(almacenamientodic)
+
         if total==cantidad:
             break
     return alamcenamientosArr,total

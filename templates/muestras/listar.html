@@ -54,10 +54,10 @@
                 <span class="glyphicon glyphicon-asterisk"></span>Solicitar</a>
                 {% endif %}
                 {% if perms.LabModule.can_addSample %}
-                <a href="{% url 'muestra-add-to-position' muestra.id %} "
+                <a href="{% url 'muestra-check-to-position' muestra.id %} "
                 class="btn btn-primary"
                 role="button">
-                <span class="glyphicon glyphicon-plus"></span>Agregar</a>
+                <span class="glyphicon glyphicon-plus"></span>Guardar</a>
                 {% endif %}
             </td>
         </tr>
