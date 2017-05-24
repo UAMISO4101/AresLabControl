@@ -194,6 +194,16 @@ def muestra_list(request, template_name = 'muestras/listar.html'):
 
 
 def muestra_position(request,pk,template_name='muestras/agregar.html'):
+    """Retornar una lista con las ubicaciones de las muestras que se deben guardar
+                Historia de usuario: ALF-?? - 
+                Se encarga de:
+                * Mostar el formulario para consultar las muestras.
+            :param request: El HttpRequest que se va a responder.cls
+            :type request: HttpRequest.
+            :param pk: La llave primaria de la muestra
+            :type pk: String.
+            :returns: HttpResponse -- La respuesta a la petición, con información de la muestra existente.
+        """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addSample"):
         section='Guardar muestra'
         muestra=get_object_or_404(Muestra,pk=pk)
@@ -217,6 +227,13 @@ def muestra_position(request,pk,template_name='muestras/agregar.html'):
     return HttpResponse('No autorizado', status = 401)
 
 def muestra_save(request,pk):
+    """Guarda las muestras en la base de datos utilizando la sesión como apoyo
+            :param request: El HttpRequest que se va a responder.cls
+            :type request: HttpRequest.
+            :param pk: La llave primaria de la muestra
+            :type pk: String.
+            :returns: HttpResponse -- La respuesta a la petición, con información de la muestra existente.
+        """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addSample"):
         a_aprobar = request.session.get('a_aprobar')
         creadas=copy.copy(a_aprobar)
@@ -243,6 +260,11 @@ def muestra_save(request,pk):
 
 
 def disponibilidad_muestra(muestra):
+    """Dada una muestra calcula cuantos espacios disponibles tiene para guardarla
+            :param muestra: La muestra a la que se va a consultar
+            :type muestra: Muestra.
+           :returns: int -- El número de espacios dispnibles para guardar la meuestra
+    """
     almacenamiento=muestra.alamacenamientos.all()
     total=0
     for alm in almacenamiento:
@@ -254,6 +276,13 @@ def disponibilidad_muestra(muestra):
                 total+=-1
     return total
 def agregar_cantidad(muestra,cantidad):
+    """Auxiliar para listar las posiciones en la que se puede guardar una cantidad de la muestra
+            :param muestra: La muestra a la que se va a consultar
+            :type muestra: Muestra
+            :param cantidad: La cantidad de muestras que se van a guardar
+            :type cantidad: Int
+            :returns: int -- El número de espacios dispnibles para guardar la meuestra
+    """
     almacenamiento=muestra.alamacenamientos.all().order_by('idSistema')
     alamcenamientosArr=[]
     total=0
