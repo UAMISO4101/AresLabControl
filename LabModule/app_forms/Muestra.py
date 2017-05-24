@@ -5,7 +5,6 @@ from django.forms import ModelForm
 from LabModule.app_models.Muestra import Muestra
 from LabModule.app_models.SolicitudMuestra import SolicitudMuestra
 
-
 class MuestraForm(ModelForm):
     """Formulario  para crear y modificar muestras.
            Se encarga de:
@@ -28,3 +27,10 @@ class MuestraSolicitudForm(ModelForm):
         widgets = {
             'cantidad': forms.TextInput(attrs = {'class': 'form-control'})
         }
+
+
+class MuestraAddForm(forms.Form):
+  def __init__(self, *args, **kwargs):
+    maxi = kwargs.pop('maximo')
+    super(MuestraAddForm, self).__init__(*args, **kwargs)
+    self.fields['cantidad'] = forms.IntegerField(label="Cantidad", max_value=maxi,min_value=1)

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import json
+
 from django.contrib import messages
 from django.db import connection
 from django.http import HttpResponse
@@ -6,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
 from LabModule.app_forms.Almacenamiento import AlmacenamientoForm
 from LabModule.app_forms.Mueble import MuebleForm
@@ -218,6 +221,8 @@ def comprobarPostLugar(form, formAlmacenamiento, formPos, request, template_name
                'section': section,
                }
     return render(request, template_name, context)
+
+
 
 def obtener_lugares(cannot_editStorage):
     """

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import json
 
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
@@ -8,10 +9,13 @@ from django.db import connection
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
 from AresLabControl.settings import BASE_DIR, EMAIL_HOST_USER
 from LabModule.app_forms.Muestra import MuestraSolicitudForm
+from LabModule.app_forms.Muestra import MuestraAddForm
+
 from LabModule.app_forms.Solicitud import SolicitudForm
 from LabModule.app_models.Muestra import Muestra
 from LabModule.app_models.Paso import Paso
@@ -19,6 +23,11 @@ from LabModule.app_models.Proyecto import Proyecto
 from LabModule.app_models.Solicitud import Solicitud
 from LabModule.app_models.SolicitudMuestra import SolicitudMuestra
 from LabModule.app_models.Usuario import Usuario
+from LabModule.app_models.Bandeja import Bandeja
+from LabModule.app_models.Almacenamiento import Almacenamiento
+from LabModule.app_models.MuestraEnBandeja import MuestraEnBandeja
+
+
 from LabModule.app_utils.cursores import *
 from LabModule.app_utils.notificaciones import enviar_correo
 
@@ -182,6 +191,66 @@ def muestra_list(request, template_name = 'muestras/listar.html'):
         return HttpResponse('No autorizado', status = 401)
 
 
+def muestra_position(request,pk,template_name='muestras/agregar.html'):
+    if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addSample"):
+        section='Guardar muestra'
+        muestra=get_object_or_404(Muestra,pk=pk)
+        form=MuestraAddForm(request.POST or None,maximo=disponibilidad_muestra(muestra))
+        if request.POST and form.is_valid():
+            cantidad=form.cleaned_data['cantidad']
+            rta,total=agregar_cantidad(muestra,cantidad)
+            return HttpResponse(json.dumps(rta))
+        context = {'section': section,'form':form,'muestra':muestra}
+        return render(request, template_name, context)
+    return HttpResponse('No autorizado', status = 401)
+
+def disponibilidad_muestra(muestra):
+    almacenamiento=muestra.alamacenamientos.all()
+    total=0
+    for alm in almacenamiento:
+        total+=alm.get_max_capacidad()
+        bandejas =Bandeja.getBandejas(alm)
+        for bandeja in bandejas:
+            muestras=MuestraEnBandeja.getPosiciones(bandeja)
+            for muestra in muestras:
+                total+=-1
+    return total
+def agregar_cantidad(muestra,cantidad):
+    almacenamiento=muestra.alamacenamientos.all().order_by('idSistema')
+    alamcenamientosArr=[]
+    total=0
+    for alm in almacenamiento:
+        bandejas =Bandeja.getBandejas(alm)
+        maximo=alm.numX*alm.numY
+        almacenamientodic={}
+        almacenamientodic['id']=alm.idSistema
+        bandejasar=[]
+        for bandeja in bandejas:
+            gradillasOcupadas=MuestraEnBandeja.getPosiciones(bandeja)
+            cant=maximo-gradillasOcupadas.count()
+            if cant>0:
+                matriz=[[0 for x in range(alm.numX)] for y in range(alm.numY)]
+                for gradilla in gradillasOcupadas:
+                    matriz[gradilla.posY-1][gradilla.posX-1]=1
+                bandejaDic={}
+                bandejaDic['bandejaId']=bandeja.posicion
+                bandejaDic['posiciones']=[]
+                for  y in range(alm.numY):
+                    for x in range(alm.numX):
+                        if matriz[y][x]==0 and total<cantidad:
+                            bandejaDic['posiciones'].append({'posX':x+1,'posY':y+1})
+                            m=MuestraEnBandeja(idBandeja=bandeja,idMuestra=muestra,posX=x+1,posY=y+1)
+                            m.save()
+                            total+=1
+            bandejasar.append(bandejaDic)
+            if total==cantidad:
+                break
+        
+        almacenamientodic['bandejas']=bandejasar
+        alamcenamientosArr.append(almacenamientodic)
+        if total==cantidad:
+            break
+    return alamcenamientosArr,total
 def obtenerBandejasMuestras(muestraId):
     "Obtiene la lista que va a poblar la grilla de presentacion del resumen de la solicitud"
 
@@ -202,3 +271,4 @@ def obtenerListadoMuestras(can_editSample):
         cursor.execute(query)
         rows = dictfetchall(cursor)
     return rows
+

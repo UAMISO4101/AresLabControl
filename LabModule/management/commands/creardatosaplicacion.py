@@ -217,14 +217,18 @@ def crear_almacenamientos():
                 print_status_message(status = mueble_is_created)
                 storage_history = storage_history | mueble_is_created
                 new_mueble.save()
-                if mueble_is_created:
-                    new_storage, storage_is_created = Almacenamiento.objects.get_or_create(mueble = new_mueble,
+                
+                new_storage, storage_is_created = Almacenamiento.objects.get_or_create(mueble = new_mueble,
                                                                                            temperatura = temperatura,
-                                                                                           numZ = capacidad,
-                                                                                           idSistema = id_storage)
+                                                                                           numZ = capacidad,idSistema = id_storage,numY=2,numX=5)
+                if storage_is_created:        
                     print_status_message(status = storage_is_created)
                     storage_history = storage_history | storage_is_created
                     new_storage.save()
+                    
+                    for i in range(1,capacidad+1):
+                        nueva_bandeja,bandeja_creada=Bandeja.objects.get_or_create(almacenamiento=new_storage,posicion=i)
+
                     if not created:
                         img_url = imagen
                         img_filename = urlparse(img_url).path.split('/')[-1]
@@ -268,6 +272,8 @@ def crear_muestras():
             imagen = row['imagen']
             unidad_base = row['unidadBase']
             id_almacenamiento = row['idAlmacenamiento']
+            posicion=row['posicion']
+            alamcenamientosPosibles = row['alamcenamientosPosibles']
             new_sample, sample_is_created = Muestra.objects.get_or_create(nombre = nombre,
                                                                           descripcion = descripcion,
                                                                           valor = valor,
@@ -284,60 +290,28 @@ def crear_muestras():
             new_storage.save()
 
             if sample_is_created:
+                new_sample.alamacenamientos.clear()
+                new_sample.alamacenamientos=Almacenamiento.objects.filter(idSistema__in=alamcenamientosPosibles)
                 img_url = imagen
                 img_filename = urlparse(img_url).path.split('/')[-1]
                 img_temp = NamedTemporaryFile()
                 img_temp.write(urllib2.urlopen(img_url).read())
                 img_temp.flush()
                 new_sample.imagen.save(img_filename, File(img_temp))
-                cuenta = Bandeja.objects.filter(almacenamiento = new_storage).count()
-                posicion = 1 if cuenta == 0 else cuenta + 1
                 new_tray, tray_is_created = Bandeja.objects.get_or_create(almacenamiento = new_storage,
                                                                           posicion = posicion)
                 print_status_message(status = tray_is_created)
                 sample_history = sample_history | exist_storage
-                new_tray.save()
-
-                new_muestra_bandeja, muestra_bandeja_is_created = MuestraEnBandeja.objects.get_or_create(
-                        idBandeja = new_tray,
-                        idMuestra = new_sample,
-                        posX = 1,
-                        posY = 1)
-                print_status_message(status = muestra_bandeja_is_created)
-                sample_history = sample_history | muestra_bandeja_is_created
-                new_muestra_bandeja.save()
-                new_muestra_bandeja, muestra_bandeja_is_created = MuestraEnBandeja.objects.get_or_create(
-                        idBandeja = new_tray,
-                        idMuestra = new_sample,
-                        posX = 1,
-                        posY = 2)
-                print_status_message(status = muestra_bandeja_is_created)
-                sample_history = sample_history | muestra_bandeja_is_created
-                new_muestra_bandeja.save()
-                new_muestra_bandeja, muestra_bandeja_is_created = MuestraEnBandeja.objects.get_or_create(
-                        idBandeja = new_tray,
-                        idMuestra = new_sample,
-                        posX = 1,
-                        posY = 3)
-                print_status_message(status = muestra_bandeja_is_created)
-                sample_history = sample_history | muestra_bandeja_is_created
-                new_muestra_bandeja.save()
-                new_muestra_bandeja, muestra_bandeja_is_created = MuestraEnBandeja.objects.get_or_create(
-                        idBandeja = new_tray,
-                        idMuestra = new_sample,
-                        posX = 1,
-                        posY = 4)
-                print_status_message(status = muestra_bandeja_is_created)
-                sample_history = sample_history | muestra_bandeja_is_created
-                new_muestra_bandeja.save()
-                new_muestra_bandeja, muestra_bandeja_is_created = MuestraEnBandeja.objects.get_or_create(
-                        idBandeja = new_tray,
-                        idMuestra = new_sample,
-                        posX = 1,
-                        posY = 5)
-                print_status_message(status = muestra_bandeja_is_created)
-                sample_history = sample_history | muestra_bandeja_is_created
-                new_muestra_bandeja.save()
+                for i in range (1,6):                    
+                    new_muestra_bandeja, muestra_bandeja_is_created = MuestraEnBandeja.objects.get_or_create(
+                            idBandeja = new_tray,
+                            idMuestra = new_sample,
+                            posX = i,
+                            posY = 1)
+                    print_status_message(status = muestra_bandeja_is_created)
+                    sample_history = sample_history | muestra_bandeja_is_created
+                    new_muestra_bandeja.save()
+                
     if sample_history:
         return 0
     return 1
