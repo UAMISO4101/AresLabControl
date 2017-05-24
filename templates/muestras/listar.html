@@ -3,84 +3,90 @@
 {% load lab_module_extras %}
 {% load humanize %}
 {% block head_others %}
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.jqueryui.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css">
-    <link href="{% static 'css/datatablesCustom.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.jqueryui.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css">
+<link href="{% static 'css/datatablesCustom.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
 
 {% block content %}
 
-    <div class="page-header text-center">
-        <h2>{% block title %}{{ section.title }}{% endblock %} </h2>
-    </div>
+<div class="page-header text-center">
+    <h2>{% block title %}{{ section.title }}{% endblock %} </h2>
+</div>
 
-    <div class="row">
-        <table id="muestras_table"
-               class="datatable display compact responsive nowrap"
-               cellspacing="0"
-               width="100%">
-            <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Precio</th>
-                <th>Unidad Base</th>
-                <th>Inventario</th>
-                <th>Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for muestra in detalle_completo %}
-                <tr class={{ muestra.controlado|yesno:"danger," }}>
-                    <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.id }}</td>
-                    <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.nombre }}</td>
-                    <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.valor | currency }}</td>
-                    <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.unidadBase }}</td>
-                    <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.cant_muestras }}</td>
-                    <td class={{ muestra.controlado|yesno:"danger," }}>
-                        {% if perms.LabModule.can_viewSample %}
-                            <a href="{% url 'muestra-detail' muestra.id %} "
-                               class="btn btn-primary"
-                               role="button">
-                                <span class="glyphicon glyphicon-search"></span>Ver</a>
-                        {% endif %}
-                        {% if perms.LabModule.can_requestSample %}
-                            <a href="{% url 'muestra-request' muestra.id %} "
-                               class="btn btn-primary"
-                               role="button">
-                                <span class="glyphicon glyphicon-asterisk"></span>Solicitar</a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<div class="row">
+    <table id="muestras_table"
+    class="datatable display compact responsive nowrap"
+    cellspacing="0"
+    width="100%">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Unidad Base</th>
+            <th>Inventario</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for muestra in detalle_completo %}
+        <tr class={{ muestra.controlado|yesno:"danger," }}>
+            <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.id }}</td>
+            <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.nombre }}</td>
+            <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.valor | currency }}</td>
+            <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.unidadBase }}</td>
+            <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.cant_muestras }}</td>
+            <td class={{ muestra.controlado|yesno:"danger," }}>
+                {% if perms.LabModule.can_viewSample %}
+                <a href="{% url 'muestra-detail' muestra.id %} "
+                class="btn btn-primary"
+                role="button">
+                <span class="glyphicon glyphicon-search"></span>Ver</a>
+                {% endif %}
+                {% if perms.LabModule.can_requestSample %}
+                <a href="{% url 'muestra-request' muestra.id %} "
+                class="btn btn-primary"
+                role="button">
+                <span class="glyphicon glyphicon-asterisk"></span>Solicitar</a>
+                {% endif %}
+                {% if perms.LabModule.can_addSample %}
+                <a href="{% url 'muestra-check-to-position' muestra.id %} "
+                class="btn btn-primary"
+                role="button">
+                <span class="glyphicon glyphicon-plus"></span>Guardar</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
 {% endblock %}
 {% block scripts_others %}
-    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
-    <script>
-        $(function () {
-            if ($.fn.dataTable.isDataTable('#muestras_table')) {
-                $('#muestras_table').DataTable();
-            }
-            else {
-                $('#muestras_table').DataTable({
-                    responsive: true,
-                    sPaginationType: "full_numbers",
-                    bJQueryUI: true,
-                    order: [[1, "asc"]],
-                    language: {
-                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
-                    }
-                });
-            }
-        });
-    </script>
+<script src="//code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
+<script>
+    $(function () {
+        if ($.fn.dataTable.isDataTable('#muestras_table')) {
+            $('#muestras_table').DataTable();
+        }
+        else {
+            $('#muestras_table').DataTable({
+                responsive: true,
+                sPaginationType: "full_numbers",
+                bJQueryUI: true,
+                order: [[1, "asc"]],
+                language: {
+                    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                }
+            });
+        }
+    });
+</script>
 {% endblock %}

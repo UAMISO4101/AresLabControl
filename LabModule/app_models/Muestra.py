@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
+from LabModule.app_models import Almacenamiento
 permissions_sample = (
     ('can_addSample', 'muestra||agregar'),
     ('can_editSample', 'muestra||editar'),
@@ -77,6 +77,9 @@ class Muestra(models.Model):
             null = True,
             verbose_name = _("Unidad de Medida")
     )
+    alamacenamientos=models.ManyToManyField(Almacenamiento)
 
     def __unicode__(self):
         return 'Muestra: ' + self.nombre
+
+    
