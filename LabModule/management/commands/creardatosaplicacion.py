@@ -218,13 +218,13 @@ def crear_almacenamientos():
                 storage_history = storage_history | mueble_is_created
                 new_mueble.save()
 
-                new_storage, storage_is_created = Almacenamiento.objects.get_or_create(mueble = new_mueble,
-                                                                                       temperatura = temperatura,
-                                                                                       numZ = capacidad,
-                                                                                       idSistema = id_storage,
-                                                                                       numY = 2,
-                                                                                       numX = 5)
-                if storage_is_created:
+                if mueble_is_created:
+                    new_storage, storage_is_created = Almacenamiento.objects.get_or_create(mueble = new_mueble,
+                                                                                           temperatura = temperatura,
+                                                                                           numZ = capacidad,
+                                                                                           idSistema = id_storage,
+                                                                                           numY = 2,
+                                                                                           numX = 5)
                     print_status_message(status = storage_is_created)
                     storage_history = storage_history | storage_is_created
                     new_storage.save()

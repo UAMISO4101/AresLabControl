@@ -151,7 +151,13 @@
                                 <strong>{{ formAlmacenamiento.numZ.label_tag }}</strong>
                             </div>
                             <div class="col-md-6">
-                                {{ formAlmacenamiento.numZ|addcss:"form-control" }}
+
+                                    {% if not section.agregar %}
+                                         {{ formAlmacenamiento.numZ|add_class:"form-control"|append_attr:"readonly" }}
+                                    {% else %}
+                                        {{ formAlmacenamiento.numZ|addcss:"form-control" }}
+                                    {% endif %}
+                               
                             </div>
                         </div>
 
@@ -167,7 +173,13 @@
                                 <strong>{{ formAlmacenamiento.numX.label_tag }}</strong>
                             </div>
                             <div class="col-md-6">
-                                {{ formAlmacenamiento.numX|addcss:"form-control" }}
+
+                                    {% if not section.agregar %}
+                                         {{ formAlmacenamiento.numX|add_class:"form-control"|append_attr:"readonly" }}
+                                    {% else %}
+                                        {{ formAlmacenamiento.numX|addcss:"form-control" }}
+                                    {% endif %}
+                               
                             </div>
                         </div>
 
@@ -183,7 +195,12 @@
                                 <strong>{{ formAlmacenamiento.numY.label_tag }}</strong>
                             </div>
                             <div class="col-md-6">
-                                {{ formAlmacenamiento.numY|addcss:"form-control" }}
+                               
+                                    {% if not section.agregar %}
+                                         {{ formAlmacenamiento.numY|add_class:"form-control"|append_attr:"readonly" }}
+                                    {% else %}
+                                        {{ formAlmacenamiento.numY|addcss:"form-control" }}
+                                    {% endif %}
                             </div>
                         </div>
                     </div>
