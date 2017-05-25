@@ -1,35 +1,31 @@
 # -*- coding: utf-8 -*-
-import os
-import json
 import copy
+import os
+
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import connection
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
-from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.contrib import messages
 
 from AresLabControl.settings import BASE_DIR, EMAIL_HOST_USER
-from LabModule.app_forms.Muestra import MuestraSolicitudForm
 from LabModule.app_forms.Muestra import MuestraAddForm
-
+from LabModule.app_forms.Muestra import MuestraSolicitudForm
 from LabModule.app_forms.Solicitud import SolicitudForm
+from LabModule.app_models.Bandeja import Bandeja
+from LabModule.app_models.MuebleEnLab import MuebleEnLab
 from LabModule.app_models.Muestra import Muestra
+from LabModule.app_models.MuestraEnBandeja import MuestraEnBandeja
 from LabModule.app_models.Paso import Paso
 from LabModule.app_models.Proyecto import Proyecto
 from LabModule.app_models.Solicitud import Solicitud
 from LabModule.app_models.SolicitudMuestra import SolicitudMuestra
 from LabModule.app_models.Usuario import Usuario
-from LabModule.app_models.Bandeja import Bandeja
-from LabModule.app_models.Almacenamiento import Almacenamiento
-from LabModule.app_models.MuestraEnBandeja import MuestraEnBandeja
-from LabModule.app_models.MuebleEnLab import MuebleEnLab
-
-
 from LabModule.app_utils.cursores import *
 from LabModule.app_utils.notificaciones import enviar_correo
 
@@ -193,7 +189,7 @@ def muestra_list(request, template_name = 'muestras/listar.html'):
         return HttpResponse('No autorizado', status = 401)
 
 
-def muestra_position(request,pk,template_name='muestras/agregar.html'):
+def muestra_position(request, pk, template_name = 'muestras/agregar.html'):
     """Retornar una lista con las ubicaciones de las muestras que se deben guardar
                 Historia de usuario: ALF-?? - 
                 Se encarga de:
@@ -205,28 +201,29 @@ def muestra_position(request,pk,template_name='muestras/agregar.html'):
             :returns: HttpResponse -- La respuesta a la petición, con información de la muestra existente.
         """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addSample"):
-        section='Guardar muestra'
-        muestra=get_object_or_404(Muestra,pk=pk)
-        form=MuestraAddForm(request.POST or None,maximo=disponibilidad_muestra(muestra))
+        section = 'Guardar muestra'
+        muestra = get_object_or_404(Muestra, pk = pk)
+        form = MuestraAddForm(request.POST or None, maximo = disponibilidad_muestra(muestra))
         if request.POST and form.is_valid():
-            cantidad=form.cleaned_data['cantidad']
-            rta,total=agregar_cantidad(muestra,cantidad)
-            section="Confirmar ubicación "
-            context = {'section': section,'muestra':muestra,'detalle_completo':rta}
-            seriali=[]
+            cantidad = form.cleaned_data['cantidad']
+            rta, total = agregar_cantidad(muestra, cantidad)
+            section = "Confirmar ubicación "
+            context = {'section': section, 'muestra': muestra, 'detalle_completo': rta}
+            seriali = []
             for bdg in rta:
-                ag={}
-                ag['bandeja']=bdg['bandeja'].id
-                ag['posX']=bdg['posX']
-                ag['posY']=bdg['posY']
+                ag = {}
+                ag['bandeja'] = bdg['bandeja'].id
+                ag['posX'] = bdg['posX']
+                ag['posY'] = bdg['posY']
                 seriali.append(ag)
             request.session['a_aprobar'] = seriali
-            return render(request,'muestras/detalle_guardado.html',context)
-        context = {'section': section,'form':form,'muestra':muestra}
+            return render(request, 'muestras/detalle_guardado.html', context)
+        context = {'section': section, 'form': form, 'muestra': muestra}
         return render(request, template_name, context)
     return HttpResponse('No autorizado', status = 401)
 
-def muestra_save(request,pk):
+
+def muestra_save(request, pk):
     """Guarda las muestras en la base de datos utilizando la sesión como apoyo
             :param request: El HttpRequest que se va a responder.cls
             :type request: HttpRequest.
@@ -236,27 +233,27 @@ def muestra_save(request,pk):
         """
     if request.user.is_authenticated() and request.user.has_perm("LabModule.can_addSample"):
         a_aprobar = request.session.get('a_aprobar')
-        creadas=copy.copy(a_aprobar)
-        muestra2=Muestra.objects.get(id=pk)
+        creadas = copy.copy(a_aprobar)
+        muestra2 = Muestra.objects.get(id = pk)
         for muestra in a_aprobar:
             try:
-                bandeja=Bandeja.objects.get(id=muestra['bandeja'])
-                x=muestra['posX']
-                y=muestra['posY']
-                creada,existia=MuestraEnBandeja.objects.get_or_create(idMuestra=muestra2,idBandeja=bandeja,posX=x,posY=y)
+                bandeja = Bandeja.objects.get(id = muestra['bandeja'])
+                x = muestra['posX']
+                y = muestra['posY']
+                creada, existia = MuestraEnBandeja.objects.get_or_create(idMuestra = muestra2, idBandeja = bandeja,
+                                                                         posX = x, posY = y)
                 if existia:
                     creadas.remove(muestra)
                 else:
                     print(creada)
             except Exception as e:
-                 print(str(e))
-        if not len(creadas)==0:
-            messages.error(request, 'Algunas de las muestras no pudieron ser guardadas'+str(len(creadas)),extra_tags='alert-danger')
+                print(str(e))
+        if not len(creadas) == 0:
+            messages.error(request, 'Algunas de las muestras no pudieron ser guardadas' + str(len(creadas)),
+                           extra_tags = 'alert-danger')
         else:
-            messages.success(request,'Las muestras se han agregado exitosamente')
+            messages.success(request, 'Las muestras se han agregado exitosamente')
         return redirect(reverse('muestra-detail', kwargs = {'pk': pk}))
-       
-            
 
 
 def disponibilidad_muestra(muestra):
@@ -265,17 +262,19 @@ def disponibilidad_muestra(muestra):
             :type muestra: Muestra.
            :returns: int -- El número de espacios dispnibles para guardar la meuestra
     """
-    almacenamiento=muestra.alamacenamientos.all()
-    total=0
+    almacenamiento = muestra.alamacenamientos.all()
+    total = 0
     for alm in almacenamiento:
-        total+=alm.get_max_capacidad()
-        bandejas =Bandeja.getBandejas(alm)
+        total += alm.get_max_capacidad()
+        bandejas = Bandeja.getBandejas(alm)
         for bandeja in bandejas:
-            muestras=MuestraEnBandeja.getPosiciones(bandeja)
+            muestras = MuestraEnBandeja.getPosiciones(bandeja)
             for muestra in muestras:
-                total+=-1
+                total += -1
     return total
-def agregar_cantidad(muestra,cantidad):
+
+
+def agregar_cantidad(muestra, cantidad):
     """Auxiliar para listar las posiciones en la que se puede guardar una cantidad de la muestra
             :param muestra: La muestra a la que se va a consultar
             :type muestra: Muestra
@@ -283,38 +282,39 @@ def agregar_cantidad(muestra,cantidad):
             :type cantidad: Int
             :returns: int -- El número de espacios dispnibles para guardar la meuestra
     """
-    almacenamiento=muestra.alamacenamientos.all().order_by('idSistema')
-    alamcenamientosArr=[]
-    total=0
+    almacenamiento = muestra.alamacenamientos.all().order_by('idSistema')
+    alamcenamientosArr = []
+    total = 0
     for alm in almacenamiento:
-        bandejas =Bandeja.getBandejas(alm)
-        maximo=alm.numX*alm.numY
-        muebleEnLab=MuebleEnLab.objects.get(idMueble=alm.mueble)
+        bandejas = Bandeja.getBandejas(alm)
+        maximo = alm.numX * alm.numY
+        muebleEnLab = MuebleEnLab.objects.get(idMueble = alm.mueble)
         for bandeja in bandejas:
-            gradillasOcupadas=MuestraEnBandeja.getPosiciones(bandeja)
-            cant=maximo-gradillasOcupadas.count()
-            if cant>0:
-                matriz=[[0 for x in range(alm.numX)] for y in range(alm.numY)]
+            gradillasOcupadas = MuestraEnBandeja.getPosiciones(bandeja)
+            cant = maximo - gradillasOcupadas.count()
+            if cant > 0:
+                matriz = [[0 for x in range(alm.numX)] for y in range(alm.numY)]
                 for gradilla in gradillasOcupadas:
-                    matriz[gradilla.posY-1][gradilla.posX-1]=1
-                for  y in range(alm.numY):
+                    matriz[gradilla.posY - 1][gradilla.posX - 1] = 1
+                for y in range(alm.numY):
                     for x in range(alm.numX):
-                        if matriz[y][x]==0 and total<cantidad:
-                            detalle={}
-                            detalle['muebleEnLab']=muebleEnLab
-                            detalle['alma']=alm
-                            detalle['bandeja']=bandeja
-                            detalle['posX']=x+1
-                            detalle['posY']=y+1
+                        if matriz[y][x] == 0 and total < cantidad:
+                            detalle = {}
+                            detalle['muebleEnLab'] = muebleEnLab
+                            detalle['alma'] = alm
+                            detalle['bandeja'] = bandeja
+                            detalle['posX'] = x + 1
+                            detalle['posY'] = y + 1
                             alamcenamientosArr.append(detalle)
-                            total+=1
-            if total==cantidad:
+                            total += 1
+            if total == cantidad:
                 break
-        
 
-        if total==cantidad:
+        if total == cantidad:
             break
-    return alamcenamientosArr,total
+    return alamcenamientosArr, total
+
+
 def obtenerBandejasMuestras(muestraId):
     "Obtiene la lista que va a poblar la grilla de presentacion del resumen de la solicitud"
 
@@ -335,4 +335,3 @@ def obtenerListadoMuestras(can_editSample):
         cursor.execute(query)
         rows = dictfetchall(cursor)
     return rows
-

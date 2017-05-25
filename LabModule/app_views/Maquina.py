@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 
-import datetime
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.exceptions import MultipleObjectsReturned
@@ -64,8 +63,8 @@ def maquina_add(request, template_name = 'maquinas/agregar.html'):
                    'formPos'    : formPos,
                    'mensaje'    : mensaje,
                    'section'    : section,
-                   'start': request.GET.get('start', ''),
-                   'end': request.GET.get('end', '')
+                   'start'      : request.GET.get('start', ''),
+                   'end'        : request.GET.get('end', '')
                    }
         return render(request, template_name, context)
     else:
@@ -122,7 +121,7 @@ def maquina_update(request, pk, template_name = 'maquinas/agregar.html'):
         inst_maquina = get_object_or_404(Maquina, pk = pk)
         inst_mueble = inst_maquina.mueble
         inst_ubicacion = get_object_or_404(MuebleEnLab, idMueble = inst_mueble)
-        inst_maquina.fechaInicialDisp=inst_maquina.fechaInicialDisp.strftime("%Y-%m-%d %H:%M")
+        inst_maquina.fechaInicialDisp = inst_maquina.fechaInicialDisp.strftime("%Y-%m-%d %H:%M")
         inst_maquina.fechaFinalDisp = inst_maquina.fechaFinalDisp.strftime("%Y-%m-%d %H:%M")
         form = MuebleForm(request.POST or None,
                           request.FILES or None,
@@ -244,13 +243,12 @@ def maquina_request(request, pk, template_name = 'maquinas/solicitar.html'):
                 if form.verificar_fecha(inst_maquina.pk,
                                         request.POST['fechaInicial'],
                                         request.POST['fechaFinal']) == True:
-                    if form.verificarDisponibilidad(start,end,request.POST['fechaInicial'],request.POST['fechaFinal'])==True:
+                    if form.verificarDisponibilidad(start, end, request.POST['fechaInicial'],
+                                                    request.POST['fechaFinal']) == True:
                         requestObj = Solicitud()
                         requestObj.descripcion = 'Solicitud de Maquina'
                         requestObj.fechaInicial = request.POST['fechaInicial']
                         requestObj.fechaFinal = request.POST['fechaFinal']
-
-
 
                         if inst_maquina.con_reserva == True:
                             requestObj.estado = 'creada'
@@ -273,7 +271,7 @@ def maquina_request(request, pk, template_name = 'maquinas/solicitar.html'):
 
                         return redirect(reverse('maquina-detail', kwargs = {'pk': pk}))
                     else:
-                        mensaje="Las fechas de solicitud estan por fuera de las fechas de disponibilidad"
+                        mensaje = "Las fechas de solicitud estan por fuera de las fechas de disponibilidad"
                 else:
                     mensaje = "Ya existe una solicitud para estas fechas"
 
@@ -335,28 +333,28 @@ def comprobarPostMaquina(form, formMaquina, formPos, request, template_name, sec
         es_ubicacion_libre = formPos.es_ubicacion_libre()
 
         if section['agregar'] and not es_ubicacion_libre:
-           messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags = "danger")
+            messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags = "danger")
         else:
             if not section['agregar'] and not formPos.es_el_mismo_mueble(new_furniture.id,
                                                                          idLaboratorio,
                                                                          posX,
-                                                                         posY) \
+                                                                         posY)\
                     and not es_ubicacion_libre:
-                messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags="danger")
+                messages.error(request, "El lugar en el que desea guadar ya esta ocupado", extra_tags = "danger")
             else:
                 if not formPos.es_ubicacion_rango(posX, posY):
-                    if 'posX' in formPos.errors and formPos.errors['posX'] is not None \
+                    if 'posX' in formPos.errors and formPos.errors['posX'] is not None\
                             and formPos.errors['posX'][0] == 'La columna ya esta ocupada':
                         del formPos.errors['posX'][0]
 
-                    if 'posY' in formPos.errors and formPos.errors['posY'] is not None \
+                    if 'posY' in formPos.errors and formPos.errors['posY'] is not None\
                             and formPos.errors['posY'][0] == 'La fila ya esta ocupada':
                         del formPos.errors['posY'][0]
 
-                    mensaje = "La posición [" + \
-                              str(new_machine_loc.posX) + "," + \
+                    mensaje = "La posición [" +\
+                              str(new_machine_loc.posX) + "," +\
                               str(new_machine_loc.posY) + "] no se encuentra en el rango del laboratorio"
-                    messages.error(request, mensaje, extra_tags="danger")
+                    messages.error(request, mensaje, extra_tags = "danger")
                 else:
                     new_furniture.save()
                     new_machine.mueble = new_furniture
@@ -368,13 +366,13 @@ def comprobarPostMaquina(form, formMaquina, formPos, request, template_name, sec
                         messages.success(request, "La máquina se añadió exitosamente")
                     else:
                         messages.success(request, "La máquina se actualizó correctamente")
-                    return redirect(reverse('maquina-detail', kwargs={'pk': new_machine.pk}))
+                    return redirect(reverse('maquina-detail', kwargs = {'pk': new_machine.pk}))
     context = {'form'       : form,
                'formMaquina': formMaquina,
                'formPos'    : formPos,
                'mensaje'    : mensaje,
                'section'    : section,
-               'start': request.GET.get('start', ''),
-               'end': request.GET.get('end', '')
+               'start'      : request.GET.get('start', ''),
+               'end'        : request.GET.get('end', '')
                }
     return render(request, template_name, context)

@@ -14,6 +14,38 @@
         <h2>{{ section.title }}</h2>
     </div>
 
+
+{% if form.errors %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if formAlmacenamiento.errors %}
+    {% for error in formAlmacenamiento.non_field_errors %}
+        <div class="alert alert-danger">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+{% if formPos.errors %}
+    {% for error in formPos.non_field_errors %}
+        <div class="alert alert-danger">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
     <form id="formLugar" name="formLugar" enctype="multipart/form-data" method="post">
         {% csrf_token %}
         <div class="panel panel-default">
@@ -151,7 +183,13 @@
                                 <strong>{{ formAlmacenamiento.numZ.label_tag }}</strong>
                             </div>
                             <div class="col-md-6">
-                                {{ formAlmacenamiento.numZ|addcss:"form-control" }}
+
+                                    {% if not section.agregar %}
+                                         {{ formAlmacenamiento.numZ|add_class:"form-control"|append_attr:"readonly" }}
+                                    {% else %}
+                                        {{ formAlmacenamiento.numZ|addcss:"form-control" }}
+                                    {% endif %}
+                               
                             </div>
                         </div>
 
@@ -167,7 +205,13 @@
                                 <strong>{{ formAlmacenamiento.numX.label_tag }}</strong>
                             </div>
                             <div class="col-md-6">
-                                {{ formAlmacenamiento.numX|addcss:"form-control" }}
+
+                                    {% if not section.agregar %}
+                                         {{ formAlmacenamiento.numX|add_class:"form-control"|append_attr:"readonly" }}
+                                    {% else %}
+                                        {{ formAlmacenamiento.numX|addcss:"form-control" }}
+                                    {% endif %}
+                               
                             </div>
                         </div>
 
@@ -183,7 +227,12 @@
                                 <strong>{{ formAlmacenamiento.numY.label_tag }}</strong>
                             </div>
                             <div class="col-md-6">
-                                {{ formAlmacenamiento.numY|addcss:"form-control" }}
+                               
+                                    {% if not section.agregar %}
+                                         {{ formAlmacenamiento.numY|add_class:"form-control"|append_attr:"readonly" }}
+                                    {% else %}
+                                        {{ formAlmacenamiento.numY|addcss:"form-control" }}
+                                    {% endif %}
                             </div>
                         </div>
                     </div>

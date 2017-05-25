@@ -217,17 +217,23 @@ def crear_almacenamientos():
                 print_status_message(status = mueble_is_created)
                 storage_history = storage_history | mueble_is_created
                 new_mueble.save()
-                
-                new_storage, storage_is_created = Almacenamiento.objects.get_or_create(mueble = new_mueble,
+
+                if mueble_is_created:
+                    new_storage, storage_is_created = Almacenamiento.objects.get_or_create(mueble = new_mueble,
                                                                                            temperatura = temperatura,
-                                                                                           numZ = capacidad,idSistema = id_storage,numY=2,numX=5)
-                if storage_is_created:        
+                                                                                           numZ = capacidad,
+                                                                                           idSistema = id_storage,
+                                                                                           numY = 2,
+                                                                                           numX = 5)
                     print_status_message(status = storage_is_created)
                     storage_history = storage_history | storage_is_created
                     new_storage.save()
-                    
-                    for i in range(1,capacidad+1):
-                        nueva_bandeja,bandeja_creada=Bandeja.objects.get_or_create(almacenamiento=new_storage,posicion=i)
+
+                    for j in range(1, capacidad + 1):
+                        nueva_bandeja, bandeja_creada = Bandeja.objects.get_or_create(almacenamiento = new_storage,
+                                                                                      posicion = j)
+                        storage_history = storage_history | bandeja_creada
+                        nueva_bandeja.save()
 
                     if not created:
                         img_url = imagen
@@ -272,7 +278,7 @@ def crear_muestras():
             imagen = row['imagen']
             unidad_base = row['unidadBase']
             id_almacenamiento = row['idAlmacenamiento']
-            posicion=row['posicion']
+            posicion = row['posicion']
             alamcenamientosPosibles = row['alamcenamientosPosibles']
             new_sample, sample_is_created = Muestra.objects.get_or_create(nombre = nombre,
                                                                           descripcion = descripcion,
@@ -291,7 +297,7 @@ def crear_muestras():
 
             if sample_is_created:
                 new_sample.alamacenamientos.clear()
-                new_sample.alamacenamientos=Almacenamiento.objects.filter(idSistema__in=alamcenamientosPosibles)
+                new_sample.alamacenamientos = Almacenamiento.objects.filter(idSistema__in = alamcenamientosPosibles)
                 img_url = imagen
                 img_filename = urlparse(img_url).path.split('/')[-1]
                 img_temp = NamedTemporaryFile()
@@ -302,7 +308,7 @@ def crear_muestras():
                                                                           posicion = posicion)
                 print_status_message(status = tray_is_created)
                 sample_history = sample_history | exist_storage
-                for i in range (1,6):                    
+                for i in range(1, 6):
                     new_muestra_bandeja, muestra_bandeja_is_created = MuestraEnBandeja.objects.get_or_create(
                             idBandeja = new_tray,
                             idMuestra = new_sample,
@@ -311,7 +317,7 @@ def crear_muestras():
                     print_status_message(status = muestra_bandeja_is_created)
                     sample_history = sample_history | muestra_bandeja_is_created
                     new_muestra_bandeja.save()
-                
+
     if sample_history:
         return 0
     return 1
