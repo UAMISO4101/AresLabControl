@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load lab_module_extras %}
+{% load widget_tweaks %}
 {% block head_others %}
-
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.jqueryui.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css">
@@ -11,7 +12,6 @@
 {% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
 
 {% block content %}
-
     <div class="page-header text-center">
         <h2>{% block title %}{{ section.title }}{% endblock %} </h2>
     </div>
@@ -24,45 +24,64 @@
             <th>Nombre</th>
             <th>Ubicación</th>
             <th>Temp(Grados)</th>
+            <th>Protocolo</th>
+            <th>Bandeja</th>
+            <th>Muestra</th>
             <th>Acciones</th>
         </tr>
         </thead>
-
         <tbody>
 
-        {% for lugar,ubicacion in lista_lugares %}
+        {% for lugar in lista_lugares %}
             <tr>
-                <td>{{ lugar.id }}</td>
+                <td>{{ lugar.idSistema }}</td>
                 <td>{{ lugar.nombre }}</td>
-                <td>{{ ubicacion }}</td>
+                <td>{{ lugar.ubicacion }}</td>
                 <td>{{ lugar.temperatura }}ºC</td>
+
+                {% if lugar.protocolo is None %}
+                    <td>Ninguno</td>
+                {% else %}
+                    <td>{{ lugar.protocolo }}</td>
+                {% endif %}
+
+                {% if lugar.bandeja is None %}
+                    <td>Ninguno</td>
+                {% else %}
+                    <td>{{ lugar.bandeja }}</td>
+                {% endif %}
+
+                {% if lugar.muestra is None %}
+                    <td>Ninguno</td>
+                {% else %}
+                    <td>{{ lugar.muestra }}</td>
+                {% endif %}
+
                 <td>
                     {% if perms.LabModule.can_viewStorage %}
-                        <a href="{% url 'lugar-detail' lugar.id %} "
-                           class="btn btn-primary"
-                           role="button">Ver</a>
+                        <a href="{% url 'lugar-detail' lugar.idSistema %}"
+                           class="btn btn-primary">
+                            <span class="glyphicon glyphicon-search"></span>Ver</a>
                     {% endif %}
                     {% if perms.LabModule.can_editStorage %}
-                        <a href="{% url 'lugar-update' lugar.id %} "
-                           class="btn btn-primary {{ maquina.con_reserva|yesno:"danger," }}"
-                           role="button">Editar</a>
+                        <a href="{% url 'lugar-update' lugar.idSistema %}"
+                           class="btn btn-primary">
+                            <span class="glyphicon glyphicon-pencil"></span>Editar</a>
                     {% endif %}
-
                 </td>
             </tr>
         {% endfor %}
+
         </tbody>
     </table>
 {% endblock %}
 {% block scripts_others %}
-
     <script src="//code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
     <script>
         $(function () {
-
             if ($.fn.dataTable.isDataTable('#lugares_table')) {
                 $('#lugares_table').DataTable();
             }
@@ -71,6 +90,7 @@
                     responsive: true,
                     sPaginationType: "full_numbers",
                     bJQueryUI: true,
+                    order: [[1, "asc"]],
                     language: {
                         "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
                     }
@@ -78,4 +98,4 @@
             }
         });
     </script>
-{% endblock %}v
+{% endblock %}

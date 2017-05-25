@@ -13,10 +13,9 @@ from django.test import Client
 from django.test import RequestFactory
 from django.test import TestCase
 
-from LabModule.views import muestra_detail
-from LabModule.views import muestra_list
+from LabModule.app_views.Muestra import muestra_detail, muestra_list
 
-c = Client(HTTP_USER_AGENT='Mozilla/5.0')
+c = Client(HTTP_USER_AGENT = 'Mozilla/5.0')
 CONTRASENA = getattr(settings, "CONTRASENA")
 
 
@@ -49,8 +48,8 @@ class ListarMuestras(TestCase):
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
         self.anomimus = AnonymousUser()
-        self.client = Client(HTTP_USER_AGENT='Mozilla/5.0')
-        self.client.login(username='mgalindo1', password=CONTRASENA)
+        self.client = Client(HTTP_USER_AGENT = 'Mozilla/5.0')
+        self.client.login(username = 'mgalindo1', password = CONTRASENA)
 
     def test_IngresarURL(self):
         """ Comprueba que solo los usuarios autorizados puedan acceder a la lista de muestras
@@ -84,9 +83,9 @@ class DetalleMuestra(TestCase):
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
         self.anomimus = AnonymousUser()
-        self.user = User.objects.filter(username='mgalindo1').first()
-        self.client = Client(HTTP_USER_AGENT='Mozilla/5.0')
-        self.client.login(username='mgalindo1', password=CONTRASENA)
+        self.user = User.objects.filter(username = 'mgalindo1').first()
+        self.client = Client(HTTP_USER_AGENT = 'Mozilla/5.0')
+        self.client.login(username = 'mgalindo1', password = CONTRASENA)
 
     def test_IngresarURL(self):
         """ Comprueba que solo los usuarios autorizados puedan acceder a la lista de muestras

@@ -1,5 +1,3 @@
-
-
 {% load i18n staticfiles %}
 {% load staticfiles %}
 
@@ -18,7 +16,6 @@
 <script src='https://fullcalendar.io/js/fullcalendar-3.1.0/lib/moment.min.js'></script>
 <script src='https://fullcalendar.io/js/fullcalendar-3.1.0/lib/jquery-ui.min.js'></script>
 <script src='https://fullcalendar.io/js/fullcalendar-3.1.0/fullcalendar.min.js'></script>
-
 <script src='{% static 'js/es.js' %}'></script>
 
 <link rel='stylesheet' href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css"/>
@@ -60,39 +57,40 @@
                     element.find('.fc-content').append("<br/>" + event.paso);
                 }
 
-                if(event.start.isBefore(moment()-5 * 3600 * 1000)) {
-                     element.find('.fc-content').append("<br/>" + "No se pueden seleccionar fechas pasadas")
-                      element.css("background", "red");
+                if (event.start.isBefore(moment() - 5 * 3600 * 1000)) {
+                    element.find('.fc-content').append("<br/>" + "No se pueden seleccionar fechas pasadas")
+                    element.css("background", "red");
                 }
-                element.find('.fc-event').className+=event.className;
+
+                element.find('.fc-event').className += event.className;
             },
             select: function (start, end, jsEvent, view) {
 
-                if((start).isBefore(moment()-5 * 3600 * 1000)) {
+                if ((start).isBefore(moment() - 5 * 3600 * 1000)) {
                     $('#calendar').fullCalendar('unselect');
                     return false;
                 }
 
                 if (view.name === "agendaDay" || view.name === "agendaWeek") {
-                    id = 1
+                    id = 1;
                     {% if perms.LabModule.can_requestMachine %}
-                    window.location.href = "/maquina/solicitar/?id={{maquina.idSistema}}&start=" + start + "&end=" + end;
-                    var title = null;
+                        window.location.href = "/maquina/solicitar/{{maquina.idSistema}}/?start=" + start + "&end=" + end;
+                        var title = null;
                     {% endif %}
                     $('#calendar').fullCalendar('unselect');
                 }
             },
             editable: true,
-            events: '/maquina/events/{{maquina.idSistema}}'
+            events: '{%url 's-maquina-reservations' maquina.idSistema %}'
         });
 
         $('#calendar').fullCalendar('render');
     });
     {% if perms.LabModule.can_editMachine %}
-    $("#formMaquina").submit(function (e) {
-        e.preventDefault();
-        console.log($('#calendar').fullCalendar('clientEvents'))
-    });
+        $("#formMaquina").submit(function (e) {
+            e.preventDefault();
+            console.log($('#calendar').fullCalendar('clientEvents'))
+        });
     {% endif %}
 </script>
 

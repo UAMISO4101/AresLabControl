@@ -1,187 +1,284 @@
 {% extends 'base.html' %}
 
 {% load lab_module_extras %}
+{% load widget_tweaks %}
 {% load staticfiles %}
 {% block head_others %}
     <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css"
+          rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css"
+          rel="stylesheet">
 {% endblock %}
 {% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
 
 {% block content %}
-    {% if mensaje != "" %}
-        <div class="alert alert-danger ">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            {{ mensaje }}
-        </div>
-    {% endif %}
-
-    {% for error in form.errors %}
-        <div class="alert alert-danger">
-            Campo: <strong>{{ error|escape }}</strong>
-        </div>
-    {% endfor %}
-
-    {% for error in formPos.errors %}
-        <div class="alert alert-danger">
-            Campo: <strong>{{ error|escape }}</strong>
-        </div>
-    {% endfor %}
-
-    {% for error in formPos.non_field_errors %}
-        <div class="alert alert-danger">
-            <strong>{{ error|escape }}</strong>
-        </div>
-    {% endfor %}
-
-    {% for error in form.non_field_errors %}
-        <div class="alert alert-danger">
-            <strong>{{ error|escape }}</strong>
-        </div>
-    {% endfor %}
-
+    <div id="mensajes-error"></div>
     <div class="page-header text-center">
         <h2>{{ section.title }}</h2>
     </div>
 
-    {% if perms.LabModule.can_editMachine %}
-        <form id="formMaquina" naombre="formMaquina" enctype="multipart/form-data" method="post">
+    <form id="formMaquina" name="formMaquina" enctype="multipart/form-data" method="post" onsubmit="return validateForm();">
         {% csrf_token %}
-    {% endif %}
-<div class="panel panel-default">
-    <div class="panel-heading ">
-        <h3 class="panel-title text-left">Información Básica</h3>
-    </div>
+        <div class="panel panel-default">
+            <div class="panel-heading ">
+                <h3 class="panel-title text-left">Información Básica</h3>
+            </div>
 
-    <div class="panel-body text-left">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-5 col-sm-6">
+            <div class="panel-body text-left">
+                <div class="container">
                     <div class="row">
-                        <div class="col-md-3">
-                            <strong>{{ form.nombre.label_tag }}</strong>
-                        </div>
-                        <div class="col-md-7 col-sm-4">
-                            {{ form.nombre|addcss:"form-control" }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <strong>{{ form.idSistema.label_tag }}</strong>
-                        </div>
-                        <div class="col-md-7 col-sm-4">
-                            {{ form.idSistema|addcss:"form-control" }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <strong>{{ form.descripcion.label_tag }}</strong>
-                        </div>
-                        <div class="col-md-7 col-sm-4">
-                            {{ form.descripcion|addcss:"form-control" }}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-5 col-sm-6">
-                    <div class="row">
-                        <div>
-                            <strong>{{ form.imagen.label_tag }}</strong>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {% if not section.agregar %}
-                            <div class="panel panel-default">
-                                <div class="panel-body text-left" style="text-align:center">
-                                    <a href="{{ form.instance.imagen.url }}" target="_blank">
-                                        <img src="{{ form.instance.imagen.url }} " alt="Imagen Máquina"
-                                             class="imageIndex" style="width:60%" ;>
-                                    </a>
+                        <div class="col-md-5 col-sm-6">
+
+                            <div class="row">
+                                {% for error in formMaquina.idSistema.errors %}
+                                    <div class="col-md-12">
+                                        <div class="alert alert-danger ">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <div class="col-md-3">
+                                    <strong>{{ formMaquina.idSistema.label_tag }}</strong>
+                                </div>
+                                <div class="col-md-7 col-sm-4">
+                                    {% if not section.agregar %}
+                                        {{ formMaquina.idSistema|add_class:"form-control"|append_attr:"readonly" }}
+                                    {% else %}
+                                        {{ formMaquina.idSistema|add_class:"form-control" }}
+                                    {% endif %}
                                 </div>
                             </div>
-                        {% endif %}
-                    </div>
-                    <div class=" row">
-                        {{ form.imagen }}
+
+                            <div class="row">
+                                {% for error in form.nombre.errors %}
+                                    <div class="col-md-12">
+                                        <div class="alert alert-danger ">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <div class="col-md-3">
+                                    <strong>{{ form.nombre.label_tag }}</strong>
+                                </div>
+                                <div class="col-md-7 col-sm-4">
+                                    {{ form.nombre|addcss:"form-control" }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                {% for error in form.descripcion.errors %}
+                                    <div class="col-md-12">
+                                        <div class="alert alert-danger ">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <div class="col-md-3">
+                                    <strong>{{ form.descripcion.label_tag }}</strong>
+                                </div>
+                                <div class="col-md-7 col-sm-4">
+                                    {{ form.descripcion|addcss:"form-control" }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-5 col-sm-6">
+                            {% for error in form.imagen.errors %}
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger ">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="row">
+                                <div>
+                                    <strong>{{ form.imagen.label_tag }}</strong>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                {% if not section.agregar %}
+                                    <div class="panel panel-default">
+                                        <div class="panel-body text-left" style="text-align:center">
+                                            <a href="{{ form.instance.imagen.url }}" target="_blank">
+                                                <img src="{{ form.instance.imagen.url }} " alt="Imagen Máquina"
+                                                     class="imageIndex" style="width:60%" ;>
+                                            </a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class=" row">
+                                {{ form.imagen }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title text-left">Ubicación</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-left">Estado</h3>
+                    </div>
+                    <div class="panel-body text-left">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>{{ formMaquina.con_reserva.label_tag }}</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{ formMaquina.con_reserva|addcss:"form-control" }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>{{ form.estado.label_tag }}</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.estado|addcss:"form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="panel-body text-left" style="height:140px">
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>{{ formPos.idLaboratorio.label_tag }}</strong>
-                    </div>
-                    <div class="col-md-6">
-                        {{ formPos.idLaboratorio|addcss:"form-control" }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>Localización:</strong>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>{{ formPos.posX.label_tag }}</strong>
-                    </div>
-                    <div class="col-md-6">
-                        {{ formPos.posX|addcss:"form-control" }}
-                    </div>
 
-                    <div class="col-md-6">
-                        <strong>{{ formPos.posY.label_tag }}</strong>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-left">Ubicación</h3>
                     </div>
-                    <div class="col-md-6">
-                        {{ formPos.posY|addcss:"form-control" }}
+                    <div class="panel-body text-left">
+
+                        <div class="row">
+                            {% for error in formPos.idLaboratorio.errors %}
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger ">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="col-md-6">
+                                <strong>{{ formPos.idLaboratorio.label_tag }}</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{ formPos.idLaboratorio|addcss:"form-control" }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Localización:</strong>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            {% for error in formPos.posX.errors %}
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger ">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="col-md-6">
+                                <strong>{{ formPos.posX.label_tag }}</strong>
+                            </div>
+                            {% for error in formPos.posY.errors %}
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger ">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="col-md-6">
+                                {{ formPos.posX|addcss:"form-control" }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <strong>{{ formPos.posY.label_tag }}</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{ formPos.posY|addcss:"form-control" }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title text-left">Estado</h3>
-            </div>
-            <div class="panel-body text-left" style="height:140px">
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>{{ form.con_reserva.label_tag }}</strong>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-left">Fechas de disponibilidad</h3>
                     </div>
-                    <div class="col-md-6">
-                        {{ form.con_reserva|addcss:"form-control" }}
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>{{ form.activa.label_tag }}</strong>
-                    </div>
-                    <div class="col-md-6">
-                        {{ form.activa|addcss:"form-control" }}
+                    <div class="panel-body text-left">
+                            {% for error in formMaquina.fechaInicialDisp.errors %}
+                                    <div class="col-md-12">
+                                        <div class="alert alert-danger ">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            <div class="col-md-3">
+                                <strong>Fecha inicial</strong>
+                            </div>
+                            <div class="col-md-3">
+                                {{ formMaquina.fechaInicialDisp|addcss:"form-control date" }}
+                            </div>
+                            {% for error in formMaquina.fechaFinalDisp.errors %}
+                                    <div class="col-md-12">
+                                        <div class="alert alert-danger ">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            <div class="col-md-3">
+                                <strong>Fecha final</strong>
+                            </div>
+                            <div class="col-md-3">
+                                {{ formMaquina.fechaFinalDisp|addcss:"form-control date" }}
+                            </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-{% if perms.LabModule.can_editMachine %}
-    <div class="row center">
-        <div>
-            <input class="btn btn-primary" type="submit" value="Guardar"/>
-            <a class="btn btn-default" href="/" id="cancel" name="cancel">Cancelar</a>
+        <div class="row center">
+            <div>
+                <input class="btn btn-primary" type="submit" value="Guardar"/>
+                <a class="btn btn-default" href="{% url 'maquina-list' %}" id="cancel" name="cancel">Cancelar</a>
+            </div>
         </div>
-    </div>
-{% endif %}
-</form>
+    </form>
+{% endblock %}
+{% block scripts_others %}
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="{% static 'js/boot-es.js' %}"></script>
+    <script src="{% static 'js/crear_maquina.js' %}"></script>
+    <script>
+        var defaultDateEnd = {};
+        var defaultDateStart = {};
+        var minDateStart = null;
+        var minDateEnd = null;
+
+        {% if end.strip %}
+            defaultDateEnd = new Date({{end}}+5 * 3600 * 1000);
+        {% endif %}
+        {% if start.strip  %}
+            defaultDateStart = new Date({{start}}+5 * 3600 * 1000);
+        {% endif %}
+        {% if start != "" %}
+            minDateStart = new Date(({{start}}+5 * 3600 * 1000));
+            minDateEnd = new Date(({{end}}+5 * 3600 * 1000));
+        {% endif %}
+        iniciarFechas(defaultDateEnd, defaultDateStart, minDateEnd, minDateStart);
+    </script>
 {% endblock %}

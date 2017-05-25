@@ -1,13 +1,13 @@
-nombre,descripcion,Tipo,valor,activa,controlado,imagen,unidadBase,idAlmacenamiento
-Escherichia coli,Esta es la descripci贸n de una muestra,Materiales vivos,3,true,true,http://www.abc.es/Media/201105/30/escherichia-coli-sintomas--644x362.jpg,sobre,LUGAR26
-Bacillus subtilis,Esta es la descripci贸n de una muestra,Materiales vivos,5,true,true,https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Bacillus_subtilis.jpg/1200px-Bacillus_subtilis.jpg,sobre,LUGAR26
-Levaduras,Esta es la descripci贸n de una muestra,Materiales vivos,100,true,false,http://www.catadelvino.com/fotos/como-podemos-activar-las-levaduras-si-hacemos-vino-casero-5762-1.jpg,gramos,LUGAR1
-Trufas,Esta es la descripci贸n de una muestra,Materiales vivos,300,true,false,http://static.iris.net.co/cocinasemana/upload/images/2014/1/7/31229_10527_1.jpg,gramos,LUGAR1
-EcoRI,Esta es la descripci贸n de una muestra,Enzimas de restricci贸n,500,true,true,http://www.accessexcellence.org/RC/VL/GG/images/restriction.gif,mg,LUGAR27
-SmaI,Esta es la descripci贸n de una muestra,Enzimas de restricci贸n,500,true,true,http://www.sigmaaldrich.com/content/dam/sigma-aldrich/product5/026/sma-i.eps/_jcr_content/renditions/sma-i-medium.jpg,mg,LUGAR27
-F煤ngicas,Esta es la descripci贸n de una muestra,Proteasas,300,true,true,http://www.enzymedevelopment.com/wp-content/uploads/2012/07/pro.jpg,mg,LUGAR27
-Pepsina,Esta es la descripci贸n de una muestra,Proteasas,800,true,true,https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcROTdAEOchlP74jQBp006DmSNYrCHssw3YUPXSquDlxKhQMeqDR,mg,LUGAR27
-Paracetamol,Esta es la descripci贸n de una muestra,Mol茅culas gen茅ricas,300,true,true,http://3.bp.blogspot.com/-VRVEsZIakzk/Ufg6M0CZpAI/AAAAAAAAAbk/dOB2mPKwrjM/s1600/PARACETA.jpg,mg,LUGAR27
-Amoxicilina,Esta es la descripci贸n de una muestra,Mol茅culas gen茅ricas,200,true,true,https://thumbs.dreamstime.com/x/modelo-molecular-de-la-amoxicilina-22855697.jpg,mg,LUGAR27
-Ibuprofeno,Esta es la descripci贸n de una muestra,Mol茅culas gen茅ricas,10,true,true,https://previews.123rf.com/images/elec/elec1202/elec120200040/12416381-El-ibuprofeno-estructura-molecular-Foto-de-archivo.jpg,mg,LUGAR27
-谩cido acetilsalicilico,Esta es la descripci贸n de una muestra,Mol茅culas gen茅ricas,150,true,true,https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Aspirin-skeletal.svg/220px-Aspirin-skeletal.svg.png,mg,LUGAR27
+nombre,descripcion,Tipo,valor,activa,controlado,imagen,unidadBase,idAlmacenamiento,BandejaNumero
+Escherichia coli,Esta es la descripci贸n de una muestra,Materiales vivos,3,true,true,http://www.abc.es/Media/201105/30/escherichia-coli-sintomas--644x362.jpg,sobre,LUGAR26,1
+Bacillus subtilis,Esta es la descripci贸n de una muestra,Materiales vivos,5,true,true,https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Bacillus_subtilis.jpg/1200px-Bacillus_subtilis.jpg,sobre,LUGAR26,1
+Levaduras,Esta es la descripci贸n de una muestra,Materiales vivos,100,true,false,http://www.catadelvino.com/fotos/como-podemos-activar-las-levaduras-si-hacemos-vino-casero-5762-1.jpg,gramos,LUGAR1,1
+Trufas,Esta es la descripci贸n de una muestra,Materiales vivos,300,true,false,http://static.iris.net.co/cocinasemana/upload/images/2014/1/7/31229_10527_1.jpg,gramos,LUGAR1,1
+EcoRI,Esta es la descripci贸n de una muestra,Enzimas de restricci贸n,500,true,true,http://www.accessexcellence.org/RC/VL/GG/images/restriction.gif,mg,LUGAR27,1
+SmaI,Esta es la descripci贸n de una muestra,Enzimas de restricci贸n,500,true,true,http://www.sigmaaldrich.com/content/dam/sigma-aldrich/product5/026/sma-i.eps/_jcr_content/renditions/sma-i-medium.jpg,mg,LUGAR27,1
+F煤ngicas,Esta es la descripci贸n de una muestra,Proteasas,300,true,true,http://www.enzymedevelopment.com/wp-content/uploads/2012/07/pro.jpg,mg,LUGAR27,1
+Pepsina,Esta es la descripci贸n de una muestra,Proteasas,800,true,true,https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcROTdAEOchlP74jQBp006DmSNYrCHssw3YUPXSquDlxKhQMeqDR,mg,LUGAR27,1
+Paracetamol,Esta es la descripci贸n de una muestra,Mol閏ulas gen閞icas,300,true,true,http://3.bp.blogspot.com/-VRVEsZIakzk/Ufg6M0CZpAI/AAAAAAAAAbk/dOB2mPKwrjM/s1600/PARACETA.jpg,mg,LUGAR27,1
+Amoxicilina,Esta es la descripci贸n de una muestra,Mol閏ulas gen閞icas,200,true,true,https://thumbs.dreamstime.com/x/modelo-molecular-de-la-amoxicilina-22855697.jpg,mg,LUGAR27,1
+Ibuprofeno,Esta es la descripci贸n de una muestra,Mol閏ulas gen閞icas,10,true,true,https://previews.123rf.com/images/elec/elec1202/elec120200040/12416381-El-ibuprofeno-estructura-molecular-Foto-de-archivo.jpg,mg,LUGAR27,1
+谩cido acetilsalicilico,Esta es la descripci贸n de una muestra,Mol閏ulas gen閞icas,150,true,true,https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Aspirin-skeletal.svg/220px-Aspirin-skeletal.svg.png,mg,LUGAR27,1
