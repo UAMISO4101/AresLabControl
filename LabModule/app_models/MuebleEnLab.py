@@ -10,6 +10,8 @@ class MuebleEnLab(models.Model):
     class Meta:
         verbose_name = _("Mueble en Laboratorio")
         verbose_name_plural = _('Muebles en Laboratorio')
+        app_label = 'LabModule'
+        unique_together = ('idLaboratorio', 'posX', 'posY')
 
     idLaboratorio = models.ForeignKey(
             Laboratorio,

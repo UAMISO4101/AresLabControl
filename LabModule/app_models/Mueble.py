@@ -26,7 +26,7 @@ class Mueble(models.Model):
     estado = models.BooleanField(
             default = True,
             verbose_name = _('Activa'),
-            null=False
+            null = False
     )
 
     imagen = models.ImageField(
@@ -35,7 +35,7 @@ class Mueble(models.Model):
             default = 'images/image-not-found.jpg'
     )
 
-    tipo= models.CharField(
+    tipo = models.CharField(
             max_length = 1000,
             default = 'Desconocido',
             verbose_name = _("Descripción"),
@@ -43,7 +43,7 @@ class Mueble(models.Model):
     )
 
     def __unicode__(self):
-        return  self.nombre
+        return self.nombre
 
     def get_nombre(self):
         return self.nombre.capitalize()
