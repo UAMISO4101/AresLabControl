@@ -229,9 +229,11 @@ def crear_almacenamientos():
                     storage_history = storage_history | storage_is_created
                     new_storage.save()
 
-                    for i in range(1, capacidad + 1):
+                    for j in range(1, capacidad + 1):
                         nueva_bandeja, bandeja_creada = Bandeja.objects.get_or_create(almacenamiento = new_storage,
-                                                                                      posicion = i)
+                                                                                      posicion = j)
+                        storage_history = storage_history | bandeja_creada
+                        nueva_bandeja.save()
 
                     if not created:
                         img_url = imagen
