@@ -18,6 +18,39 @@
         <h2>{{ section.title }}</h2>
     </div>
 
+
+{% if formMaquina.errors %}
+    {% for error in formMaquina.non_field_errors %}
+        <div class="alert alert-danger">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if form.errors %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if formPos.errors %}
+    {% for error in formPos.non_field_errors %}
+        <div class="alert alert-danger">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+
     <form id="formMaquina" name="formMaquina" enctype="multipart/form-data" method="post"
           onsubmit="return validateForm();">
         {% csrf_token %}
