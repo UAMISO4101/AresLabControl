@@ -41,7 +41,7 @@ class MuestraEnBandeja(models.Model):
 
     def __unicode__(self):
         return str(self.posX) + ":" + str(self.posY)
-    
+
     @classmethod
-    def getPosiciones(cls,bandeja):
-        return MuestraEnBandeja.objects.filter(idBandeja=bandeja)
+    def getPosiciones(cls, bandeja):
+        return MuestraEnBandeja.objects.filter(idBandeja = bandeja)

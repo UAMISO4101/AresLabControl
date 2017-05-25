@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
 
-
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -53,22 +52,22 @@ class Maquina(models.Model):
     )
 
     fechaInicialDisp = models.DateTimeField(
-        blank=False,
-        null=True,
-        verbose_name=_("Fecha Inicial"),
-        default=timezone.now
+            blank = False,
+            null = True,
+            verbose_name = _("Fecha Inicial"),
+            default = timezone.now
     )
 
     fechaFinalDisp = models.DateTimeField(
-        blank=False,
-        null=True,
-        verbose_name=_("Fecha Final"),
-        default=datetime.now()+timedelta(days=30)
+            blank = False,
+            null = True,
+            verbose_name = _("Fecha Final"),
+            default = datetime.now() + timedelta(days = 30)
     )
 
     mueble = models.OneToOneField(
             Mueble,
-            null=True,
+            null = True,
             on_delete = models.CASCADE,
             related_name = '%(app_label)s_%(class)s_related'
     )

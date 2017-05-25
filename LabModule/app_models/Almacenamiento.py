@@ -49,7 +49,7 @@ class Almacenamiento(models.Model):
 
     mueble = models.OneToOneField(
             Mueble,
-            null=True,
+            null = True,
             on_delete = models.CASCADE,
             related_name = '%(app_label)s_%(class)s_related'
     )
@@ -75,7 +75,7 @@ class Almacenamiento(models.Model):
     )
 
     def __unicode__(self):
-        return self.idSistema+ self.mueble.__unicode__()
+        return self.idSistema + self.mueble.__unicode__()
 
     def get_id_sistema(self):
         return self.idSistema

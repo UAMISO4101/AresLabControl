@@ -51,6 +51,7 @@ class Bandeja(models.Model):
 
     def __unicode__(self):
         return 'Bandeja: ' + self.almacenamiento.get_id_sistema() + " " + str(self.posicion)
+
     @classmethod
-    def getBandejas(cls,idLugar):
-        return Bandeja.objects.filter(almacenamiento=idLugar)
+    def getBandejas(cls, idLugar):
+        return Bandeja.objects.filter(almacenamiento = idLugar)
