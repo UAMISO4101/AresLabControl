@@ -6,7 +6,7 @@
     "con_reserva": false,
     "x": 1,
     "y": 1,
-    "imagen": "http://vertassets.blob.core.windows.net/image/910a381c/910a381c-9b65-49ef-998f-8f586daed639/labmaster.jpg"
+    "imagen": ""
   },
   {
     "idSistema": 2,
@@ -15,7 +15,7 @@
     "con_reserva": true,
     "x": 2,
     "y": 1,
-    "imagen": "http://rs1.chemie.de/images/14856-76.jpg"
+    "imagen": ""
   },
   {
     "idSistema": 3,
@@ -24,7 +24,7 @@
     "con_reserva": true,
     "x": 3,
     "y": 1,
-    "imagen": "http://media.labcompare.com/m/1/product/4864758-400x300.jpg"
+    "imagen": ""
   },
   {
     "idSistema": 4,
@@ -33,7 +33,7 @@
     "con_reserva": false,
     "x": 4,
     "y": 1,
-    "imagen": "https://alt-model-images.s3-us-west-2.amazonaws.com/full-version-images/AS-10-Agar-Sterilizer-.JPG"
+    "imagen": ""
   },
   {
     "idSistema": 5,
@@ -42,7 +42,7 @@
     "con_reserva": false,
     "x": 5,
     "y": 1,
-    "imagen": "http://usedsterilizers.com/wp-content/uploads/2013/10/Sanyo-MLS-3781L-MLS-Autoclave-300x244.jpg"
+    "imagen": ""
   },
   {
     "idSistema": 6,
@@ -51,7 +51,7 @@
     "con_reserva": false,
     "x": 6,
     "y": 1,
-    "imagen": "https://www.ecured.cu/images/thumb/6/66/Balanza_analitica.jpg/260px-Balanza_analitica.jpg"
+    "imagen": ""
   },
   {
     "idSistema": 7,
@@ -60,7 +60,7 @@
     "con_reserva": false,
     "x": 7,
     "y": 1,
-    "imagen": "http://www.anapesing.es/fotos/analiticas/Balanzas%20para%20JOYERIA%20WTB.jpg"
+    "imagen": ""
   },
   {
     "idSistema": 8,
@@ -69,7 +69,7 @@
     "con_reserva": false,
     "x": 8,
     "y": 1,
-    "imagen": "http://anayco.net/anayco/wp-content/uploads/2013/08/Balanza-Determinadora-de-Humedad.jpg"
+    "imagen": ""
   },
   {
     "idSistema": 9,
@@ -78,7 +78,7 @@
     "con_reserva": false,
     "x": 9,
     "y": 1,
-    "imagen": "http://www.sectorelectricidad.com/wp-content/uploads/2016/05/Banco-de-capacitores-con-reactores-en-media-tensi%C3%B3n.jpg?2681d8"
+    "imagen": ""
   },
   {
     "idSistema": 10,
@@ -87,7 +87,7 @@
     "con_reserva": false,
     "x": 10,
     "y": 1,
-    "imagen": "http://www.instrulab.com.ar/imagenes/banos/DUBNOFF.png"
+    "imagen": ""
   },
   {
     "idSistema": 11,
@@ -96,7 +96,7 @@
     "con_reserva": false,
     "x": 1,
     "y": 2,
-    "imagen": "http://www.botgal-group.com/sites/default/files/tab2image/00031_8_0.jpg"
+    "imagen": ""
   },
   {
     "idSistema": 12,
@@ -105,7 +105,7 @@
     "con_reserva": true,
     "x": 2,
     "y": 2,
-    "imagen": "http://www.cientificasenna.com/files/image/Labnet/Digital%20Dry%20Bath(D1200).jpg"
+    "imagen": ""
   },
   {
     "idSistema": 13,
@@ -114,7 +114,7 @@
     "con_reserva": false,
     "x": 3,
     "y": 2,
-    "imagen": "http://www.wotol.com/images/thumbs/800x800/979314_29b021cb8aa853cf3988f2080b6c9a02.jpg"
+    "imagen": ""
   },
   {
     "idSistema": 14,
@@ -123,7 +123,7 @@
     "con_reserva": false,
     "x": 4,
     "y": 2,
-    "imagen": "http://www.cab.zju.edu.cn/wescms/sys/filebrowser/file.php?cmd=download&id=20225"
+    "imagen": ""
   },
   {
     "idSistema": 15,
@@ -132,7 +132,7 @@
     "con_reserva": false,
     "x": 5,
     "y": 2,
-    "imagen": "http://vertassets.blob.core.windows.net/image/2424b036/2424b036-e3dc-4088-9ae3-03e50928f4c2/115bf.jpg"
+    "imagen": ""
   },
   {
     "idSistema": 16,
@@ -141,7 +141,7 @@
     "con_reserva": false,
     "x": 6,
     "y": 2,
-    "imagen": "http://www.jmsna.net/wp-content/uploads/2014/08/picturesp510-11.jpg"
+    "imagen": ""
   },
   {
     "idSistema": 17,

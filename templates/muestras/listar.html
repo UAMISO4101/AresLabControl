@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load lab_module_extras %}
+{% load humanize %}
 {% block head_others %}
-
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.jqueryui.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css">
@@ -16,64 +17,67 @@
     <h2>{% block title %}{{ section.title }}{% endblock %} </h2>
 </div>
 
-<table id="muetras_table" class="datatable display compact responsive nowrap" cellspacing="0"
-width="100%">
-<thead>
-    <tr>
-        <th>Id</th>
-        <th>Nombre</th>
-        <th>Valor</th>
-        <th>Unidad Base</th>
-        <th>Activa</th>
-        <th>Controlada</th>
-        <th>Ubicación Laboratorio</th>
-        <th>Acciones</th>
-    </tr>
-</thead>
-
-<tbody>
-
-    {% for muestra in lista_muetras %}
-    <tr>
-        <td>{{ muestra.id }}</td>
-        <td>{{ muestra.nombre }}</td>
-        <td>{{ muestra.valor }}</td>
-        <td>{{ muestra.unidadBase }}</td>
-        <td>{{ muestra.activa }}</td>
-        <td>{{ muestra.controlado }}</td>
-        <td>{{ muestra.calc_posicion }}</td>
-        <td>
-            {% if perms.LabModule.can_viewSample %}
-            <a href="{% url 'muestra-detail' muestra.id %} "
-            class="btn btn-primary"
-            role="button">Ver</a>
-            {% endif %}
-            {% if perms.LabModule.can_requestSample %}
-            <a href="{% url 'muestra-request' %}?id={{ muestra.id }}"
-            class="btn btn-primary"
-            role="button">Solicitar</a>
-            {% endif %}
-            
-        </td>
-    </tr>
-    {% endfor %}
-</tbody>
+<div class="row">
+    <table id="muestras_table"
+    class="datatable display compact responsive nowrap"
+    cellspacing="0"
+    width="100%">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Unidad Base</th>
+            <th>Inventario</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for muestra in detalle_completo %}
+        <tr class={{ muestra.controlado|yesno:"danger," }}>
+            <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.id }}</td>
+            <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.nombre }}</td>
+            <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.valor | currency }}</td>
+            <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.unidadBase }}</td>
+            <td class={{ muestra.controlado|yesno:"danger," }}>{{ muestra.cant_muestras }}</td>
+            <td class={{ muestra.controlado|yesno:"danger," }}>
+                {% if perms.LabModule.can_viewSample %}
+                <a href="{% url 'muestra-detail' muestra.id %} "
+                class="btn btn-primary"
+                role="button">
+                <span class="glyphicon glyphicon-search"></span>Ver</a>
+                {% endif %}
+                {% if perms.LabModule.can_requestSample %}
+                <a href="{% url 'muestra-request' muestra.id %} "
+                class="btn btn-primary"
+                role="button">
+                <span class="glyphicon glyphicon-asterisk"></span>Solicitar</a>
+                {% endif %}
+                {% if perms.LabModule.can_addSample %}
+                <a href="{% url 'muestra-check-to-position' muestra.id %} "
+                class="btn btn-primary"
+                role="button">
+                <span class="glyphicon glyphicon-plus"></span>Guardar</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
+</div>
 {% endblock %}
 {% block scripts_others %}
-
 <script src="//code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
 <script>
     $(function () {
-
-        if ($.fn.dataTable.isDataTable('#muetras_table')) {
-            $('#muetras_table').DataTable();
+        if ($.fn.dataTable.isDataTable('#muestras_table')) {
+            $('#muestras_table').DataTable();
         }
         else {
-            $('#muetras_table').DataTable({
+            $('#muestras_table').DataTable({
                 responsive: true,
                 sPaginationType: "full_numbers",
                 bJQueryUI: true,
@@ -85,4 +89,4 @@ width="100%">
         }
     });
 </script>
-{% endblock %}v
+{% endblock %}

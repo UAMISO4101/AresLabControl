@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load lab_module_extras %}
+{% load humanize %}
+{% block head_others %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.jqueryui.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css">
+<link href="{% static 'css/datatablesCustom.css' %}" rel="stylesheet">
+{% endblock %}
+{% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
+{% block content %}
+
+<div class="page-header text-center">
+	<h2>{{ section.title }}: {{ muestra.nombre }}</h2>
+</div>
+
+<div class="row">
+	<table id="almacenamientos_table"
+	class="datatable display compact responsive nowrap"
+	cellspacing="0"
+	width="100%">
+	<thead>
+		<tr>
+			<th>Id Laboratorio</th>
+			<th>Id Almacenamiento</th>
+			<th>Nombre Almacenamiento</th>
+			<th>Fila Lab</th>
+			<th>Columna Lab</th>
+			<th>Bandeja</th>
+			<th>Fila Gradilla</th>
+			<th>Columna Gradilla</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for muestras in detalle_completo %}
+		<tr>
+			<td>{{ muestras.muebleEnLab.idLaboratorio.idLaboratorio }}</td>
+			<td>{{ muestras.alma.idSistema }}</td>
+			<td>{{ muestras.alma.get_nombre }}</td>
+			<td>{{ muestras.muebleEnLab.posX }}</td>
+			<td>{{ muestras.muebleEnLab.posY }}</td>
+			<td>{{ muestras.bandeja.posicion }}</td>
+			<td>{{ muestras.posX }}</td>
+			<td>{{ muestras.posY }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+</div>
+
+
+
+
+
+<div class="row center">
+	<div>
+		<a class="btn btn-primary" href="{% url 'muestra-add-to-position' muestra.id %}" id="cancel" name="cancel">Aceptar</a>
+		<a class="btn btn-default" href="{% url 'muestra-list' %}" id="cancel" name="cancel">Cancelar</a>
+	</div>
+</div>
+
+{% endblock %}
+{% block scripts_others %}
+<script src="//code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
+<script>
+	$(function () {
+		if ($.fn.dataTable.isDataTable('#almacenamientos_table')) {
+			$('#almacenamientos_table').DataTable({});
+		}
+		else {
+			$('#almacenamientos_table').DataTable({
+				searching: false,
+				lengthChange: false,
+				pageLength: 20,
+				responsive: true,
+				sPaginationType: "full_numbers",
+				bJQueryUI: true,
+				order: [[1, "asc"]],
+				language: {
+					"url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+				}
+			});
+		}
+	});
+</script>
+{% endblock %}

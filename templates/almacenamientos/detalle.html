@@ -3,159 +3,176 @@
 {% load lab_module_extras %}
 {% load staticfiles %}
 {% block head_others %}
-<link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
+    <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
 
 {% block content %}
 
-<div class="page-header text-center">
-    <h2>{{ section.title }} {{ lugar.idLugar.nombre }}</h2>
-</div>
-{% if messages %}
-    {% for message in messages %}
-    <div{% if message.tags %} class="alert alert-{{ message.tags }} fade in alert-dismissable"{% endif %}>
-    <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
-    {{ message }}
-    </div>
-    {% endfor %}
-{% endif %}
-
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title text-left">Información básica ID {{ lugar.idLugar.id }}</h3>
+    <div class="page-header text-center">
+        <h2>{{ section.title }}</h2>
     </div>
 
-    <div class="panel-body text-left">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-5 col-sm-6">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <strong>Nombre:</strong>
-                        </div>
-                        <div class="col-md-7 col-sm-4">
-                            <p id="items" name="items"> {{ lugar.idLugar.nombre }} </p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <strong>Descripción:</strong>
-                        </div>
-                        <div class="col-md-7 col-sm-4">
-                            <p id="items" name="items"> {{ lugar.idLugar.descripcion }} </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-5 col-sm-6">
-                    <div class="row">
-                        <div>
-                            <strong>Imagen:</strong>
-                        </div>
-                    </div>
-                    <div class="row">
 
-                        <div class="panel panel-default">
-                            <div class="panel-body text-left" style="text-align:center">
-                                <a href="{{ lugar.idLugar.imagen.url }}" target="_blank">
-                                    <img src="{{ lugar.idLugar.imagen.url }}" alt="Imagen Lugar Almacenamiento"
-                                    class="imageIndex" style="width:60%; ">
-                                </a>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title text-left">Información Básica</h3>
+        </div>
+
+        <div class="panel-body text-left">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-5 col-sm-6">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Id Sistema</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ lugar.idSistema }}
                             </div>
                         </div>
-
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Nombre</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ mueble.nombre }} </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Descripción</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                <p id="items" name="items"> {{ mueble.descripcion }} </p>
+                            </div>
+                        </div>
                     </div>
 
+                    <div class="col-md-5 col-sm-6">
+                        <div class="row">
+                            <div>
+                                <strong>Imágen</strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="panel panel-default">
+                                <div class="panel-body text-left" style="text-align:center">
+                                    <a href="{{ mueble.imagen.url }}" target="_blank">
+                                        <img src="{{ mueble.imagen.url }}" alt="Imagen Lugar Almacenamiento"
+                                             class="imageIndex" style="width:60%; ">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title text-left">Bandejas</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-left">Espacios</h3>
+                </div>
+                <div class="panel-body text-left" style="height:140px">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Usadas:</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <strong> {{ espaciosOcupados }} </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Libres:</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <strong> {{ espacioslibres }} </strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Capacidad:</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <strong> {{ lugar.get_max_capacidad }} </strong>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="panel-body text-left" style="height:140px">
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>Usadas:</strong>
-                    </div>
-                    <div class="col-md-6">
-                        <strong> {{ bandejasOcupadas }} </strong>
+        </div>
+
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-left">Medidas</h3>
+                </div>
+                <div class="panel-body text-left" style="height:140px">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Temperatura:</strong>
+                        </div>
+                        <div class="col-md-4">
+                            <strong> {{ lugar.temperatura }} °C</strong>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>Libres:</strong>
-                    </div>
-                    <div class="col-md-6">
-                        <strong> {{ bandejasLibres }} </strong>
-                    </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="panel panel-default">
+
+                <div class="panel-heading">
+                    <h3 class="panel-title text-left">Ubicación</h3>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>Capacidad:</strong>
+
+                <div class="panel-body text-left" style="height:140px">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Laboratorio</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <strong> {{ laboratorio.nombre }} </strong>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <strong> {{ lugar.idLugar.capacidad }} </strong>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Localización en Lab.</strong>
+                        </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Fila</strong>
+                        </div>
+                        <div class="col-md-6">
+                            {{ pos.posX }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <strong>Columna</strong>
+                        </div>
+                        <div class="col-md-6">
+                            {{ pos.posY }}
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title text-left">Medidas</h3>
-            </div>
-            <div class="panel-body text-left" style="height:140px">
-                <div class="row">
-                    <div class="col-md-4">
-                        <strong>Temperatura:</strong>
-                    </div>
-                    <div class="col-md-4">
-                        <strong> {{ lugar.idLugar.temperatura }} </strong>
-                    </div>
-                    <div class="col-md-2">
-                        <strong>°C</strong>
-                    </div>
-                </div>
-            </div>
+    <div class="row center">
+        <div>
+            <a class="btn btn-default" href="{% url 'lugar-list' %}" id="cancel" name="cancel">Volver</a>
         </div>
     </div>
-
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title text-left">Ubicación</h3>
-            </div>
-            <div class="panel-body text-left" style="height:140px">
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>Laboratorio:</strong>
-                    </div>
-                    <div class="col-md-6">
-                        <strong> {{ laboratorio }} </strong>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>Localización:</strong>
-                    </div>
-                    <div class="col-md-6">
-                        <strong>{{ lugar.posX }} </strong>
-                        <strong>{{ lugar.posY }} </strong>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}

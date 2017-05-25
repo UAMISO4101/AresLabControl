@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load lab_module_extras %}
+{% load widget_tweaks %}
+{% load humanize %}
+{% block head_others %}
+    <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css"
+          rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css"
+          rel="stylesheet">
+{% endblock %}
+{% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
+
+{% block content %}
+
+    <div class="page-header text-center">
+        <h2>{{ section.title }}</h2>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title text-left">Información Básica</h3>
+        </div>
+
+        <div class="panel-body text-left">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-5 col-sm-6">
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Id Muestra</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ muestra.id }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Nombre</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ muestra.nombre }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Descripción</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ muestra.descripcion }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5 col-sm-6">
+                        <div class="row">
+                            <div>
+                                <strong>Imágen</strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="panel panel-default">
+                                <div class="panel-body text-left" style="text-align:center">
+                                    <a href="{{ muestra.imagen.url }}" target="_blank">
+                                        <img src="{{ muestra.imagen.url }}" alt="Imágen Muestra"
+                                             class="imageIndex" style="width:60%; ">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" action="" name="formSolicitud" id="formSolicitud"
+          onsubmit="return validateForm();">
+        {% csrf_token %}
+        <div class="row">
+
+            <div class="col-md-6">
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-left">Características Muestra</h3>
+                    </div>
+
+                    <div class="panel-body text-left" style="min-height:160px">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Controlada</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{ muestra.controlado|yesno:"Si,No" }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Activa</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{ muestra.activa|yesno:"Si,No" }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Unidad de Medida</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{ muestra.unidadBase }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Valor Unidad</strong>
+                            </div>
+                            <div class="col-md-6">
+                                {{ muestra.valor | currency }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Cantidad Disponible</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <strong id="cantidadActual"> {{ detalle_completo|length }} </strong>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-left">Solicitud</h3>
+                    </div>
+
+                    <div class="panel-body text-left" style="min-height:160px">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <strong>Proyectos:</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control requerido" name="project" id="project">
+                                    <option value="">----------</option>
+                                    {% for proyecto in proyectos %}
+                                        <option value="{{ proyecto.id }}">{{ proyecto.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <strong>Experimentos:</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control requerido" name="experiment" id="experiment">
+                                    <option value="">----------</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-2">
+                                <strong>Protocolos:</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control requerido" name="protocol" id="protocol">
+                                    <option value="">----------</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <strong>Pasos:</strong>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control requerido" name="step" id="step">
+                                    <option value="">----------</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-2">
+                                <strong>{{ form_muestra.cantidad.label }}</strong>
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_muestra.cantidad |append_attr:"id=id_cantidad" }}
+                            </div>
+                            <div class="col-md-2">
+                                <strong>{{ form.fechaInicial.label }}</strong>
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.fechaInicial }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row center">
+            <div>
+                {% if cantidades <= 0 %}
+                    <input class='btn  btn-primary' type="submit" value="Solicitar" id="solicitar"/>
+                {% endif %}
+                <a class="btn btn-default" href="{% url 'muestra-list' %}" id="cancel" name="cancel">Cancelar</a>
+            </div>
+        </div>
+
+    </form>
+    {% include 'solicitudes/crear_solicitudes_common.html' %}
+{% endblock %}
+
+{% block scripts_others %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="{% static 'js/boot-es.js' %}"></script>
+    <script src="{% static 'js/crear_solicitudes_muestra.js' %}"></script>
+{% endblock %}
