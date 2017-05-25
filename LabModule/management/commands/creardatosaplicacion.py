@@ -12,23 +12,24 @@ from django.core.files.temp import NamedTemporaryFile
 from django.core.management.base import BaseCommand
 from django.templatetags.static import static
 
-from LabModule.models import Bandeja
-from LabModule.models import Experimento
-from LabModule.models import LaboratorioProfile
-from LabModule.models import LugarAlmacenamiento
-from LabModule.models import LugarAlmacenamientoEnLab
-from LabModule.models import MaquinaEnLab
-from LabModule.models import MaquinaProfile
-from LabModule.models import Muestra
-from LabModule.models import Paso
-from LabModule.models import Protocolo
-from LabModule.models import Proyecto
-from LabModule.models import TipoDocumento
-from LabModule.models import Usuario
+from LabModule.app_models.Almacenamiento import Almacenamiento
+from LabModule.app_models.Bandeja import Bandeja
+from LabModule.app_models.Experimento import Experimento
+from LabModule.app_models.Laboratorio import Laboratorio
+from LabModule.app_models.Maquina import Maquina
+from LabModule.app_models.Mueble import Mueble
+from LabModule.app_models.MuebleEnLab import MuebleEnLab
+from LabModule.app_models.Muestra import Muestra
+from LabModule.app_models.MuestraEnBandeja import MuestraEnBandeja
+from LabModule.app_models.Paso import Paso
+from LabModule.app_models.Protocolo import Protocolo
+from LabModule.app_models.Proyecto import Proyecto
+from LabModule.app_models.TipoDocumento import TipoDocumento
+from LabModule.app_models.Usuario import Usuario
 
-SUPERUSUARIO = getattr(settings, "SUPERUSUARIO", 'admin')
-CONTRASENA = getattr(settings, "CONTRASENA", '1a2d3m4i5n6')
-EMAIL_HOST_USER = getattr(settings, "EMAIL_HOST_USER", 'admin@admin.com')
+SUPERUSUARIO = getattr(settings, 'SUPERUSUARIO', 'admin')
+CONTRASENA = getattr(settings, 'CONTRASENA', '1a2d3m4i5n6')
+EMAIL_HOST_USER = getattr(settings, 'EMAIL_HOST_USER', 'admin@admin.com')
 
 can_addProject = Permission.objects.get(name = 'proyecto||agregar')
 can_editProject = Permission.objects.get(name = 'proyecto||editar')
@@ -78,80 +79,118 @@ can_listTray = Permission.objects.get(name = 'bandeja||listar')
 can_viewTray = Permission.objects.get(name = 'bandeja||ver')
 
 
-def crearTiposDocumento():
-    print ('Creando Tipos de Documento'),
-    nuevoTipoDoc, tipoDocExistente = TipoDocumento.objects.get_or_create(nombre_corto = 'CC')
-    if tipoDocExistente:
-        nuevoTipoDoc.descripcion = 'Cedula de Ciudadania'
-        nuevoTipoDoc.save()
+def print_status_message(status):
+    if status:
         print ('.'),
+    else:
+        print ('...'),
+
+
+def crear_tipos_documento():
+    doc_type_history = False
+    print ('Creando Tipos de Documento'),
+    new_doc_type, doc_type_is_created = TipoDocumento.objects.get_or_create(nombre_corto = 'CC',
+                                                                            descripcion = 'Cédula de Ciudadanía')
+    print_status_message(status = doc_type_is_created)
+    doc_type_history = doc_type_history | doc_type_is_created
+    new_doc_type.save()
+
+    if doc_type_history:
         return 0
-    print ('...'),
     return 1
 
 
-def crearLaboratorio():
+def crear_laboratorios():
+    lab_history = False
     print ('Creando Laboratorios'),
-    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre = "Laboratorio principal",
-                                                                            id = "LAB001")
-    print ('.'),
-    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre = "Laboratorio Secundario",
-                                                                            id = "LAB002")
-    print ('.'),
-    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre = "Laboratorio Terciario",
-                                                                            id = "LAB003")
-    print ('.'),
-    if laboratioExistente:
+    new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = 'Laboratorio Principal',
+                                                                idLaboratorio = 'LAB001',
+                                                                numX = 20,
+                                                                numY = 20)
+    print_status_message(status = lab_is_created)
+    lab_history = lab_history | lab_is_created
+    new_lab.save()
+    new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = 'Laboratorio Secundario',
+                                                                idLaboratorio = 'LAB002',
+                                                                numX = 20,
+                                                                numY = 20)
+    print_status_message(status = lab_is_created)
+    lab_history = lab_history | lab_is_created
+    new_lab.save()
+    new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = 'Laboratorio Terciario',
+                                                                idLaboratorio = 'LAB003',
+                                                                numX = 20,
+                                                                numY = 20)
+    print_status_message(status = lab_is_created)
+    lab_history = lab_history | lab_is_created
+    new_lab.save()
+    if lab_history:
         return 0
-    print ('...'),
     return 1
 
 
-def crearMaquina():
+def crear_maquinas():
+    machine_history = False
     print ('Creando Maquinas'),
-    nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(nombre = "Laboratorio principal",
-                                                                            id = "LAB001")
-    rta = 1
-    with open(".///" + static('lab_static/json/maquinas.json')) as data_file:
+    new_lab, lab_is_created = Laboratorio.objects.get_or_create(nombre = 'Laboratorio Principal',
+                                                                idLaboratorio = 'LAB001',
+                                                                numX = 20,
+                                                                numY = 20)
+    print_status_message(status = lab_is_created)
+    machine_history = machine_history | lab_is_created
+    new_lab.save()
+    with open('.///' + static('lab_static/json/maquinas.json')) as data_file:
         data = json.load(data_file)
-        for maquina in data:
-            nuevaMaquina, maquinaExistente = MaquinaProfile.objects.get_or_create(nombre = maquina['nombre'],
-                                                                                  descripcion = maquina['descripcion'],
-                                                                                  idSistema = maquina['idSistema'],
-                                                                                  con_reserva = maquina['con_reserva']
-                                                                                  )
-            if maquinaExistente:
-                if not maquina['imagen'] == '':
-                    img_url = maquina['imagen']
+        for machine in data:
+            new_mueble, mueble_is_created = Mueble.objects.get_or_create(nombre = machine['nombre'],
+                                                                         descripcion = machine['descripcion'],
+                                                                         tipo = 'maquina'
+                                                                         )
+
+            print_status_message(status = mueble_is_created)
+            machine_history = machine_history | mueble_is_created
+            new_mueble.save()
+
+            if mueble_is_created:
+                new_machine, machine_is_created = Maquina.objects.get_or_create(mueble = new_mueble,
+                                                                                con_reserva = machine['con_reserva'],
+                                                                                idSistema = machine['idSistema'])
+                print_status_message(status = machine_is_created)
+                machine_history = machine_history | machine_is_created
+                new_machine.save()
+                if not machine['imagen'] == '':
+                    img_url = machine['imagen']
                     img_filename = urlparse(img_url).path.split('/')[-1]
                     img_temp = NamedTemporaryFile()
                     img_temp.write(urllib2.urlopen(img_url).read())
                     img_temp.flush()
-                    nuevaMaquina.imagen.save(img_filename, File(img_temp))
+                    new_mueble.imagen.save(img_filename, File(img_temp))
 
-            nuevare, exre = MaquinaEnLab.objects.get_or_create(idLaboratorio = nuevoLab,
-                                                               idMaquina = nuevaMaquina,
-                                                               posX = maquina['x'],
-                                                               posY = maquina['y'])
-            print ('.'),
-            if maquinaExistente:
-                rta = 0
-    return rta
+            new_machine_loc, machine_loc_is_created = MuebleEnLab.objects.get_or_create(idLaboratorio = new_lab,
+                                                                                        idMueble = new_mueble,
+                                                                                        posX = machine['x'],
+                                                                                        posY = machine['y'])
+            print_status_message(status = machine_loc_is_created)
+            machine_history = machine_history | machine_loc_is_created
+            new_machine_loc.save()
+    if machine_history:
+        return 0
+    return 1
 
 
-def crearBandeja():
+def crear_bandeja():
     print('Creando Bandejas'),
     print ('.'),
     return 0
 
 
-def crearAlmacenamiento():
-    rta = 1
+def crear_almacenamientos():
+    storage_history = False
     print('Creando Lugares de Almacenamiento'),
-    with open(".///" + static('lab_static/json/lugares.json')) as data_file:
-        data = json.load(data_file)
-        idAct = 0
 
+    with open('.///' + static('lab_static/json/lugares.json')) as data_file:
+        data = json.load(data_file)
+        id_storage = 0
         for row in data:
             nombre = row['nombre']
             descripcion = row['descripcion']
@@ -160,145 +199,219 @@ def crearAlmacenamiento():
             estado = row['estado']
             imagen = row['imagen']
             cantidad = row['cantidad']
-            posX = row['posX']
-            posY = row['posY']
-            idLaboratorio = row['idLaboratorio']
-            nuevoLab, laboratioExistente = LaboratorioProfile.objects.get_or_create(id = idLaboratorio)
-            img_url = imagen
-            img_filename = urlparse(img_url).path.split('/')[-1]
-            img_temp = NamedTemporaryFile()
-            img_temp.write(urllib2.urlopen(img_url).read())
-            img_temp.flush()
+            pos_x = row['posX']
+            pos_y = row['posY']
+            id_laboratorio = row['idLaboratorio']
+            new_lab, lab_is_created = Laboratorio.objects.get_or_create(idLaboratorio = id_laboratorio)
+            print_status_message(status = lab_is_created)
+            storage_history = storage_history | lab_is_created
+            new_lab.save()
+            created = False
             for i in range(1, int(cantidad) + 1):
-                idAct += 1
-                nuevoLugar, lugarCreado = LugarAlmacenamiento.objects.get_or_create(nombre = nombre + " " + str(i),
-                                                                                    descripcion = descripcion,
-                                                                                    capacidad = capacidad,
-                                                                                    temperatura = temperatura,
-                                                                                    estado = estado,
-                                                                                    id = idAct)
-                nuevoLugar.imagen.save(img_filename, File(img_temp))
-                print ('.'),
-                if lugarCreado:
-                    rta = 0
-                    xPos = int(posX) + (i - 1)
-                    yPos = int(posY)
-                    if xPos > 10:
-                        xPos = xPos - 10
-                        yPos = yPos + 1
-                    nuevloLugarEnLab, lugarENLabExistente = LugarAlmacenamientoEnLab.objects.get_or_create(
-                            idLaboratorio = nuevoLab, idLugar = nuevoLugar, posX = xPos, posY = yPos)
-    return rta
+                id_storage += 1
+                new_mueble, mueble_is_created = Mueble.objects.get_or_create(nombre = nombre + ' ' + str(i),
+                                                                             descripcion = descripcion,
+                                                                             estado = estado,
+                                                                             tipo = 'almacenamiento'
+                                                                             )
+                print_status_message(status = mueble_is_created)
+                storage_history = storage_history | mueble_is_created
+                new_mueble.save()
+                
+                new_storage, storage_is_created = Almacenamiento.objects.get_or_create(mueble = new_mueble,
+                                                                                           temperatura = temperatura,
+                                                                                           numZ = capacidad,idSistema = id_storage,numY=2,numX=5)
+                if storage_is_created:        
+                    print_status_message(status = storage_is_created)
+                    storage_history = storage_history | storage_is_created
+                    new_storage.save()
+                    
+                    for i in range(1,capacidad+1):
+                        nueva_bandeja,bandeja_creada=Bandeja.objects.get_or_create(almacenamiento=new_storage,posicion=i)
+
+                    if not created:
+                        img_url = imagen
+                        img_filename = urlparse(img_url).path.split('/')[-1]
+                        img_temp = NamedTemporaryFile()
+                        img_temp.write(urllib2.urlopen(img_url).read())
+                        img_temp.flush()
+                        new_mueble.imagen.save(img_filename, File(img_temp))
+                        created = True
+                    if storage_is_created:
+                        x_pos = int(pos_x) + (i - 1)
+                        y_pos = int(pos_y)
+                        if x_pos > 10:
+                            x_pos = x_pos - 10
+                            y_pos = y_pos + 1
+
+                        new_storage_loc, storage_loc_is_created = MuebleEnLab.objects.get_or_create(
+                                idLaboratorio = new_lab,
+                                idMueble = new_mueble,
+                                posX = x_pos,
+                                posY = y_pos)
+                        print_status_message(status = storage_loc_is_created)
+                        storage_history = storage_history | storage_loc_is_created
+                        new_storage_loc.save()
+    if storage_history:
+        return 0
+    return 1
 
 
-def crearMuestra():
-    rta = 1
+def crear_muestras():
+    sample_history = False
     print ('Creando Muestras'),
-    with open(".///" + static('lab_static/json/muestras.json')) as data_file:
+    with open('.///' + static('lab_static/json/muestras.json')) as data_file:
         data = json.load(data_file)
-        idAct = 0
+
         for row in data:
             nombre = row['nombre']
             descripcion = row['descripcion']
-            Tipo = row['Tipo']
             valor = row['valor']
             activa = row['activa']
             controlado = row['controlado']
             imagen = row['imagen']
-            unidadBase = row['unidadBase']
-            idAlmacenamiento = row['idAlmacenamiento']
-            nuevaMuestra, mustraCreada = Muestra.objects.get_or_create(nombre = nombre, descripcion = descripcion,
-                                                                       valor = valor, activa = activa,
-                                                                       controlado = controlado,
-                                                                       unidadBase = unidadBase)
-            nuevoLugar, LugarExistente = LugarAlmacenamiento.objects.get_or_create(id = idAlmacenamiento)
-            if mustraCreada:
-                print ('.'),
-                rta = 0
+            unidad_base = row['unidadBase']
+            id_almacenamiento = row['idAlmacenamiento']
+            posicion=row['posicion']
+            alamcenamientosPosibles = row['alamcenamientosPosibles']
+            new_sample, sample_is_created = Muestra.objects.get_or_create(nombre = nombre,
+                                                                          descripcion = descripcion,
+                                                                          valor = valor,
+                                                                          activa = activa,
+                                                                          controlado = controlado,
+                                                                          unidadBase = unidad_base)
+            print_status_message(status = sample_is_created)
+            sample_history = sample_history | sample_is_created
+            new_sample.save()
+
+            new_storage, exist_storage = Almacenamiento.objects.get_or_create(idSistema = id_almacenamiento)
+            print_status_message(status = exist_storage)
+            sample_history = sample_history | exist_storage
+            new_storage.save()
+
+            if sample_is_created:
+                new_sample.alamacenamientos.clear()
+                new_sample.alamacenamientos=Almacenamiento.objects.filter(idSistema__in=alamcenamientosPosibles)
                 img_url = imagen
                 img_filename = urlparse(img_url).path.split('/')[-1]
                 img_temp = NamedTemporaryFile()
                 img_temp.write(urllib2.urlopen(img_url).read())
                 img_temp.flush()
-                nuevaMuestra.imagen.save(img_filename, File(img_temp))
-                cuenta = Bandeja.objects.filter(lugarAlmacenamiento = nuevoLugar).count()
-                posicion = 1 if cuenta == 0 else cuenta + 1
-                nuevaBandeja, bandejaExistenet = Bandeja.objects.get_or_create(muestra = nuevaMuestra,
-                                                                               lugarAlmacenamiento = nuevoLugar,
-                                                                               posicion = posicion,
-                                                                               libre = False)
+                new_sample.imagen.save(img_filename, File(img_temp))
+                new_tray, tray_is_created = Bandeja.objects.get_or_create(almacenamiento = new_storage,
+                                                                          posicion = posicion)
+                print_status_message(status = tray_is_created)
+                sample_history = sample_history | exist_storage
+                for i in range (1,6):                    
+                    new_muestra_bandeja, muestra_bandeja_is_created = MuestraEnBandeja.objects.get_or_create(
+                            idBandeja = new_tray,
+                            idMuestra = new_sample,
+                            posX = i,
+                            posY = 1)
+                    print_status_message(status = muestra_bandeja_is_created)
+                    sample_history = sample_history | muestra_bandeja_is_created
+                    new_muestra_bandeja.save()
+                
+    if sample_history:
+        return 0
+    return 1
 
-    return rta
 
-
-def crearProyecto():
+def crear_proyectos():
+    project_history = False
     print ('Crear Proyectos'),
-    nuevoProyecto, noexistia = Proyecto.objects.get_or_create(nombre = "Colombia Viva")
+    new_project, project_is_created = Proyecto.objects.get_or_create(nombre = 'Colombia Viva')
+    project_history = project_history | project_is_created
 
-    nuevoProyecto.descripcion = "Proyecto para sintetizar una droga que reduzca el cansancio"
-    nuevoProyecto.objetivo = "Crear NZT"
-    nuevoProyecto.lider = Usuario.objects.get(nombre_usuario = 'acastro')
+    new_project.descripcion = 'Proyecto para sintetizar una droga que reduzca el cansancio.'
+    new_project.objetivo = 'Crear NZT'
+    new_project.lider = Usuario.objects.get(nombre_usuario = 'acastro')
     asistentes = Usuario.objects.all().filter(nombre_usuario__startswith = 'mgalindo')
     asistentes = list(asistentes)
-    nuevoProyecto.asistentes.add(*asistentes)
-    nuevoProyecto.activo = True
-    print ('.'),
-    return 0
+    new_project.asistentes.add(*asistentes)
+    new_project.activo = True
+    new_project.save()
+
+    print_status_message(status = project_is_created)
+    if project_history:
+        return 0
+    return 1
 
 
-def crearExperimento():
+def crear_experimentos():
+    experiment_history = False
     print('Crear Experimento'),
-    print ('.'),
-    nuevoExperimento, noexistiaexp = Experimento.objects.get_or_create(nombre = "Experimento Colombia Viva")
-    nuevoExperimento.descripcion = "Experimento que hace parte de Colombia Viva"
-    nuevoExperimento.objetivo = "Crear"
+
+    new_experiment, experiment_is_created = Experimento.objects.get_or_create(nombre = 'Experimento Colombia Viva')
+    print_status_message(status = experiment_is_created)
+    experiment_history = experiment_history | experiment_is_created
+
+    new_experiment.descripcion = 'Experimento que hace parte de Colombia Viva'
+    new_experiment.objetivo = 'Crear'
     protocolos = Protocolo.objects.all()
     protocolos = list(protocolos)
-    nuevoExperimento.protocolos.add(*protocolos)
-    nuevoExperimento.projecto = Proyecto.objects.get(nombre = "Colombia Viva")
-    nuevoExperimento.save()
-    return 0
+    new_experiment.protocolos.add(*protocolos)
+    new_experiment.proyecto = Proyecto.objects.get(nombre = 'Colombia Viva')
+    new_experiment.save()
+
+    if experiment_history:
+        return 0
+    return 1
 
 
-def crearProtocolo():
+def crear_protocolos():
+    protocol_history = False
     print('Crear Protocolos'),
-    print ('.'),
-    nuevoProtocolo, noexistiaproto = Protocolo.objects.get_or_create(nombre = "Protocolo Colombia Viva")
-    nuevoProtocolo.descripcion = "Protocolo que hace parte de Colombia Viva"
-    nuevoProtocolo.objetivo = "Crear"
-    nuevoProtocolo.save()
-    return 0
+
+    new_protocol, protocol_is_created = Protocolo.objects.get_or_create(nombre = 'Protocolo Colombia Viva')
+    print_status_message(status = protocol_is_created)
+    protocol_history = protocol_history | protocol_is_created
+
+    new_protocol.descripcion = 'Protocolo que hace parte de Colombia Viva'
+    new_protocol.objetivo = 'Crear'
+    new_protocol.save()
+
+    if protocol_history:
+        return 0
+    return 1
 
 
-def crearPaso():
+def crear_pasos():
+    step_history = False
     print ('Crear Pasos'),
-    print ('.'),
-    nuevoPaso, noexistiapaso = Paso.objects.get_or_create(nombre = "Paso Colombia Viva")
-    nuevoPaso.descripcion = "Paso que hace parte de Colombia Viva"
-    nuevoPaso.objetivo = "Crear"
+
+    new_step, step_is_created = Paso.objects.get_or_create(nombre = 'Paso Colombia Viva')
+    print_status_message(status = step_is_created)
+    step_history = step_history | step_is_created
+
+    new_step.descripcion = 'Paso que hace parte de Colombia Viva'
+    new_step.objetivo = 'Crear'
     protocolo = Protocolo.objects.get(nombre = 'Protocolo Colombia Viva')
-    nuevoPaso.protocolo = protocolo
-    nuevoPaso.save()
-    return 0
+    new_step.protocolo = protocolo
+    new_step.save()
+
+    if step_history:
+        return 0
+    return 1
 
 
-def createGroups():
+def crear_grupos():
+    group_history = False
     print('Crear Grupos'),
-    cientificos, created1 = Group.objects.get_or_create(name = 'Cientifico Experimentado')
-    print ('.'),
-    asistentes, created2 = Group.objects.get_or_create(name = 'Asistente de Laboratorio')
-    print ('.'),
-    jefes, created3 = Group.objects.get_or_create(name = 'Jefe de Laboratorio')
-    print ('.'),
 
-    maquinasVer = Permission.objects.get(name = 'maquina||ver')
-    maquinasSolicitar = Permission.objects.get(name = 'maquina||solicitar')
-    agregarUsuario = Permission.objects.get(name = 'usuario||agregar')
-    listarmuestras = Permission.objects.get(name = 'muestra||listar')
-    muestraVer = Permission.objects.get(name = 'muestra||ver')
-    muestraSolicitar = Permission.objects.get(name = 'muestra||solicitar')
+    new_scientist_g, scientist_g_is_created = Group.objects.get_or_create(name = 'Científico Experimentado')
+    print_status_message(status = scientist_g_is_created)
+    group_history = group_history | scientist_g_is_created
 
-    cientificos.permissions.add(
+    new_assistant_g, assistant_g_is_created = Group.objects.get_or_create(name = 'Asistente de Laboratorio')
+    print_status_message(status = assistant_g_is_created)
+    group_history = group_history | assistant_g_is_created
+
+    new_chief_g, chief_g_is_created = Group.objects.get_or_create(name = 'Jefe de Laboratorio')
+    print_status_message(status = chief_g_is_created)
+    group_history = group_history | chief_g_is_created
+
+    new_scientist_g.permissions.add(
             can_addProject,
             can_editProject,
             can_listProject,
@@ -342,7 +455,8 @@ def createGroups():
             can_listTray,
             can_viewTray,
     )
-    jefes.permissions.add(
+
+    new_chief_g.permissions.add(
             can_listRequest,
             can_viewRequest,
             can_manageRequest,
@@ -358,117 +472,145 @@ def createGroups():
             can_viewSample,
             can_addUser,
     )
-    asistentes.permissions.add(
+
+    new_assistant_g.permissions.add(
             can_listMachine,
             can_viewMachine,
             can_requestMachine,
             can_listSample,
             can_viewSample,
             can_requestSample,
+            can_listRequest,
     )
-    if created1 or created2 or created3:
+
+    if group_history:
         return 0
     return 1
 
 
-def crearAsistente(user, num, tipDocumento, asistentes):
+def crear_asistentes(user, num, tipo_documento, asistentes):
+    assistant_history = False
     print ('Crear Asistentes'),
-    exist_asistente, new_asistente = User.objects.get_or_create(
-            username = user + str(num))
-    print ('...'),
-    if new_asistente:
-        exist_asistente.email = user + str(num) + '@uniandes.edu.co'
-        exist_asistente.set_password(CONTRASENA)
-        exist_asistente.groups.add(asistentes)
-        exist_asistente.save()
 
-        exist_usuario, new_usuario = Usuario.objects.get_or_create(
+    new_assistant, assistant_is_created = User.objects.get_or_create(
+            username = user + str(num))
+    print_status_message(status = assistant_is_created)
+    assistant_history = assistant_history | assistant_is_created
+
+    if assistant_is_created:
+        new_assistant.email = user + str(num) + '@uniandes.edu.co'
+        new_assistant.set_password(CONTRASENA)
+        new_assistant.groups.add(asistentes)
+        new_assistant.save()
+
+        new_user, user_is_created = Usuario.objects.get_or_create(
                 nombre_usuario = user + str(num),
                 correo_electronico = user + str(num) + '@uniandes.edu.co',
                 codigo_usuario = '19950914' + str(num),
                 nombres = 'Monica',
                 apellidos = 'Galindo',
                 telefono = '7453698',
-                userNatIdTyp = tipDocumento,
+                userNatIdTyp = tipo_documento,
                 userNatIdNum = '31852496',
                 grupo = asistentes,
-                user = exist_asistente,
+                user = new_assistant,
                 contrasena = CONTRASENA,
         )
-    print ('Asistentes Creadas')
+        print_status_message(status = user_is_created)
+        assistant_history = assistant_history | user_is_created
+    if assistant_history:
+        print ('Asistentes Creadas')
+    print ('Asistentes Existentes')
 
 
-def createUsers():
+def crear_usuarios():
+    user_history = False
     print ('Crear Usuarios'),
-    cientificos = Group.objects.get(name = 'Cientifico Experimentado')
-    jefes = Group.objects.get(name = 'Jefe de Laboratorio')
-    asistentes = Group.objects.get(name = 'Asistente de Laboratorio')
 
-    tipDocumento = TipoDocumento.objects.get(nombre_corto = 'CC')
+    new_scientist_g, scientist_g_is_created = Group.objects.get_or_create(name = 'Científico Experimentado')
+    print_status_message(status = scientist_g_is_created)
+    user_history = user_history | scientist_g_is_created
 
-    exist_cientifico, new_cientifico = User.objects.get_or_create(username = 'acastro')
+    new_assistant_g, assistant_g_is_created = Group.objects.get_or_create(name = 'Asistente de Laboratorio')
+    print_status_message(status = assistant_g_is_created)
+    user_history = user_history | assistant_g_is_created
 
-    if new_cientifico:
-        exist_cientifico.email = 'acastro@uniandes.edu.co'
-        exist_cientifico.set_password(CONTRASENA)
-        exist_cientifico.groups.add(cientificos)
-        exist_cientifico.save()
+    new_chief_g, chief_g_is_created = Group.objects.get_or_create(name = 'Jefe de Laboratorio')
+    print_status_message(status = chief_g_is_created)
+    user_history = user_history | chief_g_is_created
 
+    new_doc_type, doc_type_is_created = TipoDocumento.objects.get_or_create(nombre_corto = 'CC')
+    print_status_message(status = doc_type_is_created)
+    user_history = user_history | doc_type_is_created
 
-    exist_usuario, new_usuario = Usuario.objects.get_or_create(
+    new_scientist, scientist_is_created = User.objects.get_or_create(username = 'acastro')
+
+    if scientist_is_created:
+        new_scientist.email = 'acastro@uniandes.edu.co'
+        new_scientist.set_password(CONTRASENA)
+        new_scientist.groups.add(new_scientist_g)
+        new_scientist.save()
+
+    new_user, user_is_created = Usuario.objects.get_or_create(
             nombre_usuario = 'acastro',
             correo_electronico = 'acastro@uniandes.edu.co',
             codigo_usuario = '19950912',
             nombres = 'Aquiles',
             apellidos = 'Castro',
             telefono = '7453694',
-            userNatIdTyp = tipDocumento,
+            userNatIdTyp = new_doc_type,
             userNatIdNum = '79325416',
-            grupo = cientificos,
-            user = exist_cientifico,
+            grupo = new_scientist_g,
+            user = new_scientist,
             contrasena = CONTRASENA,
     )
-    print ('.'),
-    exist_jefe, new_jefe = User.objects.get_or_create(username = 'bcamelas')
-    if new_jefe:
-        exist_jefe.email = 'bcamelas@uniandes.edu.co'
-        exist_jefe.set_password(CONTRASENA)
-        exist_jefe.groups.add(jefes)
-        exist_jefe.save()
+    print_status_message(status = user_is_created)
+    user_history = user_history | user_is_created
 
+    new_chief, chief_is_created = User.objects.get_or_create(username = 'bcamelas')
+    if chief_is_created:
+        new_chief.email = 'bcamelas@uniandes.edu.co'
+        new_chief.set_password(CONTRASENA)
+        new_chief.groups.add(new_chief_g)
+        new_chief.save()
 
-    exist_usuario, new_usuario = Usuario.objects.get_or_create(
+    new_user, user_is_created = Usuario.objects.get_or_create(
             nombre_usuario = 'bcamelas',
             correo_electronico = 'bcamelas@uniandes.edu.co',
             codigo_usuario = '19950913',
             nombres = 'Benito',
             apellidos = 'Camelas',
             telefono = '7453619',
-            userNatIdTyp = tipDocumento,
+            userNatIdTyp = new_doc_type,
             userNatIdNum = '79163482',
-            grupo = jefes,
-            user = exist_jefe,
+            grupo = new_chief_g,
+            user = new_chief,
             contrasena = CONTRASENA,
     )
-    print ('.')
-    for i in range(10):
-        crearAsistente('mgalindo', i, tipDocumento, asistentes)
+    print_status_message(status = user_is_created)
+    user_history = user_history | user_is_created
 
-    exist_admin = User.objects.get(username = SUPERUSUARIO)
-    exist_usuario, new_usuario = Usuario.objects.get_or_create(
+    for i in range(10):
+        crear_asistentes('mgalindo', i, new_doc_type, new_assistant_g)
+
+    new_admin = User.objects.get(username = SUPERUSUARIO)
+    new_user, user_is_created = Usuario.objects.get_or_create(
             nombre_usuario = SUPERUSUARIO,
             correo_electronico = EMAIL_HOST_USER,
             codigo_usuario = '100000',
             nombres = 'Administrador',
             apellidos = 'Administrador',
             telefono = '100000',
-            userNatIdTyp = tipDocumento,
+            userNatIdTyp = new_doc_type,
             userNatIdNum = '1000000',
-            grupo = cientificos,
-            user = exist_admin,
+            grupo = new_scientist_g,
+            user = new_admin,
             contrasena = CONTRASENA,
     )
-    if new_cientifico or new_jefe:
+    print_status_message(status = user_is_created)
+    user_history = user_history | user_is_created
+
+    if user_history:
         return 0
     return 1
 
@@ -478,25 +620,25 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        def execute_function(self, function_name, result_text, *args, **options):
+        def execute_function(me, function_name, result_text):
 
             if globals()[function_name]() == 0:
-                self.stdout.write(self.style.SUCCESS('"%sCreados."' % result_text))
+                me.stdout.write(me.style.SUCCESS('Al menos un "%sCreados."' % result_text))
             else:
-                self.stdout.write(self.style.NOTICE('"%sYa Exsitian."' % result_text))
+                me.stdout.write(me.style.NOTICE('"%sYa Exsitian."' % result_text))
 
-        lista_instalacion = [['crearTiposDocumento', 'Tipos de Documentos '],
-                             ['crearLaboratorio', 'Laboratorios '],
-                             ['crearMaquina', 'Maquinas '],
-                             ['createGroups', 'Grupos '],
-                             ['createUsers', 'Usuarios '],
-                             ['crearBandeja', 'Bandejas '],
-                             ['crearAlmacenamiento', 'Almacenamientos '],
-                             ['crearMuestra', 'Muestras '],
-                             ['crearProyecto', 'Proyectos '],
-                             ['crearProtocolo', 'Protocolos '],
-                             ['crearExperimento', 'Experimentos '],
-                             ['crearPaso', 'Pasos '],
+        lista_instalacion = [['crear_tipos_documento', 'Tipos de Documentos '],
+                             ['crear_laboratorios', 'Laboratorios '],
+                             ['crear_maquinas', 'Maquinas '],
+                             ['crear_grupos', 'Grupos '],
+                             ['crear_usuarios', 'Usuarios '],
+                             ['crear_bandeja', 'Bandejas '],
+                             ['crear_almacenamientos', 'Almacenamientos '],
+                             ['crear_muestras', 'Muestras '],
+                             ['crear_proyectos', 'Proyectos '],
+                             ['crear_protocolos', 'Protocolos '],
+                             ['crear_experimentos', 'Experimentos '],
+                             ['crear_pasos', 'Pasos '],
                              ]
 
         for functions in lista_instalacion:

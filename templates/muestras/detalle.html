@@ -1,113 +1,217 @@
 {% extends 'base.html' %}
-
-{% load lab_module_extras %}
 {% load staticfiles %}
+{% load lab_module_extras %}
+{% load humanize %}
 {% block head_others %}
     <link href="{% static 'css/detalleCustom.css' %}" rel="stylesheet">
 {% endblock %}
-
 {% block head_title %}{{ block.super }}{{ section.title }}{% endblock %}
 
 {% block content %}
 
     <div class="page-header text-center">
-        <h2>{{ section.title }} {{ muestra.nombre }}</h2>
+        <h2>{{ section.title }}</h2>
     </div>
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title text-left">Información básica</h3>
+            <h3 class="panel-title text-left">Información Básica</h3>
         </div>
 
         <div class="panel-body text-left">
             <div class="container">
                 <div class="row">
                     <div class="col-md-5 col-sm-6">
+
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Id:</strong>
+                                <strong>Id Muestra</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestra.id }} </p>
+                                {{ muestra.id }}
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Nombre:</strong>
+                                <strong>Nombre</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestra.nombre }} </p>
+                                {{ muestra.nombre }}
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-3">
-                                <strong>Controlada:</strong>
+                                <strong>Descripción</strong>
                             </div>
                             <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestra.controlado }} </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Estado:</strong>
-                            </div>
-                            <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestra.activa }} </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Unidad:</strong>
-                            </div>
-                            <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestra.unidadBase }} </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <strong>Valor:</strong>
-                            </div>
-                            <div class="col-md-7 col-sm-4">
-                                <p id="items" name="items"> {{ muestra.valor }} </p>
+                                {{ muestra.descripcion }}
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-5 col-sm-6">
                         <div class="row">
                             <div>
-                                <strong>Imagen:</strong>
+                                <strong>Imágen</strong>
                             </div>
                         </div>
                         <div class="row">
-
                             <div class="panel panel-default">
                                 <div class="panel-body text-left" style="text-align:center">
                                     <a href="{{ muestra.imagen.url }}" target="_blank">
-                                        <img src="{{ muestra.imagen.url }}" alt="Imagen Muestra"
+                                        <img src="{{ muestra.imagen.url }}" alt="Imágen Muestra"
                                              class="imageIndex" style="width:60%; ">
                                     </a>
                                 </div>
                             </div>
-
                         </div>
-
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-
     <div class="panel panel-default">
+
         <div class="panel-heading">
-            <h3 class="panel-title text-left">Descripción</h3>
+            <h3 class="panel-title text-left">Características Muestra</h3>
         </div>
-        <div class="panel-body text-left" style="height:100px">
-            <div class="row">
-                <p id="items" name="items"> {{ muestra.descripcion }} </p>
+
+        <div class="panel-body text-left">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-5 col-sm-6">
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Controlada</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ muestra.controlado|yesno:"Si,No" }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Activa</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ muestra.activa|yesno:"Si,No" }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Unidad de Medida</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ muestra.unidadBase }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Valor Unidad</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ muestra.valor | currency }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <strong>Cantidad Disponible</strong>
+                            </div>
+                            <div class="col-md-7 col-sm-4">
+                                {{ detalle_completo|length }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title text-left">Bandejas</h3>
+                </div>
 
+                <div class="panel-body text-left">
+
+                    <div class="row">
+                        <table id="almacenamientos_table"
+                               class="datatable display compact responsive nowrap"
+                               cellspacing="0"
+                               width="100%">
+                            <thead>
+                            <tr>
+                                <th>Id Laboratorio</th>
+                                <th>Id Almacenamiento</th>
+                                <th>Nombre Almacenamiento</th>
+                                <th>Fila Lab</th>
+                                <th>Columna Lab</th>
+                                <th>Bandeja</th>
+                                <th>Fila Gradilla</th>
+                                <th>Columna Gradilla</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for muestras in detalle_completo %}
+                                <tr>
+                                    <td>{{ muestras.idLaboratorio_id }}</td>
+                                    <td>{{ muestras.idSistema }}</td>
+                                    <td>{{ muestras.nombre }}</td>
+                                    <td>{{ muestras.posX }}</td>
+                                    <td>{{ muestras.posY }}</td>
+                                    <td>{{ muestras.posicion }}</td>
+                                    <td>{{ muestras.posXMuestra }}</td>
+                                    <td>{{ muestras.posYMuestra }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row center">
+        <div>
+            <a class="btn btn-default" href="{% url 'muestra-list' %}" id="cancel" name="cancel">Cancelar</a>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts_others %}
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
+    <script>
+        $(function () {
+            if ($.fn.dataTable.isDataTable('#almacenamientos_table')) {
+                $('#almacenamientos_table').DataTable({});
+            }
+            else {
+                $('#almacenamientos_table').DataTable({
+                    searching: false,
+                    lengthChange: false,
+                    pageLength: 20,
+                    responsive: true,
+                    sPaginationType: "full_numbers",
+                    bJQueryUI: true,
+                    order: [[1, "asc"]],
+                    language: {
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                    }
+                });
+            }
+        });
+    </script>
 {% endblock %}

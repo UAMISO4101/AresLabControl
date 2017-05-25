@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load lab_module_extras %}
+{% load widget_tweaks %}
+{% block head_others %}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.jqueryui.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css">
+    <link href="{% static 'css/datatablesCustom.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block head_title %}{{ block.super }}{{ section.title }} {% endblock %}
+
+{% block content %}
+    <div class="page-header text-center">
+        <h2>{{ section.title }}</h2>
+    </div>
+
+    <table id="solicitudes_table" class="datatable display compact responsive nowrap" cellspacing="0"
+           width="100%">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Tipo</th>
+            <th>Muestra</th>
+            <th>Cant.</th>
+            <th>Disp.</th>
+            <th>Fecha</th>
+            <th>Solicitante</th>
+            <th>Paso</th>
+            <th>Descripción paso</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for solicitudMuestra in solicitud_con_cantidad %}
+            <tr>
+                <td>{{ solicitudMuestra.idSolicitud }}</td>
+                <td>{{ solicitudMuestra.tipo.capitalize }}</td>
+                <td>{{ solicitudMuestra.nombreMuestra }}</td>
+                <td>{{ solicitudMuestra.cantSolicitada }}</td>
+                <td>{{ solicitudMuestra.cantExistente }}</td>
+                <td>{{ solicitudMuestra.fecha }}</td>
+                <td>{{ solicitudMuestra.solicitante.upper }}</td>
+                <td>{{ solicitudMuestra.paso }}</td>
+                <td>{{ solicitudMuestra.descPaso }}</td>
+                <td>
+                    {% if perms.LabModule.can_viewRequest %}
+                        <a href="{% url 'solicitud-muestra-detail' solicitudMuestra.idSolicitud %}"
+                           class="btn btn-primary "
+                           role="button">
+                            <span class="glyphicon glyphicon-search"></span>Ver</a>
+                    {% endif %}
+                    {% if perms.LabModule.can_manageRequest and  solicitudMuestra.cantSolicitada <= solicitudMuestra.cantExistente %}
+                        <a href="{% url 'solicitud-muestra-aprobar' solicitudMuestra.idSolicitud %}"
+                           class="btn btn-primary "
+                           role="button">
+                            <span class="glyphicon glyphicon-menu-up"></span>Aprobar</a>
+                    {% endif %}
+                    {% if perms.LabModule.can_manageRequest %}
+                        <a href="{% url 'solicitud-muestra-rechazar' solicitudMuestra.idSolicitud %}"
+                           class="btn btn-primary "
+                           role="button">
+                            <span class="glyphicon glyphicon-menu-down"></span>Rechazar</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}
+{% block scripts_others %}
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.13/js/dataTables.jqueryui.min.js"></script>
+    <script>
+        $(function () {
+            if ($.fn.dataTable.isDataTable('#solicitudes_table')) {
+                $('#solicitudes_table').DataTable();
+            }
+            else {
+                $('#solicitudes_table').DataTable({
+                    responsive: true,
+                    sPaginationType: "full_numbers",
+                    bJQueryUI: true,
+                    order: [[1, "asc"]],
+                    language: {
+                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}
